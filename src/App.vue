@@ -17,19 +17,10 @@ export default {
       window.matchMedia &&
         window.matchMedia('(prefers-color-scheme: dark)').matches,
     );
-
-    const toggleDarkMode = () => {
-      console.log('hit');
-      darkMode.value = !darkMode.value;
-      console.log(darkMode)
-    };
-
+    const toggleDarkMode = () => (darkMode.value = !darkMode.value);
     watch(
       () => darkMode.value,
-      () => {
-        console.log(darkMode.value)
-        document.documentElement.setAttribute('dark-theme', darkMode.value)
-      }
+      () => document.documentElement.setAttribute('dark-theme', darkMode.value),
     );
 
     return {
