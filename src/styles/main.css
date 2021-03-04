@@ -1,26 +1,30 @@
 @import url('https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@400&display=swap');
 
 :root {
-  --bg-color: #0d3654;
-  --font-color: #fff;
+  --dark-mode-primary: #18191a;
+  --white-mode-primary: #fff;
+  --primary: #0d3654;
+
+  --bg-color: var(--white-mode-primary);
+  --font-color: var(--dark-mode-primary);
 }
 
-[data-theme='dark'] {
-  --bg-color: #fff;
-  --font-color: #0d3654;
+[dark-theme='true'] {
+  --bg-color: var(--dark-mode-primary);
+  --font-color: var(--white-mode-primary);
 }
 
 /* @media (prefers-color-scheme: light) {
   body {
-    background-color: ;
-    color: black;
+    background-color: var(--white-mode-primary);
+    color: var(--dark-mode-primary);
   }
 }
 
 @media (prefers-color-scheme: dark) {
   body {
-    background-color: black;
-    color: white;
+    background-color: var(--dark-mode-primary);
+    color: var(--white-mode-primary);
   }
 } */
 
@@ -31,6 +35,8 @@
 
 body {
   font-family: 'Bai Jamjuree', sans-serif;
+  background-color: var(--bg-color);
+  color: var(--font-color);
 }
 
 .container {
