@@ -9,7 +9,7 @@
   --border-radius: 5px;
 
   --bg-color: var(--white);
-  --font-color: var(--dark);
+  --font-color: var(--white);
 }
 
 [dark-theme='true'] {
@@ -24,17 +24,24 @@
 
 body {
   font-family: 'Bai Jamjuree', sans-serif;
-  background-color: var(--bg-color);
+  /* background-color: var(--bg-color); */
   color: var(--font-color);
+  background-color: var(--primary-darker);
 }
 
 .section {
   background-color: var(--primary);
   border-radius: var(--border-radius);
-  width: 100%;
+  width: auto;
   padding: 1rem;
 }
 
 #app {
   display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.flex-gap {
+  margin-left: 1rem;
 }

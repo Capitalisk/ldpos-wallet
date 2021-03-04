@@ -91,13 +91,11 @@ export default {
 .main-content {
   margin: 1rem 1rem 1rem 285px;
   width: 100%;
-  height: 3000px;
   display: flex;
 }
 
 #app {
   left: 100px;
   width: 100%;
-  background-color: var(--primary-darker);
 }
 </style>
