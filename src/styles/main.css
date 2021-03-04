@@ -1,32 +1,20 @@
 @import url('https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@400&display=swap');
 
 :root {
-  --dark-mode-primary: #18191a;
-  --white-mode-primary: #fff;
+  --dark: #18191a;
+  --white: #fff;
   --primary: #0d3654;
+  --primary-lighter: #0560a1;
+  --border-radius: 10px;
 
-  --bg-color: var(--white-mode-primary);
-  --font-color: var(--dark-mode-primary);
+  --bg-color: var(--white);
+  --font-color: var(--dark);
 }
 
 [dark-theme='true'] {
-  --bg-color: var(--dark-mode-primary);
-  --font-color: var(--white-mode-primary);
+  --bg-color: var(--dark);
+  --font-color: var(--white);
 }
-
-/* @media (prefers-color-scheme: light) {
-  body {
-    background-color: var(--white-mode-primary);
-    color: var(--dark-mode-primary);
-  }
-}
-
-@media (prefers-color-scheme: dark) {
-  body {
-    background-color: var(--dark-mode-primary);
-    color: var(--white-mode-primary);
-  }
-} */
 
 * {
   margin: 0px;
@@ -39,9 +27,6 @@ body {
   color: var(--font-color);
 }
 
-.container {
-  width: 100%;
-  position: absolute;
-  height: 100vh;
-  overflow: visible;
+#app {
+  display: flex;
 }
