@@ -2,12 +2,10 @@
   <!-- <button @click="toggleDarkMode">Toggle Darkmode</button> -->
   <div id="app">
     <div class="sidebar">
-      <router-link to="/">Home</router-link>
-      <router-link to="/about">About</router-link>
-      <router-link to="/">CURRENT WALLET WITH ACTIVE TOKEN</router-link>
+      <router-link to="/" class="first">CURRENT WALLET WITH ACTIVE TOKEN</router-link>
       <hr />
       <router-link to="/">DASHBOARD</router-link>
-      <router-link to="/">WALLET</router-link>
+      <router-link to="/about">WALLET</router-link>
       <router-link to="/">VOTING</router-link>
       <hr />
       <router-link to="/">TRANSACTIONS</router-link>
@@ -16,7 +14,7 @@
       <router-link to="/">DELEGATES</router-link>
       <hr />
       <router-link to="/">SIGN MESSAGE</router-link>
-      <router-link to="/">VERIFY MESSAGE</router-link>
+      <router-link to="/" class="last">VERIFY MESSAGE</router-link>
     </div>
     <div class="main-content">
       <router-view />
@@ -55,17 +53,17 @@ export default {
   position: fixed;
   width: 250px;
   padding: 0;
-  margin: 2rem;
+  margin: 1rem;
   border-radius: var(--border-radius);
-  background: linear-gradient(60deg, var(--primary), var(--primary-lighter));
-  /* background-color: var(--primary); */
+  /* background: linear-gradient(-30deg, var(--primary), var(--primary-lighter)); */
+  background-color: var(--primary);
   color: var(--white);
   text-transform: uppercase;
 }
 
 .sidebar hr {
   border: 0;
-  border-top: 1px solid var(--white);
+  border-top: 1px solid rgba(12, 138, 228, 0.4);
   border-width: 1px;
 }
 
@@ -74,20 +72,32 @@ export default {
   text-decoration: none;
   padding: 1rem;
   display: block;
+  font-size: 12px;
+}
+.sidebar a:hover {
+  background-color: var(--primary-lighter);
+}
+
+.first {
+  border-top-left-radius: var(--border-radius);
+  border-top-right-radius: var(--border-radius);
+}
+
+.last {
+  border-bottom-left-radius: var(--border-radius);
+  border-bottom-right-radius: var(--border-radius);
 }
 
 .main-content {
-  margin: 2rem 2rem 2rem 300px;
-  border-radius: var(--border-radius);
-  background-color: var(--primary);
-  color: var(--white);
+  margin: 1rem 1rem 1rem 285px;
   width: 100%;
   height: 3000px;
-  padding: 1rem;
+  display: flex;
 }
 
 #app {
   left: 100px;
   width: 100%;
+  background-color: var(--primary-darker);
 }
 </style>

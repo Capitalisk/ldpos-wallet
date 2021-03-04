@@ -3,9 +3,10 @@
 :root {
   --dark: #18191a;
   --white: #fff;
-  --primary: #0d3654;
-  --primary-lighter: #0560a1;
-  --border-radius: 10px;
+  --primary: #222a42;
+  --primary-lighter: #0c8ae4;
+  --primary-darker: #1e1e2f;
+  --border-radius: 5px;
 
   --bg-color: var(--white);
   --font-color: var(--dark);
@@ -25,6 +26,13 @@ body {
   font-family: 'Bai Jamjuree', sans-serif;
   background-color: var(--bg-color);
   color: var(--font-color);
+}
+
+.section {
+  background-color: var(--primary);
+  border-radius: var(--border-radius);
+  width: 100%;
+  padding: 1rem;
 }
 
 #app {
