@@ -1,27 +1,45 @@
 <template>
-  <div class="section">
-    <strong>Current balance:</strong><br />
-    <p v-if="!balance.loading">
-      {{ balance.data }}
-    </p>
-    <Loading v-else />
-    <!-- <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/> -->
-  </div>
-  <div class="section flex-gap">
-    Latest transactions: <br />
-    <ul v-if="!transactions.loading">
+  <Section
+    :loading="balance.loading"
+    title="Current balance:"
+    :error="balance.error"
+  >
+    <h1>CⱠ {{ balance.data }}</h1>
+  </Section>
+  <Section
+    :loading="transactions.loading"
+    title="Latest transactions:"
+    :gap="true"
+    :error="transactions.error"
+  >
+    <ul>
       <li v-for="transaction in transactions.data" :key="transaction.id">
-        {{ transaction.type }} for {{ transaction.amount }} with a
+        {{ transaction.type }} for CⱠ {{ transaction.amount }} with a CⱠ
         {{ transaction.fee }} fee
       </li>
     </ul>
-    <Loading v-else />
-  </div>
+  </Section>
+  <Section
+    :loading="pendingTransactions.loading"
+    title="Pending transactions:"
+    :gap="true"
+    :error="pendingTransactions.error"
+  >
+    <ul>
+      <li
+        v-for="pendingTransaction in pendingTransactions.data"
+        :key="pendingTransaction.id"
+      >
+        {{ pendingTransaction.type }} for CⱠ
+        {{ pendingTransaction.amount }} with a CⱠ
+        {{ pendingTransaction.fee }} fee
+      </li>
+    </ul>
+  </Section>
 </template>
 
 <script>
-import Loading from '../components/Loading';
+import Section from '../components/Section';
 import { ref, onMounted } from 'vue';
 import ldposClient from 'ldpos-client';
 import { _integerToDecimal } from '../utils.js';
@@ -38,9 +56,9 @@ export default {
       chainModuleName: 'capitalisk_chain',
     };
 
-    const balance = ref({ loading: true, data: null });
-    const transactions = ref({ loading: true, data: null });
-    const error = ref(null);
+    const balance = ref({ loading: true, data: null, error: null });
+    const transactions = ref({ loading: true, data: null, error: null });
+    const pendingTransactions = ref({ loading: true, data: null, error: null });
 
     onMounted(async () => {
       try {
@@ -52,36 +70,52 @@ export default {
 
         const address = await client.getWalletAddress();
 
-        const { balance: b } = await client.getAccount(address);
-        balance.value.data = _integerToDecimal(b);
+        try {
+          const { balance: b } = await client.getAccount(address);
+          balance.value.data = _integerToDecimal(b);
+        } catch (err) {
+          balance.value.error = err.message;
+        }
         balance.value.loading = false;
 
-        const t = await client.getTransactionsByTimestamp(0, 10);
+        try {
+          const t = await client.getTransactionsByTimestamp(0, 10);
 
-        transactions.value.data = t.map((transaction) => {
-          debugger;
-          return {
-            ...transaction,
-            amount: _integerToDecimal(transaction.amount),
-            fee: _integerToDecimal(transaction.fee),
-          };
-        });
-
+          transactions.value.data = t
+            .filter((transaction) => transaction.amount)
+            .map((transaction) => ({
+              ...transaction,
+              amount: _integerToDecimal(transaction.amount),
+              fee: _integerToDecimal(transaction.fee),
+            }));
+        } catch (err) {
+          transactions.value.error = err.message;
+        }
         transactions.value.loading = false;
+
+        try {
+          const pT = await client.getOutboundPendingTransactions(address, 0, 5);
+
+          pendingTransactions.value.data = pT;
+        } catch (err) {
+          console.error(err);
+          debugger;
+          pendingTransactions.value.error = err.message;
+        }
+        pendingTransactions.value.loading = false;
       } catch (e) {
         console.error(e);
-        error.value = e.message;
       }
     });
 
     return {
       balance,
-      error,
       transactions,
+      pendingTransactions,
     };
   },
   components: {
-    Loading,
+    Section,
   },
 };
 </script>

@@ -418,7 +418,7 @@ export default {
   name: 'Loading',
   props: {
     size: {
-      type: String,
+      type: Number,
       default: 25,
     },
   },

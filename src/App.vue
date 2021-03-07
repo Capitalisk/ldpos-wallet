@@ -89,9 +89,13 @@ export default {
 }
 
 .main-content {
-  margin: 1rem 1rem 1rem 285px;
+  margin-left: 285px;
+  padding: 1rem 1rem 1rem 0;
   width: 100%;
   display: flex;
+  box-sizing: border-box;
+  flex-direction: row;
+  flex-wrap: wrap;
 }
 
 #app {
