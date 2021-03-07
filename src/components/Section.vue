@@ -2,10 +2,10 @@
   <div :class="`section ${gap ? 'flex-gap' : ''}`">
     <h4>{{ title }}</h4>
     <slot v-if="!loading"></slot>
-    <p v-if="!loading" class="error">
+    <Loading v-else />
+    <p v-if="!loading && error" class="error">
       <strong>Error:</strong><br />{{ error }}
     </p>
-    <Loading v-else />
     <!-- <img alt="Vue logo" src="../assets/logo.png">
     <HelloWorld msg="Welcome to Your Vue.js App"/> -->
   </div>

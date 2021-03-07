@@ -98,8 +98,6 @@ export default {
 
           pendingTransactions.value.data = pT;
         } catch (err) {
-          console.error(err);
-          debugger;
           pendingTransactions.value.error = err.message;
         }
         pendingTransactions.value.loading = false;
