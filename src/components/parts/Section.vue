@@ -1,8 +1,12 @@
 <template>
   <div :class="`section ${gap ? 'flex-gap' : ''}`">
     <h4>{{ title }}</h4>
-    <slot v-if="!loading"></slot>
-    <Loading v-else />
+
+    <slot v-if="!loading && data"></slot>
+    <Loading v-else-if="loading && !data" />
+    <p v-else>
+      <strong>Not signed in</strong>
+    </p>
     <p v-if="!loading && error" class="error">
       <strong>Error:</strong><br />{{ error }}
     </p>

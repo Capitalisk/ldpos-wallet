@@ -2,7 +2,9 @@
   <!-- <button @click="toggleDarkMode">Toggle Darkmode</button> -->
   <div id="app">
     <div class="sidebar">
-      <router-link to="/" class="first">CURRENT WALLET WITH ACTIVE TOKEN</router-link>
+      <router-link to="/" class="first"
+        >CURRENT WALLET WITH ACTIVE TOKEN</router-link
+      >
       <hr />
       <router-link to="/">DASHBOARD</router-link>
       <router-link to="/about">WALLET</router-link>
@@ -17,17 +19,38 @@
       <router-link to="/" class="last">VERIFY MESSAGE</router-link>
     </div>
     <div class="main-content">
-      <router-view />
+      <Loading v-if="!clientConnected" />
+      <router-view v-else />
     </div>
   </div>
 </template>
 
 <script>
-import { ref, watch } from 'vue';
+import { onMounted, ref, watch, inject } from 'vue';
+
+import Loading from './components/parts/Loading';
+import { connect } from './plugins/ldpos-client';
 
 export default {
   name: 'App',
+  components: { Loading },
   setup() {
+    const config = {
+      hostname: '34.227.22.98',
+      port: '7001',
+      passphrase:
+        'oval moral close neck table curtain focus chronic april add clown differ',
+      networkSymbol: 'clsk',
+      chainModuleName: 'capitalisk_chain',
+    };
+
+    const clientConnected = ref(false);
+
+    onMounted(async () => {
+      const { connected } = await connect(config);
+      clientConnected.value = connected;
+    });
+
     const darkMode = ref(
       window.matchMedia &&
         window.matchMedia('(prefers-color-scheme: dark)').matches,
@@ -41,6 +64,7 @@ export default {
     return {
       darkMode,
       toggleDarkMode,
+      clientConnected,
     };
   },
 };
