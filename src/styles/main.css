@@ -48,3 +48,8 @@ body {
 .flex-gap {
   margin-left: 1rem;
 }
+
+.cursor-pointer {
+  cursor: pointer;
+  user-select: none;
+}
