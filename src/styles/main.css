@@ -41,3 +41,7 @@ body {
   cursor: pointer;
   user-select: none;
 }
+
+.column.is-12 {
+  width: 100%;
+}

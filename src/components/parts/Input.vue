@@ -1,7 +1,8 @@
 <template>
   <input
     class="input"
-    v-model="value"
+    :value="value"
+    @input="(e) => $emit('input', value)"
     :type="hidden ? 'password' : 'input'"
     :placeholder="placeholder"
   />

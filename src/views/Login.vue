@@ -14,14 +14,22 @@
           Show
         </div>
         <div class="inputs">
-          {{ passphrase }}
-          <div v-for="(part, i) in inputs" :key="i">
+          <div class="column is-12">{{ inputs.map((i) => i.value) }}</div>
+          <div v-for="(input, i) in inputs" :key="i">
             <div class="input-number">{{ i + 1 }}.</div>
             <div>
-              <Input
+              {{ input.value }}
+              <!-- <input
                 class="input"
-                v-model="part.value"
+                v-model="input.value"
                 :hidden="hidden"
+                :id="`passphrase-${i}`"
+                placeholder="__________"
+              /> -->
+              <input
+                class="input"
+                v-model="input.value"
+                :type="hidden ? 'password' : 'input'"
                 placeholder="__________"
               />
             </div>
@@ -34,11 +42,12 @@
 </template>
 
 <script>
-import { ref, watch } from 'vue';
-import Input from '../components/parts/Input';
+import { computed, onBeforeUpdate, ref, watch } from 'vue';
+// import Input from '../components/parts/Input';
 import Button from '../components/parts/Button';
 
 export default {
+  name: 'Login',
   setup() {
     const inputs = ref(new Array(12));
 
@@ -52,18 +61,29 @@ export default {
     const toggleHidden = () => (hidden.value = !hidden.value);
 
     watch(
-      inputs,
-      (newVal, oldVal) => (passphrase.value = inputs.value.join(' ')),
+      () => inputs.value.map((v) => v.value).join(' '),
+      (n) => {
+        inputs.value = n
+          .split(' ')
+          .filter((e) => e !== '')
+          .map((value) => (value = { value }))
+          .slice(0, 12);
+
+        passphrase.value = n;
+      },
     );
 
     return {
       passphrase,
       hidden,
-      toggleHidden,
       inputs,
+      toggleHidden,
     };
   },
-  components: { Button, Input },
+  components: {
+    Button,
+    // Input,
+  },
 };
 </script>
 
@@ -109,5 +129,21 @@ export default {
 
 .input-number {
   width: 15px;
+}
+
+/* BUTTON */
+
+.input {
+  background-color: var(--primary);
+  border: 0;
+  padding: 0.75rem;
+  margin: 0.5rem;
+  color: var(--white);
+  border-radius: var(--border-radius);
+  text-decoration: none;
+}
+
+.input::placeholder {
+  color: var(--white);
 }
 </style>
