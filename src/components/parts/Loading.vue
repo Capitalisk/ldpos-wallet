@@ -1,6 +1,6 @@
 <template>
   <div class="loading">
-    <img src="../../assets/loading.svg" alt="" srcset="">
+    <img src="../../assets/loading.svg" alt="Loading">
   </div>
 </template>
 

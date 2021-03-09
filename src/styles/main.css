@@ -32,21 +32,9 @@ body {
   background-color: var(--primary-darker);
 }
 
-.section {
-  background-color: var(--primary);
-  border-radius: var(--border-radius);
-  width: auto;
-  padding: 1rem;
-}
-
 #app {
   display: flex;
   flex-wrap: wrap;
-  gap: 1rem;
-}
-
-.flex-gap {
-  margin-left: 1rem;
 }
 
 .cursor-pointer {

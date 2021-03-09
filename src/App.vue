@@ -120,6 +120,7 @@ export default {
   box-sizing: border-box;
   flex-direction: row;
   flex-wrap: wrap;
+  gap: 1rem 1rem;
 }
 
 #app {

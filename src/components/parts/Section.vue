@@ -1,17 +1,15 @@
 <template>
-  <div :class="`section ${gap ? 'flex-gap' : ''}`">
+  <div class="section">
     <h4>{{ title }}</h4>
 
     <slot v-if="!loading && data"></slot>
     <Loading v-else-if="loading && !data" />
-    <p v-else>
-      <strong>Not signed in</strong>
-    </p>
-    <p v-if="!loading && error" class="error">
+    <p v-else-if="!loading && error" class="error">
       <strong>Error:</strong><br />{{ error }}
     </p>
-    <!-- <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/> -->
+    <p v-else-if="!loading && !data && needsAuthentication">
+      <strong>Not signed in</strong>
+    </p>
   </div>
 </template>
 
@@ -23,14 +21,24 @@ export default {
   props: {
     title: { type: String },
     loading: { type: Boolean },
-    gap: { type: Boolean, default: false },
     error: { type: String, default: null },
+    needsAuthentication: { type: Boolean, default: false },
   },
   components: { Loading },
 };
 </script>
 
 <style scoped>
+.section {
+  flex-basis: 0;
+  flex-grow: 1;
+  flex-shrink: 1;
+  background-color: var(--primary);
+  border-radius: var(--border-radius);
+  width: auto;
+  padding: 1rem;
+}
+
 h4 {
   margin-bottom: 0.5rem;
   color: var(--primary-lighter);

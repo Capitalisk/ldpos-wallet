@@ -2,6 +2,7 @@
   <Section
     :loading="balance.loading"
     title="Current balance:"
+    :needsAuthentication="true"
     :error="balance.error"
   >
     <h1>CⱠ {{ balance.data }}</h1>
@@ -9,7 +10,7 @@
   <Section
     :loading="transactions.loading"
     title="Latest transactions:"
-    :gap="true"
+    :needsAuthentication="true"
     :error="transactions.error"
   >
     <ul>
@@ -22,7 +23,7 @@
   <Section
     :loading="pendingTransactions.loading"
     title="Pending transactions:"
-    :gap="true"
+    :needsAuthentication="true"
     :error="pendingTransactions.error"
   >
     <ul>

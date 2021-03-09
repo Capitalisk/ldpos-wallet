@@ -43,7 +43,7 @@ export default {
   justify-content: flex-end;
   align-items: center;
   text-align: right;
-  padding: 0 1rem 1rem;
+  padding: 0 1rem;
 }
 
 .account {

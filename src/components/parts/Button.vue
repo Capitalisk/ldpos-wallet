@@ -1,6 +1,6 @@
 <template>
   <a
-    class="button"
+    class="button cursor-pointer"
     :style="
       `background-color: var(--${backgroundColor}); color: var(--${color})`
     "
@@ -27,7 +27,6 @@ export default {
 
 <style scoped>
 a.button {
-  cursor: pointer;
   display: block;
   background-color: var(--primary-lighter);
   border: 0;
