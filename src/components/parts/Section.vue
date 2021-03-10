@@ -2,14 +2,14 @@
   <div class="section">
     <h4>{{ title }}</h4>
 
-    <slot v-if="!loading && data"></slot>
-    <Loading v-else-if="loading && !data" />
+    <Loading v-if="loading" />
     <p v-else-if="!loading && error" class="error">
       <strong>Error:</strong><br />{{ error }}
     </p>
-    <p v-else-if="!loading && !data && needsAuthentication">
+    <p v-else-if="!loading && needsAuthentication">
       <strong>Not signed in</strong>
     </p>
+    <slot v-else></slot>
   </div>
 </template>
 
