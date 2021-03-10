@@ -38,8 +38,6 @@ export default {
     const config = {
       hostname: '34.227.22.98',
       port: '7001',
-      passphrase:
-        'oval moral close neck table curtain focus chronic april add clown differ',
       networkSymbol: 'clsk',
       chainModuleName: 'capitalisk_chain',
     };
