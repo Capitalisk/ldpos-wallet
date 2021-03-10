@@ -7,7 +7,7 @@
     "build": "vue-cli-service build"
   },
   "dependencies": {
-    "ldpos-client": "^5.2.0",
+    "ldpos-client": "^6.0.0",
     "vue": "^3.0.0",
     "vue-router": "^4.0.0-0"
   },
