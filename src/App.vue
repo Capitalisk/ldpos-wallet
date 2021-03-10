@@ -7,7 +7,7 @@
       >
       <hr />
       <router-link to="/"><i class="fa fa-home mr-1"></i>DASHBOARD</router-link>
-      <router-link to="/about"><i class="fa fa-wallet mr-1"></i>WALLET</router-link>
+      <router-link to="/wallet"><i class="fa fa-wallet mr-1"></i>WALLET</router-link>
       <router-link to="/delegates"><i class="fa fa-poll mr-1"></i>VOTING</router-link>
       <hr />
       <router-link to="/"><i class="fa fa-exchange-alt mr-1"></i>TRANSACTIONS</router-link>

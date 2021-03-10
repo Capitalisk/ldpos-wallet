@@ -50,3 +50,18 @@ body {
 .mr-1 {
   margin-right: 0.5rem;
 }
+
+table {
+  border-spacing: 0;
+  width: 100%;
+}
+
+td,
+th {
+  padding: 0.25rem 1rem;
+  text-align: left;
+}
+
+th {
+  border-bottom: 1px solid var(--white);
+}

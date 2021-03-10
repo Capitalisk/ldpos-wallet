@@ -8,7 +8,7 @@
         <th>Delegate</th>
         <th>Height</th>
         <th>Vote weight</th>
-        <th v-if="connected">Voting</th>
+        <th v-if="walletConnected">Vote for delegate</th>
       </thead>
       <tr v-for="(delegate, i) in delegates" :key="i">
         <td>#{{ i + 1 }}</td>
@@ -20,7 +20,7 @@
         <td>
           CⱠ <strong>{{ delegate.voteWeight }}</strong>
         </td>
-        <td v-if="connected">
+        <td v-if="walletConnected">
           <Button value="Vote" @click="vote" style="display: initial" />
         </td>
       </tr>
@@ -66,20 +66,5 @@ export default {
 
 .delegate-address {
   color: var(--primary-lightest);
-}
-
-table {
-  border-spacing: 0;
-  width: 100%;
-}
-
-td,
-th {
-  padding: 0.25rem 1rem;
-  text-align: left;
-}
-
-th {
-  border-bottom: 1px solid var(--white);
 }
 </style>
