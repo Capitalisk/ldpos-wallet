@@ -21,7 +21,7 @@ export default {
     backgroundColor: { type: String, default: 'primary-lighter' },
     routerLink: { type: Boolean, default: false },
     href: { type: String, default: '' },
-    loading: { type: Boolean, default: '' },
+    loading: { type: Boolean, default: false },
   },
 };
 </script>

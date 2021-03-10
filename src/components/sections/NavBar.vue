@@ -7,14 +7,15 @@
         backgroundColor: connected ? 'var(--success)' : 'var(--danger)',
       }"
     ></span>
-    <Button value="Sign in" router-link href="/login" />
+    <Button v-if="walletConnected" value="Sign out" @click="signout" />
+    <Button value="Sign in" router-link href="/login" v-else />
   </div>
 </template>
 
 <script>
 import { onMounted, ref } from 'vue';
 
-import { useClient } from '../../plugins/ldpos-client';
+import { useClient, deauthenticate } from '../../plugins/ldpos-client';
 
 import Button from '../parts/Button';
 
@@ -22,14 +23,23 @@ export default {
   name: 'NavBar',
   setup() {
     const connected = ref(false);
+    const walletConnected = ref(false);
 
     onMounted(async () => {
-      const { connected: c } = await useClient();
+      const { connected: c, walletConnected: wC } = await useClient();
       connected.value = c;
+      walletConnected.value = wC;
     });
+
+    const signout = async () => {
+      const { walletConnected: wC } = await deauthenticate();
+      walletConnected.value = wC;
+    };
 
     return {
       connected,
+      walletConnected,
+      signout,
     };
   },
   components: { Button },

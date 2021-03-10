@@ -14,7 +14,6 @@
           Show
         </div>
         <div class="inputs">
-          <p>{{ passphrase }}</p>
           <div v-for="(input, i) in inputs" :key="i">
             <div class="input-number">{{ i + 1 }}.</div>
             <div>
@@ -32,10 +31,11 @@
       </div>
     </div>
     <Button
-      value="Sign In"
+      :value="signinButtonLoading ? 'Hang in there...' : 'Sign In'"
       @click="signin"
       :loading="signinButtonLoading"
       :error="signinError"
+      :backgroundColor="signinButtonLoading ? 'warning' : 'primary-lighter'"
     />
   </div>
 </template>
