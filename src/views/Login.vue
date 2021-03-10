@@ -31,12 +31,12 @@
         </div>
       </div>
     </div>
-    <Button value="Sign In" @click="authenticate(passphrase)" />
+    <Button value="Sign In" @click="signin" />
   </div>
 </template>
 
 <script>
-import { computed, onBeforeUpdate, ref, watch } from 'vue';
+import { computed, onBeforeUpdate, ref, watch, watchEffect } from 'vue';
 // import Input from '../components/parts/Input';
 import Button from '../components/parts/Button';
 
@@ -87,12 +87,16 @@ export default {
       },
     );
 
+    const signin = async () => {
+      await authenticate(passphrase.value);
+    };
+
     return {
       passphrase,
       hidden,
       inputs,
       toggleHidden,
-      authenticate,
+      signin,
       backspace,
     };
   },

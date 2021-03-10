@@ -7,7 +7,7 @@ export const connect = async (config) => {
 
   await client.network.connect();
 
-  client.connected = true
+  client.connected = true;
 
   return client;
 };
@@ -16,6 +16,9 @@ export const authenticate = async (passphrase) => {
   try {
     client.walletConnected = false;
     client.connected = false;
+    console.log(passphrase);
+    // await client.network.disconnect();
+    // await deauthenticate()
     await client.network.connect({ passphrase });
     client.walletConnected = true;
     client.connected = true;
@@ -38,7 +41,7 @@ export const useClient = () => {
 };
 
 export const deauthenticate = async () => {
-  client.network.disconnect();
+  await client.network.disconnect();
   client.connected = false;
   client.walletConnected = false;
 };
