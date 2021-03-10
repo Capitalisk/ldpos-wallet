@@ -16,15 +16,12 @@ export const authenticate = async (passphrase) => {
   try {
     client.walletConnected = false;
     client.connected = false;
-    console.log(passphrase);
-    // await client.network.disconnect();
-    // await deauthenticate()
     await client.network.connect({ passphrase });
     client.walletConnected = true;
     client.connected = true;
 
-    setTimeout(() => {
-      deauthenticate();
+    setTimeout(async () => {
+      await deauthenticate();
     }, 15 * 60 * 60);
 
     return client;

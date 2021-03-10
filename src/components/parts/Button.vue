@@ -5,9 +5,9 @@
       `background-color: var(--${backgroundColor}); color: var(--${color})`
     "
     v-if="!routerLink"
-    href
   >
-    {{ value }}
+    <i class="fa fa-circle-o-notch fa-spin mr-1" v-if="loading"></i
+    >{{ value }}
   </a>
   <router-link class="button" v-else :to="href">{{ value }}</router-link>
 </template>
@@ -21,6 +21,7 @@ export default {
     backgroundColor: { type: String, default: 'primary-lighter' },
     routerLink: { type: Boolean, default: false },
     href: { type: String, default: '' },
+    loading: { type: Boolean, default: '' },
   },
 };
 </script>

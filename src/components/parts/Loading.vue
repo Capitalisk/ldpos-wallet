@@ -1,6 +1,6 @@
 <template>
   <div class="loading">
-    <img src="../../assets/loading.svg" alt="Loading">
+    <i class="fa fa-circle-o-notch fa-spin mr-1"></i>Loading
   </div>
 </template>
 
@@ -20,5 +20,6 @@ export default {
 .loading {
   margin: 1rem;
   text-align: center;
+  width: 100%;
 }
 </style>

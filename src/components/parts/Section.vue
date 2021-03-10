@@ -6,7 +6,7 @@
     <p v-else-if="!loading && error" class="error">
       <strong>Error:</strong><br />{{ error }}
     </p>
-    <p v-else-if="!loading && needsAuthentication">
+    <p v-else-if="!loading && needsAuthentication && !walletConnected">
       <strong>Not signed in</strong>
     </p>
     <slot v-else></slot>
@@ -14,6 +14,8 @@
 </template>
 
 <script>
+import { onMounted, ref } from 'vue';
+import { useClient } from '../../plugins/ldpos-client';
 import Loading from './Loading';
 
 export default {
@@ -25,6 +27,16 @@ export default {
     needsAuthentication: { type: Boolean, default: false },
   },
   components: { Loading },
+  setup() {
+    const walletConnected = ref(null);
+    onMounted(async () => {
+      walletConnected.value = await useClient().walletConnected;
+    });
+
+    return {
+      walletConnected,
+    };
+  },
 };
 </script>
 

@@ -31,11 +31,17 @@
         </div>
       </div>
     </div>
-    <Button value="Sign In" @click="signin" />
+    <Button
+      value="Sign In"
+      @click="signin"
+      :loading="signinButtonLoading"
+      :error="signinError"
+    />
   </div>
 </template>
 
 <script>
+import router from '../router';
 import { computed, onBeforeUpdate, ref, watch, watchEffect } from 'vue';
 // import Input from '../components/parts/Input';
 import Button from '../components/parts/Button';
@@ -54,6 +60,8 @@ export default {
 
     const passphrase = ref('');
     const hidden = ref(true);
+    const signinButtonLoading = ref(false);
+    const signinError = ref(null);
 
     const toggleHidden = () => (hidden.value = !hidden.value);
     const backspace = (e, i) =>
@@ -88,7 +96,14 @@ export default {
     );
 
     const signin = async () => {
-      await authenticate(passphrase.value);
+      try {
+        signinButtonLoading.value = true;
+        const { walletConnected } = await authenticate(passphrase.value);
+        if (walletConnected) router.push('/');
+      } catch (e) {
+        signinError.value = e.message;
+      }
+      signinButtonLoading.value = false;
     };
 
     return {
@@ -98,6 +113,8 @@ export default {
       toggleHidden,
       signin,
       backspace,
+      signinButtonLoading,
+      signinError,
     };
   },
   components: {
