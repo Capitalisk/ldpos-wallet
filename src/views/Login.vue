@@ -14,6 +14,7 @@
           Show
         </div>
         <div class="inputs">
+          <p>{{ passphrase }}</p>
           <div v-for="(input, i) in inputs" :key="i">
             <div class="input-number">{{ i + 1 }}.</div>
             <div>
@@ -23,13 +24,14 @@
                 :type="hidden ? 'password' : 'input'"
                 :id="`passphrase-${i}`"
                 placeholder="__________"
+                @keydown="(e) => backspace(e, i)"
               />
             </div>
           </div>
         </div>
       </div>
     </div>
-    <Button value="Sign In" />
+    <Button value="Sign In" @click="authenticate(passphrase)" />
   </div>
 </template>
 
@@ -37,6 +39,8 @@
 import { computed, onBeforeUpdate, ref, watch } from 'vue';
 // import Input from '../components/parts/Input';
 import Button from '../components/parts/Button';
+
+import { authenticate } from '../plugins/ldpos-client';
 
 export default {
   name: 'Login',
@@ -52,11 +56,15 @@ export default {
     const hidden = ref(true);
 
     const toggleHidden = () => (hidden.value = !hidden.value);
+    const backspace = (e, i) =>
+      e.target.value === '' &&
+      e.keyCode === 8 &&
+      i !== 0 &&
+      document.getElementById(`passphrase-${i - 1}`).focus();
 
     watch(
       () => inputs.value,
       (n) => {
-        console.log(n);
         for (let i = 0; i < n.length; i++) {
           const element = n[i].value;
           const lastInput = document.getElementById(
@@ -70,6 +78,8 @@ export default {
             nextInput.focus();
           }
         }
+
+        passphrase.value = n.map((el) => el.value).join(' ');
       },
       {
         deep: true,
@@ -82,6 +92,8 @@ export default {
       hidden,
       inputs,
       toggleHidden,
+      authenticate,
+      backspace,
     };
   },
   components: {
