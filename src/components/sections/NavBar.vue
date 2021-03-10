@@ -1,12 +1,14 @@
 <template>
   <div class="navbar">
-    <span class="connection">Connection </span>
+    <span class="connection"
+      >{{ connected ? `Connected: ${net}` : 'Disconnected' }}
+    </span>
     <span
       class="dot"
       :style="{
         backgroundColor: connected ? 'var(--success)' : 'var(--danger)',
       }"
-    ></span>
+    />
     <Button v-if="walletConnected" value="Sign out" @click="signout" />
     <Button value="Sign in" router-link href="/login" v-else />
   </div>
@@ -24,11 +26,21 @@ export default {
   setup() {
     const connected = ref(false);
     const walletConnected = ref(false);
+    const net = ref(null);
 
     onMounted(async () => {
-      const { connected: c, walletConnected: wC } = await useClient();
+      const {
+        connected: c,
+        walletConnected: wC,
+        network: {
+          options: { port },
+        },
+      } = await useClient();
+
       connected.value = c;
       walletConnected.value = wC;
+      console.log(port);
+      net.value = port === '7001' ? 'Testnet' : 'Mainnet';
     });
 
     const signout = async () => {
@@ -40,6 +52,7 @@ export default {
       connected,
       walletConnected,
       signout,
+      net,
     };
   },
   components: { Button },
@@ -61,12 +74,12 @@ export default {
 }
 
 .connection {
-  padding: 0 1rem;
+  padding: 0 0.5rem;
 }
 
 .dot {
-  height: 10px;
-  width: 10px;
+  height: 6px;
+  width: 6px;
   display: inline-block;
   border-radius: 50%;
   margin-right: auto;

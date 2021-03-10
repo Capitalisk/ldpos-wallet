@@ -50,14 +50,11 @@ import Section from '../parts/Section';
 export default {
   name: 'InfoBar',
   setup() {
-    // DATA
     const balance = ref({ loading: true, data: null, error: null });
     const transactions = ref({ loading: true, data: null, error: null });
     const pendingTransactions = ref({ loading: true, data: null, error: null });
 
-    // MOUNTED
     onMounted(async () => {
-      // MOUNTED CODE
       try {
         const client = ref(null);
         const { network, walletConnected } = useClient();
@@ -66,7 +63,6 @@ export default {
         if (walletConnected) {
           const address = await client.value.getWalletAddress();
 
-          // METHOD GET BALANCE
           try {
             const { balance: b } = await client.value.getAccount(address);
             balance.value.data = _integerToDecimal(b);
@@ -75,7 +71,6 @@ export default {
           }
           balance.value.loading = false;
 
-          // METHOD GET TRANSACTIONS
           try {
             const t = await client.value.getTransactionsByTimestamp(0, 10);
 
@@ -91,7 +86,6 @@ export default {
           }
           transactions.value.loading = false;
 
-          // METHOD GET PENDING TRANSACTIONS
           try {
             const pT = await client.value.getOutboundPendingTransactions(
               address,
