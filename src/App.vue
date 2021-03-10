@@ -6,17 +6,17 @@
         >CURRENT WALLET WITH ACTIVE TOKEN</router-link
       >
       <hr />
-      <router-link to="/">DASHBOARD</router-link>
-      <router-link to="/about">WALLET</router-link>
-      <router-link to="/">VOTING</router-link>
+      <router-link to="/"><i class="fa fa-home mr-1"></i>DASHBOARD</router-link>
+      <router-link to="/about"><i class="fa fa-wallet mr-1"></i>WALLET</router-link>
+      <router-link to="/"><i class="fa fa-poll mr-1"></i>VOTING</router-link>
       <hr />
-      <router-link to="/">TRANSACTIONS</router-link>
-      <router-link to="/">BLOCKS</router-link>
-      <router-link to="/">ACCOUNTS</router-link>
-      <router-link to="/">DELEGATES</router-link>
+      <router-link to="/"><i class="fa fa-exchange-alt mr-1"></i>TRANSACTIONS</router-link>
+      <router-link to="/"><i class="fa fa-th-large mr-1"></i>BLOCKS</router-link>
+      <router-link to="/"><i class="fa fa-users mr-1"></i>ACCOUNTS</router-link>
+      <router-link to="/"><i class="fa fa-users-cog mr-1"></i>DELEGATES</router-link>
       <hr />
-      <router-link to="/">SIGN MESSAGE</router-link>
-      <router-link to="/" class="last">VERIFY MESSAGE</router-link>
+      <router-link to="/"><i class="fa fa-signature mr-1"></i>SIGN MESSAGE</router-link>
+      <router-link to="/" class="last"><i class="fa fa-check mr-1"></i>VERIFY MESSAGE</router-link>
     </div>
     <div class="main-content">
       <Loading v-if="!clientConnected" />
