@@ -14,22 +14,14 @@
           Show
         </div>
         <div class="inputs">
-          <div class="column is-12">{{ inputs.map((i) => i.value) }}</div>
           <div v-for="(input, i) in inputs" :key="i">
             <div class="input-number">{{ i + 1 }}.</div>
             <div>
-              {{ input.value }}
-              <!-- <input
-                class="input"
-                v-model="input.value"
-                :hidden="hidden"
-                :id="`passphrase-${i}`"
-                placeholder="__________"
-              /> -->
               <input
                 class="input"
                 v-model="input.value"
                 :type="hidden ? 'password' : 'input'"
+                :id="`passphrase-${i}`"
                 placeholder="__________"
               />
             </div>
@@ -50,6 +42,7 @@ export default {
   name: 'Login',
   setup() {
     const inputs = ref(new Array(12));
+    const activeIndex = ref(0);
 
     for (let i = 0; i < inputs.value.length; i++) {
       inputs.value[i] = { value: '' };
@@ -61,15 +54,26 @@ export default {
     const toggleHidden = () => (hidden.value = !hidden.value);
 
     watch(
-      () => inputs.value.map((v) => v.value).join(' '),
+      () => inputs.value,
       (n) => {
-        inputs.value = n
-          .split(' ')
-          .filter((e) => e !== '')
-          .map((value) => (value = { value }))
-          .slice(0, 12);
-
-        passphrase.value = n;
+        console.log(n);
+        for (let i = 0; i < n.length; i++) {
+          const element = n[i].value;
+          const lastInput = document.getElementById(
+            `passphrase-${n.length - 1}`,
+          );
+          if (element.split(' ').length === 12) {
+            inputs.value = element.split(' ').map((el) => ({ value: el }));
+            lastInput.focus();
+          } else if (element.includes(' ')) {
+            const nextInput = document.getElementById(`passphrase-${i + 1}`);
+            nextInput.focus();
+          }
+        }
+      },
+      {
+        deep: true,
+        immediate: false,
       },
     );
 
