@@ -35,7 +35,7 @@
       @click="signin"
       :loading="signinButtonLoading"
       :error="signinError"
-      :backgroundColor="signinButtonLoading ? 'warning' : 'primary-lighter'"
+      :backgroundColor="signinButtonLoading ? 'warning' : 'primary-lightest'"
     />
   </div>
 </template>

@@ -53,7 +53,7 @@ export default {
 
 h4 {
   margin-bottom: 0.5rem;
-  color: var(--primary-lighter);
+  color: var(--primary-lightest);
 }
 
 ul {

@@ -39,7 +39,6 @@ export default {
 
       connected.value = c;
       walletConnected.value = wC;
-      console.log(port);
       net.value = port === '7001' ? 'Testnet' : 'Mainnet';
     });
 
