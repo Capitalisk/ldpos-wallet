@@ -19,7 +19,7 @@ export default createStore({
       login: {
         loading: false,
         error: null,
-      }
+      },
     };
   },
   mutations: {
@@ -29,7 +29,7 @@ export default createStore({
       state.connected = true;
     },
     async authenticate(state, passphrase) {
-      state.login.loading = true
+      state.login.loading = true;
       try {
         state.authenticated = false;
 
@@ -37,20 +37,21 @@ export default createStore({
         state.authenticated = true;
 
         setTimeout(async () => {
+          console.log('logging out 15min passed...');
           await this.commit('deauthenticate');
-        }, 15 * 60 * 60);
+        }, 15 * 1000 * 60);
 
         if (state.authenticated) router.push('/');
       } catch (e) {
-        state.login.error = e.message
+        state.login.error = e.message;
         state.authenticated = false;
       }
-      state.login.loading = false
+      state.login.loading = false;
     },
     async deauthenticate(state) {
       try {
         await state.client.disconnect();
-        await this.commit('connect')
+        await this.commit('connect');
       } catch (e) {
         console.error(e);
       }
