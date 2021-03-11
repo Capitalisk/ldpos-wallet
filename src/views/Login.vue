@@ -2,7 +2,7 @@
   <div class="login">
     <div class="wrapped-container">
       <div>Sign in with a Passphrase</div>
-      <div>Don’t have a Lisk account yet? Create it now</div>
+      <div>Don’t have an account yet? Create it now</div>
       <div class="login-container">
         <div class="flex-6">
           Passphrase
@@ -30,6 +30,7 @@
         </div>
       </div>
     </div>
+    {{ signin }}
     <Button
       :value="signinButtonLoading ? 'Hang in there...' : 'Sign In'"
       @click="signin"
@@ -41,29 +42,26 @@
 </template>
 
 <script>
-import router from '../router';
 import { computed, onBeforeUpdate, ref, watch, watchEffect } from 'vue';
+import { useStore } from 'vuex';
+
+import router from '../router';
 // import Input from '../components/parts/Input';
 import Button from '../components/parts/Button';
-
-import { authenticate } from '../plugins/ldpos-client';
 
 export default {
   name: 'Login',
   setup() {
+    const store = useStore();
+
     const inputs = ref(new Array(12));
     const activeIndex = ref(0);
+    const passphrase = ref('');
 
     for (let i = 0; i < inputs.value.length; i++) {
       inputs.value[i] = { value: '' };
     }
 
-    const passphrase = ref('');
-    const hidden = ref(true);
-    const signinButtonLoading = ref(false);
-    const signinError = ref(null);
-
-    const toggleHidden = () => (hidden.value = !hidden.value);
     const backspace = (e, i) =>
       e.target.value === '' &&
       e.keyCode === 8 &&
@@ -78,6 +76,7 @@ export default {
           const lastInput = document.getElementById(
             `passphrase-${n.length - 1}`,
           );
+
           if (element.split(' ').length === 12) {
             inputs.value = element.split(' ').map((el) => ({ value: el }));
             lastInput.focus();
@@ -95,22 +94,26 @@ export default {
       },
     );
 
+    const signinButtonLoading = ref(false);
+    const signinError = ref(null);
+
     const signin = async () => {
+      signinButtonLoading.value = true;
       try {
-        signinButtonLoading.value = true;
-        const { walletConnected } = await authenticate(passphrase.value);
-        if (walletConnected) router.push('/');
+        await store.commit('authenticate', passphrase.value);
       } catch (e) {
         signinError.value = e.message;
       }
       signinButtonLoading.value = false;
     };
 
+    const hidden = ref(true);
+
     return {
       passphrase,
       hidden,
       inputs,
-      toggleHidden,
+      toggleHidden: () => (hidden.value = !hidden.value),
       signin,
       backspace,
       signinButtonLoading,

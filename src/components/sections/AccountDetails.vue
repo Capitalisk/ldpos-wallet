@@ -46,25 +46,24 @@ import { _integerToDecimal } from '../../utils.js';
 import { useClient } from '../../plugins/ldpos-client';
 
 import Section from '../parts/Section';
+import { useStore } from 'vuex';
 
 export default {
   name: 'InfoBar',
   setup() {
+    const store = useStore();
+
     const balance = ref({ loading: true, data: null, error: null });
     const transactions = ref({ loading: true, data: null, error: null });
     const pendingTransactions = ref({ loading: true, data: null, error: null });
 
     onMounted(async () => {
       try {
-        const client = ref(null);
-        const { network, walletConnected } = useClient();
-        client.value = network;
-
-        if (walletConnected) {
-          const address = await client.value.getWalletAddress();
+        if (store.state.authenticated) {
+          const address = await store.state.client.getWalletAddress();
 
           try {
-            const { balance: b } = await client.value.getAccount(address);
+            const { balance: b } = await store.state.client.getAccount(address);
             balance.value.data = _integerToDecimal(b);
           } catch (err) {
             balance.value.error = err.message;
@@ -72,7 +71,10 @@ export default {
           balance.value.loading = false;
 
           try {
-            const t = await client.value.getTransactionsByTimestamp(0, 10);
+            const t = await store.state.client.getTransactionsByTimestamp(
+              0,
+              10,
+            );
 
             transactions.value.data = t
               .filter((transaction) => transaction.amount)
@@ -87,7 +89,7 @@ export default {
           transactions.value.loading = false;
 
           try {
-            const pT = await client.value.getOutboundPendingTransactions(
+            const pT = await store.state.client.getOutboundPendingTransactions(
               address,
               0,
               5,

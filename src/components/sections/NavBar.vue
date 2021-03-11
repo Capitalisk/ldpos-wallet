@@ -1,7 +1,7 @@
 <template>
   <div class="navbar">
     <span class="connection"
-      >{{ connected ? `Connected: ${net}` : 'Disconnected' }}
+      >{{ connected ? `Connected: ${network}` : 'Disconnected' }}
     </span>
     <span
       class="dot"
@@ -9,49 +9,31 @@
         backgroundColor: connected ? 'var(--success)' : 'var(--danger)',
       }"
     />
-    <Button v-if="walletConnected" value="Sign out" @click="signout" />
+    <Button v-if="authenticated" value="Sign out" @click="signout" />
     <Button value="Sign in" router-link href="/login" v-else />
   </div>
 </template>
 
 <script>
-import { onMounted, ref } from 'vue';
-
-import { useClient, deauthenticate } from '../../plugins/ldpos-client';
+import { computed, onMounted, ref } from 'vue';
+import { useStore } from 'vuex';
 
 import Button from '../parts/Button';
 
 export default {
   name: 'NavBar',
   setup() {
-    const connected = ref(false);
-    const walletConnected = ref(false);
-    const net = ref(null);
+    const store = useStore();
 
-    onMounted(async () => {
-      const {
-        connected: c,
-        walletConnected: wC,
-        network: {
-          options: { port },
-        },
-      } = await useClient();
-
-      connected.value = c;
-      walletConnected.value = wC;
-      net.value = port === '7001' ? 'Testnet' : 'Mainnet';
-    });
-
-    const signout = async () => {
-      const { walletConnected: wC } = await deauthenticate();
-      walletConnected.value = wC;
-    };
+    const signout = async () => store.commit('deauthenticate');
 
     return {
-      connected,
-      walletConnected,
+      connected: computed(() => store.state.connected),
+      authenticated: computed(() => store.state.authenticated),
       signout,
-      net,
+      network: computed(() =>
+        store.state.client.options.port === '7001' ? 'Testnet' : 'Mainnet',
+      ),
     };
   },
   components: { Button },

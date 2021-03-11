@@ -44,11 +44,11 @@
 </template>
 
 <script>
-import { useClient } from '../plugins/ldpos-client';
+import { onMounted, ref } from 'vue';
+import { useStore } from 'vuex';
 
 import AccountDetails from '../components/sections/AccountDetails';
 import NavBar from '../components/sections/NavBar';
-import { onMounted, ref } from '@vue/runtime-core';
 import { _integerToDecimal } from '../utils';
 
 export default {
@@ -61,19 +61,16 @@ export default {
     const OUTBOUND = 'outbound';
 
     onMounted(async () => {
-      const { network } = useClient();
+      const store = useStore;
 
-      walletAddress.value = network.getWalletAddress();
+      walletAddress.value = store.state.getWalletAddress();
 
-      const txns = await network.getTransactionsByTimestamp(
-        0,
-        20,
-        'asc',
-      );
+      const txns = await store.state.getTransactionsByTimestamp(0, 20, 'asc');
 
       transaction.value = txns.map((el) => ({
         ...el,
-        direction: el.recipientAddress !== walletAddress.value ? INBOUND : OUTBOUND,
+        direction:
+          el.recipientAddress !== walletAddress.value ? INBOUND : OUTBOUND,
       }));
     });
 

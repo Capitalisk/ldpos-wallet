@@ -8,7 +8,7 @@
         <th>Delegate</th>
         <th>Height</th>
         <th>Vote weight</th>
-        <th v-if="walletConnected">Vote for delegate</th>
+        <th v-if="authenticated">Vote for delegate</th>
       </thead>
       <tr v-for="(delegate, i) in delegates" :key="i">
         <td>#{{ i + 1 }}</td>
@@ -20,7 +20,7 @@
         <td>
           CⱠ <strong>{{ delegate.voteWeight }}</strong>
         </td>
-        <td v-if="walletConnected">
+        <td v-if="authenticated">
           <Button value="Vote" @click="vote" style="display: initial" />
         </td>
       </tr>
@@ -29,30 +29,28 @@
 </template>
 
 <script>
-import { useClient } from '../plugins/ldpos-client';
+import { onMounted, ref, computed } from 'vue';
+import { useStore } from 'vuex';
+
 import AccountDetails from '../components/sections/AccountDetails';
 import NavBar from '../components/sections/NavBar';
 import Button from '../components/parts/Button';
-import { onMounted, ref } from 'vue';
 
 export default {
   name: 'Home',
   components: { AccountDetails, NavBar, Button },
   setup() {
+    const store = useStore();
+
     const delegates = ref(null);
-    const forged = ref(null);
-    const walletConnected = ref(null);
 
     onMounted(async () => {
-      const { network, walletConnected: wC } = await useClient();
-
-      delegates.value = await network.getForgingDelegates();
-      walletConnected.value = wC;
+      delegates.value = await store.state.client.getForgingDelegates();
     });
 
     return {
       delegates,
-      walletConnected,
+      authetication: computed(() => store.state.authetication),
     };
   },
 };

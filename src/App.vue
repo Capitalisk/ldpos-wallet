@@ -7,7 +7,7 @@
       </router-link>
       <hr />
       <router-link to="/"><i class="fa fa-home mr-1" />DASHBOARD </router-link>
-      <a @click="toWallet" :class="walletConnected ? '' : 'disabled'">
+      <a @click="toWallet" :class="authenticated ? '' : 'disabled'">
         <i class="fa fa-wallet mr-1" />WALLET
       </a>
       <router-link to="/delegates">
@@ -40,33 +40,21 @@
 </template>
 
 <script>
-import { onMounted, ref, watch, inject } from 'vue';
+import { onMounted, ref, watch, computed } from 'vue';
+import { useStore } from 'vuex';
 import router from './router';
 
 import Loading from './components/parts/Loading';
-import { connect } from './plugins/ldpos-client';
 
 export default {
   name: 'App',
   components: { Loading },
   setup() {
-    const config = {
-      hostname: '34.227.22.98',
-      port: '7001',
-      networkSymbol: 'clsk',
-      chainModuleName: 'capitalisk_chain',
-    };
+    const store = useStore();
 
-    const connected = ref(false);
-    const walletConnected = ref(false);
+    onMounted(async () => await store.commit('connect'))
 
-    onMounted(async () => {
-      const { connected: c, walletConnected: wC } = await connect(config);
-      connected.value = c;
-      walletConnected.value = wC;
-    });
-
-    const toWallet = () => walletConnected && router.push('/wallet');
+    const toWallet = () => authenticated && router.push('/wallet');
 
     const darkMode = ref(
       window.matchMedia &&
@@ -81,9 +69,9 @@ export default {
     return {
       darkMode,
       toggleDarkMode,
-      connected,
-      walletConnected,
       toWallet,
+      connected: computed(() => store.state.connected),
+      authenticated: computed(() => store.state.authenticated),
     };
   },
 };
