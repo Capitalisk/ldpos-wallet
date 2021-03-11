@@ -61,13 +61,13 @@ export default {
     const OUTBOUND = 'outbound';
 
     onMounted(async () => {
-      const store = useStore;
+      const store = useStore();
 
-      walletAddress.value = store.state.getWalletAddress();
+      walletAddress.value = store.state.client.getWalletAddress();
 
-      const txns = await store.state.getTransactionsByTimestamp(0, 20, 'asc');
+      const txns = await store.state.client.getTransactionsByTimestamp(0, 20, 'asc');
 
-      transaction.value = txns.map((el) => ({
+      transactions.value = txns.map((el) => ({
         ...el,
         direction:
           el.recipientAddress !== walletAddress.value ? INBOUND : OUTBOUND,
