@@ -3,23 +3,37 @@
   <div id="app">
     <div class="sidebar">
       <router-link to="/" class="first"
-        >CURRENT WALLET WITH ACTIVE TOKEN</router-link
-      >
+        >CURRENT WALLET WITH ACTIVE TOKEN
+      </router-link>
       <hr />
-      <router-link to="/"><i class="fa fa-home mr-1"></i>DASHBOARD</router-link>
-      <router-link to="/wallet"><i class="fa fa-wallet mr-1"></i>WALLET</router-link>
-      <router-link to="/delegates"><i class="fa fa-poll mr-1"></i>VOTING</router-link>
+      <router-link to="/"><i class="fa fa-home mr-1" />DASHBOARD </router-link>
+      <a @click="toWallet" :class="walletConnected ? '' : 'disabled'">
+        <i class="fa fa-wallet mr-1" />WALLET
+      </a>
+      <router-link to="/delegates">
+        <i class="fa fa-poll mr-1" />VOTING
+      </router-link>
       <hr />
-      <router-link to="/"><i class="fa fa-exchange-alt mr-1"></i>TRANSACTIONS</router-link>
-      <router-link to="/"><i class="fa fa-th-large mr-1"></i>BLOCKS</router-link>
-      <router-link to="/"><i class="fa fa-users mr-1"></i>ACCOUNTS</router-link>
-      <router-link to="/"><i class="fa fa-users-cog mr-1"></i>DELEGATES</router-link>
+      <router-link to="/">
+        <i class="fa fa-exchange-alt mr-1" />TRANSACTIONS
+      </router-link>
+      <router-link to="/">
+        <i class="fa fa-th-large mr-1" />BLOCKS
+      </router-link>
+      <router-link to="/"> <i class="fa fa-users mr-1" />ACCOUNTS </router-link>
+      <router-link to="/">
+        <i class="fa fa-users-cog mr-1" />DELEGATES
+      </router-link>
       <hr />
-      <router-link to="/"><i class="fa fa-signature mr-1"></i>SIGN MESSAGE</router-link>
-      <router-link to="/" class="last"><i class="fa fa-check mr-1"></i>VERIFY MESSAGE</router-link>
+      <router-link to="/">
+        <i class="fa fa-signature mr-1" />SIGN MESSAGE
+      </router-link>
+      <router-link to="/" class="last">
+        <i class="fa fa-check mr-1" />VERIFY MESSAGE
+      </router-link>
     </div>
     <div class="main-content">
-      <Loading v-if="!clientConnected" />
+      <Loading v-if="!connected" />
       <router-view v-else />
     </div>
   </div>
@@ -27,6 +41,7 @@
 
 <script>
 import { onMounted, ref, watch, inject } from 'vue';
+import router from './router';
 
 import Loading from './components/parts/Loading';
 import { connect } from './plugins/ldpos-client';
@@ -42,12 +57,16 @@ export default {
       chainModuleName: 'capitalisk_chain',
     };
 
-    const clientConnected = ref(false);
+    const connected = ref(false);
+    const walletConnected = ref(false);
 
     onMounted(async () => {
-      const { connected } = await connect(config);
-      clientConnected.value = connected;
+      const { connected: c, walletConnected: wC } = await connect(config);
+      connected.value = c;
+      walletConnected.value = wC;
     });
+
+    const toWallet = () => walletConnected && router.push('/wallet');
 
     const darkMode = ref(
       window.matchMedia &&
@@ -62,7 +81,9 @@ export default {
     return {
       darkMode,
       toggleDarkMode,
-      clientConnected,
+      connected,
+      walletConnected,
+      toWallet,
     };
   },
 };
@@ -96,6 +117,17 @@ export default {
   display: block;
   font-size: 12px;
 }
+
+a.disabled {
+  color: grey;
+  cursor: default;
+  user-select: none;
+}
+
+a.disabled:hover {
+  background-color: initial !important;
+}
+
 .sidebar a:hover {
   background-color: var(--primary-lightest);
 }

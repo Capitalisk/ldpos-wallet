@@ -7,7 +7,7 @@
     </p>
     <table>
       <thead>
-        <th>Id</th>
+        <th>Direction</th>
         <th>Type</th>
         <th>Recipient Address</th>
         <th>Amount</th>
@@ -18,6 +18,7 @@
       </thead>
       <tr
         v-for="{
+          direction,
           id,
           type,
           recipientAddress,
@@ -29,11 +30,11 @@
         } in transactions"
         :key="id"
       >
-        <td>{{ id }}</td>
+        <td>{{ direction }}</td>
         <td>{{ type }}</td>
         <td>{{ recipientAddress }}</td>
-        <td>{{ amount }}</td>
-        <td>{{ fee }}</td>
+        <td>{{ _integerToDecimal(amount) }}</td>
+        <td>{{ _integerToDecimal(fee) }}</td>
         <td>{{ timestamp }}</td>
         <td>{{ message }}</td>
         <td>{{ senderAddress }}</td>
@@ -48,6 +49,7 @@ import { useClient } from '../plugins/ldpos-client';
 import AccountDetails from '../components/sections/AccountDetails';
 import NavBar from '../components/sections/NavBar';
 import { onMounted, ref } from '@vue/runtime-core';
+import { _integerToDecimal } from '../utils';
 
 export default {
   name: 'Home',
@@ -55,21 +57,30 @@ export default {
   setup() {
     const walletAddress = ref(null);
     const transactions = ref([]);
+    const INBOUND = 'inbound';
+    const OUTBOUND = 'outbound';
 
     onMounted(async () => {
       const { network } = useClient();
 
       walletAddress.value = network.getWalletAddress();
-      transactions.value = await network.getTransactionsByTimestamp(
+
+      const txns = await network.getTransactionsByTimestamp(
         0,
         20,
         'asc',
       );
+
+      transaction.value = txns.map((el) => ({
+        ...el,
+        direction: el.recipientAddress !== walletAddress.value ? INBOUND : OUTBOUND,
+      }));
     });
 
     return {
       walletAddress,
       transactions,
+      _integerToDecimal,
     };
   },
 };
