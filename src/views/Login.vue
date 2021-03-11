@@ -30,13 +30,12 @@
         </div>
       </div>
     </div>
-    {{ signin }}
     <Button
-      :value="signinButtonLoading ? 'Hang in there...' : 'Sign In'"
+      :value="loading ? 'Hang in there...' : 'Sign In'"
       @click="signin"
-      :loading="signinButtonLoading"
-      :error="signinError"
-      :backgroundColor="signinButtonLoading ? 'warning' : 'primary-lightest'"
+      :loading="loading"
+      :error="error"
+      :backgroundColor="loading ? 'warning' : 'primary-lightest'"
     />
   </div>
 </template>
@@ -94,19 +93,6 @@ export default {
       },
     );
 
-    const signinButtonLoading = ref(false);
-    const signinError = ref(null);
-
-    const signin = async () => {
-      signinButtonLoading.value = true;
-      try {
-        await store.commit('authenticate', passphrase.value);
-      } catch (e) {
-        signinError.value = e.message;
-      }
-      signinButtonLoading.value = false;
-    };
-
     const hidden = ref(true);
 
     return {
@@ -114,10 +100,10 @@ export default {
       hidden,
       inputs,
       toggleHidden: () => (hidden.value = !hidden.value),
-      signin,
+      signin: async () => await store.commit('authenticate', passphrase.value),
       backspace,
-      signinButtonLoading,
-      signinError,
+      loading: computed(() => store.state.login.loading),
+      error: computed(() => store.state.login.error),
     };
   },
   components: {

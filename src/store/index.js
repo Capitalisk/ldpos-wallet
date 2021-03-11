@@ -16,6 +16,10 @@ export default createStore({
       client: null,
       connected: false,
       authenticated: false,
+      login: {
+        loading: false,
+        error: null,
+      }
     };
   },
   mutations: {
@@ -25,6 +29,7 @@ export default createStore({
       state.connected = true;
     },
     async authenticate(state, passphrase) {
+      state.login.loading = true
       try {
         state.authenticated = false;
 
@@ -37,9 +42,10 @@ export default createStore({
 
         if (state.authenticated) router.push('/');
       } catch (e) {
-        console.error(e);
+        state.login.error = e.message
         state.authenticated = false;
       }
+      state.login.loading = false
     },
     async deauthenticate(state) {
       try {
