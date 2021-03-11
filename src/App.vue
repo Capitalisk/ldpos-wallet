@@ -54,7 +54,7 @@ export default {
 
     onMounted(async () => await store.commit('connect'))
 
-    const toWallet = () => authenticated && router.push('/wallet');
+    const toWallet = () => store.state.authenticated && router.push('/wallet');
 
     const darkMode = ref(
       window.matchMedia &&
