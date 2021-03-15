@@ -24,10 +24,24 @@ describe('Wallet testing', () => {
       .should('have.class', 'disabled');
   });
 
-  it('It clicks signin button and signs in', () => {
+  it('Pastes the password and spreads it over the inputs', () => {
+    cy.visit('/#/login');
+    cy.get('input#passphrase-0')
+      .invoke('val', PASSPHRASE)
+      .trigger('input');
+
+    for (let i = 0; i < 12; i++) {
+      cy.get(`input#passphrase-${i}`).should(
+        'have.value',
+        PASSPHRASE.split(' ')[i],
+      );
+    }
+  });
+
+  it('It clicks signin button and signs in correcly', () => {
     cy.visit('/');
 
-    // TEST SIGNIN
+    // TEST SIGNIN TYPING
     cy.get('a.button')
       .contains('Sign in')
       .click();
