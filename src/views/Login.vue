@@ -77,12 +77,13 @@ export default {
             `passphrase-${n.length - 1}`,
           );
 
-          if (element.split(' ').length === 12) {
+          if (element && element.split(' ').length === 12) {
             inputs.value = element.split(' ').map((el) => ({ value: el }));
             lastInput.focus();
-          } else if (element.includes(' ')) {
+          } else if (element && element.includes(' ')) {
             const nextInput = document.getElementById(`passphrase-${i + 1}`);
             nextInput.focus();
+            inputs.value[i].value = inputs.value[i].value.replace(/\s/g, '');
           }
         }
 
