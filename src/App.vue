@@ -104,6 +104,7 @@ export default {
   padding: 1rem;
   display: block;
   font-size: 12px;
+  cursor: pointer;
 }
 
 a.disabled {
