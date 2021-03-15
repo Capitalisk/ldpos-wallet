@@ -10,6 +10,7 @@
         <div
           @click="toggleHidden"
           class="flex-6 align-content-right cursor-pointer"
+          id="show"
         >
           Show
         </div>
@@ -20,7 +21,7 @@
               <input
                 class="input"
                 v-model="input.value"
-                :type="hidden ? 'password' : 'input'"
+                :type="hidden ? 'password' : 'text'"
                 :id="`passphrase-${i}`"
                 placeholder="__________"
                 @keydown="(e) => backspace(e, i)"
