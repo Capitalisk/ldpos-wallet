@@ -50,7 +50,8 @@ export default {
 
     return {
       delegates,
-      authetication: computed(() => store.state.authetication),
+      // vote: async () => await store.state.client.vote(),
+      authenticated: computed(() => store.state.authenticated),
     };
   },
 };
