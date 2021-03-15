@@ -3,7 +3,7 @@
   <div id="app">
     <div class="sidebar">
       <router-link to="/" class="first"
-        >CURRENT WALLET WITH ACTIVE TOKEN
+        >CLSK
       </router-link>
       <hr />
       <router-link to="/"><i class="fa fa-home mr-1" />DASHBOARD </router-link>

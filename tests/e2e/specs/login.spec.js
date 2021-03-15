@@ -17,6 +17,13 @@ describe('Wallet testing', () => {
     cy.get('.sidebar').contains('VERIFY MESSAGE');
   });
 
+  it('checks if wallet is disabled', () => {
+    cy.visit('/');
+    cy.get('div.sidebar')
+      .contains('WALLET')
+      .should('have.class', 'disabled');
+  });
+
   it('It clicks signin button and signs in', () => {
     cy.visit('/');
 
@@ -37,13 +44,21 @@ describe('Wallet testing', () => {
     });
 
     for (let i = 0; i < 12; i++) {
-      cy.get(`input#passphrase-${i}`).should('have.value', PASSPHRASE.split(' ')[i]);
+      cy.get(`input#passphrase-${i}`).should(
+        'have.value',
+        PASSPHRASE.split(' ')[i],
+      );
     }
 
     // LOGIN
     cy.get('a.button.cursor-pointer').click();
     cy.get('a.button.cursor-pointer').contains('Hang in there...');
     cy.wait(10000);
+
+    // CHECK IF WALLET IS ENABLED
+    cy.get('div.sidebar')
+      .contains('WALLET')
+      .should('not.have.class', 'disabled');
 
     // LOGOUT
     cy.location('pathname').should('eq', '/');
