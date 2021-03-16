@@ -1,14 +1,14 @@
 <template>
-  <NavBar />
+  <Navbar />
   <AccountDetails />
 </template>
 
 <script>
 import AccountDetails from '../components/sections/AccountDetails';
-import NavBar from '../components/sections/NavBar';
+import Navbar from '../components/sections/Navbar';
 
 export default {
   name: 'Home',
-  components: { AccountDetails, NavBar },
+  components: { AccountDetails, Navbar },
 };
 </script>

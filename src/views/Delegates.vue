@@ -1,5 +1,5 @@
 <template>
-  <NavBar />
+  <Navbar />
   <!-- <AccountDetails /> -->
   <div class="flex fullwidth">
     <table>
@@ -33,12 +33,12 @@ import { onMounted, ref, computed } from 'vue';
 import { useStore } from 'vuex';
 
 import AccountDetails from '../components/sections/AccountDetails';
-import NavBar from '../components/sections/NavBar';
+import Navbar from '../components/sections/Navbar';
 import Button from '../components/parts/Button';
 
 export default {
   name: 'Home',
-  components: { AccountDetails, NavBar, Button },
+  components: { AccountDetails, Navbar, Button },
   setup() {
     const store = useStore();
 

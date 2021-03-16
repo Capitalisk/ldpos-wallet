@@ -19,7 +19,7 @@ import Connected from '../parts/Connected.vue';
 import Switch from '../parts/Switch.vue';
 
 export default {
-  name: 'NavBar',
+  name: 'Navbar',
   setup() {
     const store = useStore();
 

@@ -1,5 +1,5 @@
 <template>
-  <NavBar />
+  <Navbar />
   <AccountDetails />
   <div class="wallet">
     <p>
@@ -48,12 +48,12 @@ import { onMounted, ref } from 'vue';
 import { useStore } from 'vuex';
 
 import AccountDetails from '../components/sections/AccountDetails';
-import NavBar from '../components/sections/NavBar';
+import Navbar from '../components/sections/Navbar';
 import { _integerToDecimal } from '../utils';
 
 export default {
   name: 'Home',
-  components: { AccountDetails, NavBar },
+  components: { AccountDetails, Navbar },
   setup() {
     const walletAddress = ref(null);
     const transactions = ref([]);

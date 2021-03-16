@@ -1,5 +1,9 @@
 <template>
-  <div></div>
+  <div class="table flex">
+    <div class="loading">
+
+    </div>
+  </div>
 </template>
 
 <script>
@@ -15,3 +19,9 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.table {
+  border-radius: var(--border-radius);
+}
+</style>

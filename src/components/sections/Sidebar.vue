@@ -20,7 +20,7 @@
       <i class="fa fa-poll mr-1" />VOTING
     </router-link>
     <hr />
-    <router-link to="/">
+    <router-link to="/transactions">
       <i class="fa fa-exchange-alt mr-1" />TRANSACTIONS
     </router-link>
     <router-link to="/"> <i class="fa fa-th-large mr-1" />BLOCKS </router-link>

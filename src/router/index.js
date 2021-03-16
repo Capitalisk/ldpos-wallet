@@ -20,6 +20,12 @@ const routes = [
       import(/* webpackChunkName: "wallet" */ '../views/Wallet.vue'),
   },
   {
+    path: '/transactions',
+    name: 'Transactions',
+    component: () =>
+      import(/* webpackChunkName: "transactions" */ '../views/Transactions.vue'),
+  },
+  {
     path: '/login',
     name: 'Login',
     component: () =>
