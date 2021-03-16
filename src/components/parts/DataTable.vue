@@ -16,14 +16,12 @@
             </td>
           </tr>
         </tbody>
-        <tfoot>
-          <th>
-            <Loading />
-          </th>
-        </tfoot>
       </table>
     </div>
     <div class="footer">
+      <div v-if="!loading">
+        <Loading />
+      </div>
       <slot name="header" class="pa-2" />
       <h2 v-if="title" class="footer-title pa-2">{{ title }}</h2>
     </div>
@@ -31,7 +29,7 @@
 </template>
 
 <script>
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, onUnmounted, ref } from 'vue';
 import { useStore } from 'vuex';
 
 import Loading from '../parts/Loading';
@@ -42,6 +40,7 @@ export default {
     rows: { type: Array, default: () => [] },
     columns: { type: Array, default: () => [] },
     title: { type: String },
+    loading: { type: Boolean, default: false },
   },
   setup(props, { emit }) {
     const store = useStore();
@@ -52,6 +51,11 @@ export default {
         if (table.scrollTop >= table.scrollHeight - table.offsetHeight - 20)
           emit('get-data');
       });
+    });
+
+    onUnmounted(() => {
+      const table = document.getElementById('table');
+      table.removeEventListener('scroll');
     });
 
     return {};
