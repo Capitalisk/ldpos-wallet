@@ -45,6 +45,8 @@ body {
 #app {
   display: flex;
   flex-wrap: wrap;
+  width: 100%;
+  min-height: 100vh;
 }
 
 .cursor-pointer {
@@ -54,10 +56,6 @@ body {
 
 .column.is-12 {
   width: 100%;
-}
-
-.mr-1 {
-  margin-right: 0.5rem;
 }
 
 table {
@@ -72,7 +70,7 @@ th {
 }
 
 th {
-  border-bottom: 1px solid var(--white);
+  border-bottom: 1px solid var(--dark);
 }
 
 .flex {
@@ -113,6 +111,38 @@ th {
   text-align: right;
 }
 
-.full-width {
+.fullwidth {
   width: 100%;
+}
+
+.mr-1 {
+  margin-right: 0.5rem;
+}
+
+.ma-1 {
+  margin: 0.5rem;
+}
+
+.ma-2 {
+  margin: 1rem;
+}
+
+.pa-1 {
+  padding: 0.5rem;
+}
+
+.pa-2 {
+  padding: 1rem;
+}
+
+.overflow-x {
+  overflow-x: auto;
+}
+
+.overflow-y {
+  overflow-y: scroll;
+}
+
+.fixed-height {
+  height: calc(100vh - 68px - 2rem)
 }

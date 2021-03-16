@@ -1,11 +1,9 @@
 <template>
-  <div id="app">
-    <Modal />
-    <Sidebar />
-    <div class="main-content flex row">
-      <Loading v-if="!connected" />
-      <router-view v-else />
-    </div>
+  <Modal />
+  <Sidebar />
+  <div class="main-content">
+    <Loading v-if="!connected" />
+    <router-view v-else />
   </div>
 </template>
 
@@ -27,7 +25,9 @@ export default {
     const store = useStore();
 
     onMounted(async () => await store.commit('connect'));
-    onMounted(() => document.documentElement.setAttribute('dark-theme', store.state.darkMode))
+    onMounted(() =>
+      document.documentElement.setAttribute('dark-theme', store.state.darkMode),
+    );
 
     const toWallet = () => store.state.authenticated && router.push('/wallet');
 
@@ -46,21 +46,17 @@ export default {
 .main-content {
   margin-left: 285px;
   padding: 1rem 1rem 1rem 0;
-  width: 100%;
-  box-sizing: border-box;
-  flex-wrap: wrap;
   gap: 1rem 1rem;
-}
-
-#app {
-  left: 100px;
-  width: 100%;
+  width: calc(100% - 285px);
+  box-sizing: border-box;
 }
 
 @media screen and (max-width: 768px) {
   .main-content {
     margin-left: 0;
     margin-top: 50px;
+    width: 100%;
+    padding: 1rem 0;
   }
 }
 </style>

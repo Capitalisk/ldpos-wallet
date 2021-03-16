@@ -1,15 +1,100 @@
 <template>
   <Navbar />
-  <DataTable />
+  <DataTable :rows="transactions" :columns="columns" title="Transactions" />
 </template>
 
 <script>
-import Navbar from '../components/parts/Navbar.vue';
+import { onMounted, ref } from 'vue';
+import { useStore } from 'vuex';
+
+import Navbar from '../components/sections/Navbar.vue';
 import DataTable from '../components/parts/DataTable.vue';
+import { _integerToDecimal } from '../utils';
 
 export default {
   name: 'Transactions',
-  setup() {},
+  setup() {
+    const store = useStore();
+
+    const transactions = ref(null);
+
+    const columns = ref([
+      { name: 'id', label: 'ID', field: 'id', sortable: false },
+      { name: 'type', label: 'type', field: 'type', sortable: false },
+      {
+        name: 'recipientAddress',
+        label: 'recipientAddress',
+        field: 'recipientAddress',
+        sortable: false,
+      },
+      {
+        name: 'amount',
+        label: 'amount',
+        field: 'amount',
+        sortable: false,
+        value: (val) => _integerToDecimal(val),
+      },
+      {
+        name: 'fee',
+        label: 'fee',
+        field: 'fee',
+        sortable: false,
+        value: (val) => _integerToDecimal(val),
+      },
+      {
+        name: 'timespamp',
+        label: 'timespamp',
+        field: 'timespamp',
+        sortable: false,
+      },
+      { name: 'message', label: 'message', field: 'message', sortable: false },
+      {
+        name: 'senderAddress',
+        label: 'senderAddress',
+        field: 'senderAddress',
+        sortable: false,
+      },
+      {
+        name: 'sigPublicKey',
+        label: 'sigPublicKey',
+        field: 'sigPublicKey',
+        sortable: false,
+      },
+      {
+        name: 'nextSigPublicKey',
+        label: 'nextSigPublicKey',
+        field: 'nextSigPublicKey',
+        sortable: false,
+      },
+      {
+        name: 'senderSignatureHash',
+        label: 'senderSignatureHash',
+        field: 'senderSignatureHash',
+        sortable: false,
+      },
+      { name: 'blockId', label: 'blockId', field: 'blockId', sortable: false },
+      {
+        name: 'indexInBlock',
+        label: 'indexInBlock',
+        field: 'indexInBlock',
+        sortable: false,
+      },
+    ]);
+
+    onMounted(
+      async () =>
+        (transactions.value = await store.state.client.getTransactionsByTimestamp(
+          0,
+          50,
+          'asc',
+        )),
+    );
+
+    return {
+      transactions,
+      columns,
+    };
+  },
   components: { DataTable, Navbar },
 };
 </script>

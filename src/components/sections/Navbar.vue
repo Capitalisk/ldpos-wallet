@@ -41,8 +41,7 @@ export default {
 
 <style scoped>
 .navbar {
-  width: 100%;
   align-items: center;
-  padding: 0 1rem;
+  padding: 1rem 1rem;
 }
 </style>

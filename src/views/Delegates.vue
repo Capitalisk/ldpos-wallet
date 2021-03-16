@@ -44,9 +44,10 @@ export default {
 
     const delegates = ref(null);
 
-    onMounted(async () => {
-      delegates.value = await store.state.client.getForgingDelegates();
-    });
+    onMounted(
+      async () =>
+        (delegates.value = await store.state.client.getForgingDelegates()),
+    );
 
     return {
       delegates,

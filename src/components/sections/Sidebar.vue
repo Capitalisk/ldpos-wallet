@@ -1,5 +1,5 @@
 <template>
-  <div class="navbar">
+  <div class="navbar fullwidth">
     <div
       :class="burgerActive ? 'change cursor-pointer' : 'cursor-pointer'"
       @click="toggleBurger"
@@ -64,6 +64,10 @@ export default {
 </script>
 
 <style scoped>
+.navbar {
+  display: none;
+}
+
 .sidebar {
   position: fixed;
   width: 250px;
