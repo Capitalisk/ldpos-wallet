@@ -35,7 +35,6 @@ export default {
       toWallet,
       connected: computed(() => store.state.connected),
       TOKENMODAL,
-      toggleModal: (type) => store.commit('toggleModal', type),
     };
   },
 };
@@ -58,5 +57,12 @@ export default {
 #app {
   left: 100px;
   width: 100%;
+}
+
+@media screen and (max-width: 768px) {
+  .main-content {
+    margin-left: 0;
+    margin-top: 50px;
+  }
 }
 </style>

@@ -1,5 +1,15 @@
 <template>
-  <div class="sidebar">
+  <div :class="`navbar${burgerActive ? ' navbar-active' : ''}`">
+    <div
+      :class="burgerActive ? 'change cursor-pointer' : 'cursor-pointer'"
+      @click="toggleBurger"
+    >
+      <div class="bar1"></div>
+      <div class="bar2"></div>
+      <div class="bar3"></div>
+    </div>
+  </div>
+  <div :class="`sidebar${burgerActive ? ' sidebar-active' : ''}`">
     <a to="/" class="first" @click="toggleModal(TOKENMODAL)">CLSK</a>
     <hr />
     <router-link to="/"><i class="fa fa-home mr-1" />DASHBOARD </router-link>
@@ -29,18 +39,25 @@
 </template>
 
 <script>
-import { computed } from 'vue'
-import { useStore } from 'vuex'
+import { computed, ref } from 'vue';
+import { useStore } from 'vuex';
 
 export default {
   setup() {
-    const store = useStore()
+    const store = useStore();
+
+    const burgerActive = ref(false);
+
+    const toggleBurger = () => (burgerActive.value = !burgerActive.value);
 
     return {
-      authenticated: computed(() => store.state.authenticated)
-    }
+      toggleModal: (type) => store.commit('toggleModal', type),
+      authenticated: computed(() => store.state.authenticated),
+      toggleBurger,
+      burgerActive,
+    };
   },
-}
+};
 </script>
 
 <style scoped>
@@ -93,5 +110,59 @@ a.disabled:hover {
 .last {
   border-bottom-left-radius: var(--border-radius);
   border-bottom-right-radius: var(--border-radius);
+}
+
+@media screen and (max-width: 768px) {
+  .navbar {
+    position: fixed;
+    z-index: 1;
+    padding: 0.5rem;
+    right: 0;
+    top: 0;
+  }
+
+  .sidebar-active {
+    visibility: visible !important;
+    opacity: 1 !important;
+    height: auto !important;
+    transition: opacity 0.5s linear;
+  }
+
+  .sidebar {
+    position: relative;
+    height: 0;
+    visibility: hidden;
+    width: 100%;
+    margin: 0;
+    border-radius: var(--no-border-radius);
+    opacity: 0;
+  }
+
+  .first,
+  .last {
+    border-radius: var(--no-border-radius);
+  }
+
+  .bar1,
+  .bar2,
+  .bar3 {
+    width: 25px;
+    height: 3px;
+    background-color: var(--dark);
+    margin: 6px 0;
+    transition: 0.4s;
+  }
+
+  .change .bar1 {
+    transform: rotate(-45deg) translate(-7px, 6px);
+  }
+
+  .change .bar2 {
+    opacity: 0;
+  }
+
+  .change .bar3 {
+    transform: rotate(45deg) translate(-6px, -6px);
+  }
 }
 </style>

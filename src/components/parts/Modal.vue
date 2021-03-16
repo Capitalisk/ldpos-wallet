@@ -1,7 +1,7 @@
 <template>
   <div class="modal-background" v-if="active">
     <div class="wrapper">
-      <div class="close-btn cursor-pointer" style="color: var(--white)" @click="toggleModal">
+      <div class="close-btn cursor-pointer" style="color: var(--permanent-white)" @click="toggleModal">
         &#10005;
       </div>
       <Section title="Latest transactions:" backgroundColor="white">
@@ -64,7 +64,7 @@ export default {
 }
 
 .force-modal-scroll {
-  overflow-y: scroll;
+  overflow-y: auto;
   height: 70vh;
 }
 
