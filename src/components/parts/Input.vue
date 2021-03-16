@@ -5,6 +5,7 @@
     @input="(e) => $emit('input', value)"
     :type="hidden ? 'password' : 'input'"
     :placeholder="placeholder"
+    :style="{ backgroundColor, color }"
   />
 </template>
 
@@ -17,17 +18,17 @@ export default {
     value: { type: String, default: '' },
     hidden: { type: Boolean, default: false },
     placeholder: { type: String, default: '' },
+    backgroundColor: { type: String, default: 'var(--primary)' },
+    color: { type: String, default: 'var(--white)' },
   },
 };
 </script>
 
 <style scoped>
 .input {
-  background-color: var(--primary);
   border: 0;
   padding: 0.75rem;
   margin: 0.5rem;
-  color: var(--white);
   border-radius: var(--border-radius);
   text-decoration: none;
 }

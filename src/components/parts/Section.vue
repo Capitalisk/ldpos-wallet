@@ -1,5 +1,5 @@
 <template>
-  <div class="section">
+  <div class="section" :style="{ backgroundColor, color }">
     <h4>{{ title }}</h4>
 
     <Loading v-if="loading" />
@@ -27,10 +27,12 @@ export default {
     loading: { type: Boolean },
     error: { type: String, default: null },
     needsAuthentication: { type: Boolean, default: false },
+    backgroundColor: { type: String, default: 'var(--primary)' },
+    color: { type: String, default: 'var(--white)' },
   },
   components: { Loading },
   setup() {
-    const store = useStore()
+    const store = useStore();
 
     return {
       authenticated: computed(() => store.state.authenticated),
@@ -44,7 +46,6 @@ export default {
   flex-basis: 0;
   flex-grow: 1;
   flex-shrink: 1;
-  background-color: var(--primary);
   border-radius: var(--border-radius);
   width: auto;
   padding: 1rem;

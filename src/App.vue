@@ -1,10 +1,9 @@
 <template>
   <!-- <button @click="toggleDarkMode">Toggle Darkmode</button> -->
   <div id="app">
+    <Modal />
     <div class="sidebar">
-      <router-link to="/" class="first"
-        >CLSK
-      </router-link>
+      <a to="/" class="first" @click="toggleModal(TOKENMODAL)">CLSK</a>
       <hr />
       <router-link to="/"><i class="fa fa-home mr-1" />DASHBOARD </router-link>
       <a @click="toWallet" :class="authenticated ? '' : 'disabled'">
@@ -45,14 +44,16 @@ import { useStore } from 'vuex';
 import router from './router';
 
 import Loading from './components/parts/Loading';
+import Modal from './components/parts/Modal';
+import { TOKENMODAL } from './components/modals/constants';
 
 export default {
   name: 'App',
-  components: { Loading },
+  components: { Loading, Modal },
   setup() {
     const store = useStore();
 
-    onMounted(async () => await store.commit('connect'))
+    onMounted(async () => await store.commit('connect'));
 
     const toWallet = () => store.state.authenticated && router.push('/wallet');
 
@@ -72,6 +73,8 @@ export default {
       toWallet,
       connected: computed(() => store.state.connected),
       authenticated: computed(() => store.state.authenticated),
+      TOKENMODAL,
+      toggleModal: (type) => store.commit('toggleModal', type),
     };
   },
 };

@@ -20,6 +20,10 @@ export default createStore({
         loading: false,
         error: null,
       },
+      modal: {
+        active: false,
+        type: '',
+      },
     };
   },
   mutations: {
@@ -57,6 +61,10 @@ export default createStore({
       }
       state.connected = false;
       state.authenticated = false;
+    },
+    toggleModal(state, type) {
+      state.modal.type = type
+      state.modal.active = !state.modal.active;
     },
   },
   getters: {},
