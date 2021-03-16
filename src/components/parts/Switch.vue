@@ -1,7 +1,7 @@
 <template>
   <label class="switch">
     <input type="checkbox" :checked="modelValue" @change="$emit('update:modelValue', !modelValue)" />
-    <span class="slider" :id="id"></span>
+    <span class="slider cursor-pointer" :id="id"></span>
   </label>
 </template>
 
@@ -34,7 +34,6 @@ export default {
 .slider {
   border-radius: 17px;
   position: absolute;
-  cursor: pointer;
   top: 0;
   left: 0;
   right: 0;
