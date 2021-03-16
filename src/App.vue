@@ -46,7 +46,6 @@ export default {
 .main-content {
   margin-left: 285px;
   padding: 1rem 1rem 1rem 0;
-  gap: 1rem 1rem;
   width: calc(100% - 285px);
   box-sizing: border-box;
 }

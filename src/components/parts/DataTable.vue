@@ -16,6 +16,11 @@
             </td>
           </tr>
         </tbody>
+        <tfoot>
+          <th>
+            <Loading />
+          </th>
+        </tfoot>
       </table>
     </div>
     <div class="footer">
@@ -26,8 +31,10 @@
 </template>
 
 <script>
-import { computed } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { useStore } from 'vuex';
+
+import Loading from '../parts/Loading';
 
 export default {
   name: 'DataTable',
@@ -39,8 +46,17 @@ export default {
   setup(props, { emit }) {
     const store = useStore();
 
+    onMounted(() => {
+      const table = document.getElementById('table');
+      table.addEventListener('scroll', (event) => {
+        if (table.scrollTop >= table.scrollHeight - table.offsetHeight - 20)
+          emit('get-data');
+      });
+    });
+
     return {};
   },
+  components: { Loading },
 };
 </script>
 
@@ -63,7 +79,7 @@ export default {
 }
 
 #table::-webkit-scrollbar-thumb {
-  background-color: #d6dee1;
+  background-color: var(--dark);
   border-radius: 20px;
   border: 6px solid transparent;
   background-clip: content-box;
@@ -74,7 +90,7 @@ export default {
 }
 
 #table::-webkit-scrollbar-thumb:hover {
-  background-color: #a8bbbf;
+  background-color: var(--dark);
 }
 
 #table::-webkit-scrollbar-corner {

@@ -77,6 +77,10 @@ th {
   display: flex;
 }
 
+.flex-gap {
+  gap: 1rem 1rem;
+}
+
 .flex-wrap {
   flex-wrap: wrap;
 }
@@ -144,5 +148,5 @@ th {
 }
 
 .fixed-height {
-  height: calc(100vh - 68px - 2rem)
+  height: calc(100vh - 68px - 2rem);
 }

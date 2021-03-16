@@ -1,6 +1,12 @@
 <template>
   <Navbar />
-  <DataTable :rows="transactions" :columns="columns" title="Transactions" />
+  <DataTable
+    :rows="transactions"
+    :columns="columns"
+    title="Transactions"
+    @getData="loadMoreTransactions"
+    :loading="loading"
+  />
 </template>
 
 <script>
@@ -81,18 +87,40 @@ export default {
       },
     ]);
 
-    onMounted(
-      async () =>
-        (transactions.value = await store.state.client.getTransactionsByTimestamp(
-          0,
-          50,
-          'asc',
-        )),
-    );
+    const offset = ref(0);
+    const loading = ref(true);
+
+    onMounted(async () => {
+      transactions.value = await store.state.client.getTransactionsByTimestamp(
+        offset.value,
+        50,
+        'asc',
+      );
+
+      loading.value = false;
+    });
+
+    const loadMoreTransactions = async () => {
+      if (loading.value) return;
+      loading.value = true;
+
+      console.log('fire');
+      offset.value = offset.value + 50;
+      const t = await store.state.client.getTransactionsByTimestamp(
+        offset.value,
+        50,
+        'asc',
+      );
+
+      transactions.value = [...transactions.value, ...t];
+
+      loading.value = false;
+    };
 
     return {
       transactions,
       columns,
+      loadMoreTransactions,
     };
   },
   components: { DataTable, Navbar },
