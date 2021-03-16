@@ -1,7 +1,7 @@
 <template>
   <NavBar />
   <!-- <AccountDetails /> -->
-  <div class="delegates">
+  <div class="flex fullwidth">
     <table>
       <thead>
         <th>Rank</th>
@@ -58,11 +58,6 @@ export default {
 </script>
 
 <style scoped>
-.delegates {
-  width: 100%;
-  display: flex;
-}
-
 .delegate-address {
   color: var(--primary-lightest);
 }

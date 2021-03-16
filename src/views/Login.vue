@@ -1,9 +1,9 @@
 <template>
-  <div class="login">
+  <div class="login flex column fullwidth justify-center align-center">
     <div class="wrapped-container">
       <div>Sign in with a Passphrase</div>
       <div>Don’t have an account yet? Create it now</div>
-      <div class="login-container">
+      <div class="flex justify-end flex-wrap">
         <div class="flex-6">
           Passphrase
         </div>
@@ -14,11 +14,11 @@
         >
           Show
         </div>
-        <div class="inputs">
-          <div v-for="(input, i) in inputs" :key="i">
+        <div class="flex flex-wrap">
+          <div v-for="(input, i) in inputs" :key="i" class="flex align-center">
             <div class="input-number">{{ i + 1 }}.</div>
             <div>
-              <input
+              <Input
                 class="input"
                 v-model="input.value"
                 :type="hidden ? 'password' : 'text'"
@@ -46,7 +46,7 @@ import { computed, onBeforeUpdate, ref, watch, watchEffect } from 'vue';
 import { useStore } from 'vuex';
 
 import router from '../router';
-// import Input from '../components/parts/Input';
+import Input from '../components/parts/Input';
 import Button from '../components/parts/Button';
 
 export default {
@@ -110,68 +110,25 @@ export default {
   },
   components: {
     Button,
-    // Input,
+    Input,
   },
 };
 </script>
 
 <style scoped>
 .login {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
   height: 95vh;
-  width: 100%;
 }
 
 .wrapped-container {
   width: 75%;
 }
 
-.login-container {
-  display: flex;
-  justify-content: flex-end;
-  flex-wrap: wrap;
-}
-
-.flex-6 {
-  flex-grow: 6;
-  flex-basis: 40%;
-  padding: 1rem;
-}
-
 .align-content-right {
   text-align: right;
 }
 
-.inputs {
-  display: flex;
-  flex-wrap: wrap;
-}
-
-.inputs > div {
-  display: flex;
-  align-items: center;
-}
-
 .input-number {
   width: 15px;
-}
-
-/* BUTTON */
-
-.input {
-  background-color: var(--primary);
-  border: 0;
-  padding: 0.75rem;
-  margin: 0.5rem;
-  color: var(--white);
-  border-radius: var(--border-radius);
-  text-decoration: none;
-}
-
-.input::placeholder {
-  color: var(--white);
 }
 </style>

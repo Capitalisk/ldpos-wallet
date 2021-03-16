@@ -1,14 +1,15 @@
 <template>
   <input
     class="input"
-    :value="value"
-    @input="(e) => $emit('input', value)"
+    :value="modelValue"
+    @input="(e) => $emit('update:modelValue', e.target.value)"
     :type="hidden ? 'password' : 'input'"
     :placeholder="placeholder"
     :style="{
       backgroundColor: `var(--${backgroundColor})`,
       color: `var(--${color})`,
     }"
+    :id="id"
   />
 </template>
 
@@ -18,11 +19,12 @@ import { ref, computed, toRefs, watch } from 'vue';
 export default {
   name: 'Input',
   props: {
-    value: { type: String, default: '' },
+    modelValue: { type: String, default: '' },
     hidden: { type: Boolean, default: false },
     placeholder: { type: String, default: '' },
-    backgroundColor: { type: String, default: 'primary-darkest' },
-    color: { type: String, default: 'white' },
+    backgroundColor: { type: String, default: 'primary' },
+    color: { type: String, default: 'dark' },
+    id: { type: String, default: '' },
   },
 };
 </script>
@@ -37,6 +39,6 @@ export default {
 }
 
 .input::placeholder {
-  color: var(--white);
+  color: var(--dark);
 }
 </style>

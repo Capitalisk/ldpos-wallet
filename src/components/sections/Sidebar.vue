@@ -42,6 +42,8 @@
 import { computed, ref } from 'vue';
 import { useStore } from 'vuex';
 
+import { TOKENMODAL } from '../modals/constants';
+
 export default {
   setup() {
     const store = useStore();
@@ -55,6 +57,7 @@ export default {
       authenticated: computed(() => store.state.authenticated),
       toggleBurger,
       burgerActive,
+      TOKENMODAL,
     };
   },
 };

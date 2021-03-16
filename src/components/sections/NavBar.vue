@@ -1,7 +1,7 @@
 <template>
-  <div class="navbar">
+  <div class="navbar flex justify-end align-center text-right">
     <Connected />
-    <span class="toggle-dark-mode mr-1">
+    <span class="flex justify-center align-center mr-1">
       <span class="mr-1">Dark mode: </span>
       <Switch v-model="darkMode" />
     </span>
@@ -35,36 +35,14 @@ export default {
       }),
     };
   },
-  // computed: {
-  //   darkMode: {
-  //     get: function() {
-  //       this.$store.state.darkMode;
-  //     },
-  //     set: function() {
-  //       this.$store.commit('toggleDarkMode');
-  //     },
-  //   },
-  // },
   components: { Button, Connected, Switch },
 };
 </script>
 
 <style scoped>
 .navbar {
-  display: flex;
   width: 100%;
-  justify-content: flex-end;
   align-items: center;
-  text-align: right;
   padding: 0 1rem;
-}
-
-.account {
-  cursor: pointer;
-}
-.toggle-dark-mode {
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 </style>

@@ -2,7 +2,7 @@
   <div id="app">
     <Modal />
     <Sidebar />
-    <div class="main-content">
+    <div class="main-content flex row">
       <Loading v-if="!connected" />
       <router-view v-else />
     </div>
@@ -47,9 +47,7 @@ export default {
   margin-left: 285px;
   padding: 1rem 1rem 1rem 0;
   width: 100%;
-  display: flex;
   box-sizing: border-box;
-  flex-direction: row;
   flex-wrap: wrap;
   gap: 1rem 1rem;
 }

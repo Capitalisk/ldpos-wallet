@@ -13,6 +13,7 @@ const config = {
 export default createStore({
   state() {
     return {
+      config,
       client: null,
       connected: false,
       authenticated: false,

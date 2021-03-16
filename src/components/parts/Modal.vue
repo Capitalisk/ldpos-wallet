@@ -1,5 +1,5 @@
 <template>
-  <div class="modal-background" v-if="active">
+  <div class="modal-background flex justify-center align-center" v-if="active">
     <div class="wrapper">
       <div class="close-btn cursor-pointer" style="color: var(--permanent-white)" @click="toggleModal">
         &#10005;
@@ -45,9 +45,6 @@ export default {
   width: 100vw;
   height: 100vh;
   z-index: 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
 .wrapper {
