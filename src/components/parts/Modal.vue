@@ -1,10 +1,10 @@
 <template>
   <div class="modal-background" v-if="active">
     <div class="wrapper">
-      <div class="close-btn cursor-pointer" @click="toggleModal">
+      <div class="close-btn cursor-pointer" style="color: var(--switchable-white)" @click="toggleModal">
         &#10005;
       </div>
-      <Section title="Latest transactions:" backgroundColor="var(--bg-color)">
+      <Section title="Latest transactions:" backgroundColor="var(--switchable-white)">
         <div class="force-modal-scroll">
           <TokenModal v-if="modal === TOKENMODAL" />
         </div>

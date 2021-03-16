@@ -18,8 +18,8 @@ export default {
     value: { type: String, default: '' },
     hidden: { type: Boolean, default: false },
     placeholder: { type: String, default: '' },
-    backgroundColor: { type: String, default: 'var(--primary)' },
-    color: { type: String, default: 'var(--white)' },
+    backgroundColor: { type: String, default: 'var(--switchable-dark)' },
+    color: { type: String, default: 'var(--switchable-white)' },
   },
 };
 </script>
@@ -34,6 +34,6 @@ export default {
 }
 
 .input::placeholder {
-  color: var(--white);
+  color: var(--switchable-white);
 }
 </style>

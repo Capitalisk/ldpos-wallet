@@ -1,5 +1,4 @@
 <template>
-  <!-- <button @click="toggleDarkMode">Toggle Darkmode</button> -->
   <div id="app">
     <Modal />
     <div class="sidebar">
@@ -57,19 +56,7 @@ export default {
 
     const toWallet = () => store.state.authenticated && router.push('/wallet');
 
-    const darkMode = ref(
-      window.matchMedia &&
-        window.matchMedia('(prefers-color-scheme: dark)').matches,
-    );
-    const toggleDarkMode = () => (darkMode.value = !darkMode.value);
-    watch(
-      () => darkMode.value,
-      () => document.documentElement.setAttribute('dark-theme', darkMode.value),
-    );
-
     return {
-      darkMode,
-      toggleDarkMode,
       toWallet,
       connected: computed(() => store.state.connected),
       authenticated: computed(() => store.state.authenticated),
@@ -89,9 +76,9 @@ export default {
   padding: 0;
   margin: 1rem;
   border-radius: var(--border-radius);
-  /* background: linear-gradient(-30deg, var(--primary), var(--primary-lightest)); */
-  background-color: var(--primary);
-  color: var(--white);
+  /* background: linear-gradient(-30deg, var(--switchable-primary), var(--switchable-primary-lightest)); */
+  background-color: var(--switchable-primary);
+  color: var(--switchable-white);
   text-transform: uppercase;
 }
 
@@ -102,7 +89,7 @@ export default {
 }
 
 .sidebar a {
-  color: var(--white);
+  color: var(--switchable-dark);
   text-decoration: none;
   padding: 1rem;
   display: block;
@@ -121,7 +108,7 @@ a.disabled:hover {
 }
 
 .sidebar a:hover {
-  background-color: var(--primary-lightest);
+  background-color: var(--switchable-primary-lightest);
 }
 
 .first {

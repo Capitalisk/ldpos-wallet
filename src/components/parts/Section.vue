@@ -27,8 +27,8 @@ export default {
     loading: { type: Boolean },
     error: { type: String, default: null },
     needsAuthentication: { type: Boolean, default: false },
-    backgroundColor: { type: String, default: 'var(--primary)' },
-    color: { type: String, default: 'var(--white)' },
+    backgroundColor: { type: String, default: 'var(--switchable-primary)' },
+    color: { type: String, default: 'var(--switchable-dark)' },
   },
   components: { Loading },
   setup() {
@@ -53,7 +53,7 @@ export default {
 
 h4 {
   margin-bottom: 0.5rem;
-  color: var(--primary-lightest);
+  color: var(--switchable-primary-lightest);
 }
 
 ul {

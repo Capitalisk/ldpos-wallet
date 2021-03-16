@@ -9,6 +9,9 @@
         backgroundColor: connected ? 'var(--success)' : 'var(--danger)',
       }"
     />
+    <span class="toggle-dark-mode mr-1">
+      <Button @click="toggleDarkMode" :value="darkMode ? 'Disable Dark Mode' : 'Enable Dark Mode'" />
+    </span>
     <Button v-if="authenticated" value="Sign out" @click="signout" />
     <Button value="Sign in" router-link href="/login" v-else />
   </div>
@@ -34,6 +37,8 @@ export default {
       network: computed(() =>
         store.state.client.options.port === '7001' ? 'Testnet' : 'Mainnet',
       ),
+      toggleDarkMode: () => store.commit('toggleDarkMode'),
+      darkMode: computed(() => store.state.darkMode)
     };
   },
   components: { Button },
@@ -64,5 +69,8 @@ export default {
   display: inline-block;
   border-radius: 50%;
   margin-right: auto;
+}
+
+.toggle-dark-mode {
 }
 </style>

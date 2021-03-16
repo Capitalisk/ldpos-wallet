@@ -2,8 +2,8 @@
   <a
     class="button cursor-pointer"
     :style="{
-      backgroundColor: `var(--${backgroundColor})`,
-      color: `var(--${color})`,
+      backgroundColor: `var(--switchable-${backgroundColor})`,
+      color: `var(--switchable-${color})`,
       ...style,
     }"
     v-if="!routerLink"
@@ -31,10 +31,10 @@ export default {
 <style scoped>
 a.button {
   display: block;
-  background-color: var(--primary-lightest);
+  background-color: var(--switchable-primary-lightest);
   border: 0;
   padding: 0.5rem 2.5rem;
-  color: var(--white);
+  color: var(--switchable-dark);
   border-radius: var(--border-radius);
   text-decoration: none;
 }

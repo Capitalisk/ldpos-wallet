@@ -24,6 +24,9 @@ export default createStore({
         active: false,
         type: '',
       },
+      darkMode:
+        window.matchMedia &&
+        window.matchMedia('(prefers-color-scheme: dark)').matches,
     };
   },
   mutations: {
@@ -63,9 +66,13 @@ export default createStore({
       state.authenticated = false;
     },
     toggleModal(state, type) {
-      state.modal.type = type
+      state.modal.type = type;
       state.modal.active = !state.modal.active;
     },
+    toggleDarkMode(state) {
+      state.darkMode = !state.darkMode
+      document.documentElement.setAttribute('dark-theme', state.darkMode)
+    }
   },
   getters: {},
   setters: {},
