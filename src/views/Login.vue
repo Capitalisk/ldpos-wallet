@@ -162,16 +162,16 @@ export default {
 /* BUTTON */
 
 .input {
-  background-color: var(--switchable-primary);
+  background-color: var(--primary);
   border: 0;
   padding: 0.75rem;
   margin: 0.5rem;
-  color: var(--switchable-white);
+  color: var(--white);
   border-radius: var(--border-radius);
   text-decoration: none;
 }
 
 .input::placeholder {
-  color: var(--switchable-white);
+  color: var(--white);
 }
 </style>

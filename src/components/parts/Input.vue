@@ -6,8 +6,8 @@
     :type="hidden ? 'password' : 'input'"
     :placeholder="placeholder"
     :style="{
-      backgroundColor: `var(--switchable-${backgroundColor})`,
-      color: `var(--switchable-${color})`,
+      backgroundColor: `var(--${backgroundColor})`,
+      color: `var(--${color})`,
     }"
   />
 </template>
@@ -37,6 +37,6 @@ export default {
 }
 
 .input::placeholder {
-  color: var(--switchable-white);
+  color: var(--white);
 }
 </style>

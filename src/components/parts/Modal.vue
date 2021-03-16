@@ -1,7 +1,7 @@
 <template>
   <div class="modal-background" v-if="active">
     <div class="wrapper">
-      <div class="close-btn cursor-pointer" style="color: var(--switchable-white)" @click="toggleModal">
+      <div class="close-btn cursor-pointer" style="color: var(--white)" @click="toggleModal">
         &#10005;
       </div>
       <Section title="Latest transactions:" backgroundColor="white">

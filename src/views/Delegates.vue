@@ -64,6 +64,6 @@ export default {
 }
 
 .delegate-address {
-  color: var(--switchable-primary-lightest);
+  color: var(--primary-lightest);
 }
 </style>

@@ -76,9 +76,9 @@ export default {
   padding: 0;
   margin: 1rem;
   border-radius: var(--border-radius);
-  /* background: linear-gradient(-30deg, var(--switchable-primary), var(--switchable-primary-lightest)); */
-  background-color: var(--switchable-primary);
-  color: var(--switchable-white);
+  /* background: linear-gradient(-30deg, var(--primary), var(--primary-lightest)); */
+  background-color: var(--primary);
+  color: var(--white);
   text-transform: uppercase;
 }
 
@@ -89,7 +89,7 @@ export default {
 }
 
 .sidebar a {
-  color: var(--switchable-dark);
+  color: var(--dark);
   text-decoration: none;
   padding: 1rem;
   display: block;
@@ -98,7 +98,7 @@ export default {
 }
 
 a.disabled {
-  color: grey;
+  color: var(--disabled);
   cursor: default;
   user-select: none;
 }
@@ -108,7 +108,7 @@ a.disabled:hover {
 }
 
 .sidebar a:hover {
-  background-color: var(--switchable-primary-lightest);
+  background-color: var(--primary-lightest);
 }
 
 .first {

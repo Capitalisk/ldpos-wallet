@@ -2,8 +2,8 @@
   <a
     class="button cursor-pointer"
     :style="{
-      backgroundColor: `var(--switchable-${backgroundColor})`,
-      color: `var(--switchable-${color})`,
+      backgroundColor: `var(--${backgroundColor})`,
+      color: `var(--${color})`,
       ...style,
     }"
     v-if="!routerLink"
@@ -15,8 +15,8 @@
     v-else
     :to="href"
     :style="{
-      backgroundColor: `var(--switchable-${backgroundColor})`,
-      color: `var(--switchable-${color})`,
+      backgroundColor: `var(--${backgroundColor})`,
+      color: `var(--${color})`,
       ...style,
     }"
     >{{ value }}</router-link

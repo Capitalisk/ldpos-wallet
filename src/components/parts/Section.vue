@@ -1,7 +1,7 @@
 <template>
   <div class="section" :style="{
-      backgroundColor: `var(--switchable-${backgroundColor})`,
-      color: `var(--switchable-${color})`,
+      backgroundColor: `var(--${backgroundColor})`,
+      color: `var(--${color})`,
     }">
     <h4>{{ title }}</h4>
 
@@ -56,7 +56,7 @@ export default {
 
 h4 {
   margin-bottom: 0.5rem;
-  color: var(--switchable-primary-lightest);
+  color: var(--primary-lightest);
 }
 
 ul {
