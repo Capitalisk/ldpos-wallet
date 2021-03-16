@@ -27,8 +27,6 @@ export default {
   setup() {
     const store = useStore();
 
-    console.log(store.state.modal, TOKENMODAL)
-
     return {
       active: computed(() => store.state.modal.active),
       modal: computed(() => store.state.modal.type),

@@ -28,8 +28,8 @@ export default {
   name: 'Button',
   props: {
     value: { type: String },
-    color: { type: String, default: 'dark' },
-    backgroundColor: { type: String, default: 'primary-lightest' },
+    color: { type: String, default: 'permanent-white' },
+    backgroundColor: { type: String, default: 'primary-lighter' },
     routerLink: { type: Boolean, default: false },
     href: { type: String, default: '' },
     loading: { type: Boolean, default: false },

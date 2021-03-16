@@ -21,7 +21,7 @@ export default {
     value: { type: String, default: '' },
     hidden: { type: Boolean, default: false },
     placeholder: { type: String, default: '' },
-    backgroundColor: { type: String, default: 'primary-darker' },
+    backgroundColor: { type: String, default: 'primary-darkest' },
     color: { type: String, default: 'white' },
   },
 };
