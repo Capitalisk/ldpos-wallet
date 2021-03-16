@@ -1,42 +1,44 @@
 <template>
-  <Section
-    :loading="balance.loading"
-    title="Current balance:"
-    :needsAuthentication="true"
-    :error="balance.error"
-  >
-    <h1>CⱠ {{ balance.data }}</h1>
-  </Section>
-  <Section
-    :loading="transactions.loading"
-    title="Latest transactions:"
-    :needsAuthentication="true"
-    :error="transactions.error"
-  >
-    <ul>
-      <li v-for="transaction in transactions.data" :key="transaction.id">
-        {{ transaction.type }} for CⱠ {{ transaction.amount }} with a CⱠ
-        {{ transaction.fee }} fee
-      </li>
-    </ul>
-  </Section>
-  <Section
-    :loading="pendingTransactions.loading"
-    title="Pending transactions:"
-    :needsAuthentication="true"
-    :error="pendingTransactions.error"
-  >
-    <ul>
-      <li
-        v-for="pendingTransaction in pendingTransactions.data"
-        :key="pendingTransaction.id"
-      >
-        {{ pendingTransaction.type }} for CⱠ
-        {{ pendingTransaction.amount }} with a CⱠ
-        {{ pendingTransaction.fee }} fee
-      </li>
-    </ul>
-  </Section>
+  <div class="flex flex-gap">
+    <Section
+      :loading="balance.loading"
+      title="Current balance:"
+      :needsAuthentication="true"
+      :error="balance.error"
+    >
+      <h1>CⱠ {{ balance.data }}</h1>
+    </Section>
+    <Section
+      :loading="transactions.loading"
+      title="Latest transactions:"
+      :needsAuthentication="true"
+      :error="transactions.error"
+    >
+      <ul>
+        <li v-for="transaction in transactions.data" :key="transaction.id">
+          {{ transaction.type }} for CⱠ {{ transaction.amount }} with a CⱠ
+          {{ transaction.fee }} fee
+        </li>
+      </ul>
+    </Section>
+    <Section
+      :loading="pendingTransactions.loading"
+      title="Pending transactions:"
+      :needsAuthentication="true"
+      :error="pendingTransactions.error"
+    >
+      <ul>
+        <li
+          v-for="pendingTransaction in pendingTransactions.data"
+          :key="pendingTransaction.id"
+        >
+          {{ pendingTransaction.type }} for CⱠ
+          {{ pendingTransaction.amount }} with a CⱠ
+          {{ pendingTransaction.fee }} fee
+        </li>
+      </ul>
+    </Section>
+  </div>
 </template>
 
 <script>
