@@ -1,5 +1,5 @@
 <template>
-  <div :class="`navbar${burgerActive ? ' navbar-active' : ''}`">
+  <div class="navbar">
     <div
       :class="burgerActive ? 'change cursor-pointer' : 'cursor-pointer'"
       @click="toggleBurger"
@@ -114,11 +114,14 @@ a.disabled:hover {
 
 @media screen and (max-width: 768px) {
   .navbar {
-    position: fixed;
+    display: flex;
+    width: 100%;
+    justify-content: flex-end;
     z-index: 1;
     padding: 0.5rem;
     right: 0;
     top: 0;
+    background-color: var(--primary);
   }
 
   .sidebar-active {

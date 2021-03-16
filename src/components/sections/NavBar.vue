@@ -1,16 +1,9 @@
 <template>
   <div class="navbar">
-    <span class="connection"
-      >{{ connected ? `Connected: ${network}` : 'Disconnected' }}
-    </span>
-    <span
-      class="dot"
-      :style="{
-        backgroundColor: connected ? 'var(--success)' : 'var(--danger)',
-      }"
-    />
+    <Connected />
     <span class="toggle-dark-mode mr-1">
-      <Button @click="toggleDarkMode" :value="darkMode ? 'Disable Dark Mode' : 'Enable Dark Mode'" />
+      <span class="mr-1">Dark mode: </span>
+      <Switch v-model="darkMode" />
     </span>
     <Button v-if="authenticated" value="Sign out" @click="signout" />
     <Button value="Sign in" router-link href="/login" v-else />
@@ -18,10 +11,12 @@
 </template>
 
 <script>
-import { computed, onMounted, ref } from 'vue';
+import { computed } from 'vue';
 import { useStore } from 'vuex';
 
 import Button from '../parts/Button';
+import Connected from '../parts/Connected.vue';
+import Switch from '../parts/Switch.vue';
 
 export default {
   name: 'NavBar',
@@ -31,17 +26,26 @@ export default {
     const signout = async () => store.commit('deauthenticate');
 
     return {
-      connected: computed(() => store.state.connected),
       authenticated: computed(() => store.state.authenticated),
       signout,
-      network: computed(() =>
-        store.state.client.options.port === '7001' ? 'Testnet' : 'Mainnet',
-      ),
-      toggleDarkMode: () => store.commit('toggleDarkMode'),
-      darkMode: computed(() => store.state.darkMode)
+      // darkMode: computed(() => store.state.darkMode)
+      darkMode: computed({
+        get: () => store.state.darkMode,
+        set: (val) => store.commit('toggleDarkMode'),
+      }),
     };
   },
-  components: { Button },
+  // computed: {
+  //   darkMode: {
+  //     get: function() {
+  //       this.$store.state.darkMode;
+  //     },
+  //     set: function() {
+  //       this.$store.commit('toggleDarkMode');
+  //     },
+  //   },
+  // },
+  components: { Button, Connected, Switch },
 };
 </script>
 
@@ -58,19 +62,9 @@ export default {
 .account {
   cursor: pointer;
 }
-
-.connection {
-  padding: 0 0.5rem;
-}
-
-.dot {
-  height: 6px;
-  width: 6px;
-  display: inline-block;
-  border-radius: 50%;
-  margin-right: auto;
-}
-
 .toggle-dark-mode {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 </style>
