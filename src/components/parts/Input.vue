@@ -5,7 +5,10 @@
     @input="(e) => $emit('input', value)"
     :type="hidden ? 'password' : 'input'"
     :placeholder="placeholder"
-    :style="{ backgroundColor, color }"
+    :style="{
+      backgroundColor: `var(--switchable-${backgroundColor})`,
+      color: `var(--switchable-${color})`,
+    }"
   />
 </template>
 
@@ -18,8 +21,8 @@ export default {
     value: { type: String, default: '' },
     hidden: { type: Boolean, default: false },
     placeholder: { type: String, default: '' },
-    backgroundColor: { type: String, default: 'var(--switchable-dark)' },
-    color: { type: String, default: 'var(--switchable-white)' },
+    backgroundColor: { type: String, default: 'primary-darker' },
+    color: { type: String, default: 'white' },
   },
 };
 </script>

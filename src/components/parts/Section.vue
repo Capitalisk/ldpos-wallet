@@ -1,5 +1,8 @@
 <template>
-  <div class="section" :style="{ backgroundColor, color }">
+  <div class="section" :style="{
+      backgroundColor: `var(--switchable-${backgroundColor})`,
+      color: `var(--switchable-${color})`,
+    }">
     <h4>{{ title }}</h4>
 
     <Loading v-if="loading" />
@@ -27,8 +30,8 @@ export default {
     loading: { type: Boolean },
     error: { type: String, default: null },
     needsAuthentication: { type: Boolean, default: false },
-    backgroundColor: { type: String, default: 'var(--switchable-primary)' },
-    color: { type: String, default: 'var(--switchable-dark)' },
+    backgroundColor: { type: String, default: 'primary' },
+    color: { type: String, default: 'dark' },
   },
   components: { Loading },
   setup() {
