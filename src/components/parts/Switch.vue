@@ -1,7 +1,7 @@
 <template>
   <label class="switch">
     <input type="checkbox" :checked="modelValue" @change="$emit('update:modelValue', !modelValue)" />
-    <span class="slider"></span>
+    <span class="slider" :id="id"></span>
   </label>
 </template>
 
@@ -12,6 +12,7 @@ export default {
   name: 'Switch',
   props: {
     modelValue: { type: Boolean, default: false },
+    id: { type: String, default: '' },
   },
 };
 </script>

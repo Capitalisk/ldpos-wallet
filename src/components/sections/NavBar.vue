@@ -3,7 +3,7 @@
     <Connected />
     <span class="flex justify-center align-center mr-1">
       <span class="mr-1">Dark mode: </span>
-      <Switch v-model="darkMode" />
+      <Switch v-model="darkMode" id="darkmode-switch" />
     </span>
     <Button v-if="authenticated" value="Sign out" @click="signout" />
     <Button value="Sign in" router-link href="/login" v-else />
