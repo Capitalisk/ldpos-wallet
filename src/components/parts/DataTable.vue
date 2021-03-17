@@ -19,7 +19,7 @@
       </table>
     </div>
     <div class="footer">
-      <div v-if="!loading">
+      <div v-if="loading">
         <Loading />
       </div>
       <slot name="header" class="pa-2" />

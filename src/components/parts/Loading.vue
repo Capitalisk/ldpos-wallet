@@ -1,6 +1,8 @@
 <template>
-  <div class="loading">
-    <i class="fa fa-circle-o-notch fa-spin mr-1"></i>Loading
+  <div class="loading flex justify-center align-center">
+    <!-- <i class="fa fa-circle-o-notch fa-spin mr-1"></i> -->
+    <i class="fa fa-circle-notch fa-spin mr-1"></i>
+    Loading
   </div>
 </template>
 
@@ -18,8 +20,7 @@ export default {
 
 <style scoped>
 .loading {
-  margin: 1rem;
-  text-align: center;
+  margin: 1rem 0;
   width: 100%;
 }
 </style>
