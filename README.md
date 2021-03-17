@@ -1,5 +1,7 @@
 # ldpos-wallet
 
+EXAMPLE NODE: `34.227.22.98` PORT: `7001`
+
 ## Project setup
 ```
 yarn install
