@@ -1,31 +1,6 @@
 <template>
   <Navbar />
-  <!-- <AccountDetails /> -->
-  <div class="flex fullwidth">
-    <table>
-      <thead>
-        <th>Rank</th>
-        <th>Delegate</th>
-        <th>Height</th>
-        <th>Vote weight</th>
-        <th v-if="authenticated">Vote for delegate</th>
-      </thead>
-      <tr v-for="(delegate, i) in delegates" :key="i">
-        <td>#{{ i + 1 }}</td>
-        <td>
-          Nickname<br />
-          <span class="delegate-address">{{ delegate.address }}</span>
-        </td>
-        <td>{{ delegate.updateHeight }}</td>
-        <td>
-          CⱠ <strong>{{ delegate.voteWeight }}</strong>
-        </td>
-        <td v-if="authenticated">
-          <Button value="Vote" @click="vote" style="display: initial" />
-        </td>
-      </tr>
-    </table>
-  </div>
+  <DataTable :rows="delegates" :columns="columns" title="Delegates" />
 </template>
 
 <script>
@@ -35,10 +10,11 @@ import { useStore } from 'vuex';
 import AccountDetails from '../components/sections/AccountDetails';
 import Navbar from '../components/sections/Navbar';
 import Button from '../components/parts/Button';
+import DataTable from '../components/parts/DataTable';
 
 export default {
   name: 'Home',
-  components: { AccountDetails, Navbar, Button },
+  components: { AccountDetails, Navbar, Button, DataTable },
   setup() {
     const store = useStore();
 
@@ -49,10 +25,43 @@ export default {
         (delegates.value = await store.state.client.getForgingDelegates()),
     );
 
+    const columns = ref([
+      {
+        name: 'rank',
+        label: 'Rank',
+        field: 'address',
+        sortable: false,
+        value: (val, r) => delegates.value.indexOf(r),
+      },
+      {
+        name: 'address',
+        label: 'Address',
+        field: 'address',
+        sortable: false,
+        value: (val) => val,
+        class: 'token-address'
+      },
+      {
+        name: 'updateHeight',
+        label: 'Height',
+        field: 'updateHeight',
+        sortable: false,
+        value: (val) => val,
+      },
+      {
+        name: 'voteWeight',
+        label: 'Vote weight',
+        field: 'voteWeight',
+        sortable: false,
+        value: (val) => val,
+      },
+    ]);
+
     return {
       delegates,
       // vote: async () => await store.state.client.vote(),
       authenticated: computed(() => store.state.authenticated),
+      columns,
     };
   },
 };

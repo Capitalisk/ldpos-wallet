@@ -123,6 +123,10 @@ th {
   margin-right: 0.5rem;
 }
 
+.pb-2 {
+  padding-bottom: 1rem;
+}
+
 .ma-1 {
   margin: 0.5rem;
 }
@@ -148,5 +152,9 @@ th {
 }
 
 .fixed-height {
-  height: calc(100vh - 68px - 2rem);
+  max-height: calc(100vh - 68px - 2rem);
+}
+
+.token-address {
+  font-size: 12px;
 }

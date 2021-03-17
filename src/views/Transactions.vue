@@ -10,7 +10,7 @@
 </template>
 
 <script>
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { useStore } from 'vuex';
 
 import Navbar from '../components/sections/Navbar.vue';
@@ -25,13 +25,13 @@ export default {
     const transactions = ref(null);
 
     const columns = ref([
-      { name: 'id', label: 'ID', field: 'id', sortable: false },
       { name: 'type', label: 'type', field: 'type', sortable: false },
       {
         name: 'recipientAddress',
         label: 'recipientAddress',
         field: 'recipientAddress',
         sortable: false,
+        class: 'token-address'
       },
       {
         name: 'amount',
@@ -105,10 +105,11 @@ export default {
       loading.value = true;
 
       console.log('fire');
-      offset.value = offset.value + 50;
+
+      offset.value = offset.value + 25;
       const t = await store.state.client.getTransactionsByTimestamp(
         offset.value,
-        50,
+        25,
         'asc',
       );
 
@@ -121,6 +122,7 @@ export default {
       transactions,
       columns,
       loadMoreTransactions,
+      loading,
     };
   },
   components: { DataTable, Navbar },

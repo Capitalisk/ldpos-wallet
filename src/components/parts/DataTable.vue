@@ -4,15 +4,15 @@
       <slot name="header" class="pa-2" />
       <h2 v-if="title" class="pa-2">{{ title }}</h2>
     </div>
-    <div class="overflow-x overflow-y flex flex-wrap column" id="table">
+    <div class="overflow-x overflow-y flex flex-wrap column pb-2" id="table">
       <table>
         <thead>
           <th v-for="(c, i) in columns" :key="i">{{ c.label }}</th>
         </thead>
         <tbody>
           <tr v-for="r in rows" :key="r.id">
-            <td v-for="(c, i) in columns" :key="i">
-              {{ c.value ? c.value(r[c.field]) : r[c.field] }}
+            <td v-for="(c, i) in columns" :key="i" :class="c.class || ''">
+              {{ c.value ? c.value(r[c.field], r) : r[c.field] }}
             </td>
           </tr>
         </tbody>
@@ -23,7 +23,6 @@
         <Loading />
       </div>
       <slot name="header" class="pa-2" />
-      <h2 v-if="title" class="footer-title pa-2">{{ title }}</h2>
     </div>
   </div>
 </template>
@@ -53,10 +52,9 @@ export default {
       });
     });
 
-    onUnmounted(() => {
-      const table = document.getElementById('table');
-      table.removeEventListener('scroll');
-    });
+    // onUnmounted(() => {
+    //   table.value.removeEventListener('scroll', listener);
+    // });
 
     return {};
   },
