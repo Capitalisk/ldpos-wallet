@@ -43,6 +43,7 @@ import { computed, ref } from 'vue';
 import { useStore } from 'vuex';
 
 import { TOKENMODAL } from '../modals/constants';
+import router from '../../router';
 
 export default {
   setup() {
@@ -52,12 +53,15 @@ export default {
 
     const toggleBurger = () => (burgerActive.value = !burgerActive.value);
 
+    const toWallet = () => store.state.authenticated && router.push('/wallet')
+
     return {
       toggleModal: (type) => store.commit('toggleModal', type),
       authenticated: computed(() => store.state.authenticated),
       toggleBurger,
       burgerActive,
       TOKENMODAL,
+      toWallet
     };
   },
 };
