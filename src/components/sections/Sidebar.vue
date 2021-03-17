@@ -53,7 +53,7 @@ export default {
 
     const toggleBurger = () => (burgerActive.value = !burgerActive.value);
 
-    const toWallet = () => store.state.authenticated && router.push('/wallet')
+    const toWallet = () => store.state.authenticated && router.push('/wallet');
 
     return {
       toggleModal: (type) => store.commit('toggleModal', type),
@@ -61,7 +61,7 @@ export default {
       toggleBurger,
       burgerActive,
       TOKENMODAL,
-      toWallet
+      toWallet,
     };
   },
 };
