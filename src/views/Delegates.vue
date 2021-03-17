@@ -31,7 +31,7 @@ export default {
         label: 'Rank',
         field: 'address',
         sortable: false,
-        value: (val, r) => delegates.value.indexOf(r),
+        value: (val, r) => `#${delegates.value.indexOf(r) + 1}`,
       },
       {
         name: 'address',
