@@ -1,46 +1,6 @@
 <template>
   <Navbar />
-  <AccountDetails />
-  <div class="wallet">
-    <p>
-      {{ walletAddress }}
-    </p>
-    <table>
-      <thead>
-        <th>Direction</th>
-        <th>Type</th>
-        <th>Recipient Address</th>
-        <th>Amount</th>
-        <th>Fee</th>
-        <th>Timestamp</th>
-        <th>Message</th>
-        <th>Sender Address</th>
-      </thead>
-      <tr
-        v-for="{
-          direction,
-          id,
-          type,
-          recipientAddress,
-          amount,
-          fee,
-          timestamp,
-          message,
-          senderAddress,
-        } in transactions"
-        :key="id"
-      >
-        <td>{{ direction }}</td>
-        <td>{{ type }}</td>
-        <td>{{ recipientAddress }}</td>
-        <td>{{ _integerToDecimal(amount) }}</td>
-        <td>{{ _integerToDecimal(fee) }}</td>
-        <td>{{ timestamp }}</td>
-        <td>{{ message }}</td>
-        <td>{{ senderAddress }}</td>
-      </tr>
-    </table>
-  </div>
+  <DataTable title="Wallet" :rows="transactions" :columns="columns" />
 </template>
 
 <script>
@@ -49,37 +9,103 @@ import { useStore } from 'vuex';
 
 import AccountDetails from '../components/sections/AccountDetails';
 import Navbar from '../components/sections/Navbar';
+import DataTable from '../components/parts/DataTable';
+
 import { _integerToDecimal } from '../utils';
+import router from '../router';
 
 export default {
   name: 'Home',
-  components: { AccountDetails, Navbar },
   setup() {
+    const store = useStore();
+
     const walletAddress = ref(null);
     const transactions = ref([]);
     const INBOUND = 'inbound';
     const OUTBOUND = 'outbound';
 
     onMounted(async () => {
-      const store = useStore();
+      if (!store.state.authenticated) {
+        router.push('/');
+        return;
+      }
 
       walletAddress.value = store.state.client.getWalletAddress();
 
-      const txns = await store.state.client.getTransactionsByTimestamp(0, 20, 'asc');
-
-      transactions.value = txns.map((el) => ({
-        ...el,
-        direction:
-          el.recipientAddress !== walletAddress.value ? INBOUND : OUTBOUND,
-      }));
+      transactions.value = await store.state.client.getTransactionsByTimestamp(
+        0,
+        50,
+        'asc',
+      );
     });
+
+    const columns = ref([
+      {
+        name: 'direction',
+        label: 'direction',
+        field: 'direction',
+        sortable: false,
+        value: (val, r) =>
+          r.recipientAddress !== walletAddress.value ? INBOUND : OUTBOUND,
+      },
+      {
+        name: 'type',
+        label: 'type',
+        field: 'type',
+        sortable: false,
+      },
+      {
+        name: 'recipientAddress',
+        label: 'recipientAddress',
+        field: 'recipientAddress',
+        sortable: false,
+        value: (val) => val,
+        class: 'token-address',
+      },
+      {
+        name: 'amount',
+        label: 'amount',
+        field: 'amount',
+        sortable: false,
+        value: (val) => _integerToDecimal(val),
+      },
+      {
+        name: 'fee',
+        label: 'fee',
+        field: 'fee',
+        sortable: false,
+        value: (val) => _integerToDecimal(val),
+      },
+      {
+        name: 'timestamp',
+        label: 'timestamp',
+        field: 'timestamp',
+        sortable: false,
+        value: (val) => val,
+      },
+      {
+        name: 'message',
+        label: 'message',
+        field: 'message',
+        sortable: false,
+        value: (val) => val,
+      },
+      {
+        name: 'senderAddress',
+        label: 'senderAddress',
+        field: 'senderAddress',
+        sortable: false,
+        value: (val) => val,
+      },
+    ]);
 
     return {
       walletAddress,
       transactions,
-      _integerToDecimal,
+      columns,
     };
   },
+  components: { AccountDetails, Navbar, DataTable },
 };
 </script>
 
