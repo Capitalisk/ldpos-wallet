@@ -23,6 +23,5 @@ pnpm-debug.log*
 *.sw?
 
 # Custom
-TODO
 /tests/e2e/videos
 /tests/e2e/screenshots

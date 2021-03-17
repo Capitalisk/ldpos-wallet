@@ -1,0 +1,28 @@
+
+Todo:
+  ☐ Sign in router push to last visited route (or to wallet?)
+  ✔ Resolve loading @done(21-03-17 09:47)
+  ✔ Enable dark mode with vuex @done(21-03-16 16:08)
+  ✔ Cursor pointer class @done(21-03-16 16:08)
+  ☐ DataTable
+    ☐ Tests
+    ☐ Sorting
+    ☐ Available items
+    ☐ 
+  ☐ Voting
+    ☐ Tests
+  ☐ Transactions
+    ☐ Tests
+  ☐ Wallet
+    ☐ Tests
+    ☐ Rank + 1
+  ☐ Blocks
+    ☐ Implement
+  ☐ Accounts
+    ☐ Implement
+  ☐ Delegates (Should be the same as Voting)
+    ☐ Implement
+  ☐ Sign Message
+    ☐ Implement
+  ☐ Verify Message
+    ☐ Implement
