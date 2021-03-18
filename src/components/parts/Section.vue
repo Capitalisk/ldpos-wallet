@@ -24,7 +24,6 @@
 import { computed, onMounted, ref } from 'vue';
 import { useStore } from 'vuex';
 
-import { useClient } from '../../plugins/ldpos-client';
 import Loading from './Loading';
 
 export default {

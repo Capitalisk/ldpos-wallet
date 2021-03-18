@@ -45,7 +45,6 @@
 import { ref, onMounted } from 'vue';
 
 import { _integerToDecimal } from '../../utils.js';
-import { useClient } from '../../plugins/ldpos-client';
 
 import Section from '../parts/Section';
 import { useStore } from 'vuex';
