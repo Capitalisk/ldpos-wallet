@@ -189,3 +189,7 @@ th {
 .fixed-height {
   max-height: calc(100vh - 68px - 2rem);
 }
+
+.relative {
+  position: relative;
+}

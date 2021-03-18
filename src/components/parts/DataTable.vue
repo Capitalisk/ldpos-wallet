@@ -5,8 +5,17 @@
         <slot name="header" />
         <h2 v-if="title">{{ title }}</h2>
       </div>
-      <div>
-        <Button value="Filter" @click="" />
+      <div class="relative">
+        <Button value="Filter" @click="togglePopup" />
+        <Popup :active="popupActive">
+          <div class="flex column">
+            <div>Testing this</div>
+            <div>Testing this</div>
+            <div>Testing this</div>
+            <div>Testing this</div>
+            <div>Testing this</div>
+          </div>
+        </Popup>
       </div>
     </div>
     <div class="overflow-x overflow-y flex flex-wrap column pb-2" id="table">
@@ -46,6 +55,7 @@ import { useStore } from 'vuex';
 
 import Loading from '../parts/Loading';
 import Button from '../parts/Button';
+import Popup from './Popup.vue';
 
 export default {
   name: 'DataTable',
@@ -79,15 +89,19 @@ export default {
       return val;
     };
 
+    const popupActive = ref(false);
+
     return {
       getShortValue,
+      togglePopup: () => (popupActive.value = !popupActive.value),
+      popupActive,
     };
   },
   mounted: function() {
     // TODO: make this debounced
     window.addEventListener('resize', () => this.$forceUpdate());
   },
-  components: { Loading, Button },
+  components: { Loading, Button, Popup },
 };
 </script>
 

@@ -1,8 +1,12 @@
 <template>
-  <div class="section" :style="{
+  <div
+    class="section"
+    :style="{
       backgroundColor: `var(--${backgroundColor})`,
       color: `var(--${color})`,
-    }">
+      border: border ? `1px solid var(--${border})` : '',
+    }"
+  >
     <h4>{{ title }}</h4>
 
     <Loading v-if="loading" />
@@ -32,6 +36,7 @@ export default {
     needsAuthentication: { type: Boolean, default: false },
     backgroundColor: { type: String, default: 'primary' },
     color: { type: String, default: 'dark' },
+    border: { type: String, default: null },
   },
   components: { Loading },
   setup() {
