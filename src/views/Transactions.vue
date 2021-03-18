@@ -25,13 +25,25 @@ export default {
     const transactions = ref(null);
 
     const columns = ref([
-      { name: 'type', label: 'type', field: 'type', sortable: false },
+      // { name: 'type', label: 'type', field: 'type', sortable: false },
+      {
+        name: 'senderAddress',
+        label: 'senderAddress',
+        field: 'senderAddress',
+        sortable: false,
+      },
       {
         name: 'recipientAddress',
         label: 'recipientAddress',
         field: 'recipientAddress',
         sortable: false,
-        class: 'token-address'
+        class: 'token-address',
+      },
+      {
+        name: 'timestamp',
+        label: 'timestamp',
+        field: 'timestamp',
+        sortable: false,
       },
       {
         name: 'amount',
@@ -46,44 +58,6 @@ export default {
         field: 'fee',
         sortable: false,
         value: (val) => _integerToDecimal(val),
-      },
-      {
-        name: 'timespamp',
-        label: 'timespamp',
-        field: 'timespamp',
-        sortable: false,
-      },
-      { name: 'message', label: 'message', field: 'message', sortable: false },
-      {
-        name: 'senderAddress',
-        label: 'senderAddress',
-        field: 'senderAddress',
-        sortable: false,
-      },
-      {
-        name: 'sigPublicKey',
-        label: 'sigPublicKey',
-        field: 'sigPublicKey',
-        sortable: false,
-      },
-      {
-        name: 'nextSigPublicKey',
-        label: 'nextSigPublicKey',
-        field: 'nextSigPublicKey',
-        sortable: false,
-      },
-      {
-        name: 'senderSignatureHash',
-        label: 'senderSignatureHash',
-        field: 'senderSignatureHash',
-        sortable: false,
-      },
-      { name: 'blockId', label: 'blockId', field: 'blockId', sortable: false },
-      {
-        name: 'indexInBlock',
-        label: 'indexInBlock',
-        field: 'indexInBlock',
-        sortable: false,
       },
     ]);
 

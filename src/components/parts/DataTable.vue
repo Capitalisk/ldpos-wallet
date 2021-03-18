@@ -7,12 +7,14 @@
     <div class="overflow-x overflow-y flex flex-wrap column pb-2" id="table">
       <table>
         <thead>
-          <th v-for="(c, i) in columns" :key="i">{{ c.label }}</th>
+          <th v-for="(c, i) in columns" :key="i" class="py-4">{{ c.label }}</th>
         </thead>
         <tbody>
           <tr v-for="r in rows" :key="r.id">
-            <td v-for="(c, i) in columns" :key="i" :class="c.class || ''">
-              {{ c.value ? c.value(r[c.field], r) : r[c.field] }}
+            <td v-for="(c, i) in columns" :key="i" :class="c.class || 'py-4'">
+              <p class="ellipsis">
+                {{ c.value ? c.value(r[c.field], r) : r[c.field] }}
+              </p>
             </td>
           </tr>
         </tbody>
@@ -28,8 +30,7 @@
 </template>
 
 <script>
-import { computed, onMounted, onUnmounted, ref } from 'vue';
-import { useStore } from 'vuex';
+import { onMounted, ref, watch } from 'vue';
 
 import Loading from '../parts/Loading';
 
@@ -42,8 +43,6 @@ export default {
     loading: { type: Boolean, default: false },
   },
   setup(props, { emit }) {
-    const store = useStore();
-
     onMounted(() => {
       const table = document.getElementById('table');
       table.addEventListener('scroll', (event) => {
@@ -51,12 +50,6 @@ export default {
           emit('get-data');
       });
     });
-
-    // onUnmounted(() => {
-    //   table.value.removeEventListener('scroll', listener);
-    // });
-
-    return {};
   },
   components: { Loading },
 };
@@ -97,5 +90,35 @@ export default {
 
 #table::-webkit-scrollbar-corner {
   display: none;
+}
+
+table {
+  border-collapse: collapse;
+}
+
+td {
+  border-bottom: 1px solid var(--primary-darker);
+}
+
+td p.ellipsis {
+  max-width: 20vw;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+/* .ellipsis {
+  content: attr(data-final);
+  left: 100%;
+  top: 0;
+} */
+
+tr:hover {
+  background-color: var(--primary-darker);
+  color: var(--permanent-white);
+}
+
+th {
+  font-size: 14px;
 }
 </style>
