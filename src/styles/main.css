@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@400&display=swap');
 @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css');
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@300&display=swap');
 
 :root {
   --dark: #18191a;
@@ -38,6 +39,7 @@
 
 body {
   font-family: 'Bai Jamjuree', sans-serif;
+  /* font-family: 'Oswald', sans-serif; */
   color: var(--dark);
   background-color: var(--white);
 }
@@ -47,6 +49,10 @@ body {
   flex-wrap: wrap;
   width: 100%;
   min-height: 100vh;
+}
+
+.address {
+  font-family: 'Oswald', sans-serif;
 }
 
 .cursor-pointer {

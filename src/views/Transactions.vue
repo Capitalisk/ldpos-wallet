@@ -31,18 +31,25 @@ export default {
         label: 'senderAddress',
         field: 'senderAddress',
         sortable: false,
+        class: 'address',
       },
       {
         name: 'recipientAddress',
         label: 'recipientAddress',
         field: 'recipientAddress',
         sortable: false,
+        class: 'address',
       },
       {
         name: 'timestamp',
         label: 'timestamp',
         field: 'timestamp',
         sortable: false,
+        value: (val) =>
+          new Intl.DateTimeFormat('nl-BE', {
+            dateStyle: 'short',
+            timeStyle: 'short',
+          }).format(new Date(val)),
       },
       {
         name: 'amount',

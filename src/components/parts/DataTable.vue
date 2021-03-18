@@ -7,24 +7,18 @@
     <div class="overflow-x overflow-y flex flex-wrap column pb-2" id="table">
       <table>
         <thead>
-          <th v-for="(c, i) in columns" :key="i" class="pa-4 text-left">{{ c.label }}</th>
+          <th v-for="(c, i) in columns" :key="i" class="pa-4 text-left">
+            {{ c.label }}
+          </th>
         </thead>
         <tbody>
           <tr v-for="r in rows" :key="r.id">
-            <td v-for="(c, i) in columns" :key="i" :class="c.class || 'pa-4 mr-2'">
-              <div
-                class="ellipsis"
-                :data-final-characters="
-                  getFinalCharacters(
-                    c.value ? c.value(r[c.field], r) : r[c.field],
-                  )
-                "
-                @load="getWidth($event)"
-              >
-                <p>
-                  {{ c.value ? c.value(r[c.field], r) : r[c.field] }}
-                </p>
-              </div>
+            <td
+              v-for="(c, i) in columns"
+              :key="i"
+              :class="`${c.class || ''} pa-4 mr-2`"
+            >
+              {{ getShortValue(c.value ? c.value(r[c.field], r) : r[c.field]) }}
             </td>
           </tr>
         </tbody>
@@ -62,14 +56,25 @@ export default {
     });
 
     return {
-      getFinalCharacters: (val) =>
-        typeof val === 'string' ? val.slice(-3) : null
-        ,
-      getWidth: (e) => {
-        console.log(e)
-        debugger;
+      getShortValue: (val) => {
+        if (!val) return;
+        if (typeof val === 'string' && window.innerWidth < 1400) {
+          if (val.length > 15) {
+            const arr = val.split('');
+            return [
+              ...arr.slice(0, 10),
+              '...',
+              ...arr.slice(arr.length - 5, arr.length),
+            ].join('');
+          }
+        }
+        return val;
       },
     };
+  },
+  mounted: function() {
+    // TODO: make this debounced
+    window.addEventListener('resize', () => this.$forceUpdate());
   },
   components: { Loading },
 };
@@ -118,26 +123,6 @@ table {
 
 td {
   border-bottom: 1px solid var(--primary-darker);
-}
-
-.ellipsis {
-  max-width: 20vw;
-  position: relative;
-}
-
-.ellipsis > p {
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  overflow: hidden;
-  width: calc(100% - 26px);
-}
-
-.ellipsis:after {
-  content: attr(data-final-characters);
-  position: absolute;
-  right: 2px;
-  top: 0;
-  z-index: 999;
 }
 
 tr:hover {
