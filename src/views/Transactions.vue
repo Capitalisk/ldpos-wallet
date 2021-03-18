@@ -32,6 +32,7 @@ export default {
         field: 'senderAddress',
         sortable: false,
         class: 'address',
+        active: true,
       },
       {
         name: 'recipientAddress',
@@ -39,6 +40,7 @@ export default {
         field: 'recipientAddress',
         sortable: false,
         class: 'address',
+        active: true,
       },
       {
         name: 'timestamp',
@@ -50,6 +52,7 @@ export default {
             dateStyle: 'short',
             timeStyle: 'short',
           }).format(new Date(val)),
+        active: true,
       },
       {
         name: 'amount',
@@ -57,6 +60,7 @@ export default {
         field: 'amount',
         sortable: false,
         value: (val) => _integerToDecimal(val),
+        active: true,
       },
       {
         name: 'fee',
@@ -64,6 +68,7 @@ export default {
         field: 'fee',
         sortable: false,
         value: (val) => _integerToDecimal(val),
+        active: true,
       },
     ]);
 

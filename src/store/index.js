@@ -71,9 +71,9 @@ export default createStore({
       state.modal.active = !state.modal.active;
     },
     toggleDarkMode(state) {
-      state.darkMode = !state.darkMode
-      document.documentElement.setAttribute('dark-theme', state.darkMode)
-    }
+      state.darkMode = !state.darkMode;
+      document.documentElement.setAttribute('dark-theme', state.darkMode);
+    },
   },
   getters: {},
   setters: {},

@@ -11,7 +11,6 @@
       <Section title="Latest transactions:" backgroundColor="white">
         <div class="force-modal-scroll">
           <TokenModal v-if="modal === TOKENMODAL" />
-          <FilterModal v-else-if="modal === FILTERMODAL" />
         </div>
       </Section>
     </div>

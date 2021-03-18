@@ -1,25 +1,32 @@
 <template>
   <div class="table flex column fixed-height">
-    <div class="header">
-      <slot name="header" class="pa-2" />
-      <h2 v-if="title" class="pa-2">{{ title }}</h2>
+    <div class="header flex justify-end pa-2">
+      <div class="mr-auto">
+        <slot name="header" />
+        <h2 v-if="title">{{ title }}</h2>
+      </div>
+      <div>
+        <Button value="Filter" @click="" />
+      </div>
     </div>
     <div class="overflow-x overflow-y flex flex-wrap column pb-2" id="table">
       <table>
         <thead>
-          <th v-for="(c, i) in columns" :key="i" class="pa-4 text-left">
-            {{ c.label }}
-          </th>
+          <template v-for="(c, i) in columns" :key="i">
+            <th v-if="c.active" class="pa-4 text-left">
+              {{ c.label }}
+            </th>
+          </template>
         </thead>
         <tbody>
           <tr v-for="r in rows" :key="r.id">
-            <td
-              v-for="(c, i) in columns"
-              :key="i"
-              :class="`${c.class || ''} pa-4 mr-2`"
-            >
-              {{ getShortValue(c.value ? c.value(r[c.field], r) : r[c.field]) }}
-            </td>
+            <template v-for="(c, i) in columns" :key="i">
+              <td :class="`${c.class || ''} pa-4 mr-2`">
+                {{
+                  getShortValue(c.value ? c.value(r[c.field], r) : r[c.field])
+                }}
+              </td>
+            </template>
           </tr>
         </tbody>
       </table>
@@ -34,9 +41,11 @@
 </template>
 
 <script>
-import { onMounted, ref, watch } from 'vue';
+import { computed, onMounted, reactive, ref, watch } from 'vue';
+import { useStore } from 'vuex';
 
 import Loading from '../parts/Loading';
+import Button from '../parts/Button';
 
 export default {
   name: 'DataTable',
@@ -55,28 +64,30 @@ export default {
       });
     });
 
-    return {
-      getShortValue: (val) => {
-        if (!val) return;
-        if (typeof val === 'string' && window.innerWidth < 1400) {
-          if (val.length > 15) {
-            const arr = val.split('');
-            return [
-              ...arr.slice(0, 10),
-              '...',
-              ...arr.slice(arr.length - 5, arr.length),
-            ].join('');
-          }
+    const getShortValue = (val) => {
+      if (!val) return;
+      if (typeof val === 'string' && window.innerWidth < 1400) {
+        if (val.length > 16) {
+          const arr = val.split('');
+          return [
+            ...arr.slice(0, 9),
+            '...',
+            ...arr.slice(arr.length - 5, arr.length),
+          ].join('');
         }
-        return val;
-      },
+      }
+      return val;
+    };
+
+    return {
+      getShortValue,
     };
   },
   mounted: function() {
     // TODO: make this debounced
     window.addEventListener('resize', () => this.$forceUpdate());
   },
-  components: { Loading },
+  components: { Loading, Button },
 };
 </script>
 
