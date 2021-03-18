@@ -8,7 +8,7 @@
     }"
     v-if="!routerLink"
   >
-    <i class="fa fa-circle-o-notch fa-spin mr-1" v-if="loading"></i>{{ value }}
+    <i class="fa fa-circle-notch fa-spin mr-1" v-if="loading"></i>{{ value }}
   </a>
   <router-link
     class="button"
