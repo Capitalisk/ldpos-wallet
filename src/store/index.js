@@ -17,6 +17,7 @@ export default createStore({
       client: null,
       connected: false,
       authenticated: false,
+      nav: false,
       login: {
         loading: false,
         error: null,
@@ -74,6 +75,7 @@ export default createStore({
       state.darkMode = !state.darkMode;
       document.documentElement.setAttribute('dark-theme', state.darkMode);
     },
+    toggleNav: (state, action) => (state.nav = action || !state.nav),
   },
   getters: {},
   setters: {},

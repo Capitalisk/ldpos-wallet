@@ -1,5 +1,8 @@
 <template>
-  <div class="navbar fullwidth">
+  <div class="navbar align-center fullwidth">
+    <div class="mr-auto">
+      <Button value="Sign in" router-link href="/login" />
+    </div>
     <div
       :class="burgerActive ? 'change cursor-pointer' : 'cursor-pointer'"
       @click="toggleBurger"
@@ -10,7 +13,9 @@
     </div>
   </div>
   <div :class="`sidebar${burgerActive ? ' sidebar-active' : ''}`">
-    <a to="/" class="first" @click="toggleModal(TOKENMODAL)"><i class="fa fa-coins mr-1" />CLSK</a>
+    <a to="/" class="first" @click="toggleModal(TOKENMODAL)"
+      ><i class="fa fa-coins mr-1" />CLSK</a
+    >
     <hr />
     <router-link to="/"><i class="fa fa-home mr-1" />DASHBOARD </router-link>
     <a @click="toWallet" :class="authenticated ? '' : 'disabled'">
@@ -35,6 +40,8 @@
 import { computed, ref } from 'vue';
 import { useStore } from 'vuex';
 
+import Button from '../parts/Button';
+
 import { TOKENMODAL } from '../modals/constants';
 import router from '../../router';
 
@@ -43,21 +50,18 @@ export default {
   setup() {
     const store = useStore();
 
-    const burgerActive = ref(false);
-
-    const toggleBurger = () => (burgerActive.value = !burgerActive.value);
-
     const toWallet = () => store.state.authenticated && router.push('/wallet');
 
     return {
       toggleModal: (type) => store.commit('toggleModal', type),
       authenticated: computed(() => store.state.authenticated),
-      toggleBurger,
-      burgerActive,
+      toggleBurger: () => store.commit('toggleNav'),
+      burgerActive: computed(() => store.state.nav),
       TOKENMODAL,
       toWallet,
     };
   },
+  components: { Button },
 };
 </script>
 
@@ -76,6 +80,8 @@ export default {
   background-color: var(--primary);
   color: var(--white);
   text-transform: uppercase;
+  box-shadow: 0px 0px 10px 2px var(--primary-darkest);
+  z-index: 1;
 }
 
 .sidebar hr {
@@ -122,11 +128,12 @@ a.disabled:hover {
     display: flex;
     width: 100%;
     justify-content: flex-end;
-    z-index: 1;
+    z-index: 2;
     padding: 0.5rem;
     right: 0;
     top: 0;
     background-color: var(--primary);
+    height: 40px;
   }
 
   .sidebar-active {
@@ -137,8 +144,8 @@ a.disabled:hover {
   }
 
   .sidebar {
-    position: relative;
-    height: 0;
+    position: absolute;
+    top: 56px;
     visibility: hidden;
     width: 100%;
     margin: 0;
