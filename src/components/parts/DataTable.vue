@@ -1,5 +1,6 @@
 <template>
   <div class="table flex column fixed-height">
+    <Progressbar :loading="loading" />
     <div class="header flex justify-end pa-2">
       <div class="mr-auto">
         <slot name="header" />
@@ -60,9 +61,6 @@
       </table>
     </div>
     <div class="footer">
-      <div v-if="loading">
-        <Loading />
-      </div>
       <slot name="header" class="pa-2" />
     </div>
   </div>
@@ -75,6 +73,7 @@ import { useStore } from 'vuex';
 import Loading from '../parts/Loading';
 import Button from '../parts/Button';
 import Popup from './Popup.vue';
+import Progressbar from './Progressbar.vue';
 
 export default {
   name: 'DataTable',
@@ -120,7 +119,7 @@ export default {
     // TODO: make this debounced
     window.addEventListener('resize', () => this.$forceUpdate());
   },
-  components: { Loading, Button, Popup },
+  components: { Loading, Button, Popup, Progressbar },
 };
 </script>
 
@@ -176,5 +175,10 @@ tr:hover {
 
 th {
   font-size: 14px;
+}
+
+.progress-indeterminate {
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
 }
 </style>
