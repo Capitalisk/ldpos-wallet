@@ -126,14 +126,16 @@ a.disabled:hover {
 @media screen and (max-width: 768px) {
   .navbar {
     display: flex;
-    width: 100%;
+    width: auto;
     justify-content: flex-end;
     z-index: 2;
     padding: 0.5rem;
+    left: 0;
     right: 0;
     top: 0;
     background-color: var(--primary);
     height: 40px;
+    position: fixed;
   }
 
   .sidebar-active {
@@ -144,7 +146,7 @@ a.disabled:hover {
   }
 
   .sidebar {
-    position: absolute;
+    position: fixed;
     top: 56px;
     visibility: hidden;
     width: 100%;

@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-gap">
+  <div class="flex flex-wrap flex-gap">
     <Section
       :loading="balance.loading"
       title="Current balance:"

@@ -44,4 +44,10 @@ export default {
   align-items: center;
   padding: 1rem 1rem;
 }
+
+@media screen and (max-width: 768px) {
+  .navbar {
+    display: none;
+  }
+}
 </style>
