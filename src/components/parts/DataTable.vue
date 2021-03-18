@@ -23,7 +23,7 @@
       <table>
         <thead>
           <template v-for="(c, i) in columns" :key="i">
-            <th v-if="c.active" class="pa-4">
+            <th v-if="c.active" class="px-2 py-4">
               <div class="flex justify-end">
                 <div class="mr-auto">
                   {{ c.label }}
@@ -51,7 +51,7 @@
         <tbody>
           <tr v-for="r in rows" :key="r.id">
             <template v-for="(c, i) in columns" :key="i">
-              <td :class="`pa-4 mr-2  ${c.class || ''}`">
+              <td :class="`px-2 py-4 mr-2  ${c.class || ''}`">
                 {{
                   getShortValue(c.value ? c.value(r[c.field], r) : r[c.field])
                 }}
@@ -167,7 +167,7 @@ table {
 
 td {
   border-bottom: 1px solid var(--primary-darker);
-  max-width: 1rem;
+  white-space: nowrap
 }
 
 tr:hover {
@@ -177,11 +177,5 @@ tr:hover {
 
 th {
   font-size: 14px;
-  max-width: 1rem;
-}
-
-.final-column {
-  width: auto;
-  text-align: right !important;
 }
 </style>
