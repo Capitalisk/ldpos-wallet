@@ -23,7 +23,26 @@
         <thead>
           <template v-for="(c, i) in columns" :key="i">
             <th v-if="c.active" class="pa-4 text-left">
-              {{ c.label }}
+              <div class="flex justify-end">
+                <div class="mr-auto">
+                  {{ c.label }}
+                </div>
+                <div
+                  v-if="c.sortable"
+                  class="cursor-pointer"
+                  @click="
+                    c.sortable &&
+                      $emit('sort', c, c.sorted === 'asc' ? 'desc' : 'asc')
+                  "
+                >
+                  <i class="fas fa-sort-up" v-if="c.sorted === 'asc'"></i>
+                  <i
+                    class="fas fa-sort-down"
+                    v-else-if="c.sorted === 'desc'"
+                  ></i>
+                  <i class="fas fa-sort" v-else></i>
+                </div>
+              </div>
             </th>
           </template>
         </thead>

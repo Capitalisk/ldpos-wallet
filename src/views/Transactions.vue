@@ -6,6 +6,7 @@
     title="Transactions"
     @getData="loadMoreTransactions"
     :loading="loading"
+    @sort="sort"
   />
 </template>
 
@@ -46,13 +47,14 @@ export default {
         name: 'timestamp',
         label: 'timestamp',
         field: 'timestamp',
-        sortable: false,
+        sortable: true,
         value: (val) =>
           new Intl.DateTimeFormat('nl-BE', {
             dateStyle: 'short',
             timeStyle: 'short',
           }).format(new Date(val)),
         active: true,
+        sorted: 'desc',
       },
       {
         name: 'amount',
@@ -79,7 +81,7 @@ export default {
       transactions.value = await store.state.client.getTransactionsByTimestamp(
         offset.value,
         50,
-        'asc',
+        'desc',
       );
 
       loading.value = false;
@@ -101,11 +103,28 @@ export default {
       loading.value = false;
     };
 
+    const sort = async (c, s) => {
+      loading.value = true;
+
+      const index = columns.value.findIndex((e) => e.field === c.field);
+      c = { ...c, sorted: s };
+      columns.value.splice(index, 1, c);
+
+      transactions.value = await store.state.client.getTransactionsByTimestamp(
+        offset.value,
+        50,
+        s,
+      );
+
+      loading.value = false;
+    };
+
     return {
       transactions,
       columns,
       loadMoreTransactions,
       loading,
+      sort,
     };
   },
   components: { DataTable, Navbar },

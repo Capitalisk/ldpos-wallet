@@ -10,6 +10,8 @@ Todo:
     ☐ Available items
     ☐ Fail safe for fire (once all data has been gathered)
       ☐ Old data === new data ? stopfetching : fetch
+    ☐ Filters
+    ☐ Sorting
   ☐ Voting
     ☐ Tests
   ☐ Transactions
