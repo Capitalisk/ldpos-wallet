@@ -6,19 +6,21 @@ Todo:
   ✔ Cursor pointer class @done(21-03-16 16:08)
   ☐ DataTable
     ☐ Tests
-    ☐ Sorting
     ☐ Available items
     ☐ Fail safe for fire (once all data has been gathered)
       ☐ Old data === new data ? stopfetching : fetch
     ☐ Filters
-    ☐ Sorting
+      ✔ Popup @done(21-03-18 17:38)
+      ☐ Implement filters
+    ✔ Sorting @done(21-03-18 17:37)
+    ☐ fire modal function with detailed data
   ☐ Voting
     ☐ Tests
-  ☐ Transactions
-    ☐ Tests
+  ✔ Transactions @done(21-03-18 17:38)
+    ✔ Tests @done(21-03-18 17:38)
   ☐ Wallet
     ☐ Tests
-    ☐ Rank + 1
+    ✔ Rank + 1 @done(21-03-18 17:38)
   ☐ Blocks
     ☐ Implement
   ☐ Accounts

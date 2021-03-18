@@ -10,7 +10,7 @@
     </div>
   </div>
   <div :class="`sidebar${burgerActive ? ' sidebar-active' : ''}`">
-    <a to="/" class="first" @click="toggleModal(TOKENMODAL)">CLSK</a>
+    <a to="/" class="first" @click="toggleModal(TOKENMODAL)"><i class="fa fa-coins mr-1" />CLSK</a>
     <hr />
     <router-link to="/"><i class="fa fa-home mr-1" />DASHBOARD </router-link>
     <a @click="toWallet" :class="authenticated ? '' : 'disabled'">
@@ -25,15 +25,8 @@
     </router-link>
     <router-link to="/"> <i class="fa fa-th-large mr-1" />BLOCKS </router-link>
     <router-link to="/"> <i class="fa fa-users mr-1" />ACCOUNTS </router-link>
-    <router-link to="/">
-      <i class="fa fa-users-cog mr-1" />DELEGATES
-    </router-link>
-    <hr />
-    <router-link to="/">
-      <i class="fa fa-signature mr-1" />SIGN MESSAGE
-    </router-link>
     <router-link to="/" class="last">
-      <i class="fa fa-check mr-1" />VERIFY MESSAGE
+      <i class="fa fa-users-cog mr-1" />DELEGATES
     </router-link>
   </div>
 </template>
