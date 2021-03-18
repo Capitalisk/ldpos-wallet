@@ -46,6 +46,7 @@ import { TOKENMODAL } from '../modals/constants';
 import router from '../../router';
 
 export default {
+  name: 'Sidebar',
   setup() {
     const store = useStore();
 
