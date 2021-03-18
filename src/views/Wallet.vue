@@ -60,7 +60,6 @@ export default {
         field: 'recipientAddress',
         sortable: false,
         value: (val) => val,
-        class: 'token-address',
       },
       {
         name: 'amount',

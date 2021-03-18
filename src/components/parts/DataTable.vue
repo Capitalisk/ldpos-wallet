@@ -7,14 +7,24 @@
     <div class="overflow-x overflow-y flex flex-wrap column pb-2" id="table">
       <table>
         <thead>
-          <th v-for="(c, i) in columns" :key="i" class="py-4">{{ c.label }}</th>
+          <th v-for="(c, i) in columns" :key="i" class="pa-4 text-left">{{ c.label }}</th>
         </thead>
         <tbody>
           <tr v-for="r in rows" :key="r.id">
-            <td v-for="(c, i) in columns" :key="i" :class="c.class || 'py-4'">
-              <p class="ellipsis">
-                {{ c.value ? c.value(r[c.field], r) : r[c.field] }}
-              </p>
+            <td v-for="(c, i) in columns" :key="i" :class="c.class || 'pa-4 mr-2'">
+              <div
+                class="ellipsis"
+                :data-final-characters="
+                  getFinalCharacters(
+                    c.value ? c.value(r[c.field], r) : r[c.field],
+                  )
+                "
+                @load="getWidth($event)"
+              >
+                <p>
+                  {{ c.value ? c.value(r[c.field], r) : r[c.field] }}
+                </p>
+              </div>
             </td>
           </tr>
         </tbody>
@@ -50,6 +60,16 @@ export default {
           emit('get-data');
       });
     });
+
+    return {
+      getFinalCharacters: (val) =>
+        typeof val === 'string' ? val.slice(-3) : null
+        ,
+      getWidth: (e) => {
+        console.log(e)
+        debugger;
+      },
+    };
   },
   components: { Loading },
 };
@@ -100,18 +120,25 @@ td {
   border-bottom: 1px solid var(--primary-darker);
 }
 
-td p.ellipsis {
+.ellipsis {
   max-width: 20vw;
+  position: relative;
+}
+
+.ellipsis > p {
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
+  width: calc(100% - 26px);
 }
 
-/* .ellipsis {
-  content: attr(data-final);
-  left: 100%;
+.ellipsis:after {
+  content: attr(data-final-characters);
+  position: absolute;
+  right: 2px;
   top: 0;
-} */
+  z-index: 999;
+}
 
 tr:hover {
   background-color: var(--primary-darker);

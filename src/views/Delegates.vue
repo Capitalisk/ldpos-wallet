@@ -39,7 +39,6 @@ export default {
         field: 'address',
         sortable: false,
         value: (val) => val,
-        class: 'token-address'
       },
       {
         name: 'updateHeight',

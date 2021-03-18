@@ -37,7 +37,6 @@ export default {
         label: 'recipientAddress',
         field: 'recipientAddress',
         sortable: false,
-        class: 'token-address',
       },
       {
         name: 'timestamp',

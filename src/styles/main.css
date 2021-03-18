@@ -63,12 +63,6 @@ table {
   width: 100%;
 }
 
-td,
-th {
-  padding: 0.25rem 1rem;
-  text-align: left;
-}
-
 th {
   border-bottom: 1px solid var(--dark);
 }
@@ -115,12 +109,24 @@ th {
   text-align: right;
 }
 
+.text-left {
+  text-align: left;
+}
+
+.text-center {
+  text-align: center;
+}
+
 .fullwidth {
   width: 100%;
 }
 
 .mr-1 {
   margin-right: 0.5rem;
+}
+
+.mr-2 {
+  margin-right: 1rem;
 }
 
 .pb-2 {
@@ -135,6 +141,15 @@ th {
 .py-4 {
   padding-top: 1.5rem;
   padding-bottom: 1.5rem;
+}
+
+.px-4 {
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
+
+.pa-4 {
+  padding: 1.5rem;
 }
 
 .ma-1 {
@@ -163,8 +178,4 @@ th {
 
 .fixed-height {
   max-height: calc(100vh - 68px - 2rem);
-}
-
-.token-address {
-  font-size: 12px;
 }
