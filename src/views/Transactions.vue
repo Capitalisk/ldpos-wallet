@@ -89,8 +89,6 @@ export default {
       if (loading.value) return;
       loading.value = true;
 
-      console.log('fire');
-
       offset.value = offset.value + 25;
       const t = await store.state.client.getTransactionsByTimestamp(
         offset.value,
