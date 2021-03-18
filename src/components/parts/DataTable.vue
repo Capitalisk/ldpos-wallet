@@ -30,6 +30,7 @@
                 </div>
                 <div
                   v-if="c.sortable"
+                  id="sorting"
                   class="cursor-pointer"
                   @click="
                     c.sortable &&

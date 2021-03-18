@@ -50,7 +50,9 @@ describe('Wallet testing', () => {
       expect(type).to.match(/password/);
     });
     cy.get('input#passphrase-0').type(PASSPHRASE);
-    cy.get('div#show').click();
+    cy.get('div#show').contains('Show').click();
+    cy.get('div#show').contains('Hide').click();
+    cy.get('div#show').contains('Show').click();
     cy.get('input#passphrase-0').should(($input) => {
       const type = $input[0].type;
       console.log($input);
