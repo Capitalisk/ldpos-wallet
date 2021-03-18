@@ -12,7 +12,8 @@
           class="flex-6 align-content-right cursor-pointer"
           id="show"
         >
-          Show
+          <span v-if="hidden"><i class="fas fa-eye-slash mr-1"></i>Show</span>
+          <span v-else><i class="fas fa-eye mr-1"></i>Hide</span>
         </div>
         <div class="flex flex-wrap">
           <div v-for="(input, i) in inputs" :key="i" class="flex align-center">
