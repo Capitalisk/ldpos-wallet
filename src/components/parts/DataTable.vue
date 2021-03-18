@@ -1,6 +1,6 @@
 <template>
   <div class="table flex column fixed-height">
-    <Progressbar :loading="loading" />
+    <Progressbar :loading="!loading" classes="table" />
     <div class="header flex justify-end pa-2">
       <div class="mr-auto">
         <slot name="header" />
@@ -176,10 +176,5 @@ tr:hover {
 
 th {
   font-size: 14px;
-}
-
-.progress-indeterminate {
-  border-top-left-radius: 5px;
-  border-top-right-radius: 5px;
 }
 </style>
