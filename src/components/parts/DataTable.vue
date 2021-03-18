@@ -1,6 +1,6 @@
 <template>
   <div class="table flex column fixed-height">
-    <Progressbar :loading="!loading" classes="table" />
+    <Progressbar :loading="loading" classes="table" />
     <div class="header flex justify-end pa-2">
       <div class="mr-auto">
         <slot name="header" />
