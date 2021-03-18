@@ -27,7 +27,9 @@ Todo:
     ☐ Implement
   ☐ Delegates (Should be the same as Voting)
     ☐ Implement
-  ☐ Sign Message
-    ☐ Implement
-  ☐ Verify Message
-    ☐ Implement
+  ☐ Modal
+    ☐ Actions
+      ☐ they should be passed together with the function to fire
+    ☐ Title
+    ☐ Loading state
+  ☐ Change between wallets
