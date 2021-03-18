@@ -1,12 +1,17 @@
 <template>
   <div class="modal-background flex justify-center align-center" v-if="active">
     <div class="wrapper">
-      <div class="close-btn cursor-pointer" style="color: var(--permanent-white)" @click="toggleModal">
+      <div
+        class="close-btn cursor-pointer"
+        style="color: var(--permanent-white)"
+        @click="toggleModal"
+      >
         &#10005;
       </div>
       <Section title="Latest transactions:" backgroundColor="white">
         <div class="force-modal-scroll">
           <TokenModal v-if="modal === TOKENMODAL" />
+          <FilterModal v-else-if="modal === FILTERMODAL" />
         </div>
       </Section>
     </div>
@@ -20,7 +25,7 @@ import { useStore } from 'vuex';
 import Section from './Section';
 
 import modals from '../modals';
-import { TOKENMODAL } from '../modals/constants';
+import * as modalConstants from '../modals/constants';
 
 export default {
   name: 'Modal',
@@ -31,7 +36,7 @@ export default {
       active: computed(() => store.state.modal.active),
       modal: computed(() => store.state.modal.type),
       toggleModal: () => store.commit('toggleModal', ''),
-      TOKENMODAL,
+      ...modalConstants,
     };
   },
   components: { Section, ...modals },

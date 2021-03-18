@@ -127,6 +127,10 @@ th {
   width: 100%;
 }
 
+.mr-auto {
+  margin-right: auto;
+}
+
 .mr-1 {
   margin-right: 0.5rem;
 }
