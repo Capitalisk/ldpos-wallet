@@ -5,3 +5,21 @@ export const _integerToDecimal = (amount) =>
   Number.isInteger(parseInt(amount))
     ? amount !== '' && (parseInt(amount) / 100000000).toString()
     : '';
+
+export const _parseDate = (d) => {
+  d = new Date(d);
+  const today = new Date();
+
+  const isToday =
+    d.getDate() == today.getDate() &&
+    d.getMonth() == today.getMonth() &&
+    d.getFullYear() == today.getFullYear();
+
+  const options = {
+    timeStyle: 'short',
+  };
+
+  if (!isToday) options.dateStyle = 'short';
+
+  return new Intl.DateTimeFormat('nl-BE', options).format(d);
+};

@@ -18,7 +18,7 @@ import { useStore } from 'vuex';
 
 import Navbar from '../components/sections/Navbar.vue';
 import DataTable from '../components/parts/DataTable.vue';
-import { _integerToDecimal } from '../utils';
+import { _integerToDecimal, _parseDate } from '../utils';
 import { TRANSACTION_MODAL } from '../components/modals/constants';
 
 export default {
@@ -51,11 +51,7 @@ export default {
         label: 'timestamp',
         field: 'timestamp',
         sortable: true,
-        value: (val) =>
-          new Intl.DateTimeFormat('nl-BE', {
-            dateStyle: 'short',
-            timeStyle: 'short',
-          }).format(new Date(val)),
+        value: (val) => _parseDate(val),
         active: true,
         sorted: 'desc',
       },

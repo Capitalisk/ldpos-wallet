@@ -38,13 +38,9 @@
       <i class="fa fa-th-large mr-1" />
       BLOCKS
     </router-link>
-    <router-link to="/accounts">
+    <router-link to="/accounts" class="last">
       <i class="fa fa-users mr-1" />
       ACCOUNTS
-    </router-link>
-    <router-link to="/" class="last">
-      <i class="fa fa-users-cog mr-1" />
-      DELEGATES
     </router-link>
   </div>
 </template>

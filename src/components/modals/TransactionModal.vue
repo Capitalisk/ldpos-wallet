@@ -4,10 +4,7 @@
     <div>{{ data.recipientAddress }}</div>
     <div>
       {{
-        new Intl.DateTimeFormat('nl-BE', {
-          dateStyle: 'short',
-          timeStyle: 'short',
-        }).format(new Date(data.timestamp))
+        _parseDate(data.timestamp)
       }}
     </div>
     <div>{{ data.blockId }}</div>
@@ -21,7 +18,7 @@
 <script>
 import { useStore } from 'vuex';
 
-import { _integerToDecimal } from '../../utils';
+import { _integerToDecimal, _parseDate } from '../../utils';
 
 export default {
   setup() {
@@ -30,6 +27,7 @@ export default {
     return {
       data: store.state.modal.data,
       integerToDecimal: _integerToDecimal,
+      parseDate: _parseDate,
     };
   },
 };
