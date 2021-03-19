@@ -60,7 +60,7 @@
                 @click="clickable ? $emit('detail', r) : ''"
               >
                 {{
-                  getShortValue(c.value ? c.value(r[c.field], r) : r[c.field])
+                  getShortValue(c.value ? c.value(r[c.field], r) : r[c.field]) || '-'
                 }}
               </td>
             </template>

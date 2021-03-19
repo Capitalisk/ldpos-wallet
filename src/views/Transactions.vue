@@ -64,7 +64,7 @@ export default {
         label: 'amount',
         field: 'amount',
         sortable: false,
-        value: (val) => `${_integerToDecimal(val)} CLSK`,
+        value: (val) => val ? `${_integerToDecimal(val)} CLSK` : null,
         active: true,
       },
       {
