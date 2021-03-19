@@ -16,7 +16,7 @@ import Loading from './components/parts/Loading';
 import Modal from './components/parts/Modal';
 import Sidebar from './components/sections/Sidebar';
 
-import { TOKENMODAL } from './components/modals/constants';
+import { TOKEN_MODAL } from './components/modals/constants';
 
 export default {
   name: 'App',
@@ -34,7 +34,7 @@ export default {
     return {
       toWallet,
       connected: computed(() => store.state.connected),
-      TOKENMODAL,
+      TOKEN_MODAL,
     };
   },
 };

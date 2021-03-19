@@ -24,7 +24,8 @@ export default createStore({
       },
       modal: {
         active: false,
-        type: '',
+        type: null,
+        data: null,
       },
       darkMode:
         window.matchMedia &&
@@ -67,9 +68,15 @@ export default createStore({
       state.connected = false;
       state.authenticated = false;
     },
-    toggleModal(state, type) {
-      state.modal.type = type;
+    toggleModal(state, { type, data }) {
       state.modal.active = !state.modal.active;
+      if (state.modal.active) {
+        state.modal.type = type;
+        state.modal.data = data;
+        return;
+      }
+        state.modal.type = null;
+        state.modal.data = null;
     },
     toggleDarkMode(state) {
       state.darkMode = !state.darkMode;

@@ -13,7 +13,7 @@ import { useStore } from 'vuex';
 
 import Input from '../parts/Input';
 export default {
-  name: 'TokenModal',
+  name: 'TOKEN_MODAL',
   setup() {
     const store = useStore();
 

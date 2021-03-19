@@ -13,7 +13,7 @@
     </div>
   </div>
   <div :class="`sidebar${burgerActive ? ' sidebar-active' : ''}`">
-    <a to="/" class="first" @click="toggleModal(TOKENMODAL)"
+    <a to="/" class="first" @click="toggleModal({ type: TOKEN_MODAL })"
       ><i class="fa fa-coins mr-1" />CLSK</a
     >
     <hr />
@@ -42,7 +42,7 @@ import { useStore } from 'vuex';
 
 import Button from '../parts/Button';
 
-import { TOKENMODAL } from '../modals/constants';
+import { TOKEN_MODAL } from '../modals/constants';
 import router from '../../router';
 
 export default {
@@ -57,7 +57,7 @@ export default {
       authenticated: computed(() => store.state.authenticated),
       toggleBurger: () => store.commit('toggleNav'),
       burgerActive: computed(() => store.state.nav),
-      TOKENMODAL,
+      TOKEN_MODAL,
       toWallet,
     };
   },

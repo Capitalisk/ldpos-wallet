@@ -57,7 +57,7 @@
                     clickable ? 'cursor-pointer' : ''
                   }`
                 "
-                @click="clickable ? $emit('detail', r.id) : ''"
+                @click="clickable ? $emit('detail', r) : ''"
               >
                 {{
                   getShortValue(c.value ? c.value(r[c.field], r) : r[c.field])

@@ -10,7 +10,8 @@
       </div>
       <Section title="Latest transactions:" backgroundColor="white">
         <div class="force-modal-scroll">
-          <TokenModal v-if="modal === TOKENMODAL" />
+          <TokenModal v-if="modal === TOKEN_MODAL" />
+          <TransactionModal v-if="modal === TRANSACTION_MODAL" />
         </div>
       </Section>
     </div>
@@ -34,7 +35,7 @@ export default {
     return {
       active: computed(() => store.state.modal.active),
       modal: computed(() => store.state.modal.type),
-      toggleModal: () => store.commit('toggleModal', ''),
+      toggleModal: () => store.commit('toggleModal'),
       ...modalConstants,
     };
   },

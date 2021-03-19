@@ -19,6 +19,7 @@ import { useStore } from 'vuex';
 import Navbar from '../components/sections/Navbar.vue';
 import DataTable from '../components/parts/DataTable.vue';
 import { _integerToDecimal } from '../utils';
+import { TRANSACTION_MODAL } from '../components/modals/constants';
 
 export default {
   name: 'Transactions',
@@ -121,8 +122,12 @@ export default {
       loading.value = false;
     };
 
-    const detail = (id) => {
-      console.log(id);
+    const detail = (transaction) => {
+      store.commit('toggleModal', {
+        type: TRANSACTION_MODAL,
+        data: transaction,
+      });
+      console.log(transaction);
     };
 
     return {
