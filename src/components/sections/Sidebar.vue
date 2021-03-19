@@ -13,25 +13,38 @@
     </div>
   </div>
   <div :class="`sidebar${burgerActive ? ' sidebar-active' : ''}`">
-    <a to="/" class="first" @click="toggleModal({ type: TOKEN_MODAL })"
-      ><i class="fa fa-coins mr-1" />CLSK</a
+    <a to="/" class="first" @click="toggleModal({ type: TOKEN_MODAL })">
+      <i class="fa fa-coins mr-1" />{{ networkSymbol }}</a
     >
     <hr />
-    <router-link to="/"><i class="fa fa-home mr-1" />DASHBOARD </router-link>
+    <router-link to="/">
+      <i class="fa fa-home mr-1" />
+      DASHBOARD
+    </router-link>
     <a @click="toWallet" :class="authenticated ? '' : 'disabled'">
-      <i class="fa fa-wallet mr-1" />WALLET
+      <i class="fa fa-wallet mr-1" />
+      WALLET
     </a>
     <router-link to="/delegates">
-      <i class="fa fa-poll mr-1" />VOTING
+      <i class="fa fa-poll mr-1" />
+      VOTING
     </router-link>
     <hr />
     <router-link to="/transactions">
-      <i class="fa fa-exchange-alt mr-1" />TRANSACTIONS
+      <i class="fa fa-exchange-alt mr-1" />
+      TRANSACTIONS
     </router-link>
-    <router-link to="/"> <i class="fa fa-th-large mr-1" />BLOCKS </router-link>
-    <router-link to="/"> <i class="fa fa-users mr-1" />ACCOUNTS </router-link>
+    <router-link to="/blocks">
+      <i class="fa fa-th-large mr-1" />
+      BLOCKS
+    </router-link>
+    <router-link to="/">
+      <i class="fa fa-users mr-1" />
+      ACCOUNTS
+    </router-link>
     <router-link to="/" class="last">
-      <i class="fa fa-users-cog mr-1" />DELEGATES
+      <i class="fa fa-users-cog mr-1" />
+      DELEGATES
     </router-link>
   </div>
 </template>
@@ -59,6 +72,7 @@ export default {
       burgerActive: computed(() => store.state.nav),
       TOKEN_MODAL,
       toWallet,
+      networkSymbol: store.state.config.networkSymbol.toUpperCase(),
     };
   },
   components: { Button },
