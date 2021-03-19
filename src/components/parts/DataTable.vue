@@ -85,11 +85,16 @@ export default {
     loading: { type: Boolean, default: false },
   },
   setup(props, { emit }) {
+    const oldData = ref([]);
+
     onMounted(() => {
       const table = document.getElementById('table');
       table.addEventListener('scroll', (event) => {
         if (table.scrollTop >= table.scrollHeight - table.offsetHeight - 20)
-          emit('get-data');
+          if (props.rows.length > oldData.value.length) {
+            oldData.value = props.rows
+            emit('get-data');
+          }
       });
     });
 
@@ -167,7 +172,7 @@ table {
 
 td {
   border-bottom: 1px solid var(--primary-darker);
-  white-space: nowrap
+  white-space: nowrap;
 }
 
 tr:hover {
