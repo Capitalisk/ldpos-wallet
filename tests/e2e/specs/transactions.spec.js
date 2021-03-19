@@ -4,15 +4,15 @@ describe('Transactions page tests', () => {
     cy.get('progress');
   });
 
-  it('should open the filter popup', () => {
-    cy.get('.button')
-      .contains('Filter')
-      .click();
-    cy.get('.popup');
-    cy.get('.button')
-      .contains('Filter')
-      .click();
-  });
+  // it('should open the filter popup', () => {
+  //   cy.get('.button')
+  //     .contains('Filter')
+  //     .click();
+  //   cy.get('.popup');
+  //   cy.get('.button')
+  //     .contains('Filter')
+  //     .click();
+  // });
 
   it('should hover a td', () => {
     cy.get('td').first().trigger('mouseover');

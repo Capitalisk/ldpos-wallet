@@ -8,7 +8,7 @@
     "build": "vue-cli-service build",
     "test:e2e": "vue-cli-service test:e2e",
     "test:e2e:record": "vue-cli-service test:e2e --headless",
-    "test:e2e:headless": "vue-cli-service test:e2e --headless --quiet"
+    "test:e2e:headless": "vue-cli-service test:e2e --headless"
   },
   "dependencies": {
     "ldpos-client": "^7.0.0",

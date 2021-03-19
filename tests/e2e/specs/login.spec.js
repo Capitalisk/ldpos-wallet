@@ -4,19 +4,6 @@ const PASSPHRASE =
   'cat ten problem setup immense lens great profit viable second risk balcony';
 
 describe('Wallet testing', () => {
-  it('Visits the app root url', () => {
-    cy.visit('/');
-    cy.get('.sidebar').contains('DASHBOARD');
-    cy.get('.sidebar').contains('WALLET');
-    cy.get('.sidebar').contains('VOTING');
-    cy.get('.sidebar').contains('TRANSACTIONS');
-    cy.get('.sidebar').contains('BLOCKS');
-    cy.get('.sidebar').contains('ACCOUNTS');
-    cy.get('.sidebar').contains('DELEGATES');
-    cy.get('.sidebar').contains('SIGN MESSAGE');
-    cy.get('.sidebar').contains('VERIFY MESSAGE');
-  });
-
   it('checks if wallet is disabled', () => {
     cy.visit('/');
     cy.get('div.sidebar')
@@ -41,8 +28,10 @@ describe('Wallet testing', () => {
   it('It clicks signin button and signs in correcly', () => {
     cy.visit('/');
 
+    cy.wait(1000);
+
     // TEST SIGNIN TYPING
-    cy.get('a.button')
+    cy.get('.navbar.flex.justify-end a.button')
       .contains('Sign in')
       .click();
     cy.get('input#passphrase-0').should(($input) => {
@@ -50,9 +39,15 @@ describe('Wallet testing', () => {
       expect(type).to.match(/password/);
     });
     cy.get('input#passphrase-0').type(PASSPHRASE);
-    cy.get('div#show').contains('Show').click();
-    cy.get('div#show').contains('Hide').click();
-    cy.get('div#show').contains('Show').click();
+    cy.get('div#show')
+      .contains('Show')
+      .click();
+    cy.get('div#show')
+      .contains('Hide')
+      .click();
+    cy.get('div#show')
+      .contains('Show')
+      .click();
     cy.get('input#passphrase-0').should(($input) => {
       const type = $input[0].type;
       console.log($input);
@@ -69,7 +64,7 @@ describe('Wallet testing', () => {
     // LOGIN
     cy.get('a.button.cursor-pointer').click();
     cy.get('a.button.cursor-pointer').contains('Hang in there...');
-    cy.wait(10000);
+    cy.wait(13000);
 
     // CHECK IF WALLET IS ENABLED
     cy.get('div.sidebar')
