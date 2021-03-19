@@ -4,7 +4,7 @@
       <div class="close-btn cursor-pointer" @click="toggleModal">
         &#10005;
       </div>
-      <Section title="Latest transactions:" backgroundColor="white">
+      <Section :title="modal" backgroundColor="white">
         <div class="force-modal-scroll">
           <TokenModal v-if="modal === TOKEN_MODAL" />
           <TransactionModal v-if="modal === TRANSACTION_MODAL" />
