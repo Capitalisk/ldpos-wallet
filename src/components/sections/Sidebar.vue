@@ -25,7 +25,7 @@
       <i class="fa fa-wallet mr-1" />
       WALLET
     </a>
-    <router-link to="/delegates">
+    <router-link to="/voting">
       <i class="fa fa-poll mr-1" />
       VOTING
     </router-link>
