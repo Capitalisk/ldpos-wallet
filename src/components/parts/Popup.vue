@@ -3,7 +3,7 @@
     <Section
       backgroundColor="primary-darkest"
       color="dark"
-      border="permanent-white"
+      border="primary-darker"
     >
       <slot />
     </Section>

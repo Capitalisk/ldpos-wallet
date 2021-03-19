@@ -16,7 +16,7 @@
   --primary-lightest: #81caff;
   --primary-lighter: #1ba7f3;
   --primary-darker: #255397; /* Better this color */
-  --primary-darkest: #0784b5;
+  --primary-darkest: var(--white);
   --permanent-white: #fff;
 }
 
@@ -194,6 +194,8 @@ th {
 .fixed-height {
   max-height: calc(100vh - 68px - 2rem);
 }
+
+/* TODO: FIX FIXED HEIGHT FOR MOBILE */
 
 .relative {
   position: relative;
