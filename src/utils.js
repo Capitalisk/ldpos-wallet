@@ -7,6 +7,7 @@ export const _integerToDecimal = (amount) =>
     : '';
 
 export const _parseDate = (d) => {
+  if (!d) return;
   d = new Date(d);
   const today = new Date();
 
