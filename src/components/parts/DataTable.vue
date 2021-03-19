@@ -51,7 +51,14 @@
         <tbody>
           <tr v-for="r in rows" :key="r.id">
             <template v-for="(c, i) in columns" :key="i">
-              <td :class="`px-2 py-4 mr-2  ${c.class || ''}`">
+              <td
+                :class="
+                  `px-2 py-4 mr-2  ${c.class || ''} ${
+                    clickable ? 'cursor-pointer' : ''
+                  }`
+                "
+                @click="clickable ? $emit('detail', r.id) : ''"
+              >
                 {{
                   getShortValue(c.value ? c.value(r[c.field], r) : r[c.field])
                 }}
@@ -83,6 +90,7 @@ export default {
     columns: { type: Array, default: () => [] },
     title: { type: String },
     loading: { type: Boolean, default: false },
+    clickable: { type: Boolean, default: false },
   },
   setup(props, { emit }) {
     const oldData = ref([]);
@@ -92,7 +100,7 @@ export default {
       table.addEventListener('scroll', (event) => {
         if (table.scrollTop >= table.scrollHeight - table.offsetHeight - 20)
           if (props.rows.length > oldData.value.length) {
-            oldData.value = props.rows
+            oldData.value = props.rows;
             emit('get-data');
           }
       });

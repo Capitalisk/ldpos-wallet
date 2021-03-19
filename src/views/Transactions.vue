@@ -7,6 +7,8 @@
     @getData="loadMoreTransactions"
     :loading="loading"
     @sort="sort"
+    clickable
+    @detail="detail"
   />
 </template>
 
@@ -119,12 +121,17 @@ export default {
       loading.value = false;
     };
 
+    const detail = (id) => {
+      console.log(id);
+    };
+
     return {
       transactions,
       columns,
       loadMoreTransactions,
       loading,
       sort,
+      detail,
     };
   },
   components: { DataTable, Navbar },
