@@ -191,7 +191,7 @@ td {
 }
 
 tr:hover {
-  background-color: var(--primary-darker);
+  background-color: var(--primary-lightest);
   color: var(--permanent-white);
 }
 

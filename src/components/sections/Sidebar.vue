@@ -116,10 +116,12 @@ a.disabled {
 
 a.disabled:hover {
   background-color: initial !important;
+  color: var(--disabled) !important;
 }
 
 .sidebar a:hover {
   background-color: var(--primary-lightest);
+  color: var(--permanent-white);
 }
 
 .first {

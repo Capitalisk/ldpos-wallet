@@ -5,6 +5,7 @@ Todo:
   ✔ Enable dark mode with vuex @done(21-03-16 16:08)
   ✔ Cursor pointer class @done(21-03-16 16:08)
   ☐ DataTable
+    ☐ Resolve scrollbar when not needed
     ✔ Tests @done(21-03-19 09:30)
     ☐ Available items
     ✔ Fail safe for fire (once all data has been gathered) @done(21-03-19 09:30)
