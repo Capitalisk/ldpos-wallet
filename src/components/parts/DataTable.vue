@@ -7,7 +7,7 @@
         <h2 v-if="title">{{ title }}</h2>
       </div>
       <div class="relative">
-        <Button value="Filter" @click="togglePopup" />
+        <Button v-if="false" value="Filter" @click="togglePopup" />
         <Popup :active="popupActive">
           <div class="flex column">
             <div>Testing this</div>
