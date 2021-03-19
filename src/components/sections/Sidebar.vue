@@ -80,7 +80,6 @@ export default {
   background-color: var(--primary);
   color: var(--white);
   text-transform: uppercase;
-  box-shadow: 0px 0px 10px 2px var(--primary-darkest);
   z-index: 1;
 }
 
@@ -153,6 +152,7 @@ a.disabled:hover {
     margin: 0;
     border-radius: var(--no-border-radius);
     opacity: 0;
+    box-shadow: 0px 0px 10px 2px var(--primary-darkest);
   }
 
   .first,
