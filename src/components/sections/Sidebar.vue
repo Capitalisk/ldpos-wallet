@@ -13,7 +13,7 @@
     </div>
   </div>
   <div :class="`sidebar${burgerActive ? ' sidebar-active' : ''}`">
-    <a to="/" class="first" @click="toggleModal({ type: TOKEN_MODAL })">
+    <a to="/" class="first" @click="toggleModal(TOKEN_MODAL)">
       <i class="fa fa-coins mr-1" />{{ networkSymbol }}</a
     >
     <hr />
@@ -62,7 +62,7 @@ export default {
     const toWallet = () => store.state.authenticated && router.push('/wallet');
 
     return {
-      toggleModal: (type) => store.commit('toggleModal', type),
+      toggleModal: (type) => store.commit('toggleModal', { type }),
       authenticated: computed(() => store.state.authenticated),
       toggleBurger: () => store.commit('toggleNav'),
       burgerActive: computed(() => store.state.nav),

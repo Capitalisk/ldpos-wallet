@@ -4,10 +4,10 @@
       <div class="close-btn cursor-pointer" @click="toggleModal">
         &#10005;
       </div>
-      <Section :title="modal" backgroundColor="white">
+      <Section :title="type" backgroundColor="white">
         <div class="force-modal-scroll">
-          <TokenModal v-if="modal === TOKEN_MODAL" />
-          <TransactionModal v-if="modal === TRANSACTION_MODAL" />
+          <TokenModal v-if="type === TOKEN_MODAL" />
+          <TransactionModal v-if="type === TRANSACTION_MODAL" />
         </div>
       </Section>
     </div>
@@ -30,7 +30,8 @@ export default {
 
     return {
       active: computed(() => store.state.modal.active),
-      modal: computed(() => store.state.modal.type),
+      type: computed(() => store.state.modal.type),
+      data: computed(() => store.state.modal.data),
       toggleModal: () => store.commit('toggleModal'),
       ...modalConstants,
     };
