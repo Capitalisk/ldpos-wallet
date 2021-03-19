@@ -3,7 +3,7 @@
     <div>{{ data.senderAddress }}</div>
     <div>{{ data.recipientAddress }}</div>
     <div>
-      {{ _parseDate(data.timestamp) }}
+      {{ parseDate(data.timestamp) }}
     </div>
     <div>{{ data.blockId }}</div>
     <div>{{ data.id }}</div>
