@@ -38,7 +38,7 @@
       <i class="fa fa-th-large mr-1" />
       BLOCKS
     </router-link>
-    <router-link to="/">
+    <router-link to="/accounts">
       <i class="fa fa-users mr-1" />
       ACCOUNTS
     </router-link>

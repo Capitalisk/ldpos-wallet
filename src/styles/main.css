@@ -188,7 +188,7 @@ th {
 }
 
 .overflow-y {
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 
 .fixed-height {

@@ -62,6 +62,7 @@
                 {{
                   getShortValue(
                     c.value ? c.value(r[c.field], r) : r[c.field],
+                    c.noWrap,
                   ) ||
                     r.default ||
                     '-'
@@ -110,9 +111,10 @@ export default {
       });
     });
 
-    const getShortValue = (val) => {
+    const getShortValue = (val, noWrap = false) => {
       if (val === 0) return val.toString();
       if (!val) return;
+      if (noWrap) return val
       if (typeof val === 'string' && window.innerWidth < 1400) {
         if (val.length > 16) {
           const arr = val.split('');

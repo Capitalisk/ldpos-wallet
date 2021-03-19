@@ -9,6 +9,7 @@ Todo:
     ☐ Available items
     ✔ Fail safe for fire (once all data has been gathered) @done(21-03-19 09:30)
       ✔ Old data === new data ? stopfetching : fetch @done(21-03-19 09:30)
+    ☐ Fail safe when data is less then defined number
     ☐ Filters
       ✔ Popup @done(21-03-18 17:38)
       ☐ Implement filters
