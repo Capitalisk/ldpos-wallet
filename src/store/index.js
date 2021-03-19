@@ -68,15 +68,10 @@ export default createStore({
       state.connected = false;
       state.authenticated = false;
     },
-    toggleModal(state, { type, data }) {
+    toggleModal(state, { type = null, data = null } = {}) {
       state.modal.active = !state.modal.active;
-      if (state.modal.active) {
-        state.modal.type = type;
-        state.modal.data = data;
-        return;
-      }
-        state.modal.type = null;
-        state.modal.data = null;
+      state.modal.type = type;
+      state.modal.data = data;
     },
     toggleDarkMode(state) {
       state.darkMode = !state.darkMode;
