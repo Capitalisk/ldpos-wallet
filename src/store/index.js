@@ -39,7 +39,6 @@ export default createStore({
       state.client = null;
       state.client = ldposClient.createClient(config);
       await state.client.connect();
-      console.log(state.client)
       state.connected = true;
     },
     async authenticate(state, passphrase) {
