@@ -64,7 +64,7 @@ export default {
         label: 'amount',
         field: 'amount',
         sortable: false,
-        value: (val) => val ? `${_integerToDecimal(val)} CLSK` : null,
+        value: (val) => (val ? `${_integerToDecimal(val)} CLSK` : null),
         active: true,
       },
       {
@@ -122,21 +122,17 @@ export default {
       loading.value = false;
     };
 
-    const detail = (transaction) => {
-      store.commit('toggleModal', {
-        type: TRANSACTION_MODAL,
-        data: transaction,
-      });
-      console.log(transaction);
-    };
-
     return {
       transactions,
       columns,
       loadMoreTransactions,
       loading,
       sort,
-      detail,
+      detail: (transaction) =>
+        store.commit('toggleModal', {
+          type: TRANSACTION_MODAL,
+          data: transaction,
+        }),
     };
   },
   components: { DataTable, Navbar },
