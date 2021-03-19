@@ -52,7 +52,7 @@ export default {
 .wrapper {
   position: relative;
   width: 75%;
-  height: 75%;
+  max-height: 75%;
 }
 
 .close-btn {
@@ -65,7 +65,7 @@ export default {
 
 .force-modal-scroll {
   overflow-y: auto;
-  height: 70vh;
+  max-height: 70vh;
 }
 
 @media screen and (max-width: 768px) {

@@ -5,6 +5,9 @@
     <div>Network Symbol:<Input v-model="config.networkSymbol" /></div>
     <div>Chain Module Name:<Input v-model="config.chainModuleName" /></div>
   </div>
+  <div class="flex justify-end">
+    <Button value="Connect" @click="connect" />
+  </div>
 </template>
 
 <script>
@@ -12,6 +15,8 @@ import { computed } from 'vue';
 import { useStore } from 'vuex';
 
 import Input from '../parts/Input';
+import Button from '../parts/Button';
+
 export default {
   name: 'TOKEN_MODAL',
   setup() {
@@ -19,8 +24,12 @@ export default {
 
     return {
       config: computed(() => store.state.config),
+      connect: async () => {
+        await store.commit('connect', store.state.config)
+        store.commit('toggleModal')
+      },
     };
   },
-  components: { Input },
+  components: { Input, Button },
 };
 </script>

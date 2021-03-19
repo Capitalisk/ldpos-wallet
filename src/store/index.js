@@ -3,7 +3,7 @@ import router from '../router';
 
 import ldposClient from 'ldpos-client';
 
-const config = {
+const defaultConfig = {
   hostname: '34.227.22.98',
   port: '7001',
   networkSymbol: 'clsk',
@@ -13,7 +13,7 @@ const config = {
 export default createStore({
   state() {
     return {
-      config,
+      config: defaultConfig,
       client: null,
       connected: false,
       authenticated: false,
@@ -33,9 +33,13 @@ export default createStore({
     };
   },
   mutations: {
-    async connect(state) {
+    async connect(state, config = defaultConfig) {
+      console.log('fire')
+      state.config = config;
+      state.client = null;
       state.client = ldposClient.createClient(config);
       await state.client.connect();
+      console.log(state.client)
       state.connected = true;
     },
     async authenticate(state, passphrase) {
