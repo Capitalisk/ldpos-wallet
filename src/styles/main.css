@@ -13,17 +13,10 @@
   --disabled: #a9a9a9;
   --permanent-white: #fff;
 
-  /* --primary: #d4f2ff;
-  --primary-lightest: #81caff;
-  --primary-lighter: #1ba7f3;
-  --primary-darker: #255397;
-  --primary-darkest: var(--white);
-  --permanent-white: #fff; */
-
   --primary: #ffffff;
   --primary-lightest: #5CCEEE;
   --primary-lighter: #24C0EB;
-  --primary-darker: #5CCEEE; /* Better this color */
+  --primary-darker: #5CCEEE;
   --primary-darkest: #031634;
 }
 
