@@ -60,7 +60,11 @@
                 @click="clickable ? $emit('detail', r) : ''"
               >
                 {{
-                  getShortValue(c.value ? c.value(r[c.field], r) : r[c.field]) || '-'
+                  getShortValue(
+                    c.value ? c.value(r[c.field], r) : r[c.field],
+                  ) ||
+                    r.default ||
+                    '-'
                 }}
               </td>
             </template>
@@ -107,6 +111,7 @@ export default {
     });
 
     const getShortValue = (val) => {
+      if (val === 0) return val.toString();
       if (!val) return;
       if (typeof val === 'string' && window.innerWidth < 1400) {
         if (val.length > 16) {
@@ -118,7 +123,7 @@ export default {
           ].join('');
         }
       }
-      return val;
+      return val.toString();
     };
 
     const popupActive = ref(false);
