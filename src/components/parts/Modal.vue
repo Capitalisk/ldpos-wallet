@@ -1,11 +1,7 @@
 <template>
   <div class="modal-background flex justify-center align-center" v-if="active">
     <div class="wrapper">
-      <div
-        class="close-btn cursor-pointer"
-        style="color: var(--permanent-white)"
-        @click="toggleModal"
-      >
+      <div class="close-btn cursor-pointer" @click="toggleModal">
         &#10005;
       </div>
       <Section title="Latest transactions:" backgroundColor="white">
@@ -63,6 +59,7 @@ export default {
   top: -3rem;
   right: 0.25rem;
   font-size: 2rem;
+  color: var(--permanent-white);
 }
 
 .force-modal-scroll {
@@ -88,6 +85,7 @@ export default {
     position: fixed;
     top: 15px;
     right: 15px;
+    color: var(--dark);
   }
 }
 </style>
