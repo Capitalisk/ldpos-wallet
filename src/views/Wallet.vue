@@ -74,6 +74,7 @@ export default {
         sortable: false,
         value: (val) => val,
         active: true,
+        class: 'address'
       },
       {
         name: 'amount',
@@ -116,6 +117,7 @@ export default {
         sortable: false,
         value: (val) => val,
         active: true,
+        class: 'address'
       },
     ]);
 

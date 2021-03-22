@@ -100,11 +100,17 @@ export default {
   },
   setup(props, { emit }) {
     const oldData = ref([]);
+    const table = ref(null);
 
     onMounted(() => {
-      const table = document.getElementById('table');
-      table.addEventListener('scroll', (event) => {
-        if (table.scrollTop >= table.scrollHeight - table.offsetHeight - 20)
+      table.value = document.getElementById('table');
+
+      table.value.addEventListener('scroll', (event) => {
+        console.log(table.value.offsetWidth);
+        if (
+          table.value.scrollTop >=
+          table.value.scrollHeight - table.value.offsetHeight - 20
+        )
           if (props.rows.length > oldData.value.length) {
             oldData.value = props.rows;
             emit('get-data');
@@ -115,8 +121,12 @@ export default {
     const getShortValue = (val, noWrap = false) => {
       if (val === 0) return val.toString();
       if (!val) return;
-      if (noWrap) return val
-      if (typeof val === 'string' && window.innerWidth < 1400) {
+      if (noWrap) return val;
+      if (
+        typeof val === 'string' &&
+        (window.innerWidth < 1400 ||
+          table.value.offsetWidth < window.innerWidth)
+      ) {
         if (val.length > 16) {
           const arr = val.split('');
           return [

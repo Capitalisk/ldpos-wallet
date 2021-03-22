@@ -34,7 +34,6 @@ export default createStore({
   },
   mutations: {
     async connect(state, config = defaultConfig) {
-      console.log('fire')
       state.config = config;
       state.client = null;
       state.client = ldposClient.createClient(config);
