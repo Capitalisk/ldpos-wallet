@@ -15,7 +15,7 @@ import AccountDetails from '../components/sections/AccountDetails';
 import Navbar from '../components/sections/Navbar';
 import DataTable from '../components/parts/DataTable';
 
-import { _transformMonetaryUnit } from '../utils';
+import { _parseDate, _transformMonetaryUnit } from '../utils';
 import router from '../router';
 
 export default {
@@ -47,7 +47,7 @@ export default {
       transactions.value = [
         ...inboundTransactions.map((t) => ({ ...t, direction: 'INBOUND' })),
         ...outboundTransactions.map((t) => ({ ...t, direction: 'OUTBOUND' })),
-      ].sort().reverse();
+      ].sort((a, b) => (a.timestamp > b.timestamp ? -1 : 1));
     });
 
     const columns = ref([
@@ -56,7 +56,7 @@ export default {
         label: 'Direction',
         field: 'direction',
         sortable: false,
-        value: (val) => val === 'INBOUND' ? 'incoming' : 'outgoing',
+        value: (val) => (val === 'INBOUND' ? 'incoming' : 'outgoing'),
         active: true,
       },
       {
@@ -80,7 +80,8 @@ export default {
         label: 'Amount',
         field: 'amount',
         sortable: false,
-        value: (val) => _transformMonetaryUnit(val, store.state.config.networkSymbol),
+        value: (val) =>
+          _transformMonetaryUnit(val, store.state.config.networkSymbol),
         active: true,
       },
       {
@@ -88,7 +89,8 @@ export default {
         label: 'Fee',
         field: 'fee',
         sortable: false,
-        value: (val) => _transformMonetaryUnit(val, store.state.config.networkSymbol),
+        value: (val) =>
+          _transformMonetaryUnit(val, store.state.config.networkSymbol),
         active: true,
       },
       {
@@ -96,7 +98,7 @@ export default {
         label: 'timestamp',
         field: 'timestamp',
         sortable: false,
-        value: (val) => val,
+        value: (val) => _parseDate(val),
         active: true,
       },
       {
