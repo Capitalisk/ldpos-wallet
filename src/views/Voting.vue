@@ -1,6 +1,11 @@
 <template>
   <Navbar />
-  <DataTable :rows="delegates" :columns="columns" title="Delegates" />
+  <DataTable
+    :rows="delegates"
+    :columns="columns"
+    title="Delegates"
+    :loading="loading"
+  />
 </template>
 
 <script>
@@ -17,6 +22,7 @@ export default {
   components: { AccountDetails, Navbar, Button, DataTable },
   setup() {
     const store = useStore();
+    const loading = ref(false);
 
     const delegates = ref(null);
 
@@ -73,6 +79,7 @@ export default {
       // vote: async () => await store.state.client.vote(),
       authenticated: computed(() => store.state.authenticated),
       columns,
+      loading,
     };
   },
 };

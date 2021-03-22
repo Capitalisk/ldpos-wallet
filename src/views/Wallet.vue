@@ -4,6 +4,7 @@
     title="Wallet transactions"
     :rows="transactions"
     :columns="columns"
+    :loading="loading"
   />
 </template>
 
@@ -22,6 +23,7 @@ export default {
   name: 'Wallet',
   setup() {
     const store = useStore();
+    const loading = ref(true)
 
     const transactions = ref([]);
 
@@ -48,6 +50,8 @@ export default {
         ...inboundTransactions.map((t) => ({ ...t, direction: 'INBOUND' })),
         ...outboundTransactions.map((t) => ({ ...t, direction: 'OUTBOUND' })),
       ].sort((a, b) => (a.timestamp > b.timestamp ? -1 : 1));
+
+      loading.value = false
     });
 
     const columns = ref([
@@ -124,6 +128,7 @@ export default {
     return {
       transactions,
       columns,
+      loading
     };
   },
   components: { AccountDetails, Navbar, DataTable },

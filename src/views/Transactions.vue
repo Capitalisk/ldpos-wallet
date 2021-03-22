@@ -18,7 +18,7 @@ import { useStore } from 'vuex';
 
 import Navbar from '../components/sections/Navbar.vue';
 import DataTable from '../components/parts/DataTable.vue';
-import { _integerToDecimal, _parseDate } from '../utils';
+import { _transformMonetaryUnit, _parseDate } from '../utils';
 import { TRANSACTION_MODAL } from '../components/modals/constants';
 
 export default {
