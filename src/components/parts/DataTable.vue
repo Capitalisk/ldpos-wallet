@@ -58,6 +58,7 @@
                   }`
                 "
                 @click="clickable ? $emit('detail', r) : ''"
+                v-if="c.active"
               >
                 {{
                   getShortValue(

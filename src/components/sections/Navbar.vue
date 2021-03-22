@@ -28,7 +28,6 @@ export default {
     return {
       authenticated: computed(() => store.state.authenticated),
       signout,
-      // darkMode: computed(() => store.state.darkMode)
       darkMode: computed({
         get: () => store.state.darkMode,
         set: (val) => store.commit('toggleDarkMode'),

@@ -3,7 +3,7 @@
   <DataTable
     :rows="transactions"
     :columns="columns"
-    title="Transactions"
+    title="All transactions on the chain"
     @getData="loadMoreTransactions"
     :loading="loading"
     @sort="sort"
@@ -60,7 +60,8 @@ export default {
         label: 'amount',
         field: 'amount',
         sortable: false,
-        value: (val) => (val ? `${_integerToDecimal(val)} CLSK` : null),
+        value: (val) =>
+          _transformMonetaryUnit(val, store.state.config.networkSymbol),
         active: true,
       },
       {
@@ -68,7 +69,8 @@ export default {
         label: 'fee',
         field: 'fee',
         sortable: false,
-        value: (val) => `${_integerToDecimal(val)} CLSK`,
+        value: (val) =>
+          _transformMonetaryUnit(val, store.state.config.networkSymbol),
         active: true,
       },
     ]);

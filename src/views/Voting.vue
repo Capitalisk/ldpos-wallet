@@ -32,6 +32,7 @@ export default {
         field: 'address',
         sortable: false,
         value: (val, r) => `#${delegates.value.indexOf(r) + 1}`,
+        active: true,
       },
       {
         name: 'address',
@@ -39,20 +40,31 @@ export default {
         field: 'address',
         sortable: false,
         value: (val) => val,
+        active: true,
       },
       {
         name: 'updateHeight',
         label: 'Height',
         field: 'updateHeight',
         sortable: false,
-        value: (val) => val,
+        value: (val) => new Intl.NumberFormat('be-NL').format(val),
+        active: true,
       },
       {
         name: 'voteWeight',
         label: 'Vote weight',
         field: 'voteWeight',
         sortable: false,
-        value: (val) => val,
+        value: (val) => new Intl.NumberFormat('be-NL').format(val),
+        active: true,
+      },
+      {
+        name: 'voteWeight',
+        label: 'Vote weight',
+        field: 'voteWeight',
+        sortable: false,
+        value: (val) => 'Vote',
+        active: store.state.authenticated,
       },
     ]);
 

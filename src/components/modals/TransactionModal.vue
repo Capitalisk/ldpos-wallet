@@ -7,8 +7,8 @@
     </div>
     <div>{{ data.blockId }}</div>
     <div>{{ data.id }}</div>
-    <div v-if="data.amount">{{ integerToDecimal(data.amount) }} CLSK</div>
-    <div>{{ integerToDecimal(data.fee) }} CLSK</div>
+    <div v-if="data.amount">{{ transformMonetaryUnit(data.amount, unit) }}</div>
+    <div>{{ transformMonetaryUnit(data.amount, unit) }} CLSK</div>
     <div>{{ data.message || '-' }}</div>
   </div>
 </template>
@@ -16,7 +16,7 @@
 <script>
 import { useStore } from 'vuex';
 
-import { _integerToDecimal, _parseDate } from '../../utils';
+import { _transformMonetaryUnit, _parseDate } from '../../utils';
 
 export default {
   setup() {
@@ -24,8 +24,9 @@ export default {
 
     return {
       data: store.state.modal.data,
-      integerToDecimal: _integerToDecimal,
+      transformMonetaryUnit: _transformMonetaryUnit,
       parseDate: _parseDate,
+      unit: store.state.config.networkSymbol,
     };
   },
 };

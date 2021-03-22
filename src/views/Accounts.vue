@@ -18,7 +18,7 @@ import { useStore } from 'vuex';
 
 import Navbar from '../components/sections/Navbar.vue';
 import DataTable from '../components/parts/DataTable.vue';
-import { _integerToDecimal } from '../utils';
+import { _transformMonetaryUnit } from '../utils';
 import { ACCOUNTS_MODAL } from '../components/modals/constants';
 
 export default {
@@ -50,7 +50,7 @@ export default {
         label: 'Balance',
         field: 'balance',
         sortable: false,
-        value: (val) => `${_integerToDecimal(val)} CLSK`,
+        value: (val) => _transformMonetaryUnit(val, store.state.config.networkSymbol),
         active: true,
         sorted: 'desc',
         noWrap: true,

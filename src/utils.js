@@ -24,3 +24,6 @@ export const _parseDate = (d) => {
 
   return new Intl.DateTimeFormat('nl-BE', options).format(d);
 };
+
+export const _transformMonetaryUnit = (amount, symbol = 'CLSK') =>
+  amount ? `${_integerToDecimal(amount)} ${symbol.toUpperCase()}` : null;

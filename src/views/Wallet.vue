@@ -1,6 +1,10 @@
 <template>
   <Navbar />
-  <DataTable title="Wallet" :rows="transactions" :columns="columns" />
+  <DataTable
+    title="Wallet transactions"
+    :rows="transactions"
+    :columns="columns"
+  />
 </template>
 
 <script>
@@ -11,18 +15,15 @@ import AccountDetails from '../components/sections/AccountDetails';
 import Navbar from '../components/sections/Navbar';
 import DataTable from '../components/parts/DataTable';
 
-import { _integerToDecimal } from '../utils';
+import { _transformMonetaryUnit } from '../utils';
 import router from '../router';
 
 export default {
-  name: 'Home',
+  name: 'Wallet',
   setup() {
     const store = useStore();
 
-    const walletAddress = ref(null);
     const transactions = ref([]);
-    const INBOUND = 'inbound';
-    const OUTBOUND = 'outbound';
 
     onMounted(async () => {
       if (!store.state.authenticated) {
@@ -30,50 +31,65 @@ export default {
         return;
       }
 
-      walletAddress.value = store.state.client.getWalletAddress();
-
-      transactions.value = await store.state.client.getTransactionsByTimestamp(
-        0,
+      const inboundTransactions = await store.state.client.getInboundTransactions(
+        store.state.client.getWalletAddress(),
+        null,
         50,
         'asc',
       );
+      const outboundTransactions = await store.state.client.getOutboundTransactions(
+        store.state.client.getWalletAddress(),
+        null,
+        50,
+        'asc',
+      );
+
+      transactions.value = [
+        ...inboundTransactions.map((t) => ({ ...t, direction: 'INBOUND' })),
+        ...outboundTransactions.map((t) => ({ ...t, direction: 'OUTBOUND' })),
+      ].sort().reverse();
     });
 
     const columns = ref([
       {
         name: 'direction',
-        label: 'direction',
+        label: 'Direction',
         field: 'direction',
         sortable: false,
-        value: (val, r) =>
-          r.recipientAddress !== walletAddress.value ? INBOUND : OUTBOUND,
+        value: (val) => val === 'INBOUND' ? 'incoming' : 'outgoing',
+        active: true,
       },
       {
         name: 'type',
-        label: 'type',
+        label: 'Type',
         field: 'type',
         sortable: false,
+        active: true,
+        noWrap: true,
       },
       {
         name: 'recipientAddress',
-        label: 'recipientAddress',
+        label: 'Recipient address',
         field: 'recipientAddress',
         sortable: false,
         value: (val) => val,
+        active: true,
       },
       {
         name: 'amount',
-        label: 'amount',
+        label: 'Amount',
         field: 'amount',
         sortable: false,
-        value: (val) => _integerToDecimal(val),
+        value: (val) => _transformMonetaryUnit(val, store.state.config.networkSymbol),
+        active: true,
       },
       {
         name: 'fee',
-        label: 'fee',
+        label: 'Fee',
         field: 'fee',
         sortable: false,
-        value: (val) => _integerToDecimal(val),
+        value: (val) => _transformMonetaryUnit(val, store.state.config.networkSymbol),
+        active: true,
       },
       {
         name: 'timestamp',
@@ -81,6 +97,7 @@ export default {
         field: 'timestamp',
         sortable: false,
         value: (val) => val,
+        active: true,
       },
       {
         name: 'message',
@@ -88,6 +105,7 @@ export default {
         field: 'message',
         sortable: false,
         value: (val) => val,
+        active: true,
       },
       {
         name: 'senderAddress',
@@ -95,11 +113,11 @@ export default {
         field: 'senderAddress',
         sortable: false,
         value: (val) => val,
+        active: true,
       },
     ]);
 
     return {
-      walletAddress,
       transactions,
       columns,
     };
