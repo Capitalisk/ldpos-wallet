@@ -23,6 +23,7 @@
       v-if="!loading || firstLoadCompleted"
       class="overflow-x overflow-y flex flex-wrap column pb-2"
       ref="table"
+      id="table"
     >
       <table>
         <thead>
