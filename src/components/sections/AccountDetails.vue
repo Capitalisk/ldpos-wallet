@@ -25,7 +25,7 @@
     >
       <ul>
         <template
-          v-for="(transaction, i) in transactions.data"
+          v-for="transaction in transactions.data"
           :key="transaction.id"
         >
           <li class="lineheight-3">
