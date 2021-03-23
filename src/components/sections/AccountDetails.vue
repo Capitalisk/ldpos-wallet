@@ -2,26 +2,30 @@
   <div class="flex flex-wrap flex-gap">
     <Section
       :loading="address.loading"
-      title="Wallet address:"
-      :needsAuthentication="true"
+      title="Wallet address"
       :error="address.error"
+      v-if="authenticated"
     >
-      <Copy :value="address.data" trim />
+      <Copy class="mb-auto" :value="address.data" trim />
+    </Section>
+    <Section v-else title="Generate a wallet:">
+      <Button value="Generate" class="mb-auto mt-4" />
     </Section>
     <Section
       :loading="balance.loading"
-      title="Current balance:"
+      title="Current balance"
       :needsAuthentication="true"
       :error="balance.error"
+      v-if="authenticated"
     >
       <h2 class="mb-auto">{{ balance.data }}</h2>
-      <Button value="Send" />
+      <Button value="Send" class="mt-4" />
     </Section>
     <Section
       :loading="transactions.loading"
-      title="Latest transactions:"
-      :needsAuthentication="true"
+      title="Latest transactions"
       :error="transactions.error"
+      v-if="authenticated"
     >
       <ul>
         <template
@@ -35,6 +39,23 @@
         </template>
       </ul>
     </Section>
+    <Section title="Quick vote:" v-if="authenticated">
+      <Input
+        v-model="vote"
+        placeholder="Wallet address"
+        backgroundColor="primary-darkest"
+        class="my-1"
+      />
+      <Button value="Vote" />
+    </Section>
+    <Section :title="`${token} Value`">
+      <ul>
+        <li>{{ token }}/USD: <strong>500 USD</strong></li>
+        <li>{{ token }}/EUR: <strong>500 EUR</strong></li>
+        <li>{{ token }}/LSK: <strong>500 LSK</strong></li>
+        <li>{{ token }}/BTC: <strong>500 BTC</strong></li>
+      </ul>
+    </Section>
   </div>
 </template>
 
@@ -46,6 +67,7 @@ import { _transformMonetaryUnit } from '../../utils.js';
 import Section from '../parts/Section';
 import Copy from '../parts/Copy';
 import Button from '../parts/Button';
+import Input from '../parts/Input';
 
 import { useStore } from 'vuex';
 
@@ -114,13 +136,18 @@ export default {
       }
     });
 
+    const vote = ref(null);
+
     return {
       balance,
       transactions,
       address,
       types,
+      vote,
+      authenticated: store.state.authenticated,
+      token: store.state.config.networkSymbol.toString().toUpperCase(),
     };
   },
-  components: { Section, Copy, Button },
+  components: { Section, Copy, Button, Input },
 };
 </script>

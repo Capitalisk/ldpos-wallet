@@ -1,6 +1,6 @@
 <template>
   <div
-    class="section"
+    class="section flex-3"
     :style="{
       backgroundColor: `var(--${backgroundColor})`,
       color: `var(--${color})`,
@@ -12,9 +12,6 @@
     <Loading v-if="loading" />
     <p v-else-if="!loading && error" class="error">
       <strong>Error:</strong><br />{{ error }}
-    </p>
-    <p v-else-if="!loading && needsAuthentication && !authenticated">
-      <strong>Not signed in</strong>
     </p>
     <div v-else class="flex column justify-end custom-height">
       <slot></slot>
@@ -34,7 +31,6 @@ export default {
     title: { type: String },
     loading: { type: Boolean },
     error: { type: String, default: null },
-    needsAuthentication: { type: Boolean, default: false },
     backgroundColor: { type: String, default: 'primary' },
     color: { type: String, default: 'dark' },
     border: { type: String, default: null },
@@ -51,17 +47,10 @@ export default {
 </script>
 
 <style scoped>
-.custom-height {
-  min-height: 170px;
-}
 
 .section {
   position: relative;
-  flex-basis: 0;
-  flex-grow: 1;
-  flex-shrink: 1;
   border-radius: var(--border-radius);
-  width: auto;
   padding: 1rem;
 }
 
@@ -74,11 +63,13 @@ ul {
   list-style-type: none;
 }
 
-div {
-  flex: 1;
-}
-
 .error {
   color: var(--danger);
+}
+
+@media screen and (max-width: 768px) {
+  .section {
+    width: 100%;
+  }
 }
 </style>

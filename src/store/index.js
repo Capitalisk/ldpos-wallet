@@ -81,11 +81,10 @@ export default createStore({
       (state.nav = action === false ? action : !state.nav),
     initiateOrRenewTimeout: (state) => {
       if (!state.authenticated) return;
-      console.log('renewing timeout');
       state.authenticationTimeout && clearTimeout(state.authenticationTimeout);
       state.authenticationTimeout = setTimeout(async () => {
         console.log('logging out 15min passed...');
-        await this.commit('deauthenticate');
+        await state.commit('deauthenticate');
       }, 15 * 1000 * 60);
     },
   },

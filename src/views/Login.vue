@@ -20,7 +20,7 @@
             <div class="input-number">{{ i + 1 }}.</div>
             <div>
               <Input
-                class="input"
+                class="mx-1"
                 v-model="input.value"
                 :type="hidden ? 'password' : 'text'"
                 :id="`passphrase-${i}`"
