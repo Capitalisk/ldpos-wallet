@@ -180,6 +180,10 @@ th {
   margin: 1rem;
 }
 
+.pl-1 {
+  padding: 0.5rem;
+}
+
 .pa-1 {
   padding: 0.5rem;
 }
@@ -208,6 +212,10 @@ th {
 
 .border-box {
   box-sizing: border-box;
+}
+
+.nowrap {
+  white-space: nowrap
 }
 
 @keyframes progress-indeterminate {

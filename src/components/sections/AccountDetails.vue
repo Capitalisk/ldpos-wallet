@@ -1,6 +1,14 @@
 <template>
   <div class="flex flex-wrap flex-gap">
     <Section
+      :loading="address.loading"
+      title="Wallet address:"
+      :needsAuthentication="true"
+      :error="address.error"
+    >
+      <Copy :value="address.data" trim />
+    </Section>
+    <Section
       :loading="balance.loading"
       title="Current balance:"
       :needsAuthentication="true"
@@ -21,23 +29,6 @@
         </li>
       </ul>
     </Section>
-    <Section
-      :loading="pendingTransactions.loading"
-      title="Pending transactions:"
-      :needsAuthentication="true"
-      :error="pendingTransactions.error"
-    >
-      <ul>
-        <li
-          v-for="pendingTransaction in pendingTransactions.data"
-          :key="pendingTransaction.id"
-        >
-          {{ pendingTransaction.type }} for CⱠ
-          {{ pendingTransaction.amount }} with a CⱠ
-          {{ pendingTransaction.fee }} fee
-        </li>
-      </ul>
-    </Section>
   </div>
 </template>
 
@@ -47,6 +38,8 @@ import { ref, onMounted } from 'vue';
 import { _integerToDecimal } from '../../utils.js';
 
 import Section from '../parts/Section';
+import Copy from '../parts/Copy';
+
 import { useStore } from 'vuex';
 
 export default {
@@ -56,12 +49,17 @@ export default {
 
     const balance = ref({ loading: true, data: null, error: null });
     const transactions = ref({ loading: true, data: null, error: null });
-    const pendingTransactions = ref({ loading: true, data: null, error: null });
+    const address = ref({ loading: true, data: null, error: null });
 
     onMounted(async () => {
       try {
         if (store.state.authenticated) {
-          const address = await store.state.client.getWalletAddress();
+          try {
+            address.value.data = await store.state.client.getWalletAddress();
+          } catch (e) {
+            address.value.error = e;
+          }
+          address.value.loading = false;
 
           try {
             const { balance: b } = await store.state.client.getAccount(address);
@@ -88,19 +86,6 @@ export default {
             transactions.value.error = err.message;
           }
           transactions.value.loading = false;
-
-          try {
-            const pT = await store.state.client.getOutboundPendingTransactions(
-              address,
-              0,
-              5,
-            );
-
-            pendingTransactions.value.data = pT;
-          } catch (err) {
-            pendingTransactions.value.error = err.message;
-          }
-          pendingTransactions.value.loading = false;
         } else {
           balance.value = { loading: false, data: null, error: null };
           transactions.value = {
@@ -108,11 +93,7 @@ export default {
             data: null,
             error: null,
           };
-          pendingTransactions.value = {
-            loading: false,
-            data: null,
-            error: null,
-          };
+          address.value = { loading: false, data: null, error: null };
         }
       } catch (e) {
         console.error(e);
@@ -122,11 +103,12 @@ export default {
     return {
       balance,
       transactions,
-      pendingTransactions,
+      address,
     };
   },
   components: {
     Section,
+    Copy,
   },
 };
 </script>
