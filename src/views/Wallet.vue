@@ -76,13 +76,30 @@ export default {
         shrinkable: false,
       },
       {
+        name: 'senderAddress',
+        label: 'Sender',
+        field: 'senderAddress',
+        sortable: false,
+        value: (val) => val,
+        active: true,
+        class: 'address',
+      },
+      {
         name: 'recipientAddress',
-        label: 'Recipient address',
+        label: 'Recipient',
         field: 'recipientAddress',
         sortable: false,
         value: (val) => val,
         active: true,
         class: 'address',
+      },
+      {
+        name: 'timestamp',
+        label: 'Date',
+        field: 'timestamp',
+        sortable: false,
+        value: (val) => _parseDate(val),
+        active: true,
       },
       {
         name: 'amount',
@@ -101,31 +118,6 @@ export default {
         value: (val) =>
           _transformMonetaryUnit(val, store.state.config.networkSymbol),
         active: true,
-      },
-      {
-        name: 'timestamp',
-        label: 'timestamp',
-        field: 'timestamp',
-        sortable: false,
-        value: (val) => _parseDate(val),
-        active: true,
-      },
-      {
-        name: 'message',
-        label: 'message',
-        field: 'message',
-        sortable: false,
-        value: (val) => val,
-        active: true,
-      },
-      {
-        name: 'senderAddress',
-        label: 'senderAddress',
-        field: 'senderAddress',
-        sortable: false,
-        value: (val) => val,
-        active: true,
-        class: 'address',
       },
     ]);
 
