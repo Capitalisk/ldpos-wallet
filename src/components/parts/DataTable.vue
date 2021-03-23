@@ -19,7 +19,11 @@
         </Popup>
       </div>
     </div>
-    <div class="overflow-x overflow-y flex flex-wrap column pb-2" id="table">
+    <div
+      v-if="!loading || firstLoadCompleted"
+      class="overflow-x overflow-y flex flex-wrap column pb-2"
+      ref="table"
+    >
       <table>
         <thead>
           <template v-for="(c, i) in columns" :key="i">
@@ -101,31 +105,35 @@ export default {
   setup(props, { emit }) {
     const oldData = ref([]);
     const table = ref(null);
+    const firstLoadCompleted = ref(false);
 
-    onMounted(() => {
-      table.value = document.getElementById('table');
-
-      table.value.addEventListener('scroll', (event) => {
-        console.log(table.value.offsetWidth);
-        if (
-          table.value.scrollTop >=
-          table.value.scrollHeight - table.value.offsetHeight - 20
-        )
-          if (props.rows.length > oldData.value.length) {
-            oldData.value = props.rows;
-            emit('get-data');
-          }
-      });
-    });
+    watch(
+      () => table.value,
+      (n) => {
+        if (firstLoadCompleted.value) return;
+        table.value.addEventListener('scroll', (event) => {
+          if (
+            table.value.scrollTop >=
+            table.value.scrollHeight - table.value.offsetHeight - 20
+          )
+            if (props.rows.length > oldData.value.length) {
+              oldData.value = props.rows;
+              emit('get-data');
+            }
+        });
+        firstLoadCompleted.value = true;
+      },
+    );
 
     const getShortValue = (val, noWrap = false) => {
       if (val === 0) return val.toString();
       if (!val) return;
       if (noWrap) return val;
       if (
+        table.value &&
         typeof val === 'string' &&
         (window.innerWidth < 1400 ||
-          table.value.offsetWidth < window.innerWidth)
+          table.value.scrollWidth > table.value.offsetWidth)
       ) {
         if (val.length > 16) {
           const arr = val.split('');
@@ -145,11 +153,9 @@ export default {
       getShortValue,
       togglePopup: () => (popupActive.value = !popupActive.value),
       popupActive,
+      table,
+      firstLoadCompleted,
     };
-  },
-  mounted: function() {
-    // TODO: make this debounced
-    window.addEventListener('resize', () => this.$forceUpdate());
   },
   components: { Loading, Button, Popup, Progressbar },
 };
