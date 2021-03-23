@@ -12,11 +12,12 @@
   --no-border-radius: 0;
   --disabled: #a9a9a9;
   --permanent-white: #fff;
+  --permanent-dark: #404549;
 
   --primary: #ffffff;
-  --primary-lightest: #5CCEEE;
-  --primary-lighter: #24C0EB;
-  --primary-darker: #5CCEEE;
+  --primary-lightest: #5cceee;
+  --primary-lighter: #24c0eb;
+  --primary-darker: #5cceee;
   --primary-darkest: #031634;
 }
 
@@ -163,6 +164,10 @@ th {
   padding-right: 1.5rem;
 }
 
+.pa-0 {
+  padding: 0;
+}
+
 .pa-4 {
   padding: 1.5rem;
 }
@@ -199,6 +204,10 @@ th {
 
 .relative {
   position: relative;
+}
+
+.border-box {
+  box-sizing: border-box;
 }
 
 @keyframes progress-indeterminate {

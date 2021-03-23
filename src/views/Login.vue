@@ -15,7 +15,7 @@
           <span v-if="hidden"><i class="fas fa-eye-slash mr-1"></i>Show</span>
           <span v-else><i class="fas fa-eye mr-1"></i>Hide</span>
         </div>
-        <div class="flex flex-wrap">
+        <div class="flex flex-wrap flex-gap pb-2">
           <div v-for="(input, i) in inputs" :key="i" class="flex align-center">
             <div class="input-number">{{ i + 1 }}.</div>
             <div>
@@ -26,6 +26,7 @@
                 :id="`passphrase-${i}`"
                 placeholder="__________"
                 @keydown="(e) => backspace(e, i)"
+                @keyup.enter="signin"
               />
             </div>
           </div>
@@ -122,7 +123,7 @@ export default {
 }
 
 .wrapped-container {
-  width: 75%;
+  width: 980px;
 }
 
 .align-content-right {
@@ -131,5 +132,17 @@ export default {
 
 .input-number {
   width: 15px;
+}
+
+@media screen and (max-width: 1300px) {
+  .wrapped-container {
+    width: 735px;
+  }
+}
+
+@media screen and (max-width: 1035px) {
+  .wrapped-container {
+    width: 75%;
+  }
 }
 </style>

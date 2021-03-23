@@ -33,7 +33,7 @@ export default {
 .input {
   border: 0;
   padding: 0.75rem;
-  margin: 0.5rem;
+  margin: 0 0.5rem;
   border-radius: var(--border-radius);
   text-decoration: none;
 }
