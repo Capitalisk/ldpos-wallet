@@ -1,10 +1,18 @@
 export const _decimalToInteger = (amount) =>
   amount !== '' && (parseFloat(amount) * 100000000).toString();
 
-export const _integerToDecimal = (amount) =>
-  Number.isInteger(parseInt(amount))
-    ? amount !== '' && (parseInt(amount) / 100000000).toFixed(2).toString()
+export const _integerToDecimal = (amount) => {
+  const parsedAmount = parseInt(amount);
+  const calculatedAmount = parsedAmount / 100000000;
+  const isInt = Number.isInteger(parsedAmount);
+  const isFloat = calculatedAmount % 1 !== 0;
+
+  return isInt
+    ? amount !== '' && isFloat
+      ? calculatedAmount.toFixed(2).toString()
+      : calculatedAmount.toString()
     : '';
+};
 
 export const _parseDate = (d) => {
   if (!d) return;
