@@ -16,7 +16,9 @@
     <p v-else-if="!loading && needsAuthentication && !authenticated">
       <strong>Not signed in</strong>
     </p>
-    <slot v-else></slot>
+    <div v-else class="flex column justify-end custom-height">
+      <slot></slot>
+    </div>
   </div>
 </template>
 
@@ -49,7 +51,12 @@ export default {
 </script>
 
 <style scoped>
+.custom-height {
+  min-height: 170px;
+}
+
 .section {
+  position: relative;
   flex-basis: 0;
   flex-grow: 1;
   flex-shrink: 1;

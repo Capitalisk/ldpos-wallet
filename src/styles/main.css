@@ -45,6 +45,12 @@ body {
   background-color: var(--white);
 }
 
+hr {
+  border: 0;
+  border-top: 1px solid rgba(12, 138, 228, 0.4);
+  border-width: 1px;
+}
+
 #app {
   display: flex;
   flex-wrap: wrap;
@@ -132,6 +138,10 @@ th {
   margin-right: auto;
 }
 
+.mb-auto {
+  margin-bottom: auto;
+}
+
 .mr-1 {
   margin-right: 0.5rem;
 }
@@ -172,12 +182,20 @@ th {
   padding: 1.5rem;
 }
 
+.py-1 {
+  padding: 0.5rem;
+}
+
 .ma-1 {
   margin: 0.5rem;
 }
 
 .ma-2 {
   margin: 1rem;
+}
+
+.my-1 {
+  margin: 0.5rem;
 }
 
 .pl-1 {
@@ -215,7 +233,15 @@ th {
 }
 
 .nowrap {
-  white-space: nowrap
+  white-space: nowrap;
+}
+
+.lineheight-3 {
+  line-height: 1.5rem;
+}
+
+.absolute {
+  position: absolute;
 }
 
 @keyframes progress-indeterminate {

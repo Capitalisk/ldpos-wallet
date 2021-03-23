@@ -93,12 +93,6 @@ export default {
   z-index: 1;
 }
 
-.sidebar hr {
-  border: 0;
-  border-top: 1px solid rgba(12, 138, 228, 0.4);
-  border-width: 1px;
-}
-
 .sidebar a {
   color: var(--dark);
   text-decoration: none;

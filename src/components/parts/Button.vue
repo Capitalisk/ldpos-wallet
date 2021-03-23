@@ -1,6 +1,6 @@
 <template>
   <a
-    class="button cursor-pointer"
+    class="button cursor-pointer text-center"
     :style="{
       backgroundColor: `var(--${backgroundColor})`,
       color: `var(--${color})`,

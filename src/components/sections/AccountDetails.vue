@@ -14,7 +14,8 @@
       :needsAuthentication="true"
       :error="balance.error"
     >
-      <h1>CⱠ {{ balance.data }}</h1>
+      <h2 class="mb-auto">{{ balance.data }}</h2>
+      <Button value="Send" />
     </Section>
     <Section
       :loading="transactions.loading"
@@ -23,10 +24,15 @@
       :error="transactions.error"
     >
       <ul>
-        <li v-for="transaction in transactions.data" :key="transaction.id">
-          {{ transaction.type }} for CⱠ {{ transaction.amount }} with a CⱠ
-          {{ transaction.fee }} fee
-        </li>
+        <template
+          v-for="(transaction, i) in transactions.data"
+          :key="transaction.id"
+        >
+          <li class="lineheight-3">
+            <i :class="`fas fa-${types[transaction.type]} mr-1`"></i>
+            {{ transaction.amount }} with a {{ transaction.fee }} fee
+          </li>
+        </template>
       </ul>
     </Section>
   </div>
@@ -35,10 +41,11 @@
 <script>
 import { ref, onMounted } from 'vue';
 
-import { _integerToDecimal } from '../../utils.js';
+import { _transformMonetaryUnit } from '../../utils.js';
 
 import Section from '../parts/Section';
 import Copy from '../parts/Copy';
+import Button from '../parts/Button';
 
 import { useStore } from 'vuex';
 
@@ -51,6 +58,11 @@ export default {
     const transactions = ref({ loading: true, data: null, error: null });
     const address = ref({ loading: true, data: null, error: null });
 
+    const types = {
+      transfer: 'exchange-alt',
+      vote: 'poll',
+    };
+
     onMounted(async () => {
       try {
         if (store.state.authenticated) {
@@ -62,8 +74,10 @@ export default {
           address.value.loading = false;
 
           try {
-            const { balance: b } = await store.state.client.getAccount(address);
-            balance.value.data = _integerToDecimal(b);
+            const { balance: b } = await store.state.client.getAccount(
+              address.value.data,
+            );
+            balance.value.data = _transformMonetaryUnit(b);
           } catch (err) {
             balance.value.error = err.message;
           }
@@ -79,8 +93,8 @@ export default {
               .filter((transaction) => transaction.amount)
               .map((transaction) => ({
                 ...transaction,
-                amount: _integerToDecimal(transaction.amount),
-                fee: _integerToDecimal(transaction.fee),
+                amount: _transformMonetaryUnit(transaction.amount),
+                fee: _transformMonetaryUnit(transaction.fee),
               }));
           } catch (err) {
             transactions.value.error = err.message;
@@ -104,11 +118,9 @@ export default {
       balance,
       transactions,
       address,
+      types,
     };
   },
-  components: {
-    Section,
-    Copy,
-  },
+  components: { Section, Copy, Button },
 };
 </script>
