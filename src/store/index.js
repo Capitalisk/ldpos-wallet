@@ -79,7 +79,8 @@ export default createStore({
       state.darkMode = !state.darkMode;
       document.documentElement.setAttribute('dark-theme', state.darkMode);
     },
-    toggleNav: (state, action) => (state.nav = action || !state.nav),
+    toggleNav: (state, action) =>
+      (state.nav = action === false ? action : !state.nav),
   },
   getters: {},
   setters: {},

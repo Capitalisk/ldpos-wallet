@@ -3,7 +3,7 @@
   <DataTable
     :rows="delegates"
     :columns="columns"
-    title="Delegates"
+    title="Voting for delegates"
     :loading="loading"
   />
 </template>
@@ -16,6 +16,7 @@ import AccountDetails from '../components/sections/AccountDetails';
 import Navbar from '../components/sections/Navbar';
 import Button from '../components/parts/Button';
 import DataTable from '../components/parts/DataTable';
+import { _integerToDecimal } from '../utils';
 
 export default {
   name: 'Home',
@@ -61,8 +62,9 @@ export default {
         label: 'Vote weight',
         field: 'voteWeight',
         sortable: false,
-        value: (val) => new Intl.NumberFormat('be-NL').format(val),
+        value: (val) => _integerToDecimal(val),
         active: true,
+        shrinkable: false,
       },
       {
         name: 'voteWeight',

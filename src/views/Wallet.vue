@@ -69,7 +69,7 @@ export default {
         field: 'type',
         sortable: false,
         active: true,
-        noWrap: true,
+        shrinkable: false,
       },
       {
         name: 'recipientAddress',

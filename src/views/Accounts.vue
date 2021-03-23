@@ -53,7 +53,7 @@ export default {
         value: (val) => _transformMonetaryUnit(val, store.state.config.networkSymbol),
         active: true,
         sorted: 'desc',
-        noWrap: true,
+        shrinkable: false,
       },
     ]);
 

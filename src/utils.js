@@ -3,7 +3,7 @@ export const _decimalToInteger = (amount) =>
 
 export const _integerToDecimal = (amount) =>
   Number.isInteger(parseInt(amount))
-    ? amount !== '' && (parseInt(amount) / 100000000).toString()
+    ? amount !== '' && (parseInt(amount) / 100000000).toFixed(2).toString()
     : '';
 
 export const _parseDate = (d) => {

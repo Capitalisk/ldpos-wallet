@@ -4,7 +4,11 @@
       <div class="close-btn cursor-pointer" @click="toggleModal">
         &#10005;
       </div>
-      <Section :title="type" backgroundColor="white">
+      <Section
+        :title="type"
+        backgroundColor="white"
+        :style="{ height: '100%', paddingTop: '2rem' }"
+      >
         <div class="force-modal-scroll">
           <TokenModal v-if="type === TOKEN_MODAL" />
           <TransactionModal v-if="type === TRANSACTION_MODAL" />
@@ -72,6 +76,7 @@ export default {
   .wrapper {
     width: 100vw;
     height: 100vh;
+    max-height: 100vh;
   }
 
   .section {

@@ -68,7 +68,7 @@
                 {{
                   getShortValue(
                     c.value ? c.value(r[c.field], r) : r[c.field],
-                    c.noWrap,
+                    c.shrinkable,
                   ) ||
                     r.default ||
                     '-'
@@ -126,10 +126,10 @@ export default {
       },
     );
 
-    const getShortValue = (val, noWrap = false) => {
+    const getShortValue = (val, shrinkable = true) => {
       if (val === 0) return val.toString();
       if (!val) return;
-      if (noWrap) return val;
+      if (!shrinkable) return val.toString();
       if (
         table.value &&
         typeof val === 'string' &&
@@ -205,7 +205,7 @@ table {
 
 td {
   border-bottom: 1px solid var(--primary-darker);
-  white-space: nowrap;
+  white-space: shrinkable;
 }
 
 tr:hover {
