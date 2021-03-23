@@ -5,6 +5,8 @@
     :rows="transactions"
     :columns="columns"
     :loading="loading"
+    clickable
+    @detail="detail"
   />
 </template>
 
@@ -19,11 +21,13 @@ import DataTable from '../components/parts/DataTable';
 import { _parseDate, _transformMonetaryUnit } from '../utils';
 import router from '../router';
 
+import { TRANSACTION_MODAL } from '../components/modals/constants';
+
 export default {
   name: 'Wallet',
   setup() {
     const store = useStore();
-    const loading = ref(true)
+    const loading = ref(true);
 
     const transactions = ref([]);
 
@@ -51,7 +55,7 @@ export default {
         ...outboundTransactions.map((t) => ({ ...t, direction: 'OUTBOUND' })),
       ].sort((a, b) => (a.timestamp > b.timestamp ? -1 : 1));
 
-      loading.value = false
+      loading.value = false;
     });
 
     const columns = ref([
@@ -78,7 +82,7 @@ export default {
         sortable: false,
         value: (val) => val,
         active: true,
-        class: 'address'
+        class: 'address',
       },
       {
         name: 'amount',
@@ -121,14 +125,19 @@ export default {
         sortable: false,
         value: (val) => val,
         active: true,
-        class: 'address'
+        class: 'address',
       },
     ]);
 
     return {
       transactions,
       columns,
-      loading
+      loading,
+      detail: (transaction) =>
+        store.commit('toggleModal', {
+          type: TRANSACTION_MODAL,
+          data: transaction,
+        }),
     };
   },
   components: { AccountDetails, Navbar, DataTable },
