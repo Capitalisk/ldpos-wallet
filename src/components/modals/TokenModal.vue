@@ -1,5 +1,5 @@
 <template>
-  <div class="flex column">
+  <div class="flex flex-gap pa-1 column">
     <div>Hostname: <Input v-model="config.hostname" /></div>
     <div>Port: <Input v-model="config.port" /></div>
     <div>Network Symbol:<Input v-model="config.networkSymbol" /></div>
