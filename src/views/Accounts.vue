@@ -31,15 +31,15 @@ export default {
     const columns = ref([
       // { name: 'type', label: 'type', field: 'type', sortable: false },
       {
-        name: 'Rank',
-        label: 'rank',
+        name: 'rank',
+        label: 'Rank',
         sortable: false,
         active: true,
         value: (val, r) => `#${accounts.value.indexOf(r) + 1}`,
       },
       {
         name: 'address',
-        label: 'address',
+        label: 'Address',
         field: 'address',
         sortable: false,
         class: 'address',

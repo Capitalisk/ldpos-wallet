@@ -32,7 +32,7 @@ export default {
       // { name: 'type', label: 'type', field: 'type', sortable: false },
       {
         name: 'height',
-        label: 'height',
+        label: 'Height',
         field: 'height',
         sortable: false,
         active: true,
@@ -55,7 +55,7 @@ export default {
       },
       {
         name: 'forgerAddress',
-        label: 'forgerAddress',
+        label: 'Forger',
         field: 'forgerAddress',
         sortable: false,
         class: 'address',

@@ -32,7 +32,7 @@ export default {
       // { name: 'type', label: 'type', field: 'type', sortable: false },
       {
         name: 'senderAddress',
-        label: 'senderAddress',
+        label: 'Sender',
         field: 'senderAddress',
         sortable: false,
         class: 'address',
@@ -40,7 +40,7 @@ export default {
       },
       {
         name: 'recipientAddress',
-        label: 'recipientAddress',
+        label: 'Recipient',
         field: 'recipientAddress',
         sortable: false,
         class: 'address',
@@ -48,7 +48,7 @@ export default {
       },
       {
         name: 'timestamp',
-        label: 'timestamp',
+        label: 'Date',
         field: 'timestamp',
         sortable: true,
         value: (val) => _parseDate(val),
@@ -57,7 +57,7 @@ export default {
       },
       {
         name: 'amount',
-        label: 'amount',
+        label: 'Amount',
         field: 'amount',
         sortable: false,
         value: (val) =>
@@ -66,7 +66,7 @@ export default {
       },
       {
         name: 'fee',
-        label: 'fee',
+        label: 'Fee',
         field: 'fee',
         sortable: false,
         value: (val) =>
