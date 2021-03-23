@@ -119,6 +119,14 @@ export default {
           _transformMonetaryUnit(val, store.state.config.networkSymbol),
         active: true,
       },
+      // {
+      //   name: 'message',
+      //   label: 'Message',
+      //   field: 'message',
+      //   sortable: false,
+      //   value: (val) => val,
+      //   active: true,
+      // },
     ]);
 
     return {
