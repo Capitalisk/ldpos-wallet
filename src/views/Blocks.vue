@@ -3,7 +3,7 @@
   <DataTable
     :rows="blocks"
     :columns="columns"
-    title="Blocks"
+    title="All blocks in the chain"
     @getData="loadMoreBlocks"
     :loading="loading"
     @sort="sort"
@@ -79,11 +79,11 @@ export default {
       if (loading.value) return;
       loading.value = true;
 
-      offset.value = offset.value + 25;
+      offset.value = offset.value + 50;
       const t = await store.client.value.getBlocksByTimestamp(
         offset.value,
-        25,
-        'asc',
+        50,
+        'desc',
       );
 
       blocks.value = [...blocks.value, ...t];

@@ -3,7 +3,7 @@
   <DataTable
     :rows="accounts"
     :columns="columns"
-    title="Accounts"
+    title="All accounts in the chain"
     @getData="loadMoreAccounts"
     :loading="loading"
     @sort="sort"
