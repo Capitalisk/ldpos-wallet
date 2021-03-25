@@ -36,6 +36,7 @@ export default createStore({
   },
   mutations: {
     async connect(state, config = defaultConfig) {
+      state.connected = false
       state.config = config;
       state.client = null;
       state.client = ldposClient.createClient(config);
@@ -60,13 +61,13 @@ export default createStore({
       state.login.loading = false;
     },
     async deauthenticate(state) {
+      this.commit('notify', 'You have been logged out automatically after being inactive for 15 minutes.')
       try {
         await state.client.disconnect();
         await this.commit('connect');
       } catch (e) {
         console.error(e);
       }
-      state.connected = false;
       state.authenticated = false;
     },
     toggleModal(state, { type = null, data = null } = {}) {
@@ -80,13 +81,12 @@ export default createStore({
     },
     toggleNav: (state, action) =>
       (state.nav = action === false ? action : !state.nav),
-    initiateOrRenewTimeout: (state) => {
-      const self = this;
+    initiateOrRenewTimeout (state) {
       if (!state.authenticated) return;
       state.authenticationTimeout && clearTimeout(state.authenticationTimeout);
       state.authenticationTimeout = setTimeout(async () => {
         console.log('logging out 15min passed...');
-        await self.commit('deauthenticate');
+        await this.commit('deauthenticate');
       }, 1 * 1000 * 60);
     },
     notify: (state, message) => {
