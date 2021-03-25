@@ -25,3 +25,6 @@ pnpm-debug.log*
 # Custom
 /tests/e2e/videos
 /tests/e2e/screenshots
+
+#Electron-builder output
+/dist_electron
