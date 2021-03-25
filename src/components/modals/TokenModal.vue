@@ -11,8 +11,7 @@
 </template>
 
 <script>
-import { computed } from 'vue';
-import { useStore } from 'vuex';
+import { computed, inject } from 'vue';
 
 import Input from '../parts/Input';
 import Button from '../parts/Button';
@@ -20,13 +19,13 @@ import Button from '../parts/Button';
 export default {
   name: 'TOKEN_MODAL',
   setup() {
-    const store = useStore();
+    const store = inject('store');
 
     return {
       config: computed(() => store.state.config),
       connect: async () => {
-        await store.commit('connect', store.state.config)
-        store.commit('toggleModal')
+        await store.connect(store.state.config);
+        store.toggleModal();
       },
     };
   },

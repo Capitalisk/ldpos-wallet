@@ -9,9 +9,10 @@
 </template>
 
 <script>
-import { onMounted, ref, watch, computed } from 'vue';
-import { useStore } from 'vuex';
+import { onMounted, ref, watch, computed, inject } from 'vue';
+
 import router from './router';
+import store from './store';
 
 import Loading from './components/parts/Loading';
 import Modal from './components/parts/Modal';
@@ -23,10 +24,9 @@ import { TOKEN_MODAL } from './components/modals/constants';
 export default {
   name: 'App',
   components: { Loading, Modal, Sidebar, Notification },
+  provide: { store },
   setup() {
-    const store = useStore();
-
-    onMounted(async () => await store.commit('connect'));
+    onMounted(async () => await store.connect());
     onMounted(() =>
       document.documentElement.setAttribute('dark-theme', store.state.darkMode),
     );

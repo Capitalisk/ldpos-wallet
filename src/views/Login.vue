@@ -44,8 +44,7 @@
 </template>
 
 <script>
-import { computed, onBeforeUpdate, ref, watch, watchEffect } from 'vue';
-import { useStore } from 'vuex';
+import { computed, inject, onBeforeUpdate, ref, watch, watchEffect } from 'vue';
 
 import router from '../router';
 import Input from '../components/parts/Input';
@@ -54,7 +53,7 @@ import Button from '../components/parts/Button';
 export default {
   name: 'Login',
   setup() {
-    const store = useStore();
+    const store = inject('store');
 
     const inputs = ref(new Array(12));
     const activeIndex = ref(0);
@@ -104,7 +103,7 @@ export default {
       hidden,
       inputs,
       toggleHidden: () => (hidden.value = !hidden.value),
-      signin: async () => await store.commit('authenticate', passphrase.value),
+      signin: async () => await store.authenticate(passphrase.value),
       backspace,
       loading: computed(() => store.state.login.loading),
       error: computed(() => store.state.login.error),

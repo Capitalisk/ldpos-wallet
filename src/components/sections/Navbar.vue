@@ -11,8 +11,7 @@
 </template>
 
 <script>
-import { computed } from 'vue';
-import { useStore } from 'vuex';
+import { computed, inject } from 'vue';
 
 import Button from '../parts/Button';
 import Connected from '../parts/Connected.vue';
@@ -21,16 +20,14 @@ import Switch from '../parts/Switch.vue';
 export default {
   name: 'Navbar',
   setup() {
-    const store = useStore();
-
-    const signout = async () => store.commit('deauthenticate');
+    const store = inject('store');
 
     return {
       authenticated: computed(() => store.state.authenticated),
-      signout,
+      signout: async () => store.deauthenticate(),
       darkMode: computed({
         get: () => store.state.darkMode,
-        set: (val) => store.commit('toggleDarkMode'),
+        set: (val) => store.toggleDarkMode(),
       }),
     };
   },

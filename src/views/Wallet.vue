@@ -11,8 +11,7 @@
 </template>
 
 <script>
-import { onMounted, ref } from 'vue';
-import { useStore } from 'vuex';
+import { inject, onMounted, ref } from 'vue';
 
 import AccountDetails from '../components/sections/AccountDetails';
 import Navbar from '../components/sections/Navbar';
@@ -26,7 +25,7 @@ import { TRANSACTION_MODAL } from '../components/modals/constants';
 export default {
   name: 'Wallet',
   setup() {
-    const store = useStore();
+    const store = inject('store');
     const loading = ref(true);
 
     const transactions = ref([]);
@@ -37,14 +36,14 @@ export default {
         return;
       }
 
-      const inboundTransactions = await store.state.client.getInboundTransactions(
-        store.state.client.getWalletAddress(),
+      const inboundTransactions = await store.client.value.getInboundTransactions(
+        store.client.value.getWalletAddress(),
         null,
         50,
         'asc',
       );
-      const outboundTransactions = await store.state.client.getOutboundTransactions(
-        store.state.client.getWalletAddress(),
+      const outboundTransactions = await store.client.value.getOutboundTransactions(
+        store.client.value.getWalletAddress(),
         null,
         50,
         'asc',
@@ -134,7 +133,7 @@ export default {
       columns,
       loading,
       detail: (transaction) =>
-        store.commit('toggleModal', {
+        store.toggleModal({
           type: TRANSACTION_MODAL,
           data: transaction,
         }),

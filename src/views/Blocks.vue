@@ -13,8 +13,7 @@
 </template>
 
 <script>
-import { computed, onMounted, ref } from 'vue';
-import { useStore } from 'vuex';
+import { computed, inject, onMounted, ref } from 'vue';
 
 import Navbar from '../components/sections/Navbar.vue';
 import DataTable from '../components/parts/DataTable.vue';
@@ -24,7 +23,7 @@ import { BLOCKS_MODAL } from '../components/modals/constants';
 export default {
   name: 'Blocks',
   setup() {
-    const store = useStore();
+    const store = inject('store');
 
     const blocks = ref(null);
 
@@ -67,7 +66,7 @@ export default {
     const loading = ref(true);
 
     onMounted(async () => {
-      blocks.value = await store.state.client.getBlocksByTimestamp(
+      blocks.value = await store.client.value.getBlocksByTimestamp(
         offset.value,
         50,
         'desc',
@@ -81,7 +80,7 @@ export default {
       loading.value = true;
 
       offset.value = offset.value + 25;
-      const t = await store.state.client.getBlocksByTimestamp(
+      const t = await store.client.value.getBlocksByTimestamp(
         offset.value,
         25,
         'asc',
@@ -99,7 +98,7 @@ export default {
       c = { ...c, sorted: s };
       columns.value.splice(index, 1, c);
 
-      blocks.value = await store.state.client.getBlocksByTimestamp(
+      blocks.value = await store.client.value.getBlocksByTimestamp(
         offset.value,
         50,
         s,
@@ -115,7 +114,7 @@ export default {
       loading,
       sort,
       detail: (block) =>
-        store.commit('toggleModal', {
+        store.toggleModal({
           type: BLOCKS_MODAL,
           data: block,
         }),

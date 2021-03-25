@@ -1,7 +1,7 @@
-import { createStore } from 'vuex';
-import router from '../router';
-
+import { reactive, readonly, ref } from 'vue';
 import ldposClient from 'ldpos-client';
+
+import router from '../router';
 
 const defaultConfig = {
   hostname: '34.227.22.98',
@@ -10,94 +10,98 @@ const defaultConfig = {
   chainModuleName: 'capitalisk_chain',
 };
 
-export default createStore({
-  state() {
-    return {
-      config: defaultConfig,
-      client: null,
-      connected: false,
-      authenticated: false,
-      authenticationTimeout: null,
-      nav: false,
-      login: {
-        loading: false,
-        error: null,
-      },
-      modal: {
-        active: false,
-        type: null,
-        data: null,
-      },
-      darkMode:
-        window.matchMedia &&
-        window.matchMedia('(prefers-color-scheme: dark)').matches,
-      notifications: [],
-    };
+const client = ref(null);
+
+const state = reactive({
+  config: defaultConfig,
+  connected: false,
+  authenticated: false,
+  authenticationTimeout: null,
+  nav: false,
+  login: {
+    loading: false,
+    error: null,
   },
-  mutations: {
-    async connect(state, config = defaultConfig) {
-      state.connected = false
-      state.config = config;
-      state.client = null;
-      state.client = ldposClient.createClient(config);
-      await state.client.connect();
-      state.connected = true;
-    },
-    async authenticate(state, passphrase) {
-      state.login.loading = true;
-      try {
-        state.authenticated = false;
-
-        await state.client.connect({ passphrase });
-        state.authenticated = true;
-
-        this.commit('initiateOrRenewTimeout');
-
-        if (state.authenticated) router.push('/');
-      } catch (e) {
-        state.login.error = e.message;
-        state.authenticated = false;
-      }
-      state.login.loading = false;
-    },
-    async deauthenticate(state) {
-      this.commit('notify', 'You have been logged out automatically after being inactive for 15 minutes.')
-      try {
-        await state.client.disconnect();
-        await this.commit('connect');
-      } catch (e) {
-        console.error(e);
-      }
-      state.authenticated = false;
-    },
-    toggleModal(state, { type = null, data = null } = {}) {
-      state.modal.active = !state.modal.active;
-      state.modal.type = type;
-      state.modal.data = data;
-    },
-    toggleDarkMode(state) {
-      state.darkMode = !state.darkMode;
-      document.documentElement.setAttribute('dark-theme', state.darkMode);
-    },
-    toggleNav: (state, action) =>
-      (state.nav = action === false ? action : !state.nav),
-    initiateOrRenewTimeout (state) {
-      if (!state.authenticated) return;
-      state.authenticationTimeout && clearTimeout(state.authenticationTimeout);
-      state.authenticationTimeout = setTimeout(async () => {
-        console.log('logging out 15min passed...');
-        await this.commit('deauthenticate');
-      }, 1 * 1000 * 60);
-    },
-    notify: (state, message) => {
-      if (state.notifications.includes(message)) return;
-      if (state.notifications.length === 3) state.notifications.splice(0, 1);
-      state.notifications.push(message);
-    },
-    denotify: (state, index) => {
-      state.notifications.splice(index, 1);
-    },
+  modal: {
+    active: false,
+    type: null,
+    data: null,
   },
-  getters: {},
-  setters: {},
+  darkMode:
+    window.matchMedia &&
+    window.matchMedia('(prefers-color-scheme: dark)').matches,
+  notifications: [],
 });
+
+export default {
+  state: readonly(state),
+  client,
+  async connect(config = defaultConfig) {
+    state.connected = false;
+    state.config = config;
+    client.value = null;
+    client.value = ldposClient.createClient(config);
+    try {
+      await client.value.connect();
+    } catch (e) {
+      console.error(e);
+    }
+    state.connected = true;
+  },
+  async authenticate(passphrase) {
+    state.login.loading = true;
+    try {
+      state.authenticated = false;
+
+      await client.connect({ passphrase });
+      state.authenticated = true;
+
+      this.commit('initiateOrRenewTimeout');
+
+      if (state.authenticated) router.push('/');
+    } catch (e) {
+      state.login.error = e.message;
+      state.authenticated = false;
+    }
+    state.login.loading = false;
+  },
+  async deauthenticate() {
+    this.commit(
+      'notify',
+      'You have been logged out automatically after being inactive for 15 minutes.',
+    );
+    try {
+      await client.disconnect();
+      await this.commit('connect');
+    } catch (e) {
+      console.error(e);
+    }
+    state.authenticated = false;
+  },
+  toggleModal({ type = null, data = null } = {}) {
+    state.modal.active = !state.modal.active;
+    state.modal.type = type;
+    state.modal.data = data;
+  },
+  toggleDarkMode() {
+    state.darkMode = !state.darkMode;
+    document.documentElement.setAttribute('dark-theme', state.darkMode);
+  },
+  toggleNav: (action) => (state.nav = action === false ? action : !state.nav),
+  initiateOrRenewTimeout() {
+    if (!state.authenticated) return;
+    state.authenticationTimeout && clearTimeout(state.authenticationTimeout);
+    state.authenticationTimeout = setTimeout(async () => {
+      console.log('logging out 15min passed...');
+      await this.commit('deauthenticate');
+    }, 1 * 1000 * 60);
+  },
+  notify: (message) => {
+    if (state.notifications.includes(message)) return;
+    if (state.notifications.length === 3) state.notifications.splice(0, 1);
+    state.notifications.push(message);
+  },
+  denotify: (index) => {
+    state.notifications.splice(index, 1);
+  },
+};

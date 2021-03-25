@@ -14,19 +14,18 @@
 </template>
 
 <script>
-import { useStore } from 'vuex';
-
+import { computed, inject } from 'vue';
 import { _transformMonetaryUnit, _parseDate } from '../../utils';
 
 export default {
   setup() {
-    const store = useStore();
+    const store = inject('store');
 
     return {
-      data: store.state.modal.data,
+      data: computed(() => store.state.modal.data),
+      unit: computed(() => store.state.config.networkSymbol),
       transformMonetaryUnit: _transformMonetaryUnit,
       parseDate: _parseDate,
-      unit: store.state.config.networkSymbol,
     };
   },
 };

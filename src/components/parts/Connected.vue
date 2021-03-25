@@ -11,18 +11,17 @@
 </template>
 
 <script>
-import { computed } from 'vue';
-import { useStore } from 'vuex';
+import { computed, inject } from 'vue';
 
 export default {
   name: 'Connected',
   setup() {
-    const store = useStore();
+    const store = inject('store');
 
     return {
       connected: computed(() => store.state.connected),
       network: computed(() =>
-        store.state.client.options.port === '7001' ? 'Testnet' : 'Mainnet',
+        store.client.value.options.port === '7001' ? 'Testnet' : 'Mainnet',
       ),
     };
   },

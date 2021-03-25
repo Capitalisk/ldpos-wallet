@@ -13,8 +13,7 @@
 </template>
 
 <script>
-import { computed, onMounted, ref } from 'vue';
-import { useStore } from 'vuex';
+import { computed, inject, onMounted, ref } from 'vue';
 
 import Navbar from '../components/sections/Navbar.vue';
 import DataTable from '../components/parts/DataTable.vue';
@@ -24,7 +23,7 @@ import { ACCOUNTS_MODAL } from '../components/modals/constants';
 export default {
   name: 'Accounts',
   setup() {
-    const store = useStore();
+    const store = inject('store');
 
     const accounts = ref(null);
 
@@ -50,7 +49,8 @@ export default {
         label: 'Balance',
         field: 'balance',
         sortable: false,
-        value: (val) => _transformMonetaryUnit(val, store.state.config.networkSymbol),
+        value: (val) =>
+          _transformMonetaryUnit(val, store.state.config.networkSymbol),
         active: true,
         sorted: 'desc',
         shrinkable: false,
@@ -61,7 +61,7 @@ export default {
     const loading = ref(true);
 
     onMounted(async () => {
-      accounts.value = await store.state.client.getAccountsByBalance(
+      accounts.value = await store.client.value.getAccountsByBalance(
         offset.value,
         50,
         'desc',
@@ -75,7 +75,7 @@ export default {
       loading.value = true;
 
       offset.value = offset.value + 25;
-      const t = await store.state.client.getAccountsByBalance(
+      const t = await store.client.value.getAccountsByBalance(
         offset.value,
         25,
         'asc',
@@ -93,7 +93,7 @@ export default {
       c = { ...c, sorted: s };
       columns.value.splice(index, 1, c);
 
-      accounts.value = await store.state.client.getAccountsByBalance(
+      accounts.value = await store.client.value.getAccountsByBalance(
         offset.value,
         50,
         s,
@@ -109,7 +109,7 @@ export default {
       loading,
       sort,
       detail: (account) =>
-        store.commit('toggleModal', {
+        store.toggleModal({
           type: ACCOUNTS_MODAL,
           data: account,
         }),

@@ -9,8 +9,7 @@
 </template>
 
 <script>
-import { onMounted, ref, computed } from 'vue';
-import { useStore } from 'vuex';
+import { onMounted, ref, computed, inject } from 'vue';
 
 import AccountDetails from '../components/sections/AccountDetails';
 import Navbar from '../components/sections/Navbar';
@@ -22,14 +21,14 @@ export default {
   name: 'Home',
   components: { AccountDetails, Navbar, Button, DataTable },
   setup() {
-    const store = useStore();
+    const store = inject('store');
     const loading = ref(false);
 
     const delegates = ref(null);
 
     onMounted(
       async () =>
-        (delegates.value = await store.state.client.getForgingDelegates()),
+        (delegates.value = await store.client.value.getForgingDelegates()),
     );
 
     const columns = ref([
@@ -78,7 +77,7 @@ export default {
 
     return {
       delegates,
-      // vote: async () => await store.state.client.vote(),
+      // vote: async () => await store.client.value.vote(),
       authenticated: computed(() => store.state.authenticated),
       columns,
       loading,
