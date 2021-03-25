@@ -5,6 +5,7 @@
     <Loading v-if="!connected" />
     <router-view v-else />
   </div>
+  <Notification />
 </template>
 
 <script>
@@ -14,13 +15,14 @@ import router from './router';
 
 import Loading from './components/parts/Loading';
 import Modal from './components/parts/Modal';
+import Notification from './components/parts/Notification';
 import Sidebar from './components/sections/Sidebar';
 
 import { TOKEN_MODAL } from './components/modals/constants';
 
 export default {
   name: 'App',
-  components: { Loading, Modal, Sidebar },
+  components: { Loading, Modal, Sidebar, Notification },
   setup() {
     const store = useStore();
 

@@ -31,6 +31,7 @@ export default createStore({
       darkMode:
         window.matchMedia &&
         window.matchMedia('(prefers-color-scheme: dark)').matches,
+      notifications: [],
     };
   },
   mutations: {
@@ -80,12 +81,21 @@ export default createStore({
     toggleNav: (state, action) =>
       (state.nav = action === false ? action : !state.nav),
     initiateOrRenewTimeout: (state) => {
+      const self = this;
       if (!state.authenticated) return;
       state.authenticationTimeout && clearTimeout(state.authenticationTimeout);
       state.authenticationTimeout = setTimeout(async () => {
         console.log('logging out 15min passed...');
-        await state.commit('deauthenticate');
-      }, 15 * 1000 * 60);
+        await self.commit('deauthenticate');
+      }, 1 * 1000 * 60);
+    },
+    notify: (state, message) => {
+      if (state.notifications.includes(message)) return;
+      if (state.notifications.length === 3) state.notifications.splice(0, 1);
+      state.notifications.push(message);
+    },
+    denotify: (state, index) => {
+      state.notifications.splice(index, 1);
     },
   },
   getters: {},
