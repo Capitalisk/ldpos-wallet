@@ -87,7 +87,6 @@
 
 <script>
 import { computed, onMounted, reactive, ref, watch } from 'vue';
-import { useStore } from 'vuex';
 
 import Loading from '../parts/Loading';
 import Button from '../parts/Button';

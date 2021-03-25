@@ -60,7 +60,7 @@
 </template>
 
 <script>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, inject, computed } from 'vue';
 
 import { _transformMonetaryUnit } from '../../utils.js';
 
@@ -69,12 +69,10 @@ import Copy from '../parts/Copy';
 import Button from '../parts/Button';
 import Input from '../parts/Input';
 
-import { useStore } from 'vuex';
-
 export default {
   name: 'InfoBar',
   setup() {
-    const store = useStore();
+    const store = inject('store');
 
     const balance = ref({ loading: true, data: null, error: null });
     const transactions = ref({ loading: true, data: null, error: null });
@@ -89,14 +87,14 @@ export default {
       try {
         if (store.state.authenticated) {
           try {
-            address.value.data = await store.state.client.getWalletAddress();
+            address.value.data = await store.client.value.getWalletAddress();
           } catch (e) {
             address.value.error = e;
           }
           address.value.loading = false;
 
           try {
-            const { balance: b } = await store.state.client.getAccount(
+            const { balance: b } = await store.client.value.getAccount(
               address.value.data,
             );
             balance.value.data = _transformMonetaryUnit(b);
@@ -106,7 +104,7 @@ export default {
           balance.value.loading = false;
 
           try {
-            const t = await store.state.client.getTransactionsByTimestamp(
+            const t = await store.client.value.getTransactionsByTimestamp(
               0,
               10,
             );
@@ -144,8 +142,8 @@ export default {
       address,
       types,
       vote,
-      authenticated: store.state.authenticated,
-      token: store.state.config.networkSymbol.toString().toUpperCase(),
+      authenticated: computed(() => store.state.authenticated),
+      token: computed(() => store.state.config.networkSymbol.toString().toUpperCase()),
     };
   },
   components: { Section, Copy, Button, Input },

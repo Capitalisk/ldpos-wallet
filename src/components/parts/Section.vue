@@ -20,8 +20,7 @@
 </template>
 
 <script>
-import { computed, onMounted, ref } from 'vue';
-import { useStore } from 'vuex';
+import { computed, inject, onMounted, ref } from 'vue';
 
 import Loading from './Loading';
 
@@ -37,7 +36,7 @@ export default {
   },
   components: { Loading },
   setup() {
-    const store = useStore();
+    const store = inject('store');
 
     return {
       authenticated: computed(() => store.state.authenticated),

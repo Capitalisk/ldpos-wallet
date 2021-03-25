@@ -13,8 +13,7 @@
 </template>
 
 <script>
-import { computed, onMounted, ref } from 'vue';
-import { useStore } from 'vuex';
+import { computed, inject, onMounted, ref } from 'vue';
 
 import Navbar from '../components/sections/Navbar.vue';
 import DataTable from '../components/parts/DataTable.vue';
@@ -24,7 +23,7 @@ import { TRANSACTION_MODAL } from '../components/modals/constants';
 export default {
   name: 'Transactions',
   setup() {
-    const store = useStore();
+    const store = inject('store');
 
     const transactions = ref(null);
 
@@ -79,7 +78,7 @@ export default {
     const loading = ref(true);
 
     onMounted(async () => {
-      transactions.value = await store.state.client.getTransactionsByTimestamp(
+      transactions.value = await store.client.value.getTransactionsByTimestamp(
         offset.value,
         50,
         'desc',
@@ -93,7 +92,7 @@ export default {
       loading.value = true;
 
       offset.value = offset.value + 25;
-      const t = await store.state.client.getTransactionsByTimestamp(
+      const t = await store.client.value.getTransactionsByTimestamp(
         offset.value,
         25,
         'asc',
@@ -111,7 +110,7 @@ export default {
       c = { ...c, sorted: s };
       columns.value.splice(index, 1, c);
 
-      transactions.value = await store.state.client.getTransactionsByTimestamp(
+      transactions.value = await store.client.value.getTransactionsByTimestamp(
         offset.value,
         50,
         s,
@@ -127,7 +126,7 @@ export default {
       loading,
       sort,
       detail: (transaction) =>
-        store.commit('toggleModal', {
+        store.toggleModal({
           type: TRANSACTION_MODAL,
           data: transaction,
         }),

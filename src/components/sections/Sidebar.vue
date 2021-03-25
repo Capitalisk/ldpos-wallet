@@ -46,8 +46,7 @@
 </template>
 
 <script>
-import { computed, ref } from 'vue';
-import { useStore } from 'vuex';
+import { computed, inject, ref } from 'vue';
 
 import Button from '../parts/Button';
 
@@ -57,18 +56,18 @@ import router from '../../router';
 export default {
   name: 'Sidebar',
   setup() {
-    const store = useStore();
+    const store = inject('store');
 
     const toWallet = () => store.state.authenticated && router.push('/wallet');
 
     return {
-      toggleModal: (type) => store.commit('toggleModal', { type }),
       authenticated: computed(() => store.state.authenticated),
-      toggleBurger: () => store.commit('toggleNav'),
       burgerActive: computed(() => store.state.nav),
+      networkSymbol: computed(() =>store.state.config.networkSymbol.toUpperCase()),
       TOKEN_MODAL,
       toWallet,
-      networkSymbol: store.state.config.networkSymbol.toUpperCase(),
+      toggleModal: (type) => store.toggleModal({ type }),
+      toggleBurger: () => store.toggleNav(),
     };
   },
   components: { Button },

@@ -19,13 +19,12 @@
 </template>
 
 <script>
-import { onBeforeUpdate, onUpdated, ref } from 'vue';
-import { useStore } from 'vuex';
+import { inject, onBeforeUpdate, onUpdated, ref } from 'vue';
 
 export default {
   name: 'Notification',
   setup() {
-    const store = useStore();
+    const store = inject('store');
     const divs = ref([]);
 
     onBeforeUpdate(() => (divs.value = []));
@@ -44,11 +43,10 @@ export default {
       notifications,
       divs,
       notify: () =>
-        store.commit(
-          'notify',
+        store.notify(
           'Your session was automatically ended after being inactive for 15 minutes.',
         ),
-      denotify: (i) => store.commit('denotify', i),
+      denotify: (i) => store.denotify(i),
     };
   },
 };

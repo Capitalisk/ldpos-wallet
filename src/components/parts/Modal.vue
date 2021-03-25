@@ -19,8 +19,7 @@
 </template>
 
 <script>
-import { computed } from 'vue';
-import { useStore } from 'vuex';
+import { computed, inject } from 'vue';
 
 import Section from './Section';
 
@@ -30,13 +29,13 @@ import * as modalConstants from '../modals/constants';
 export default {
   name: 'Modal',
   setup() {
-    const store = useStore();
+    const store = inject('store');
 
     return {
       active: computed(() => store.state.modal.active),
       type: computed(() => store.state.modal.type),
       data: computed(() => store.state.modal.data),
-      toggleModal: () => store.commit('toggleModal'),
+      toggleModal: () => store.toggleModal(),
       ...modalConstants,
     };
   },
