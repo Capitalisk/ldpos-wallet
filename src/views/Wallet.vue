@@ -20,7 +20,7 @@ import DataTable from '../components/parts/DataTable';
 import { _parseDate, _transformMonetaryUnit } from '../utils';
 import router from '../router';
 
-import { TRANSACTION_MODAL } from '../components/modals/constants';
+import { DETAIL_MODAL } from '../components/modals/constants';
 
 export default {
   name: 'Wallet',
@@ -134,7 +134,7 @@ export default {
       loading,
       detail: (transaction) =>
         store.toggleModal({
-          type: TRANSACTION_MODAL,
+          type: DETAIL_MODAL,
           data: transaction,
         }),
     };

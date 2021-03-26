@@ -35,3 +35,11 @@ export const _parseDate = (d) => {
 
 export const _transformMonetaryUnit = (amount, symbol = 'CLSK') =>
   amount ? `${_integerToDecimal(amount)} ${symbol.toUpperCase()}` : null;
+
+export const _splitCamelCaseWords = (str) => {
+  if (typeof str !== 'string') return [];
+  return str.replace(/([A-Z]+|[A-Z]?[a-z]+)(?=[A-Z]|\b)/g, '!$&').split('!');
+};
+
+export const _capitalize = (str) =>
+  str.replace(/(?:^|\s|[-"'([{])+\S/g, (c) => c.toUpperCase());

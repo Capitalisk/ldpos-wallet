@@ -18,7 +18,7 @@ import { computed, inject, onMounted, ref } from 'vue';
 import Navbar from '../components/sections/Navbar.vue';
 import DataTable from '../components/parts/DataTable.vue';
 import { _transformMonetaryUnit, _parseDate } from '../utils';
-import { TRANSACTION_MODAL } from '../components/modals/constants';
+import { DETAIL_MODAL } from '../components/modals/constants';
 
 export default {
   name: 'Transactions',
@@ -127,7 +127,7 @@ export default {
       sort,
       detail: (transaction) =>
         store.toggleModal({
-          type: TRANSACTION_MODAL,
+          type: DETAIL_MODAL,
           data: transaction,
         }),
     };

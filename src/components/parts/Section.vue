@@ -1,6 +1,6 @@
 <template>
   <div
-    class="section flex-3"
+    class="section flex-3 pa-2"
     :style="{
       backgroundColor: `var(--${backgroundColor})`,
       color: `var(--${color})`,

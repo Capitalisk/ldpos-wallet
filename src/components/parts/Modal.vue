@@ -11,7 +11,7 @@
       >
         <div class="force-modal-scroll">
           <TokenModal v-if="type === TOKEN_MODAL" />
-          <TransactionModal v-if="type === TRANSACTION_MODAL" />
+          <DetailModal v-if="type === DETAIL_MODAL" />
         </div>
       </Section>
     </div>
@@ -60,7 +60,7 @@ export default {
 
 .close-btn {
   position: absolute;
-  top: -var(--unit-6);
+  top: -3rem;
   right: 0.25rem;
   font-size: var(--unit-4);
   color: var(--permanent-white);

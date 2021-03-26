@@ -18,7 +18,7 @@ import { computed, inject, onMounted, ref } from 'vue';
 import Navbar from '../components/sections/Navbar.vue';
 import DataTable from '../components/parts/DataTable.vue';
 import { _integerToDecimal, _parseDate } from '../utils';
-import { BLOCKS_MODAL } from '../components/modals/constants';
+import { DETAIL_MODAL } from '../components/modals/constants';
 
 export default {
   name: 'Blocks',
@@ -115,7 +115,7 @@ export default {
       sort,
       detail: (block) =>
         store.toggleModal({
-          type: BLOCKS_MODAL,
+          type: DETAIL_MODAL,
           data: block,
         }),
     };

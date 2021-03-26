@@ -4,12 +4,12 @@
       <div>Sign in with a Passphrase</div>
       <div>Don’t have an account yet? Create it now</div>
       <div class="flex justify-end flex-wrap">
-        <div class="flex-6">
+        <div class="flex-6 pa-2">
           Passphrase
         </div>
         <div
           @click="toggleHidden"
-          class="flex-6 align-content-right cursor-pointer"
+          class="flex-6 pa-2 align-content-right cursor-pointer"
           id="show"
         >
           <span v-if="hidden"><i class="fas fa-eye-slash mr-1"></i>Show</span>

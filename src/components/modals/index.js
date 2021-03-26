@@ -1,7 +1,7 @@
 import TokenModal from './TokenModal.vue';
-import TransactionModal from './TransactionModal.vue';
+import DetailModal from './DetailModal.vue';
 
 export default {
   TokenModal,
-  TransactionModal,
+  DetailModal,
 };

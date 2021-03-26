@@ -18,7 +18,7 @@ import { computed, inject, onMounted, ref } from 'vue';
 import Navbar from '../components/sections/Navbar.vue';
 import DataTable from '../components/parts/DataTable.vue';
 import { _transformMonetaryUnit } from '../utils';
-import { ACCOUNTS_MODAL } from '../components/modals/constants';
+import { DETAIL_MODAL } from '../components/modals/constants';
 
 export default {
   name: 'Accounts',
@@ -110,7 +110,7 @@ export default {
       sort,
       detail: (account) =>
         store.toggleModal({
-          type: ACCOUNTS_MODAL,
+          type: DETAIL_MODAL,
           data: account,
         }),
     };
