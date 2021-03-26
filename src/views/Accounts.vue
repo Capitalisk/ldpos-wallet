@@ -1,14 +1,10 @@
 <template>
   <Navbar />
   <DataTable
-    :rows="accounts"
     :columns="columns"
     title="All accounts in the chain"
-    @getData="loadMoreAccounts"
-    :loading="loading"
-    @sort="sort"
     clickable
-    @detail="detail"
+    fn="getAccountsByBalance"
   />
 </template>
 
@@ -25,8 +21,6 @@ export default {
   setup() {
     const store = inject('store');
 
-    const accounts = ref(null);
-
     const columns = ref([
       // { name: 'type', label: 'type', field: 'type', sortable: false },
       {
@@ -34,7 +28,8 @@ export default {
         label: 'Rank',
         sortable: false,
         active: true,
-        value: (val, r) => `#${accounts.value.indexOf(r) + 1}`,
+        // TODO: Fix this
+        // value: (val, r, rows) => `#${rows.value.indexOf(r) + 1}`,
       },
       {
         name: 'address',
@@ -57,62 +52,8 @@ export default {
       },
     ]);
 
-    const offset = ref(0);
-    const loading = ref(true);
-
-    onMounted(async () => {
-      accounts.value = await store.client.value.getAccountsByBalance(
-        offset.value,
-        50,
-        'desc',
-      );
-
-      loading.value = false;
-    });
-
-    const loadMoreAccounts = async () => {
-      if (loading.value) return;
-      loading.value = true;
-
-      offset.value = offset.value + 25;
-      const t = await store.client.value.getAccountsByBalance(
-        offset.value,
-        25,
-        'asc',
-      );
-
-      accounts.value = [...accounts.value, ...t];
-
-      loading.value = false;
-    };
-
-    const sort = async (c, s) => {
-      loading.value = true;
-
-      const index = columns.value.findIndex((e) => e.field === c.field);
-      c = { ...c, sorted: s };
-      columns.value.splice(index, 1, c);
-
-      accounts.value = await store.client.value.getAccountsByBalance(
-        offset.value,
-        50,
-        s,
-      );
-
-      loading.value = false;
-    };
-
     return {
-      accounts,
       columns,
-      loadMoreAccounts,
-      loading,
-      sort,
-      detail: (account) =>
-        store.toggleModal({
-          type: DETAIL_MODAL,
-          data: account,
-        }),
     };
   },
   components: { DataTable, Navbar },

@@ -2,11 +2,9 @@
   <Navbar />
   <DataTable
     title="Wallet transactions"
-    :rows="transactions"
     :columns="columns"
-    :loading="loading"
     clickable
-    @detail="detail"
+    :fn="fn"
   />
 </template>
 
@@ -26,11 +24,8 @@ export default {
   name: 'Wallet',
   setup() {
     const store = inject('store');
-    const loading = ref(true);
 
-    const transactions = ref([]);
-
-    onMounted(async () => {
+    const getWallet = async () => {
       if (!store.state.authenticated) {
         router.push('/');
         return;
@@ -49,13 +44,13 @@ export default {
         'asc',
       );
 
-      transactions.value = [
+      const transactions = [
         ...inboundTransactions.map((t) => ({ ...t, direction: 'INBOUND' })),
         ...outboundTransactions.map((t) => ({ ...t, direction: 'OUTBOUND' })),
       ].sort((a, b) => (a.timestamp > b.timestamp ? -1 : 1));
 
-      loading.value = false;
-    });
+      return Promise.resolve(transactions);
+    };
 
     const columns = ref([
       {
@@ -129,14 +124,8 @@ export default {
     ]);
 
     return {
-      transactions,
       columns,
-      loading,
-      detail: (transaction) =>
-        store.toggleModal({
-          type: DETAIL_MODAL,
-          data: transaction,
-        }),
+      fn: getWallet,
     };
   },
   components: { AccountDetails, Navbar, DataTable },

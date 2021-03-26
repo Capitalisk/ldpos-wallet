@@ -98,11 +98,11 @@ import Progressbar from './Progressbar.vue';
 export default {
   name: 'DataTable',
   props: {
-    rows: { type: Array, default: () => [] },
+    rows: { type: Array, default: null },
     columns: { type: Array, default: () => [] },
     title: { type: String },
     clickable: { type: Boolean, default: false },
-    fn: { type: String, default: () => {} },
+    fn: { type: [String, Function], default: null },
     limit: { type: Number, default: 50 },
     order: { type: String, default: 'desc' },
     offset: { type: Number, default: 0 },
@@ -110,7 +110,7 @@ export default {
   setup(props, { emit }) {
     const store = inject('store');
 
-    const rows = ref(props.rows);
+    const rows = ref([]);
     const oldData = ref([]);
     const table = ref(null);
     const firstLoadCompleted = ref(false);
@@ -120,23 +120,33 @@ export default {
     const offset = ref(props.offset);
 
     onMounted(async () => {
-      if (!props.rows) {
+      if (props.fn) {
         try {
-          rows.value = await store.client.value[props.fn](
-            offset.value,
-            limit.value,
-            order.value,
-          );
+          if (typeof props.fn === 'string') {
+            rows.value = await store.client.value[props.fn](
+              offset.value,
+              limit.value,
+              order.value,
+            );
+          } else if (typeof props.fn === 'function') {
+            rows.value = await props.fn();
+          } else {
+            throw new Error(
+              `fn should be a function or string, not a ${typeof props.fn}`,
+            );
+          }
         } catch (e) {
           console.log(e);
         }
+      } else {
+        rows.value = props.rows;
       }
 
       loading.value = false;
     });
 
     const loadMore = async () => {
-      if (!props.rows) {
+      if (props.fn) {
         if (loading.value) return;
         loading.value = true;
 
@@ -173,6 +183,7 @@ export default {
     watch(
       () => table.value,
       (n) => {
+        if (!props.fn) return;
         if (firstLoadCompleted.value) return;
         table.value.addEventListener('scroll', (event) => {
           if (

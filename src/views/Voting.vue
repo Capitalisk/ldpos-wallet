@@ -1,11 +1,6 @@
 <template>
   <Navbar />
-  <DataTable
-    :rows="delegates"
-    :columns="columns"
-    title="Voting for delegates"
-    :loading="loading"
-  />
+  <DataTable :columns="columns" title="Voting for delegates" :fn="fn" />
 </template>
 
 <script>
@@ -22,14 +17,6 @@ export default {
   components: { AccountDetails, Navbar, Button, DataTable },
   setup() {
     const store = inject('store');
-    const loading = ref(false);
-
-    const delegates = ref(null);
-
-    onMounted(
-      async () =>
-        (delegates.value = await store.client.value.getForgingDelegates()),
-    );
 
     const columns = ref([
       {
@@ -37,7 +24,8 @@ export default {
         label: 'Rank',
         field: 'address',
         sortable: false,
-        value: (val, r) => `#${delegates.value.indexOf(r) + 1}`,
+        // TODO: Resolve this
+        // value: (val, r) => `#${delegates.value.indexOf(r) + 1}`,
         active: true,
       },
       {
@@ -76,11 +64,10 @@ export default {
     ]);
 
     return {
-      delegates,
       // vote: async () => await store.client.value.vote(),
       authenticated: computed(() => store.state.authenticated),
       columns,
-      loading,
+      fn: async () => await store.client.value.getForgingDelegates(),
     };
   },
 };
