@@ -37,10 +37,7 @@
                   v-if="c.sortable"
                   id="sorting"
                   class="cursor-pointer"
-                  @click="
-                    c.sortable &&
-                      $emit('sort', c, c.sorted === 'asc' ? 'desc' : 'asc')
-                  "
+                  @click="c.sortable && sort(c)"
                 >
                   <i class="fas fa-sort-up" v-if="c.sorted === 'asc'"></i>
                   <i
@@ -118,23 +115,30 @@ export default {
     const limit = ref(props.limit);
     const order = ref(props.order);
     const offset = ref(props.offset);
+    const columns = ref(props.columns);
+
+    const getData = async () => {
+      if (typeof props.fn === 'string') {
+        rows.value = await store.client.value[props.fn](
+          offset.value,
+          limit.value,
+          order.value,
+        );
+      } else if (typeof props.fn === 'function') {
+        rows.value = await props.fn();
+      } else {
+        throw new Error(
+          `fn should be a function or string, not a ${typeof props.fn}`,
+        );
+      }
+
+      return rows.value;
+    };
 
     onMounted(async () => {
       if (props.fn) {
         try {
-          if (typeof props.fn === 'string') {
-            rows.value = await store.client.value[props.fn](
-              offset.value,
-              limit.value,
-              order.value,
-            );
-          } else if (typeof props.fn === 'function') {
-            rows.value = await props.fn();
-          } else {
-            throw new Error(
-              `fn should be a function or string, not a ${typeof props.fn}`,
-            );
-          }
+          await getData();
         } catch (e) {
           console.log(e);
         }
@@ -151,11 +155,7 @@ export default {
         loading.value = true;
 
         offset.value = offset.value + 25;
-        const d = await store.client.value[props.fn](
-          offset.value,
-          limit.value,
-          order.value,
-        );
+        const d = await getData();
 
         rows.value = [...rows.value, ...d];
       }
@@ -165,17 +165,18 @@ export default {
 
     // TODO: Sort the existing array without a new call
     const sort = async (c) => {
+      if (loading.value) return;
+
       loading.value = true;
 
+      order.value = c.sorted === 'asc' ? 'desc' : 'asc';
+
+      // TODO: This will be for filtering
       const index = columns.value.findIndex((e) => e.field === c.field);
-      c = { ...c, sorted: s };
+      c = { ...c, sorted: order.value };
       columns.value.splice(index, 1, c);
 
-      transactions.value = await store.client.value[props.fn](
-        offset.value,
-        props.limit,
-        order,
-      );
+      await getData();
 
       loading.value = false;
     };
@@ -229,7 +230,9 @@ export default {
       table,
       firstLoadCompleted,
       rows,
+      columns,
       getShortValue,
+      sort,
       togglePopup: () => (popupActive.value = !popupActive.value),
       detail: (data) =>
         store.toggleModal({
