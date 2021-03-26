@@ -62,7 +62,7 @@
                     clickable ? 'cursor-pointer' : ''
                   }`
                 "
-                @click="clickable ? $emit('detail', r) : ''"
+                @click="clickable ? detail(r) : ''"
                 v-if="c.active"
               >
                 {{
@@ -86,7 +86,9 @@
 </template>
 
 <script>
-import { computed, onMounted, reactive, ref, watch } from 'vue';
+import { computed, inject, onMounted, reactive, ref, watch } from 'vue';
+
+import { DETAIL_MODAL } from '../modals/constants';
 
 import Loading from '../parts/Loading';
 import Button from '../parts/Button';
@@ -99,13 +101,74 @@ export default {
     rows: { type: Array, default: () => [] },
     columns: { type: Array, default: () => [] },
     title: { type: String },
-    loading: { type: Boolean, default: false },
     clickable: { type: Boolean, default: false },
+    fn: { type: String, default: () => {} },
+    limit: { type: Number, default: 50 },
+    order: { type: String, default: 'desc' },
+    offset: { type: Number, default: 0 },
   },
   setup(props, { emit }) {
+    const store = inject('store');
+
+    const rows = ref(props.rows);
     const oldData = ref([]);
     const table = ref(null);
     const firstLoadCompleted = ref(false);
+    const loading = ref(true);
+    const limit = ref(props.limit);
+    const order = ref(props.order);
+    const offset = ref(props.offset);
+
+    onMounted(async () => {
+      if (!props.rows) {
+        try {
+          rows.value = await store.client.value[props.fn](
+            offset.value,
+            limit.value,
+            order.value,
+          );
+        } catch (e) {
+          console.log(e);
+        }
+      }
+
+      loading.value = false;
+    });
+
+    const loadMore = async () => {
+      if (!props.rows) {
+        if (loading.value) return;
+        loading.value = true;
+
+        offset.value = offset.value + 25;
+        const d = await store.client.value[props.fn](
+          offset.value,
+          limit.value,
+          order.value,
+        );
+
+        rows.value = [...rows.value, ...d];
+      }
+
+      loading.value = false;
+    };
+
+    // TODO: Sort the existing array without a new call
+    const sort = async (c) => {
+      loading.value = true;
+
+      const index = columns.value.findIndex((e) => e.field === c.field);
+      c = { ...c, sorted: s };
+      columns.value.splice(index, 1, c);
+
+      transactions.value = await store.client.value[props.fn](
+        offset.value,
+        props.limit,
+        order,
+      );
+
+      loading.value = false;
+    };
 
     watch(
       () => table.value,
@@ -116,9 +179,9 @@ export default {
             table.value.scrollTop >=
             table.value.scrollHeight - table.value.offsetHeight - 20
           )
-            if (props.rows.length > oldData.value.length) {
-              oldData.value = props.rows;
-              emit('get-data');
+            if (rows.value.length > oldData.value.length) {
+              oldData.value = rows.value;
+              loadMore();
             }
         });
         firstLoadCompleted.value = true;
@@ -150,11 +213,18 @@ export default {
     const popupActive = ref(false);
 
     return {
-      getShortValue,
-      togglePopup: () => (popupActive.value = !popupActive.value),
+      loading,
       popupActive,
       table,
       firstLoadCompleted,
+      rows,
+      getShortValue,
+      togglePopup: () => (popupActive.value = !popupActive.value),
+      detail: (data) =>
+        store.toggleModal({
+          type: DETAIL_MODAL,
+          data,
+        }),
     };
   },
   components: { Loading, Button, Popup, Progressbar },
