@@ -56,7 +56,7 @@ export default {
       await client.value.connect({ passphrase });
       state.authenticated = true;
 
-      this.commit('initiateOrRenewTimeout');
+      this.initiateOrRenewTimeout();
 
       if (state.authenticated) router.push('/');
     } catch (e) {
@@ -67,13 +67,12 @@ export default {
     state.login.loading = false;
   },
   async deauthenticate() {
-    this.commit(
-      'notify',
+    this.notify(
       'You have been logged out automatically after being inactive for 15 minutes.',
     );
     try {
       await client.disconnect();
-      await this.commit('connect');
+      await this.connect();
     } catch (e) {
       console.error(e);
     }
@@ -94,7 +93,7 @@ export default {
     state.authenticationTimeout && clearTimeout(state.authenticationTimeout);
     state.authenticationTimeout = setTimeout(async () => {
       console.log('logging out 15min passed...');
-      await this.commit('deauthenticate');
+      await this.deauthenticate();
     }, 1 * 1000 * 60);
   },
   notify: (message) => {
