@@ -26,7 +26,7 @@ export default {
 <style scoped>
 .popup {
   position: absolute;
-  transform: translateY(1rem);
+  transform: translateY(var(--unit-2));
   right: 0;
   min-width: 300px;
 }

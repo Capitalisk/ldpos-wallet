@@ -42,7 +42,7 @@ export default {
 a.button {
   display: block;
   border: 0;
-  padding: 0.5rem 2.5rem;
+  padding: var(--unit-1) var(--unit-5);
   border-radius: var(--border-radius);
   text-decoration: none;
 }

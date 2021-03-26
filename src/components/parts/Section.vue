@@ -50,11 +50,11 @@ export default {
 .section {
   position: relative;
   border-radius: var(--border-radius);
-  padding: 1rem;
+  padding: var(--unit-2);
 }
 
 h4 {
-  margin-bottom: 0.5rem;
+  margin-bottom: var(--unit-1);
   color: var(--primary-darker);
 }
 

@@ -38,7 +38,7 @@ export default {
 <style scoped>
 .navbar {
   align-items: center;
-  padding: 1rem 1rem;
+  padding: var(--unit-2) var(--unit-2);
 }
 
 @media screen and (max-width: 768px) {

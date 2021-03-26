@@ -38,6 +38,6 @@ export default {
 }
 
 .connection {
-  padding: 0 0.5rem;
+  padding: 0 var(--unit-1);
 }
 </style>

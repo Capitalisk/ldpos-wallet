@@ -47,7 +47,7 @@ export default {
 
 .main-content {
   margin-left: 285px;
-  padding: 1rem 1rem 1rem 0;
+  padding: var(--unit-2) var(--unit-2) var(--unit-2) 0;
   width: calc(100% - 285px);
   box-sizing: border-box;
 }
@@ -57,7 +57,7 @@ export default {
     margin-left: 0;
     margin-top: 50px;
     width: 100%;
-    padding: 1rem 0;
+    padding: var(--unit-2) 0;
   }
 }
 </style>

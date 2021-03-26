@@ -83,7 +83,7 @@ export default {
   position: fixed;
   width: 250px;
   padding: 0;
-  margin: 1rem;
+  margin: var(--unit-2);
   border-radius: var(--border-radius);
   /* background: linear-gradient(-30deg, var(--primary), var(--primary-lightest)); */
   background-color: var(--primary);
@@ -95,7 +95,7 @@ export default {
 .sidebar a {
   color: var(--dark);
   text-decoration: none;
-  padding: 1rem;
+  padding: var(--unit-2);
   display: block;
   font-size: 12px;
   cursor: pointer;
@@ -133,7 +133,7 @@ a.disabled:hover {
     width: auto;
     justify-content: flex-end;
     z-index: 2;
-    padding: 0.5rem;
+    padding: var(--unit-1);
     left: 0;
     right: 0;
     top: 0;

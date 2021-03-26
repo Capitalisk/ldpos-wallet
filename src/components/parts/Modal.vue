@@ -7,7 +7,7 @@
       <Section
         :title="type"
         backgroundColor="white"
-        :style="{ height: '100%', paddingTop: '2rem' }"
+        :style="{ height: '100%', paddingTop: 'var(--unit-4)' }"
       >
         <div class="force-modal-scroll">
           <TokenModal v-if="type === TOKEN_MODAL" />
@@ -60,9 +60,9 @@ export default {
 
 .close-btn {
   position: absolute;
-  top: -3rem;
+  top: -var(--unit-6);
   right: 0.25rem;
-  font-size: 2rem;
+  font-size: var(--unit-4);
   color: var(--permanent-white);
 }
 
