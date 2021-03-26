@@ -53,13 +53,14 @@ export default {
     try {
       state.authenticated = false;
 
-      await client.connect({ passphrase });
+      await client.value.connect({ passphrase });
       state.authenticated = true;
 
       this.commit('initiateOrRenewTimeout');
 
       if (state.authenticated) router.push('/');
     } catch (e) {
+      console.error(e);
       state.login.error = e.message;
       state.authenticated = false;
     }
