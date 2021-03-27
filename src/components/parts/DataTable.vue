@@ -21,7 +21,7 @@
     </div>
     <div
       v-if="!loading || firstLoadCompleted"
-      class="overflow-x overflow-y flex flex-wrap column pb-2"
+      class="overflow-x overflow-y flex flex-wrap column"
       ref="table"
       id="table"
     >
@@ -288,7 +288,7 @@ table {
 
 td {
   border-bottom: 1px solid var(--primary-darker);
-  white-space: shrinkable;
+  white-space: nowrap;
 }
 
 tr:hover {
