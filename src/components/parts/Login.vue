@@ -1,17 +1,17 @@
 <template>
-  <div class="flex justify-end flex-wrap">
+  <div class="flex justify-center flex-wrap">
     <div class="flex-6 pa-2">
       Passphrase
     </div>
     <div
       @click="toggleHidden"
-      class="flex-6 pa-2 align-content-right cursor-pointer"
+      class="flex-6 pa-2 text-right cursor-pointer"
       id="show"
     >
       <span v-if="hidden"><i class="fas fa-eye-slash mr-1"></i>Show</span>
       <span v-else><i class="fas fa-eye mr-1"></i>Hide</span>
     </div>
-    <div class="flex flex-wrap flex-gap pb-2">
+    <div class="login flex flex-wrap flex-gap justify-center pb-2">
       <div v-for="(input, i) in inputs" :key="i" class="flex align-center">
         <div class="input-number">{{ i + 1 }}.</div>
         <div>
@@ -113,30 +113,10 @@ export default {
 
 <style scoped>
 .login {
-  height: 95vh;
-}
-
-.wrapped-container {
-  width: 980px;
-}
-
-.align-content-right {
-  text-align: right;
+  max-width: 980px;
 }
 
 .input-number {
   width: 15px;
-}
-
-@media screen and (max-width: 1300px) {
-  .wrapped-container {
-    width: 735px;
-  }
-}
-
-@media screen and (max-width: 1035px) {
-  .wrapped-container {
-    width: 75%;
-  }
 }
 </style>
