@@ -71,7 +71,7 @@ export default {
       'You have been logged out automatically after being inactive for 15 minutes.',
     );
     try {
-      await client.disconnect();
+      await client.value.disconnect();
       await this.connect();
     } catch (e) {
       console.error(e);

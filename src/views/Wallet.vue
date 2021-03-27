@@ -11,7 +11,6 @@
 <script>
 import { inject, onMounted, ref } from 'vue';
 
-import AccountDetails from '../components/sections/AccountDetails';
 import Navbar from '../components/sections/Navbar';
 import DataTable from '../components/parts/DataTable';
 
@@ -128,7 +127,7 @@ export default {
       fn: getWallet,
     };
   },
-  components: { AccountDetails, Navbar, DataTable },
+  components: { Navbar, DataTable },
 };
 </script>
 

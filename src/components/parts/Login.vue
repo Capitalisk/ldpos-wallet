@@ -1,35 +1,30 @@
 <template>
-  <div class="login flex column fullwidth justify-center align-center">
-    <div class="wrapped-container">
-      <div>Sign in with a Passphrase</div>
-      <div>Don’t have an account yet? Create it now</div>
-      <div class="flex justify-end flex-wrap">
-        <div class="flex-6 pa-2">
-          Passphrase
-        </div>
-        <div
-          @click="toggleHidden"
-          class="flex-6 pa-2 align-content-right cursor-pointer"
-          id="show"
-        >
-          <span v-if="hidden"><i class="fas fa-eye-slash mr-1"></i>Show</span>
-          <span v-else><i class="fas fa-eye mr-1"></i>Hide</span>
-        </div>
-        <div class="flex flex-wrap flex-gap pb-2">
-          <div v-for="(input, i) in inputs" :key="i" class="flex align-center">
-            <div class="input-number">{{ i + 1 }}.</div>
-            <div>
-              <Input
-                class="mx-1"
-                v-model="input.value"
-                :type="hidden ? 'password' : 'text'"
-                :id="`passphrase-${i}`"
-                placeholder="__________"
-                @keydown="(e) => backspace(e, i)"
-                @keyup.enter="signin"
-              />
-            </div>
-          </div>
+  <div class="flex justify-end flex-wrap">
+    <div class="flex-6 pa-2">
+      Passphrase
+    </div>
+    <div
+      @click="toggleHidden"
+      class="flex-6 pa-2 align-content-right cursor-pointer"
+      id="show"
+    >
+      <span v-if="hidden"><i class="fas fa-eye-slash mr-1"></i>Show</span>
+      <span v-else><i class="fas fa-eye mr-1"></i>Hide</span>
+    </div>
+    <div class="flex flex-wrap flex-gap pb-2">
+      <div v-for="(input, i) in inputs" :key="i" class="flex align-center">
+        <div class="input-number">{{ i + 1 }}.</div>
+        <div>
+          <Input
+            class="mx-1"
+            v-model="input.value"
+            :type="hidden ? 'password' : 'text'"
+            :id="`passphrase-${i}`"
+            placeholder="__________"
+            @keydown="(e) => backspace(e, i)"
+            @keyup.enter="signin"
+            background-color="primary-darkest"
+          />
         </div>
       </div>
     </div>
@@ -46,9 +41,9 @@
 <script>
 import { computed, inject, onBeforeUpdate, ref, watch, watchEffect } from 'vue';
 
-import router from '../router';
-import Input from '../components/parts/Input';
-import Button from '../components/parts/Button';
+import router from '../../router';
+import Input from './Input';
+import Button from './Button';
 
 export default {
   name: 'Login',

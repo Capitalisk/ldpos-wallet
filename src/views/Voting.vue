@@ -6,7 +6,6 @@
 <script>
 import { onMounted, ref, computed, inject } from 'vue';
 
-import AccountDetails from '../components/sections/AccountDetails';
 import Navbar from '../components/sections/Navbar';
 import Button from '../components/parts/Button';
 import DataTable from '../components/parts/DataTable';
@@ -14,7 +13,7 @@ import { _integerToDecimal } from '../utils';
 
 export default {
   name: 'Home',
-  components: { AccountDetails, Navbar, Button, DataTable },
+  components: { Navbar, Button, DataTable },
   setup() {
     const store = inject('store');
 
