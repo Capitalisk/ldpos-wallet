@@ -96,10 +96,16 @@ export default {
       await this.deauthenticate();
     }, 15 * 1000 * 60);
   },
-  notify: (message) => {
+  notify(message, seconds = null) {
     if (state.notifications.includes(message)) return;
     if (state.notifications.length === 3) state.notifications.splice(0, 1);
     state.notifications.push(message);
+
+    if (seconds)
+      setTimeout(() => {
+        const index = state.notifications.findIndex((m) => m === message);
+        this.denotify(index);
+      }, seconds * 1000);
   },
   denotify: (index) => {
     state.notifications.splice(index, 1);

@@ -6,7 +6,7 @@
 </template>
 
 <script>
-import { ref } from 'vue';
+import { inject, ref } from 'vue';
 
 export default {
   name: 'Copy',
@@ -15,6 +15,7 @@ export default {
     trim: { type: Boolean, default: false },
   },
   setup(props) {
+    const store = inject('store');
     const copyRef = ref(null);
 
     return {
@@ -26,6 +27,8 @@ export default {
         copyText.setSelectionRange(0, 99999);
         document.execCommand('copy');
         document.body.removeChild(copyText);
+
+        store.notify(`Copied: ${props.value}`, 5);
       },
       copyRef,
       value: props.trim

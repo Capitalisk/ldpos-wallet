@@ -13,7 +13,7 @@
       <div class="close-btn cursor-pointer" @click="denotify(i)">
         &#10005;
       </div>
-      {{ notification }}
+      <div class="break">{{ notification }}</div>
     </div>
   </template>
 </template>

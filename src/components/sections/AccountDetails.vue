@@ -9,7 +9,35 @@
       <Copy class="mb-auto" :value="address.data" trim />
     </Section>
     <Section v-else title="Generate a wallet:">
-      <Button value="Generate" class="mb-auto mt-4" />
+      <span class="text-error" v-if="generatedWalletAddress.error">
+        {{ generatedWalletAddress.error }}
+      </span>
+      <span v-else-if="generatedWalletAddress.data">
+        <p class="text-error pb-2">
+          <strong>IMPORTANT:</strong><br />
+          Write this down in a safe place!<br />
+          Losing the passphrase is losing it's assets as well!
+        </p>
+        <strong>Address:</strong>
+        <Copy :value="generatedWalletAddress.data.address" /><br />
+        <strong>Passphrase:</strong>
+        <Copy :value="generatedWalletAddress.data.passphrase" />
+      </span>
+      <Button
+        v-if="!generatedWalletAddress.data"
+        value="Generate"
+        class="mb-auto mt-4"
+        @click="generateWallet"
+        :loading="generatedWalletAddress.loading"
+      />
+      <Button
+        v-else
+        :value="loggingIn ? 'Hang in there...' : 'Login'"
+        class="mb-auto mt-4"
+        :background-color="loggingIn ? 'warning' : 'success'"
+        @click="login"
+        :loading="loggingIn"
+      />
     </Section>
     <Section
       :loading="balance.loading"
@@ -19,7 +47,7 @@
       v-if="authenticated"
     >
       <h2 class="mb-auto">{{ balance.data }}</h2>
-      <Button value="Send" class="mt-4" />
+      <Button value="Send" class="mt-4" @click="openTransferModal" />
     </Section>
     <Section
       :loading="transactions.loading"
@@ -46,9 +74,9 @@
         backgroundColor="primary-darkest"
         class="my-1"
       />
-      <Button value="Vote" />
+      <Button value="Vote" @click="voteForDelegate" />
     </Section>
-    <Section :title="`${token} Value`">
+    <Section :title="`${token} Value`" v-if="false">
       <ul>
         <li>{{ token }}/USD: <strong>500 USD</strong></li>
         <li>{{ token }}/EUR: <strong>500 EUR</strong></li>
@@ -60,7 +88,7 @@
 </template>
 
 <script>
-import { ref, onMounted, inject, computed } from 'vue';
+import { ref, onMounted, inject, computed, reactive } from 'vue';
 
 import { _transformMonetaryUnit } from '../../utils.js';
 
@@ -74,9 +102,14 @@ export default {
   setup() {
     const store = inject('store');
 
-    const balance = ref({ loading: true, data: null, error: null });
-    const transactions = ref({ loading: true, data: null, error: null });
-    const address = ref({ loading: true, data: null, error: null });
+    const balance = reactive({ loading: true, data: null, error: null });
+    const transactions = reactive({ loading: true, data: null, error: null });
+    const address = reactive({ loading: true, data: null, error: null });
+    const generatedWalletAddress = reactive({
+      loading: false,
+      data: null,
+      error: null,
+    });
 
     const types = {
       transfer: 'exchange-alt',
@@ -87,21 +120,21 @@ export default {
       try {
         if (store.state.authenticated) {
           try {
-            address.value.data = await store.client.value.getWalletAddress();
+            address.data = await store.client.value.getWalletAddress();
           } catch (e) {
-            address.value.error = e;
+            address.error = e;
           }
-          address.value.loading = false;
+          address.loading = false;
 
           try {
             const { balance: b } = await store.client.value.getAccount(
-              address.value.data,
+              address.data,
             );
-            balance.value.data = _transformMonetaryUnit(b);
+            balance.data = _transformMonetaryUnit(b);
           } catch (err) {
-            balance.value.error = err.message;
+            balance.error = err.message;
           }
-          balance.value.loading = false;
+          balance.loading = false;
 
           try {
             const t = await store.client.value.getTransactionsByTimestamp(
@@ -109,7 +142,7 @@ export default {
               10,
             );
 
-            transactions.value.data = t
+            transactions.data = t
               .filter((transaction) => transaction.amount)
               .map((transaction) => ({
                 ...transaction,
@@ -117,17 +150,19 @@ export default {
                 fee: _transformMonetaryUnit(transaction.fee),
               }));
           } catch (err) {
-            transactions.value.error = err.message;
+            transactions.error = err.message;
           }
-          transactions.value.loading = false;
+          transactions.loading = false;
         } else {
-          balance.value = { loading: false, data: null, error: null };
-          transactions.value = {
-            loading: false,
-            data: null,
-            error: null,
-          };
-          address.value = { loading: false, data: null, error: null };
+          balance.loading = false;
+          balance.data = null;
+          balance.error = null;
+          transactions.loading = false;
+          transactions.data = null;
+          transactions.error = null;
+          address.loading = false;
+          address.data = null;
+          address.error = null;
         }
       } catch (e) {
         console.error(e);
@@ -136,6 +171,14 @@ export default {
 
     const vote = ref(null);
 
+    const voteForDelegate = async () => {
+      console.log('voteForDelegate');
+    };
+
+    const openTransferModal = () => {
+      console.log('openTransferModal');
+    };
+
     return {
       balance,
       transactions,
@@ -143,7 +186,27 @@ export default {
       types,
       vote,
       authenticated: computed(() => store.state.authenticated),
-      token: computed(() => store.state.config.networkSymbol.toString().toUpperCase()),
+      token: computed(() =>
+        store.state.config.networkSymbol.toString().toUpperCase(),
+      ),
+      loggingIn: computed(() => store.state.login.loading),
+      generateWallet: async () => {
+        generatedWalletAddress.loading = true;
+        try {
+          if (!generatedWalletAddress.data)
+            generatedWalletAddress.data = await store.client.value.generateWallet();
+        } catch (e) {
+          generatedWalletAddress.error = e.message;
+        }
+        generatedWalletAddress.loading = false;
+      },
+      generatedWalletAddress,
+      voteForDelegate,
+      openTransferModal,
+      login: () => {
+        address.data = generatedWalletAddress.data.address;
+        store.authenticate(generatedWalletAddress.data.passphrase);
+      },
     };
   },
   components: { Section, Copy, Button, Input },

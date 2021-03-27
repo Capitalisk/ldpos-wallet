@@ -10,7 +10,7 @@
     <h4>{{ title }}</h4>
 
     <Loading v-if="loading" />
-    <p v-else-if="!loading && error" class="error">
+    <p v-else-if="!loading && error" class="text-error">
       <strong>Error:</strong><br />{{ error }}
     </p>
     <div v-else class="flex column justify-end custom-height">
@@ -60,10 +60,6 @@ h4 {
 
 ul {
   list-style-type: none;
-}
-
-.error {
-  color: var(--danger);
 }
 
 @media screen and (max-width: 768px) {

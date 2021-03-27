@@ -87,6 +87,10 @@ th {
   border-bottom: 1px solid var(--dark);
 }
 
+.text-error {
+  color: var(--danger);
+}
+
 .flex {
   display: flex;
 }
@@ -293,6 +297,10 @@ th {
 
 .absolute {
   position: absolute;
+}
+
+.break {
+  word-wrap: break-word;
 }
 
 @keyframes progress-indeterminate {

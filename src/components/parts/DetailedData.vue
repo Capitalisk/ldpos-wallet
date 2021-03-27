@@ -22,6 +22,7 @@
                   <strong class="subtitle">{{ transformTitle(k) }}:</strong>
                 </div>
                 <div class="flex-9">
+                  <!-- TODO: Solve how to show null -->
                   {{ v }}
                 </div>
               </div>
