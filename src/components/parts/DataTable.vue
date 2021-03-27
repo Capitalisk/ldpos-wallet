@@ -21,7 +21,8 @@
     </div>
     <div
       v-if="!loading || firstLoadCompleted"
-      class="overflow-x overflow-y flex flex-wrap column"
+      class="overflow-x flex flex-wrap column"
+      :class="overflow ? 'overflow-y' : 'overflow-y-hidden'"
       ref="table"
       id="table"
     >
@@ -116,6 +117,7 @@ export default {
     const order = ref(props.order);
     const offset = ref(props.offset);
     const columns = ref(props.columns);
+    const overflow = ref(null);
 
     const getData = async () => {
       if (typeof props.fn === 'string') {
@@ -197,6 +199,7 @@ export default {
             }
         });
         firstLoadCompleted.value = true;
+        overflow.value = table.value.scrollHeight - 1 > table.value.offsetHeight;
       },
     );
 
@@ -239,6 +242,7 @@ export default {
           type: DETAIL_MODAL,
           data,
         }),
+      overflow,
     };
   },
   components: { Loading, Button, Popup, Progressbar },

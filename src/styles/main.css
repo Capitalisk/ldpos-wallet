@@ -273,6 +273,10 @@ th {
   overflow-y: auto;
 }
 
+.overflow-y-hidden {
+  overflow-y: hidden;
+}
+
 .fixed-height {
   max-height: calc(100vh - 68px - var(--unit-4));
 }
