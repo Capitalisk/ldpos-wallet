@@ -88,14 +88,18 @@
         <li>{{ token }}/BTC: <strong>500 BTC</strong></li>
       </ul>
     </Section>
-    <Section class="flex-12" title="Login" v-if="!generatedWalletAddress.data && !authenticated">
+    <Section
+      class="flex-12"
+      title="Login"
+      v-if="!generatedWalletAddress.data && !authenticated"
+    >
       <Login />
     </Section>
   </div>
 </template>
 
 <script>
-import { ref, onMounted, inject, computed, reactive } from 'vue';
+import { ref, onMounted, inject, computed, reactive, onUpdated } from 'vue';
 
 import { _transformMonetaryUnit } from '../utils.js';
 
@@ -125,7 +129,7 @@ export default {
       vote: 'poll',
     };
 
-    onMounted(async () => {
+    onUpdated(async () => {
       try {
         if (store.state.authenticated) {
           try {
@@ -212,10 +216,7 @@ export default {
       generatedWalletAddress,
       voteForDelegate,
       openTransferModal,
-      login: () => {
-        address.data = generatedWalletAddress.data.address;
-        store.authenticate(generatedWalletAddress.data.passphrase);
-      },
+      login: () => store.authenticate(generatedWalletAddress.data.passphrase),
     };
   },
   components: { Section, Copy, Button, Input, Navbar, Login },

@@ -66,10 +66,11 @@ export default {
     }
     state.login.loading = false;
   },
-  async deauthenticate() {
-    this.notify(
-      'You have been logged out automatically after being inactive for 15 minutes.',
-    );
+  async deauthenticate(notify = false) {
+    if (notify)
+      this.notify(
+        'You have been logged out automatically after being inactive for 15 minutes.',
+      );
     try {
       await client.value.disconnect();
       await this.connect();
@@ -93,7 +94,7 @@ export default {
     state.authenticationTimeout && clearTimeout(state.authenticationTimeout);
     state.authenticationTimeout = setTimeout(async () => {
       console.log('logging out 15min passed...');
-      await this.deauthenticate();
+      await this.deauthenticate(true);
     }, 15 * 1000 * 60);
   },
   notify(message, seconds = null) {
