@@ -28,13 +28,17 @@
         </div>
       </div>
     </div>
-    <Button
-      :value="loading ? 'Hang in there...' : 'Sign In'"
-      @click="signin"
-      :loading="loading"
-      :error="error"
-      :backgroundColor="loading ? 'warning' : 'primary-lightest'"
-    />
+  </div>
+  <div class="flex justify-center">
+    <div>
+      <Button
+        :value="loading ? 'Hang in there...' : 'Sign In'"
+        @click="signin"
+        :loading="loading"
+        :error="error"
+        :backgroundColor="loading ? 'warning' : 'primary-lightest'"
+      />
+    </div>
   </div>
 </template>
 

@@ -5,7 +5,7 @@
         &#10005;
       </div>
       <Section
-        :title="type"
+        :title="capitalize(type.toLowerCase())"
         backgroundColor="white"
         :style="{ height: '100%', paddingTop: 'var(--unit-4)' }"
       >
@@ -25,6 +25,7 @@ import Section from './Section';
 
 import modals from '../modals';
 import * as modalConstants from '../modals/constants';
+import { _capitalize } from '../../utils';
 
 export default {
   name: 'Modal',
@@ -37,6 +38,7 @@ export default {
       data: computed(() => store.state.modal.data),
       toggleModal: () => store.toggleModal(),
       ...modalConstants,
+      capitalize: _capitalize,
     };
   },
   components: { Section, ...modals },

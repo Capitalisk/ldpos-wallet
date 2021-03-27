@@ -10,37 +10,6 @@
     >
       <Copy class="mb-auto" :value="address.data" trim />
     </Section>
-    <Section v-else title="Generate a wallet" class="flex-3">
-      <span class="text-error" v-if="generatedWalletAddress.error">
-        {{ generatedWalletAddress.error }}
-      </span>
-      <span v-else-if="generatedWalletAddress.data">
-        <p class="text-error pb-2">
-          <strong>IMPORTANT:</strong><br />
-          Write this down in a safe place!<br />
-          Losing the passphrase is losing its assets as well!
-        </p>
-        <strong>Address</strong>
-        <Copy :value="generatedWalletAddress.data.address" /><br />
-        <strong>Passphrase</strong>
-        <Copy :value="generatedWalletAddress.data.passphrase" />
-      </span>
-      <Button
-        v-if="!generatedWalletAddress.data"
-        value="Generate"
-        class="mb-auto mt-4"
-        @click="generateWallet"
-        :loading="generatedWalletAddress.loading"
-      />
-      <Button
-        v-else
-        :value="loggingIn ? 'Hang in there...' : 'Login'"
-        class="mb-auto mt-4"
-        :background-color="loggingIn ? 'warning' : 'success'"
-        @click="login"
-        :loading="loggingIn"
-      />
-    </Section>
     <Section
       :loading="balance.loading"
       title="Current balance"
@@ -88,6 +57,42 @@
         <li>{{ token }}/BTC: <strong>500 BTC</strong></li>
       </ul>
     </Section>
+
+    <Section v-else title="Generate a wallet" class="flex-3">
+      <span class="text-error" v-if="generatedWalletAddress.error">
+        {{ generatedWalletAddress.error }}
+      </span>
+      <span v-else-if="generatedWalletAddress.data">
+        <p class="text-error pb-2">
+          <strong>IMPORTANT:</strong><br />
+          Write this down in a safe place!<br />
+          Losing the passphrase is losing its assets as well!
+        </p>
+        <strong>Address</strong>
+        <Copy :value="generatedWalletAddress.data.address" /><br />
+        <strong>Passphrase</strong>
+        <Copy :value="generatedWalletAddress.data.passphrase" />
+      </span>
+      <div class="flex justify-center">
+        <div>
+          <Button
+            v-if="!generatedWalletAddress.data"
+            value="Generate"
+            class="mb-auto mt-4"
+            @click="generateWallet"
+            :loading="generatedWalletAddress.loading"
+          />
+          <Button
+            v-else
+            :value="loggingIn ? 'Hang in there...' : 'Login'"
+            class="mb-auto mt-4"
+            :background-color="loggingIn ? 'warning' : 'success'"
+            @click="login"
+            :loading="loggingIn"
+          />
+        </div>
+      </div>
+    </Section>
     <Section
       class="flex-12"
       title="Login"
@@ -109,6 +114,7 @@ import Copy from '../components/parts/Copy';
 import Button from '../components/parts/Button';
 import Input from '../components/parts/Input';
 import Login from '../components/parts/Login';
+import { TRANSFER_MODAL } from '../components/modals/constants.js';
 
 export default {
   name: 'Dashboard',
@@ -189,7 +195,7 @@ export default {
     };
 
     const openTransferModal = () => {
-      console.log('openTransferModal');
+      store.toggleModal({ type: TRANSFER_MODAL });
     };
 
     return {
@@ -220,5 +226,8 @@ export default {
     };
   },
   components: { Section, Copy, Button, Input, Navbar, Login },
+  mounted() {
+    this.$forceUpdate();
+  },
 };
 </script>
