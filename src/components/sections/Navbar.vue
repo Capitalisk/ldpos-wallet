@@ -6,7 +6,12 @@
       <Switch v-model="darkMode" id="darkmode-switch" />
     </span>
     <Button v-if="authenticated" value="Sign out" @click="signout" />
-    <Button value="Sign in" router-link href="/login" v-else />
+    <Button
+      value="Sign in"
+      router-link
+      href="/"
+      v-else-if="$router.currentRoute.value.path !== '/' && !authenticated"
+    />
   </div>
 </template>
 
@@ -39,6 +44,7 @@ export default {
 .navbar {
   align-items: center;
   padding: var(--unit-2) var(--unit-2);
+  min-height: 36px;
 }
 
 @media screen and (max-width: 768px) {

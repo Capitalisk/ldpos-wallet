@@ -18,7 +18,7 @@
         <p class="text-error pb-2">
           <strong>IMPORTANT:</strong><br />
           Write this down in a safe place!<br />
-          Losing the passphrase is losing it's assets as well!
+          Losing the passphrase is losing its assets as well!
         </p>
         <strong>Address</strong>
         <Copy :value="generatedWalletAddress.data.address" /><br />
@@ -72,7 +72,12 @@
       </ul>
     </Section>
     <Section title="Quick vote" v-if="authenticated" class="flex-3">
-      <Input v-model="vote" placeholder="Wallet address" class="my-1" />
+      <Input
+        v-model="vote"
+        placeholder="Wallet address"
+        class="my-1"
+        background-color="primary-darkest"
+      />
       <Button value="Vote" @click="voteForDelegate" />
     </Section>
     <Section :title="`${token} Value`" v-if="false" class="flex-3">
@@ -83,7 +88,7 @@
         <li>{{ token }}/BTC: <strong>500 BTC</strong></li>
       </ul>
     </Section>
-    <Section class="flex-12" title="Login" v-if="!generatedWalletAddress.data">
+    <Section class="flex-12" title="Login" v-if="!generatedWalletAddress.data && !authenticated">
       <Login />
     </Section>
   </div>
