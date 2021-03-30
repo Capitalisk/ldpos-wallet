@@ -45,10 +45,17 @@
                     }`
                   "
                 ></i>
-                <strong>{{ transaction.amount }}</strong>&nbsp;
+                <strong>{{ transaction.amount }}</strong
+                >&nbsp;
                 {{ transaction.direction === 'INBOUND' ? 'from' : 'to' }}&nbsp;
                 <strong
-                  ><Copy :value="transaction.recipientAddress" trim
+                  ><Copy
+                    :value="
+                      transaction.direction === 'INBOUND'
+                        ? transaction.senderAddress
+                        : transaction.recipientAddress
+                    "
+                    trim
                 /></strong>
                 <hr />
               </div>
