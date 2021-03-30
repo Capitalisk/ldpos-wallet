@@ -1,7 +1,7 @@
 <template>
   <div class="navbar align-center fullwidth">
     <div class="mr-auto">
-      <Button value="Sign in" router-link href="/login" />
+      <Button value="Sign in" router-link href="/" />
     </div>
     <div
       :class="burgerActive ? 'change cursor-pointer' : 'cursor-pointer'"

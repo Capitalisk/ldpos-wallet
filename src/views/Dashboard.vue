@@ -1,105 +1,113 @@
 <template>
   <Navbar />
   <div class="flex flex-wrap flex-gap">
-    <Section
-      :loading="address.loading"
-      title="Wallet address"
-      :error="address.error"
-      v-if="authenticated"
-      class="flex-3"
-    >
-      <Copy class="mb-auto" :value="address.data" trim />
-    </Section>
-    <Section
-      :loading="balance.loading"
-      title="Current balance"
-      :needsAuthentication="true"
-      :error="balance.error"
-      v-if="authenticated"
-      class="flex-3"
-    >
-      <h2 class="mb-auto">{{ balance.data }}</h2>
-      <Button value="Send" class="mt-4" @click="openTransferModal" />
-    </Section>
-    <Section
-      :loading="transactions.loading"
-      title="Latest transactions"
-      :error="transactions.error"
-      v-if="authenticated"
-      class="flex-3"
-    >
-      <ul>
-        <template
-          v-for="transaction in transactions.data"
-          :key="transaction.id"
-        >
-          <li class="lineheight-3">
-            <i :class="`fas fa-${types[transaction.type]} mr-1`"></i>
-            {{ transaction.amount }} with a {{ transaction.fee }} fee
-          </li>
-        </template>
-      </ul>
-    </Section>
-    <Section title="Quick vote" v-if="authenticated" class="flex-3">
-      <Input
-        v-model="vote"
-        placeholder="Wallet address"
-        class="my-1"
-        background-color="primary-darkest"
-      />
-      <Button value="Vote" @click="voteForDelegate" />
-    </Section>
-    <Section :title="`${token} Value`" v-if="false" class="flex-3">
-      <ul>
-        <li>{{ token }}/USD: <strong>500 USD</strong></li>
-        <li>{{ token }}/EUR: <strong>500 EUR</strong></li>
-        <li>{{ token }}/LSK: <strong>500 LSK</strong></li>
-        <li>{{ token }}/BTC: <strong>500 BTC</strong></li>
-      </ul>
-    </Section>
+    <template v-if="authenticated">
+      <Section
+        :loading="address.loading"
+        title="Wallet address"
+        :error="address.error"
+        v-if="authenticated"
+        class="flex-3"
+      >
+        <Copy class="mb-auto" :value="address.data" trim />
+      </Section>
+      <Section
+        :loading="balance.loading"
+        title="Current balance"
+        :needsAuthentication="true"
+        :error="balance.error"
+        v-if="authenticated"
+        class="flex-3"
+      >
+        <h2 class="mb-auto">{{ balance.data }}</h2>
+        <Button value="Send" class="mt-4" @click="openTransferModal" />
+      </Section>
+      <Section
+        :loading="transactions.loading"
+        title="Latest transactions"
+        :error="transactions.error"
+        v-if="authenticated"
+        class="flex-3"
+      >
+        <ul>
+          <template
+            v-for="transaction in transactions.data"
+            :key="transaction.id"
+          >
+            <li class="lineheight-3">
+              <i :class="`fas fa-${types[transaction.type]} mr-1`"></i>
+              {{ transaction.amount }} with a {{ transaction.fee }} fee
+            </li>
+          </template>
+        </ul>
+      </Section>
+      <Section title="Quick vote" v-if="authenticated" class="flex-3">
+        <Input
+          v-model="vote"
+          placeholder="Wallet address"
+          class="my-1"
+          background-color="primary-darkest"
+        />
+        <Button value="Vote" @click="voteForDelegate" />
+      </Section>
+      <Section :title="`${token} Value`" v-if="false" class="flex-3">
+        <ul>
+          <li>{{ token }}/USD: <strong>500 USD</strong></li>
+          <li>{{ token }}/EUR: <strong>500 EUR</strong></li>
+          <li>{{ token }}/LSK: <strong>500 LSK</strong></li>
+          <li>{{ token }}/BTC: <strong>500 BTC</strong></li>
+        </ul>
+      </Section>
+    </template>
 
-    <Section v-else title="Generate a wallet" class="flex-3">
-      <span class="text-error" v-if="generatedWalletAddress.error">
-        {{ generatedWalletAddress.error }}
-      </span>
-      <span v-else-if="generatedWalletAddress.data">
-        <p class="text-error pb-2">
-          <strong>IMPORTANT:</strong><br />
-          Write this down in a safe place!<br />
-          Losing the passphrase is losing its assets as well!
-        </p>
-        <strong>Address</strong>
-        <Copy :value="generatedWalletAddress.data.address" /><br />
-        <strong>Passphrase</strong>
-        <Copy :value="generatedWalletAddress.data.passphrase" />
-      </span>
-      <div class="flex justify-center">
-        <div>
-          <Button
-            v-if="!generatedWalletAddress.data"
-            value="Generate"
-            class="mb-auto mt-4"
-            @click="generateWallet"
-            :loading="generatedWalletAddress.loading"
-          />
-          <Button
-            v-else
-            :value="loggingIn ? 'Hang in there...' : 'Login'"
-            class="mb-auto mt-4"
-            :background-color="loggingIn ? 'warning' : 'success'"
-            @click="login"
-            :loading="loggingIn"
-          />
+    <template v-else>
+      <Section
+        v-if="!address.data"
+        title="Generate a wallet"
+        class="flex-3"
+      >
+        <span class="text-error" v-if="generatedWalletAddress.error">
+          {{ generatedWalletAddress.error }}
+        </span>
+        <span v-else-if="generatedWalletAddress.data">
+          <p class="text-error pb-2">
+            <strong>IMPORTANT:</strong><br />
+            Write this down in a safe place!<br />
+            Losing the passphrase is losing its assets as well!
+          </p>
+          <strong>Address</strong>
+          <Copy :value="generatedWalletAddress.data.address" /><br />
+          <strong>Passphrase</strong>
+          <Copy :value="generatedWalletAddress.data.passphrase" />
+        </span>
+        <div class="flex justify-center">
+          <div>
+            <Button
+              v-if="!generatedWalletAddress.data"
+              value="Generate"
+              class="mb-auto mt-4"
+              @click="generateWallet"
+              :loading="generatedWalletAddress.loading"
+            />
+            <Button
+              v-else
+              :value="loggingIn ? 'Hang in there...' : 'Login'"
+              class="mb-auto mt-4"
+              :background-color="loggingIn ? 'warning' : 'success'"
+              @click="login"
+              :loading="loggingIn"
+            />
+          </div>
         </div>
-      </div>
-    </Section>
-    <Section
-      class="flex-12"
-      title="Login"
-      v-if="!generatedWalletAddress.data && !authenticated"
-    >
-      <Login />
-    </Section>
+      </Section>
+      <Section
+        class="flex-12"
+        title="Login"
+        v-if="!generatedWalletAddress.data && !authenticated"
+      >
+        <Login />
+      </Section>
+    </template>
   </div>
 </template>
 
@@ -199,9 +207,9 @@ export default {
     };
 
     return {
-      balance,
-      transactions,
-      address,
+      balance: computed(() => balance),
+      transactions: computed(() => transactions),
+      address: computed(() => address),
       types,
       vote,
       authenticated: computed(() => store.state.authenticated),
@@ -222,12 +230,15 @@ export default {
       generatedWalletAddress,
       voteForDelegate,
       openTransferModal,
-      login: () => store.authenticate(generatedWalletAddress.data.passphrase),
+      login: () => {
+        address.value.data = generatedWalletAddress.data.passphrase;
+        store.authenticate(generatedWalletAddress.data.passphrase);
+      },
     };
   },
   components: { Section, Copy, Button, Input, Navbar, Login },
-  mounted() {
-    this.$forceUpdate();
-  },
+  // mounted() {
+  //   this.$forceUpdate();
+  // },
 };
 </script>

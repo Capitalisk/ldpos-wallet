@@ -6,7 +6,7 @@
 </template>
 
 <script>
-import { inject, ref } from 'vue';
+import { inject, ref, computed } from 'vue';
 
 export default {
   name: 'Copy',
@@ -31,9 +31,11 @@ export default {
         store.notify(`Copied: ${props.value}`, 5);
       },
       copyRef,
-      value: props.trim
-        ? [...props.value.split('').slice(0, 20), '...'].join('')
-        : props.value,
+      value: computed(() =>
+        props.trim
+          ? [...props.value.split('').slice(0, 20), '...'].join('')
+          : props.value,
+      ),
     };
   },
 };
