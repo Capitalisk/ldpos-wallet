@@ -195,6 +195,10 @@ th {
   margin-right: var(--unit-2);
 }
 
+.mt-1 {
+  margin-top: var(--unit-1);
+}
+
 .mt-4 {
   margin-top: var(--unit-3);
 }
@@ -285,6 +289,10 @@ th {
 
 .relative {
   position: relative;
+}
+
+.flex-input {
+  flex: 1;
 }
 
 .border-box {
