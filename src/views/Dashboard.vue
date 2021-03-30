@@ -34,9 +34,24 @@
             v-for="transaction in transactions.data"
             :key="transaction.id"
           >
-            <li class="lineheight-3">
-              <i :class="`fas fa-${types[transaction.type]} mr-1`"></i>
-              {{ transaction.amount }} with a {{ transaction.fee }} fee
+            <li class="lineheight-3 font-12">
+              <div class="flex align-center">
+                <i
+                  :class="
+                    `fas fa-${directions[transaction.direction]} mr-1 ${
+                      transaction.direction === 'INBOUND'
+                        ? 'text-success'
+                        : 'text-error'
+                    }`
+                  "
+                ></i>
+                <strong>{{ transaction.amount }}</strong>&nbsp;
+                {{ transaction.direction === 'INBOUND' ? 'from' : 'to' }}&nbsp;
+                <strong
+                  ><Copy :value="transaction.recipientAddress" trim
+                /></strong>
+                <hr />
+              </div>
             </li>
           </template>
         </ul>
@@ -135,11 +150,6 @@ export default {
       error: null,
     });
 
-    const types = {
-      transfer: 'exchange-alt',
-      vote: 'poll',
-    };
-
     const getWalletAddress = async () => {
       try {
         address.data = await store.client.value.getWalletAddress();
@@ -163,7 +173,23 @@ export default {
 
     const getTransactions = async () => {
       try {
-        const t = await store.client.value.getTransactionsByTimestamp(0, 10);
+        const inboundTransactions = await store.client.value.getInboundTransactions(
+          store.client.value.getWalletAddress(),
+          null,
+          5,
+          'asc',
+        );
+        const outboundTransactions = await store.client.value.getOutboundTransactions(
+          store.client.value.getWalletAddress(),
+          null,
+          5,
+          'asc',
+        );
+
+        const t = [
+          ...inboundTransactions.map((t) => ({ ...t, direction: 'INBOUND' })),
+          ...outboundTransactions.map((t) => ({ ...t, direction: 'OUTBOUND' })),
+        ].sort((a, b) => (a.timestamp > b.timestamp ? -1 : 1));
 
         transactions.data = t
           .filter((transaction) => transaction.amount)
@@ -219,7 +245,10 @@ export default {
       balance: computed(() => balance),
       transactions: computed(() => transactions),
       address: computed(() => address),
-      types,
+      directions: {
+        OUTBOUND: 'chevron-up',
+        INBOUND: 'chevron-down',
+      },
       vote,
       authenticated: computed(() => store.state.authenticated),
       token: computed(() =>

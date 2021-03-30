@@ -87,6 +87,14 @@ th {
   border-bottom: 1px solid var(--dark);
 }
 
+.font-12 {
+  font-size: 12px;
+}
+
+.text-success {
+  color: var(--success);
+}
+
 .text-error {
   color: var(--danger);
 }
