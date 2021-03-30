@@ -179,7 +179,6 @@ export default {
     };
 
     const initializeWallet = async () => {
-      console.log(store.state.authenticated);
       try {
         if (store.state.authenticated) {
           await getWalletAddress();

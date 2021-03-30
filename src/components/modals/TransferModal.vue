@@ -1,13 +1,17 @@
 <template>
   <div class="flex flex-gap pa-1 column">
+    <div>
       Address:
       <Input v-model="transfer.address.data" :error="transfer.address.error" />
+    </div>
+    <div>
       Amount:
       <Input
         v-model="transfer.amount.data"
         :error="transfer.amount.error"
         :suffix="unit"
       />
+    </div>
     <div>
       Fee:
       <Input
@@ -22,13 +26,8 @@
       <Input v-model="transfer.message.data" :error="transfer.message.error" />
     </div>
   </div>
-  <div v-if="error" class="text-error">{{ error }}</div>
   <div class="flex justify-center">
-    <Button
-      value="Send"
-      @click="send"
-      :background-color="error ? 'danger' : 'primary-lighter'"
-    />
+    <Button value="Send" @click="send" :loading="loading" />
   </div>
 </template>
 
@@ -45,7 +44,7 @@ export default {
   setup() {
     const store = inject('store');
 
-    const error = ref(null);
+    const loading = ref(false);
     const transfer = reactive({
       address: {
         error: null,
@@ -72,27 +71,36 @@ export default {
 
     return {
       transfer,
-      error,
+      loading,
       unit: computed(() => store.state.config.networkSymbol.toUpperCase()),
       send: async () => {
-        error.value = null;
-        const transferData = {
-          address: transfer.address.data,
-          amount: _decimalToInteger(transfer.amount.data) || 0,
-          fee: _decimalToInteger(transfer.fee.data),
-          message: transfer.message.data,
-        };
+        loading.value = true;
 
-        if (transfer.address.length !== 44) {
+        if (transfer.address.data.length !== 44) {
           transfer.address.error = 'Invalid address';
-          return;
         }
-        console.log(transfer);
+
+        for (let i = 0; i < Object.keys(transfer).length; i++) {
+          const key = Object.keys(transfer)[i];
+          if (!transfer[key].data || !transfer[key].data.length)
+            transfer[key].error = 'Required field.';
+        }
+
+        const preparedTxn = await store.client.value.prepareTransaction({
+          type: 'transfer',
+          recipientAddress: transfer.address.data,
+          amount: _decimalToInteger(transfer.amount.data),
+          fee: _decimalToInteger(transfer.fee.data),
+          timestamp: Date.now(),
+          message: transfer.message.data,
+        });
+
+        await store.client.value.postTransaction(preparedTxn);
+
+        loading.value = false;
       },
     };
   },
   components: { Input, Button },
 };
 </script>
-
-<style scoped></style>
