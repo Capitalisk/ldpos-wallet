@@ -12,7 +12,7 @@ describe('Wallet testing', () => {
   });
 
   it('Pastes the password and spreads it over the inputs', () => {
-    cy.visit('/#/login');
+    cy.visit('/');
     cy.get('input#passphrase-0')
       .invoke('val', PASSPHRASE)
       .trigger('input');
@@ -31,9 +31,9 @@ describe('Wallet testing', () => {
     cy.wait(1000);
 
     // TEST SIGNIN TYPING
-    cy.get('.navbar.flex.justify-end a.button')
-      .contains('Sign in')
-      .click();
+    // cy.get('.navbar.flex.justify-end a.button')
+    //   .contains('Sign in')
+    //   .click();
     cy.get('input#passphrase-0').should(($input) => {
       const type = $input[0].type;
       expect(type).to.match(/password/);
@@ -62,21 +62,7 @@ describe('Wallet testing', () => {
     }
 
     // LOGIN
-    cy.get('a.button.cursor-pointer').click();
+    cy.get('a.button.cursor-pointer').contains('Sign In').click();
     cy.get('a.button.cursor-pointer').contains('Hang in there...');
-    cy.wait(13000);
-
-    // CHECK IF WALLET IS ENABLED
-    cy.get('div.sidebar')
-      .contains('WALLET')
-      .should('not.have.class', 'disabled');
-
-    // LOGOUT
-    cy.location('pathname').should('eq', '/');
-    cy.get('a.button')
-      .contains('Sign out')
-      .click();
-
-    // TODO: Check if wallet address is enabled and disabled
   });
 });
