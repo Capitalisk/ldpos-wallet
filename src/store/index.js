@@ -65,6 +65,7 @@ export default {
       state.authenticated = false;
     }
     state.login.loading = false;
+    return Promise.resolve()
   },
   async deauthenticate(notify = false) {
     if (notify)

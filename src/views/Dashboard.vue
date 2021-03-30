@@ -61,11 +61,7 @@
     </template>
 
     <template v-else>
-      <Section
-        v-if="!address.data"
-        title="Generate a wallet"
-        class="flex-3"
-      >
+      <Section v-if="!address.data" title="Generate a wallet" class="flex-3">
         <span class="text-error" v-if="generatedWalletAddress.error">
           {{ generatedWalletAddress.error }}
         </span>
@@ -129,6 +125,7 @@ export default {
   setup() {
     const store = inject('store');
 
+    const vote = ref(null);
     const balance = reactive({ loading: true, data: null, error: null });
     const transactions = reactive({ loading: true, data: null, error: null });
     const address = reactive({ loading: true, data: null, error: null });
@@ -143,43 +140,51 @@ export default {
       vote: 'poll',
     };
 
+    const getWalletAddress = async () => {
+      try {
+        address.data = await store.client.value.getWalletAddress();
+      } catch (e) {
+        address.error = e;
+      }
+      address.loading = false;
+    };
+
+    const getBalance = async () => {
+      try {
+        const { balance: b } = await store.client.value.getAccount(
+          address.data,
+        );
+        balance.data = _transformMonetaryUnit(b);
+      } catch (err) {
+        console.error(err)
+        balance.error = err.message;
+      }
+      balance.loading = false;
+    };
+
+    const getTransactions = async () => {
+      try {
+        const t = await store.client.value.getTransactionsByTimestamp(0, 10);
+
+        transactions.data = t
+          .filter((transaction) => transaction.amount)
+          .map((transaction) => ({
+            ...transaction,
+            amount: _transformMonetaryUnit(transaction.amount),
+            fee: _transformMonetaryUnit(transaction.fee),
+          }));
+      } catch (err) {
+        transactions.error = err.message;
+      }
+      transactions.loading = false;
+    };
+
     onUpdated(async () => {
       try {
         if (store.state.authenticated) {
-          try {
-            address.data = await store.client.value.getWalletAddress();
-          } catch (e) {
-            address.error = e;
-          }
-          address.loading = false;
-
-          try {
-            const { balance: b } = await store.client.value.getAccount(
-              address.data,
-            );
-            balance.data = _transformMonetaryUnit(b);
-          } catch (err) {
-            balance.error = err.message;
-          }
-          balance.loading = false;
-
-          try {
-            const t = await store.client.value.getTransactionsByTimestamp(
-              0,
-              10,
-            );
-
-            transactions.data = t
-              .filter((transaction) => transaction.amount)
-              .map((transaction) => ({
-                ...transaction,
-                amount: _transformMonetaryUnit(transaction.amount),
-                fee: _transformMonetaryUnit(transaction.fee),
-              }));
-          } catch (err) {
-            transactions.error = err.message;
-          }
-          transactions.loading = false;
+          await getWalletAddress();
+          await getBalance();
+          await getTransactions();
         } else {
           balance.loading = false;
           balance.data = null;
@@ -195,8 +200,6 @@ export default {
         console.error(e);
       }
     });
-
-    const vote = ref(null);
 
     const voteForDelegate = async () => {
       console.log('voteForDelegate');
@@ -217,28 +220,33 @@ export default {
         store.state.config.networkSymbol.toString().toUpperCase(),
       ),
       loggingIn: computed(() => store.state.login.loading),
+
       generateWallet: async () => {
         generatedWalletAddress.loading = true;
         try {
           if (!generatedWalletAddress.data)
             generatedWalletAddress.data = await store.client.value.generateWallet();
         } catch (e) {
+          console.log(e);
           generatedWalletAddress.error = e.message;
         }
         generatedWalletAddress.loading = false;
       },
+
       generatedWalletAddress,
       voteForDelegate,
       openTransferModal,
-      login: () => {
-        address.value.data = generatedWalletAddress.data.passphrase;
-        store.authenticate(generatedWalletAddress.data.passphrase);
+      login: async () => {
+        await store.authenticate(generatedWalletAddress.data.passphrase);
+        await getWalletAddress();
+        await getBalance();
+        await getTransactions();
       },
     };
   },
   components: { Section, Copy, Button, Input, Navbar, Login },
-  // mounted() {
-  //   this.$forceUpdate();
-  // },
+  mounted() {
+    this.$forceUpdate();
+  },
 };
 </script>

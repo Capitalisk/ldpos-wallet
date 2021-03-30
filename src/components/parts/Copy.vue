@@ -32,7 +32,7 @@ export default {
       },
       copyRef,
       value: computed(() =>
-        props.trim
+        props.trim && props.value
           ? [...props.value.split('').slice(0, 20), '...'].join('')
           : props.value,
       ),
