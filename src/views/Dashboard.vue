@@ -108,7 +108,7 @@
 </template>
 
 <script>
-import { ref, onMounted, inject, computed, reactive, onUpdated } from 'vue';
+import { ref, inject, computed, reactive, watch } from 'vue';
 
 import { _transformMonetaryUnit } from '../utils.js';
 
@@ -156,7 +156,6 @@ export default {
         );
         balance.data = _transformMonetaryUnit(b);
       } catch (err) {
-        console.error(err)
         balance.error = err.message;
       }
       balance.loading = false;
@@ -179,27 +178,31 @@ export default {
       transactions.loading = false;
     };
 
-    onUpdated(async () => {
-      try {
-        if (store.state.authenticated) {
-          await getWalletAddress();
-          await getBalance();
-          await getTransactions();
-        } else {
-          balance.loading = false;
-          balance.data = null;
-          balance.error = null;
-          transactions.loading = false;
-          transactions.data = null;
-          transactions.error = null;
-          address.loading = false;
-          address.data = null;
-          address.error = null;
+    watch(
+      () => store.state.authenticated,
+      async () => {
+        console.log(store.state.authenticated);
+        try {
+          if (store.state.authenticated) {
+            await getWalletAddress();
+            await getBalance();
+            await getTransactions();
+          } else {
+            balance.loading = false;
+            balance.data = null;
+            balance.error = null;
+            transactions.loading = false;
+            transactions.data = null;
+            transactions.error = null;
+            address.loading = false;
+            address.data = null;
+            address.error = null;
+          }
+        } catch (e) {
+          console.error(e);
         }
-      } catch (e) {
-        console.error(e);
-      }
-    });
+      },
+    );
 
     const voteForDelegate = async () => {
       console.log('voteForDelegate');
@@ -236,12 +239,8 @@ export default {
       generatedWalletAddress,
       voteForDelegate,
       openTransferModal,
-      login: async () => {
-        await store.authenticate(generatedWalletAddress.data.passphrase);
-        await getWalletAddress();
-        await getBalance();
-        await getTransactions();
-      },
+      login: async () =>
+        await store.authenticate(generatedWalletAddress.data.passphrase),
     };
   },
   components: { Section, Copy, Button, Input, Navbar, Login },

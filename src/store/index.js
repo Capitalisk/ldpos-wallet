@@ -57,15 +57,13 @@ export default {
       state.authenticated = true;
 
       this.initiateOrRenewTimeout();
-
-      if (state.authenticated) router.push('/');
     } catch (e) {
       console.error(e);
       state.login.error = e.message;
       state.authenticated = false;
     }
     state.login.loading = false;
-    return Promise.resolve()
+    if (state.authenticated) router.push('/');
   },
   async deauthenticate(notify = false) {
     if (notify)
@@ -79,6 +77,7 @@ export default {
       console.error(e);
     }
     state.authenticated = false;
+    if (state.authenticated) router.push('/');
   },
   toggleModal({ type = null, data = null } = {}) {
     state.modal.active = !state.modal.active;

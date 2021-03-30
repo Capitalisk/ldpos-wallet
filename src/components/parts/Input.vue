@@ -3,7 +3,6 @@
     class="input"
     :value="modelValue"
     @input="(e) => $emit('update:modelValue', e.target.value)"
-    :type="hidden ? 'password' : 'input'"
     :placeholder="placeholder"
     :style="{
       backgroundColor: `var(--${backgroundColor})`,
@@ -20,7 +19,6 @@ export default {
   name: 'Input',
   props: {
     modelValue: { type: String, default: '' },
-    hidden: { type: Boolean, default: false },
     placeholder: { type: String, default: '' },
     backgroundColor: { type: String, default: 'primary' },
     color: { type: String, default: 'dark' },
