@@ -8,7 +8,6 @@
       backgroundColor: `var(--${backgroundColor})`,
       color: `var(--${color})`,
     }"
-    :id="id"
   />
 </template>
 
