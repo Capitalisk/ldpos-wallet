@@ -96,7 +96,7 @@ export default {
     state.authenticationTimeout = setTimeout(async () => {
       console.log('logging out 15min passed...');
       await this.deauthenticate(true);
-    }, 15 * 1000 * 60);
+    }, 30 * 1000 * 60);
   },
   notify(message, seconds = null) {
     if (state.notifications.includes(message)) return;
