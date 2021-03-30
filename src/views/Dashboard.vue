@@ -108,7 +108,7 @@
 </template>
 
 <script>
-import { ref, inject, computed, reactive, watch } from 'vue';
+import { ref, inject, computed, reactive, watch, onMounted } from 'vue';
 
 import { _transformMonetaryUnit } from '../utils.js';
 
@@ -178,30 +178,34 @@ export default {
       transactions.loading = false;
     };
 
+    const initializeWallet = async () => {
+      console.log(store.state.authenticated);
+      try {
+        if (store.state.authenticated) {
+          await getWalletAddress();
+          await getBalance();
+          await getTransactions();
+        } else {
+          balance.loading = false;
+          balance.data = null;
+          balance.error = null;
+          transactions.loading = false;
+          transactions.data = null;
+          transactions.error = null;
+          address.loading = false;
+          address.data = null;
+          address.error = null;
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    };
+
+    onMounted(async () => await initializeWallet());
+
     watch(
       () => store.state.authenticated,
-      async () => {
-        console.log(store.state.authenticated);
-        try {
-          if (store.state.authenticated) {
-            await getWalletAddress();
-            await getBalance();
-            await getTransactions();
-          } else {
-            balance.loading = false;
-            balance.data = null;
-            balance.error = null;
-            transactions.loading = false;
-            transactions.data = null;
-            transactions.error = null;
-            address.loading = false;
-            address.data = null;
-            address.error = null;
-          }
-        } catch (e) {
-          console.error(e);
-        }
-      },
+      async () => await initializeWallet(),
     );
 
     const voteForDelegate = async () => {
