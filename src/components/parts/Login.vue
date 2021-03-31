@@ -82,7 +82,9 @@ export default {
             lastInput.focus();
           } else if (element && element.includes(' ')) {
             const nextInput = document.getElementById(`passphrase-${i + 1}`);
-            nextInput.focus();
+            if (nextInput) {
+              nextInput.focus();
+            }
             inputs.value[i].value = inputs.value[i].value.replace(/\s/g, '');
           }
         }
