@@ -7,7 +7,7 @@
           <strong>{{ transformTitle(key) }}</strong>
         </div>
         <div>
-          {{ transformValue(key, value) }}
+          {{ transformValue(key, value) || '-'  }}
         </div>
       </div>
       <div v-else class="my-2">
@@ -17,13 +17,12 @@
         <div>
           <div v-for="(a, i) in value" :key="i">
             <template v-for="(v, k) in a" :key="k">
-              <div v-if="v" class="flex">
+              <div class="flex">
                 <div class="flex-2">
                   <strong class="subtitle">{{ transformTitle(k) }}:</strong>
                 </div>
                 <div class="flex-9">
-                  <!-- TODO: Solve how to show null -->
-                  {{ v }}
+                  {{ v ? v : '-' }}
                 </div>
               </div>
             </template>
