@@ -174,7 +174,8 @@ export default {
         );
         balance.data = _transformMonetaryUnit(b);
       } catch (err) {
-        balance.error = err.message;
+        balance.data = _transformMonetaryUnit('0');
+        // balance.error = err.message;
       }
       balance.loading = false;
     };
