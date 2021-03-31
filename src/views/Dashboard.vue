@@ -131,7 +131,7 @@
 </template>
 
 <script>
-import { ref, inject, computed, reactive, watch, onMounted } from 'vue';
+import { inject, computed, reactive, watch, onMounted } from 'vue';
 
 import { _transformMonetaryUnit } from '../utils.js';
 
@@ -174,6 +174,7 @@ export default {
         );
         balance.data = _transformMonetaryUnit(b);
       } catch (err) {
+        // TODO: Implement AccountDidNotExist
         balance.data = _transformMonetaryUnit('0');
         // balance.error = err.message;
       }
@@ -279,6 +280,20 @@ export default {
       store.toggleModal({ type: TRANSFER_MODAL });
     };
 
+    const generateWallet = async () => {
+      generatedWalletAddress.loading = true
+      await new Promise((res) => setTimeout(() => res(), 500));
+      try {
+        if (!generatedWalletAddress.data)
+          generatedWalletAddress.data = await store.client.value.generateWallet();
+        else return;
+      } catch (e) {
+        console.log(e);
+        generatedWalletAddress.error = e.message;
+      }
+      generatedWalletAddress.loading = false;
+    };
+
     return {
       balance: computed(() => balance),
       transactions: computed(() => transactions),
@@ -293,19 +308,7 @@ export default {
         store.state.config.networkSymbol.toString().toUpperCase(),
       ),
       loggingIn: computed(() => store.state.login.loading),
-
-      generateWallet: async () => {
-        generatedWalletAddress.loading = true;
-        try {
-          if (!generatedWalletAddress.data)
-            generatedWalletAddress.data = await store.client.value.generateWallet();
-        } catch (e) {
-          console.log(e);
-          generatedWalletAddress.error = e.message;
-        }
-        generatedWalletAddress.loading = false;
-      },
-
+      generateWallet,
       generatedWalletAddress,
       voteForDelegate,
       openTransferModal,
