@@ -64,13 +64,14 @@
         </ul>
       </Section>
       <Section title="Quick vote" v-if="authenticated" class="flex-3">
+        <div v-if="vote.error" class="text-error">{{ vote.error }}</div>
         <Input
-          v-model="vote"
+          v-model="vote.data"
           placeholder="Wallet address"
           class="my-1"
           background-color="primary-darkest"
         />
-        <Button value="Vote" @click="voteForDelegate" />
+        <Button value="Vote" @click="voteForDelegate" :loading="vote.loading" />
       </Section>
       <Section :title="`${token} Value`" v-if="false" class="flex-3">
         <ul>
@@ -147,7 +148,7 @@ export default {
   setup() {
     const store = inject('store');
 
-    const vote = ref(null);
+    const vote = reactive({ data: null, error: null, loading: null });
     const balance = reactive({ loading: true, data: null, error: null });
     const transactions = reactive({ loading: true, data: null, error: null });
     const address = reactive({ loading: true, data: null, error: null });
@@ -241,7 +242,36 @@ export default {
     );
 
     const voteForDelegate = async () => {
-      console.log('voteForDelegate');
+      vote.loading = true;
+      if (!vote.data) {
+        vote.error = 'Field required.';
+        return;
+      }
+
+      try {
+        vote.error = null;
+        const { minTransactionFees } = await store.client.value.getMinFees();
+        const valid = await store.client.value.getDelegate(vote.data);
+
+        if (!valid) {
+          vote.error = 'Delegate does not exist.';
+          return;
+        }
+
+        const voteTxn = await store.client.value.prepareTransaction({
+          type: 'vote',
+          delegateAddress: vote.data,
+          fee: minTransactionFees.vote,
+          timestamp: Date.now(),
+          message: '',
+        });
+
+        await store.client.value.postTransaction(voteTxn);
+        store.notify(`You have voted for ${vote.data}`, 5);
+      } catch (e) {
+        vote.error = e.message;
+      }
+      vote.loading = false;
     };
 
     const openTransferModal = () => {
