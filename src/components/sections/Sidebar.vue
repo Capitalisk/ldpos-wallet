@@ -27,7 +27,7 @@
     </a>
     <router-link to="/voting">
       <i class="fa fa-poll mr-1" />
-      VOTING
+      {{ authenticated ? 'VOTING' : 'DELEGATES' }}
     </router-link>
     <hr />
     <router-link to="/transactions">

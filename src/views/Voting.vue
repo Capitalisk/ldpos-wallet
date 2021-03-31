@@ -1,6 +1,6 @@
 <template>
   <Navbar />
-  <DataTable :columns="columns" title="Voting for delegates" :fn="fn" />
+  <DataTable :columns="columns" :title="title" :fn="fn" />
 </template>
 
 <script>
@@ -64,7 +64,7 @@ export default {
 
     return {
       // vote: async () => await store.client.value.vote(),
-      authenticated: computed(() => store.state.authenticated),
+      title: computed(() => store.state.authenticated ? 'Voting for delegates' : 'Delegates'),
       columns,
       fn: async () => await store.client.value.getForgingDelegates(),
     };
