@@ -27,9 +27,7 @@ const state = reactive({
     type: null,
     data: null,
   },
-  darkMode:
-    window.matchMedia &&
-    window.matchMedia('(prefers-color-scheme: dark)').matches,
+  darkMode: true,
   notifications: [],
 });
 
