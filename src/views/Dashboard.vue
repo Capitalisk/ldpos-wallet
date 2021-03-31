@@ -29,7 +29,7 @@
         v-if="authenticated"
         class="flex-3"
       >
-        <ul>
+        <ul v-if="transactions.data.length">
           <template
             v-for="transaction in transactions.data"
             :key="transaction.id"
@@ -62,6 +62,7 @@
             </li>
           </template>
         </ul>
+        <p v-else>No latest transactions available</p>
       </Section>
       <Section title="Quick vote" v-if="authenticated" class="flex-3">
         <div v-if="vote.error" class="text-error">{{ vote.error }}</div>
@@ -174,9 +175,16 @@ export default {
         );
         balance.data = _transformMonetaryUnit(b);
       } catch (err) {
-        // TODO: Implement AccountDidNotExist
-        balance.data = _transformMonetaryUnit('0');
-        // balance.error = err.message;
+        if (err.sourceError.name === 'AccountDidNotExistError') {
+          if (
+            store.client.value.validatePassphrase(store.client.value.passphrase)
+          ) {
+            balance.data = _transformMonetaryUnit('0');
+            balance.loading = false;
+            return;
+          }
+        }
+        balance.error = err.message;
       }
       balance.loading = false;
     };
@@ -281,7 +289,7 @@ export default {
     };
 
     const generateWallet = async () => {
-      generatedWalletAddress.loading = true
+      generatedWalletAddress.loading = true;
       await new Promise((res) => setTimeout(() => res(), 500));
       try {
         if (!generatedWalletAddress.data)
