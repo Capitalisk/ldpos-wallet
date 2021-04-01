@@ -2,7 +2,7 @@
   <Navbar />
   <Wallet v-if="authenticated" />
   <div v-else class="flex flex-wrap flex-gap">
-    <Section v-if="!address.data" title="Login" class="flex-3">
+    <Section v-if="!address.data" title="Login" class="flex-12">
       <span class="text-error" v-if="generatedWalletAddress.error">
         {{ generatedWalletAddress.error }}
       </span>
@@ -40,7 +40,7 @@
                 :type="hidden ? 'password' : 'text'"
                 :id="`passphrase-${i}`"
                 placeholder="__________"
-                @keydown="(e) => backspace(e, i)"
+                @keydown="e => backspace(e, i)"
                 @keyup.enter="signin"
                 background-color="primary-darkest"
               />
@@ -58,23 +58,25 @@
             :loading="loggingIn"
           />
         </div>
-        <div class="mt-4" v-if="!generatedWalletAddress.data">
-          <div class="flex justify-center">
-            Don't have a {{ token }} wallet yet?
-          </div>
-          <div class="flex justify-center">
-            <Button
-              :value="
-                generatedWalletAddress.loading ? 'Generating...' : 'Generate'
-              "
-              class="ma-1"
-              :background-color="
-                generatedWalletAddress.loading ? 'warning' : 'primary-lighter'
-              "
-              @click="generateWallet"
-              :loading="generatedWalletAddress.loading"
-            />
-          </div>
+      </div>
+    </Section>
+    <Section v-if="!generatedWalletAddress.data" title="" class="flex-12">
+      <div>
+        <div class="flex justify-center">
+          Don't have a {{ token }} wallet yet?
+        </div>
+        <div class="flex justify-center">
+          <Button
+            :value="
+              generatedWalletAddress.loading ? 'Generating...' : 'Create one'
+            "
+            class="ma-1"
+            :background-color="
+              generatedWalletAddress.loading ? 'warning' : 'primary-lighter'
+            "
+            @click="generateWallet"
+            :loading="generatedWalletAddress.loading"
+          />
         </div>
       </div>
     </Section>
@@ -115,7 +117,7 @@ export default {
 
     watch(
       () => inputs.value,
-      (n) => {
+      n => {
         for (let i = 0; i < n.length; i++) {
           const element = n[i].value;
           const lastInput = document.getElementById(
@@ -123,7 +125,7 @@ export default {
           );
 
           if (element && element.split(' ').length === 12) {
-            inputs.value = element.split(' ').map((el) => ({ value: el }));
+            inputs.value = element.split(' ').map(el => ({ value: el }));
             lastInput.focus();
           } else if (element && element.includes(' ')) {
             const nextInput = document.getElementById(`passphrase-${i + 1}`);
@@ -134,7 +136,7 @@ export default {
           }
         }
 
-        passphrase.value = n.map((el) => el.value).join(' ');
+        passphrase.value = n.map(el => el.value).join(' ');
       },
       {
         deep: true,
@@ -157,7 +159,7 @@ export default {
 
     const generateWallet = async () => {
       generatedWalletAddress.loading = true;
-      await new Promise((res) => setTimeout(() => res(), 500));
+      await new Promise(res => setTimeout(() => res(), 500));
       try {
         if (!generatedWalletAddress.data)
           generatedWalletAddress.data = await store.client.value.generateWallet();
