@@ -40,7 +40,7 @@ progress.progress-indeterminate {
 }
 
 progress:indeterminate {
-  animation: progress-indeterminate 1.5s cubic-bezier(0.01, 0.05, 0.2, 0.25)
+  animation: progress-indeterminate 0.75s linear
     infinite;
 }
 
