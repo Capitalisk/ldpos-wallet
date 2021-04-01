@@ -18,63 +18,63 @@
 </template>
 
 <script>
-import { onMounted, ref, computed, inject, reactive } from "vue";
+import { onMounted, ref, computed, inject, reactive } from 'vue';
 
-import Navbar from "../components/Navbar";
-import Button from "../components/Button";
-import DataTable from "../components/DataTable";
-import Section from "../components/Section";
-import Input from "../components/Input";
+import Navbar from '../components/Navbar';
+import Button from '../components/Button';
+import DataTable from '../components/DataTable';
+import Section from '../components/Section';
+import Input from '../components/Input';
 
-import { _integerToDecimal } from "../utils";
+import { _integerToDecimal } from '../utils';
 
 export default {
-  name: "Home",
+  name: 'Home',
   setup() {
-    const store = inject("store");
+    const store = inject('store');
 
     const vote = reactive({ loading: false, error: null, data: null });
 
     const columns = ref([
       {
-        name: "rank",
-        label: "Rank",
-        field: "address",
+        name: 'rank',
+        label: 'Rank',
+        field: 'address',
         sortable: false,
         value: (val, r, rows) => `#${rows.indexOf(r) + 1}`,
         active: true,
       },
       {
-        name: "address",
-        label: "Address",
-        field: "address",
+        name: 'address',
+        label: 'Address',
+        field: 'address',
         sortable: false,
         value: (val) => val,
         active: true,
       },
       {
-        name: "updateHeight",
-        label: "Height",
-        field: "updateHeight",
+        name: 'updateHeight',
+        label: 'Height',
+        field: 'updateHeight',
         sortable: false,
-        value: (val) => new Intl.NumberFormat("be-NL").format(val),
+        value: (val) => new Intl.NumberFormat('be-NL').format(val),
         active: true,
       },
       {
-        name: "voteWeight",
-        label: "Vote weight",
-        field: "voteWeight",
+        name: 'voteWeight',
+        label: 'Vote weight',
+        field: 'voteWeight',
         sortable: false,
         value: (val) => _integerToDecimal(val),
         active: true,
         shrinkable: false,
       },
       {
-        name: "voteWeight",
-        label: "Vote weight",
-        field: "voteWeight",
+        name: 'voteWeight',
+        label: 'Vote weight',
+        field: 'voteWeight',
         sortable: false,
-        value: (val) => "Vote",
+        value: (val) => 'Vote',
         active: store.state.authenticated,
       },
     ]);
@@ -82,7 +82,7 @@ export default {
     const voteForDelegate = async () => {
       vote.loading = true;
       if (!vote.data) {
-        vote.error = "Field required.";
+        vote.error = 'Field required.';
         return;
       }
 
@@ -92,16 +92,16 @@ export default {
         const valid = await store.client.value.getDelegate(vote.data);
 
         if (!valid) {
-          vote.error = "Delegate does not exist.";
+          vote.error = 'Delegate does not exist.';
           return;
         }
 
         const voteTxn = await store.client.value.prepareTransaction({
-          type: "vote",
+          type: 'vote',
           delegateAddress: vote.data,
           fee: minTransactionFees.vote,
           timestamp: Date.now(),
-          message: "",
+          message: '',
         });
 
         await store.client.value.postTransaction(voteTxn);
@@ -115,7 +115,7 @@ export default {
     return {
       // vote: async () => await store.client.value.vote(),
       title: computed(() =>
-        store.state.authenticated ? "Voting for delegates" : "Delegates"
+        store.state.authenticated ? 'Voting for delegates' : 'Delegates',
       ),
       columns,
       fn: async () => await store.client.value.getForgingDelegates(),

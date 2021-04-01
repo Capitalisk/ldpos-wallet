@@ -11,10 +11,10 @@
 
 <script>
 export default {
-  name: "Progressbar",
+  name: 'Progressbar',
   props: {
     loading: { type: Boolean, default: false },
-    classes: { type: String, default: "" },
+    classes: { type: String, default: '' },
   },
 };
 </script>

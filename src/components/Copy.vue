@@ -6,26 +6,26 @@
 </template>
 
 <script>
-import { inject, ref, computed } from "vue";
+import { inject, ref, computed } from 'vue';
 
 export default {
-  name: "Copy",
+  name: 'Copy',
   props: {
-    value: { type: String, default: "" },
+    value: { type: String, default: '' },
     trim: { type: Boolean, default: false },
   },
   setup(props) {
-    const store = inject("store");
+    const store = inject('store');
     const copyRef = ref(null);
 
     return {
       copy: () => {
-        const copyText = document.createElement("input");
+        const copyText = document.createElement('input');
         document.body.appendChild(copyText);
         copyText.value = props.value;
         copyText.select();
         copyText.setSelectionRange(0, 99999);
-        document.execCommand("copy");
+        document.execCommand('copy');
         document.body.removeChild(copyText);
 
         store.notify(`Copied: ${props.value}`, 5);
@@ -33,8 +33,8 @@ export default {
       copyRef,
       value: computed(() =>
         props.trim && props.value
-          ? [...props.value.split("").slice(0, 20), "..."].join("")
-          : props.value
+          ? [...props.value.split('').slice(0, 20), '...'].join('')
+          : props.value,
       ),
     };
   },

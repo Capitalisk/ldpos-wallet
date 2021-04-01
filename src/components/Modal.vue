@@ -18,18 +18,18 @@
 </template>
 
 <script>
-import { computed, inject } from "vue";
+import { computed, inject } from 'vue';
 
-import modals from "./modals";
-import * as modalConstants from "./modals/constants";
-import { _capitalize } from "../utils";
+import modals from './modals';
+import * as modalConstants from './modals/constants';
+import { _capitalize } from '../utils';
 
-import Section from "./Section";
+import Section from './Section';
 
 export default {
-  name: "Modal",
+  name: 'Modal',
   setup() {
-    const store = inject("store");
+    const store = inject('store');
 
     return {
       active: computed(() => store.state.modal.active),

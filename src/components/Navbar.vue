@@ -16,16 +16,16 @@
 </template>
 
 <script>
-import { computed, inject } from "vue";
+import { computed, inject } from 'vue';
 
-import Button from "./Button";
-import Connected from "./Connected.vue";
-import Switch from "./Switch.vue";
+import Button from './Button';
+import Connected from './Connected.vue';
+import Switch from './Switch.vue';
 
 export default {
-  name: "Navbar",
+  name: 'Navbar',
   setup() {
-    const store = inject("store");
+    const store = inject('store');
 
     return {
       authenticated: computed(() => store.state.authenticated),

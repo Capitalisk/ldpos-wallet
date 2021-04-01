@@ -10,13 +10,13 @@
 </template>
 
 <script>
-import { getCurrentInstance } from "vue";
+import { getCurrentInstance } from 'vue';
 
 export default {
-  name: "Switch",
+  name: 'Switch',
   props: {
     modelValue: { type: Boolean, default: false },
-    id: { type: String, default: "" },
+    id: { type: String, default: '' },
   },
 };
 </script>
@@ -50,7 +50,7 @@ export default {
 .slider:before {
   border-radius: 50%;
   position: absolute;
-  content: "";
+  content: '';
   height: 13px;
   width: 13px;
   left: 1px;

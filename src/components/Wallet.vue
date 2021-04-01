@@ -43,7 +43,7 @@
               ></i>
               <strong>{{ transaction.amount }}</strong
               >&nbsp;
-              {{ transaction.direction === "INBOUND" ? "from" : "to" }}&nbsp;
+              {{ transaction.direction === 'INBOUND' ? 'from' : 'to' }}&nbsp;
               <strong>
                 <Copy
                   :value="
@@ -71,23 +71,23 @@
 </template>
 
 <script>
-import { computed, inject, onMounted, ref, reactive } from "vue";
+import { computed, inject, onMounted, ref, reactive } from 'vue';
 
-import Navbar from "./Navbar";
-import DataTable from "./DataTable";
-import Copy from "./Copy";
-import Section from "./Section";
-import Button from "./Button";
+import Navbar from './Navbar';
+import DataTable from './DataTable';
+import Copy from './Copy';
+import Section from './Section';
+import Button from './Button';
 
-import { _parseDate, _transformMonetaryUnit } from "../utils";
-import router from "../router";
+import { _parseDate, _transformMonetaryUnit } from '../utils';
+import router from '../router';
 
-import { DETAIL_MODAL, TRANSFER_MODAL } from "./modals/constants";
+import { DETAIL_MODAL, TRANSFER_MODAL } from './modals/constants';
 
 export default {
-  name: "Wallet",
+  name: 'Wallet',
   setup() {
-    const store = inject("store");
+    const store = inject('store');
 
     const address = reactive({ loading: true, data: null, error: null });
     const balance = reactive({ loading: true, data: null, error: null });
@@ -104,7 +104,7 @@ export default {
           store.client.value.getWalletAddress(),
           null,
           50,
-          "asc"
+          'asc',
         );
       } catch (err) {
         pendingTransactions.error = err.message;
@@ -114,7 +114,7 @@ export default {
 
     const getWallet = async () => {
       if (!store.state.authenticated) {
-        router.push("/");
+        router.push('/');
         return;
       }
 
@@ -122,18 +122,18 @@ export default {
         store.client.value.getWalletAddress(),
         null,
         50,
-        "asc"
+        'asc',
       );
       const outboundTransactions = await store.client.value.getOutboundTransactions(
         store.client.value.getWalletAddress(),
         null,
         50,
-        "asc"
+        'asc',
       );
 
       const transactions = [
-        ...inboundTransactions.map((t) => ({ ...t, direction: "INBOUND" })),
-        ...outboundTransactions.map((t) => ({ ...t, direction: "OUTBOUND" })),
+        ...inboundTransactions.map((t) => ({ ...t, direction: 'INBOUND' })),
+        ...outboundTransactions.map((t) => ({ ...t, direction: 'OUTBOUND' })),
       ].sort((a, b) => (a.timestamp > b.timestamp ? -1 : 1));
 
       return Promise.resolve(transactions);
@@ -149,15 +149,15 @@ export default {
 
       try {
         const { balance: b } = await store.client.value.getAccount(
-          address.data
+          address.data,
         );
         balance.data = _transformMonetaryUnit(b);
       } catch (err) {
-        if (err.sourceError.name === "AccountDidNotExistError") {
+        if (err.sourceError.name === 'AccountDidNotExistError') {
           if (
             store.client.value.validatePassphrase(store.client.value.passphrase)
           ) {
-            balance.data = _transformMonetaryUnit("0");
+            balance.data = _transformMonetaryUnit('0');
             balance.loading = false;
           }
         } else {
@@ -174,60 +174,60 @@ export default {
 
     const columns = ref([
       {
-        name: "direction",
-        label: "Direction",
-        field: "direction",
+        name: 'direction',
+        label: 'Direction',
+        field: 'direction',
         sortable: false,
-        value: (val) => (val === "INBOUND" ? "incoming" : "outgoing"),
+        value: (val) => (val === 'INBOUND' ? 'incoming' : 'outgoing'),
         active: true,
       },
       {
-        name: "type",
-        label: "Type",
-        field: "type",
+        name: 'type',
+        label: 'Type',
+        field: 'type',
         sortable: false,
         active: true,
         shrinkable: false,
       },
       {
-        name: "senderAddress",
-        label: "Sender",
-        field: "senderAddress",
+        name: 'senderAddress',
+        label: 'Sender',
+        field: 'senderAddress',
         sortable: false,
         value: (val) => val,
         active: true,
-        class: "address",
+        class: 'address',
       },
       {
-        name: "recipientAddress",
-        label: "Recipient",
-        field: "recipientAddress",
+        name: 'recipientAddress',
+        label: 'Recipient',
+        field: 'recipientAddress',
         sortable: false,
         value: (val) => val,
         active: true,
-        class: "address",
+        class: 'address',
       },
       {
-        name: "timestamp",
-        label: "Date",
-        field: "timestamp",
+        name: 'timestamp',
+        label: 'Date',
+        field: 'timestamp',
         sortable: false,
         value: (val) => _parseDate(val),
         active: true,
       },
       {
-        name: "amount",
-        label: "Amount",
-        field: "amount",
+        name: 'amount',
+        label: 'Amount',
+        field: 'amount',
         sortable: false,
         value: (val) =>
           _transformMonetaryUnit(val, store.state.config.networkSymbol),
         active: true,
       },
       {
-        name: "fee",
-        label: "Fee",
-        field: "fee",
+        name: 'fee',
+        label: 'Fee',
+        field: 'fee',
         sortable: false,
         value: (val) =>
           _transformMonetaryUnit(val, store.state.config.networkSymbol),
@@ -239,8 +239,8 @@ export default {
       columns,
       fn: getWallet,
       directions: {
-        OUTBOUND: "chevron-up",
-        INBOUND: "chevron-down",
+        OUTBOUND: 'chevron-up',
+        INBOUND: 'chevron-down',
       },
       authenticated: computed(() => store.state.authenticated),
       address: computed(() => address),

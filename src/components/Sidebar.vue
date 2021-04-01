@@ -23,7 +23,7 @@
     </router-link>
     <router-link to="/voting">
       <i class="fa fa-poll mr-1" />
-      {{ authenticated ? "VOTING" : "DELEGATES" }}
+      {{ authenticated ? 'VOTING' : 'DELEGATES' }}
     </router-link>
     <hr />
     <router-link to="/transactions">
@@ -42,23 +42,23 @@
 </template>
 
 <script>
-import { computed, inject, ref } from "vue";
+import { computed, inject, ref } from 'vue';
 
-import Button from "./Button";
+import Button from './Button';
 
-import { TOKEN_MODAL } from "./modals/constants";
-import router from "../router";
+import { TOKEN_MODAL } from './modals/constants';
+import router from '../router';
 
 export default {
-  name: "Sidebar",
+  name: 'Sidebar',
   setup() {
-    const store = inject("store");
+    const store = inject('store');
 
     return {
       authenticated: computed(() => store.state.authenticated),
       burgerActive: computed(() => store.state.nav),
       networkSymbol: computed(() =>
-        store.state.config.networkSymbol.toUpperCase()
+        store.state.config.networkSymbol.toUpperCase(),
       ),
       TOKEN_MODAL,
       toggleModal: (type) => store.toggleModal({ type }),

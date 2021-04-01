@@ -7,7 +7,7 @@
 
 <script>
 export default {
-  name: "Loading",
+  name: 'Loading',
   props: {
     size: {
       type: Number,

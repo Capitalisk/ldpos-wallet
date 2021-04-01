@@ -10,57 +10,57 @@
 </template>
 
 <script>
-import { computed, inject, onMounted, ref } from "vue";
+import { computed, inject, onMounted, ref } from 'vue';
 
-import Navbar from "../components/Navbar.vue";
-import DataTable from "../components/DataTable.vue";
-import { _transformMonetaryUnit, _parseDate } from "../utils";
+import Navbar from '../components/Navbar.vue';
+import DataTable from '../components/DataTable.vue';
+import { _transformMonetaryUnit, _parseDate } from '../utils';
 
 export default {
-  name: "Transactions",
+  name: 'Transactions',
   setup() {
-    const store = inject("store");
+    const store = inject('store');
 
     const columns = ref([
       // { name: 'type', label: 'type', field: 'type', sortable: false },
       {
-        name: "senderAddress",
-        label: "Sender",
-        field: "senderAddress",
+        name: 'senderAddress',
+        label: 'Sender',
+        field: 'senderAddress',
         sortable: false,
-        class: "address",
+        class: 'address',
         active: true,
       },
       {
-        name: "recipientAddress",
-        label: "Recipient",
-        field: "recipientAddress",
+        name: 'recipientAddress',
+        label: 'Recipient',
+        field: 'recipientAddress',
         sortable: false,
-        class: "address",
+        class: 'address',
         active: true,
       },
       {
-        name: "timestamp",
-        label: "Date",
-        field: "timestamp",
+        name: 'timestamp',
+        label: 'Date',
+        field: 'timestamp',
         sortable: true,
         value: (val) => _parseDate(val),
         active: true,
-        sorted: "desc",
+        sorted: 'desc',
       },
       {
-        name: "amount",
-        label: "Amount",
-        field: "amount",
+        name: 'amount',
+        label: 'Amount',
+        field: 'amount',
         sortable: false,
         value: (val) =>
           _transformMonetaryUnit(val, store.state.config.networkSymbol),
         active: true,
       },
       {
-        name: "fee",
-        label: "Fee",
-        field: "fee",
+        name: 'fee',
+        label: 'Fee',
+        field: 'fee',
         sortable: false,
         value: (val) =>
           _transformMonetaryUnit(val, store.state.config.networkSymbol),

@@ -9,44 +9,44 @@
 </template>
 
 <script>
-import { computed, inject, onMounted, ref } from "vue";
+import { computed, inject, onMounted, ref } from 'vue';
 
-import Navbar from "../components/Navbar.vue";
-import DataTable from "../components/DataTable.vue";
-import { _transformMonetaryUnit } from "../utils";
-import { DETAIL_MODAL } from "../components/modals/constants";
+import Navbar from '../components/Navbar.vue';
+import DataTable from '../components/DataTable.vue';
+import { _transformMonetaryUnit } from '../utils';
+import { DETAIL_MODAL } from '../components/modals/constants';
 
 export default {
-  name: "Accounts",
+  name: 'Accounts',
   setup() {
-    const store = inject("store");
+    const store = inject('store');
 
     const columns = ref([
       // { name: 'type', label: 'type', field: 'type', sortable: false },
       {
-        name: "rank",
-        label: "Rank",
+        name: 'rank',
+        label: 'Rank',
         sortable: false,
         active: true,
         value: (val, r, rows) => `#${rows.indexOf(r) + 1}`,
       },
       {
-        name: "address",
-        label: "Address",
-        field: "address",
+        name: 'address',
+        label: 'Address',
+        field: 'address',
         sortable: false,
-        class: "address",
+        class: 'address',
         active: true,
       },
       {
-        name: "balance",
-        label: "Balance",
-        field: "balance",
+        name: 'balance',
+        label: 'Balance',
+        field: 'balance',
         sortable: false,
         value: (val) =>
           _transformMonetaryUnit(val, store.state.config.networkSymbol),
         active: true,
-        sorted: "desc",
+        sorted: 'desc',
         shrinkable: false,
       },
     ]);

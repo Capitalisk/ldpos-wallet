@@ -17,12 +17,12 @@
 </template>
 
 <script>
-import { inject, onBeforeUpdate, onUpdated, ref } from "vue";
+import { inject, onBeforeUpdate, onUpdated, ref } from 'vue';
 
 export default {
-  name: "Notification",
+  name: 'Notification',
   setup() {
-    const store = inject("store");
+    const store = inject('store');
     const divs = ref([]);
 
     onBeforeUpdate(() => (divs.value = []));
@@ -42,7 +42,7 @@ export default {
       divs,
       notify: () =>
         store.notify(
-          "Your session was automatically ended after being inactive for 15 minutes."
+          'Your session was automatically ended after being inactive for 15 minutes.',
         ),
       denotify: (i) => store.denotify(i),
     };
