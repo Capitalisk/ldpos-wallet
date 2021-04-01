@@ -1,5 +1,5 @@
 <template>
-  <div class="table flex column fixed-height">
+  <div class="table flex column">
     <Progressbar :loading="loading" classes="table" />
     <div class="header flex justify-end pa-2">
       <div class="mr-auto">
@@ -21,8 +21,7 @@
     </div>
     <div
       v-if="!loading || firstLoadCompleted"
-      class="overflow-x flex flex-wrap column"
-      :class="overflow ? 'overflow-y' : 'overflow-y-hidden'"
+      class="flex flex-wrap column overflow-y-hidden"
       ref="table"
       id="table"
     >
@@ -86,10 +85,10 @@
 <script>
 import { computed, inject, onMounted, reactive, ref, watch } from 'vue';
 
-import { DETAIL_MODAL } from '../modals/constants';
+import { DETAIL_MODAL } from './modals/constants';
 
-import Loading from '../parts/Loading';
-import Button from '../parts/Button';
+import Loading from './Loading';
+import Button from './Button';
 import Popup from './Popup.vue';
 import Progressbar from './Progressbar.vue';
 

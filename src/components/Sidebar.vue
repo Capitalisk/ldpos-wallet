@@ -18,13 +18,9 @@
     >
     <hr />
     <router-link to="/">
-      <i class="fa fa-home mr-1" />
-      DASHBOARD
-    </router-link>
-    <a @click="toWallet" :class="authenticated ? '' : 'disabled'">
       <i class="fa fa-wallet mr-1" />
       WALLET
-    </a>
+    </router-link>
     <router-link to="/voting">
       <i class="fa fa-poll mr-1" />
       {{ authenticated ? 'VOTING' : 'DELEGATES' }}
@@ -48,24 +44,23 @@
 <script>
 import { computed, inject, ref } from 'vue';
 
-import Button from '../parts/Button';
+import Button from './Button';
 
-import { TOKEN_MODAL } from '../modals/constants';
-import router from '../../router';
+import { TOKEN_MODAL } from './modals/constants';
+import router from '../router';
 
 export default {
   name: 'Sidebar',
   setup() {
     const store = inject('store');
 
-    const toWallet = () => store.state.authenticated && router.push('/wallet');
-
     return {
       authenticated: computed(() => store.state.authenticated),
       burgerActive: computed(() => store.state.nav),
-      networkSymbol: computed(() =>store.state.config.networkSymbol.toUpperCase()),
+      networkSymbol: computed(() =>
+        store.state.config.networkSymbol.toUpperCase(),
+      ),
       TOKEN_MODAL,
-      toWallet,
       toggleModal: (type) => store.toggleModal({ type }),
       toggleBurger: () => store.toggleNav(),
     };

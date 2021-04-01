@@ -24,9 +24,9 @@ import { computed, inject } from 'vue';
 
 import Section from './Section';
 
-import modals from '../modals';
-import * as modalConstants from '../modals/constants';
-import { _capitalize } from '../../utils';
+import modals from './modals';
+import * as modalConstants from './modals/constants';
+import { _capitalize } from '../utils';
 
 export default {
   name: 'Modal',
@@ -48,7 +48,7 @@ export default {
 
 <style scoped>
 .modal-background {
-  position: absolute;
+  position: fixed;
   background: rgb(0, 0, 0, 0.7);
   width: 100vw;
   height: 100vh;

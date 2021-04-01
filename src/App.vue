@@ -14,10 +14,10 @@ import { onMounted, ref, watch, computed, inject } from 'vue';
 import router from './router';
 import store from './store';
 
-import Loading from './components/parts/Loading';
-import Modal from './components/parts/Modal';
-import Notification from './components/parts/Notification';
-import Sidebar from './components/sections/Sidebar';
+import Loading from './components/Loading';
+import Modal from './components/Modal';
+import Notification from './components/Notification';
+import Sidebar from './components/Sidebar';
 
 import { TOKEN_MODAL } from './components/modals/constants';
 

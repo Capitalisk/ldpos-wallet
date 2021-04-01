@@ -18,9 +18,9 @@
 <script>
 import { computed, inject } from 'vue';
 
-import Button from '../parts/Button';
-import Connected from '../parts/Connected.vue';
-import Switch from '../parts/Switch.vue';
+import Button from './Button';
+import Connected from './Connected.vue';
+import Switch from './Switch.vue';
 
 export default {
   name: 'Navbar',

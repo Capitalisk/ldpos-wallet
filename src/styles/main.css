@@ -255,6 +255,10 @@ th {
   margin: var(--unit-2);
 }
 
+.mb-2 {
+  margin-bottom: var(--unit-2);
+}
+
 .my-1 {
   margin-top: var(--unit-1);
   margin-bottom: var(--unit-1);

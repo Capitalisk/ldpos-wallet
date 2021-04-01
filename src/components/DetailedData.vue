@@ -40,7 +40,7 @@ import {
   _transformMonetaryUnit,
   _splitCamelCaseWords,
   _capitalize,
-} from '../../utils';
+} from '../utils';
 
 export default {
   name: 'DetailedData',

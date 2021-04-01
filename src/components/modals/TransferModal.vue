@@ -36,8 +36,8 @@ import { reactive, inject, onMounted, computed, ref } from 'vue';
 
 import { _decimalToInteger, _integerToDecimal } from '../../utils';
 
-import Input from '../parts/Input';
-import Button from '../parts/Button';
+import Input from '../Input';
+import Button from '../Button';
 
 export default {
   name: 'TransferModal',

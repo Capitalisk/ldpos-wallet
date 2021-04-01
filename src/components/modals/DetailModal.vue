@@ -5,7 +5,7 @@
 <script>
 import { computed, inject } from 'vue';
 
-import DetailedData from '../parts/DetailedData';
+import DetailedData from '../DetailedData';
 
 import { _transformMonetaryUnit, _parseDate } from '../../utils';
 

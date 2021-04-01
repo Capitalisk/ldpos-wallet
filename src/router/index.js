@@ -1,12 +1,12 @@
 import { createRouter, createWebHashHistory } from 'vue-router';
-import store from '../store'
+import store from '../store';
 
 const routes = [
   {
     path: '/',
-    name: 'Dashboard',
+    name: 'Login',
     component: () =>
-      import(/* webpackChunkName: "home" */ '../views/Dashboard.vue'),
+      import(/* webpackChunkName: "login" */ '../views/Login.vue'),
   },
   {
     path: '/voting',
@@ -15,16 +15,12 @@ const routes = [
       import(/* webpackChunkName: "voting" */ '../views/Voting.vue'),
   },
   {
-    path: '/wallet',
-    name: 'Wallet',
-    component: () =>
-      import(/* webpackChunkName: "wallet" */ '../views/Wallet.vue'),
-  },
-  {
     path: '/transactions',
     name: 'Transactions',
     component: () =>
-      import(/* webpackChunkName: "transactions" */ '../views/Transactions.vue'),
+      import(
+        /* webpackChunkName: "transactions" */ '../views/Transactions.vue'
+      ),
   },
   {
     path: '/blocks',
@@ -37,7 +33,7 @@ const routes = [
     name: 'Accounts',
     component: () =>
       import(/* webpackChunkName: "accounts" */ '../views/Accounts.vue'),
-  }
+  },
 ];
 
 const router = createRouter({
@@ -46,8 +42,8 @@ const router = createRouter({
 });
 
 router.beforeEach(() => {
-  store.toggleNav(false)
-  store.initiateOrRenewTimeout()
-})
+  store.toggleNav(false);
+  store.initiateOrRenewTimeout();
+});
 
 export default router;

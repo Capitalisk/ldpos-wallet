@@ -13,8 +13,8 @@
 <script>
 import { computed, inject } from 'vue';
 
-import Input from '../parts/Input';
-import Button from '../parts/Button';
+import Input from '../Input';
+import Button from '../Button';
 
 export default {
   name: 'TOKEN_MODAL',

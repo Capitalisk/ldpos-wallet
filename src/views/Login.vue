@@ -1,0 +1,207 @@
+<template>
+  <Navbar />
+  <Wallet v-if="authenticated" />
+  <div v-else class="flex flex-wrap flex-gap">
+    <Section v-if="!address.data" title="Login" class="flex-3">
+      <span class="text-error" v-if="generatedWalletAddress.error">
+        {{ generatedWalletAddress.error }}
+      </span>
+      <span v-else-if="generatedWalletAddress.data">
+        <p class="text-error pb-2">
+          <strong>IMPORTANT:</strong><br />
+          Write this down in a safe place!<br />
+          Losing the passphrase is losing its assets as well!
+        </p>
+        <strong>Address</strong>
+        <Copy :value="generatedWalletAddress.data.address" /><br />
+        <strong>Passphrase</strong>
+        <Copy :value="generatedWalletAddress.data.passphrase" />
+      </span>
+      <div
+        v-if="!generatedWalletAddress.data"
+        class="flex justify-center flex-wrap"
+      >
+        <div class="flex-6 pa-2">
+          Passphrase
+        </div>
+        <div
+          @click="toggleHidden"
+          class="flex-6 pa-2 text-right cursor-pointer"
+          id="show"
+        >
+          <span v-if="hidden"><i class="fas fa-eye-slash mr-1"></i>Show</span>
+          <span v-else><i class="fas fa-eye mr-1"></i>Hide</span>
+        </div>
+        <div class="login flex flex-wrap flex-gap justify-center pb-2">
+          <div v-for="(input, i) in inputs" :key="i" class="flex align-center">
+            <div class="input-number">{{ i + 1 }}.</div>
+            <div>
+              <Input
+                class="mx-1"
+                v-model="input.value"
+                :type="hidden ? 'password' : 'text'"
+                :id="`passphrase-${i}`"
+                placeholder="__________"
+                @keydown="(e) => backspace(e, i)"
+                @keyup.enter="signin"
+                background-color="primary-darkest"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="flex column">
+        <div class="flex justify-center">
+          <Button
+            :value="loggingIn ? 'Hang in there...' : 'Login'"
+            class="ma-1"
+            :background-color="loggingIn ? 'warning' : 'primary-lighter'"
+            @click="login"
+            :loading="loggingIn"
+          />
+        </div>
+        <div class="mt-4" v-if="!generatedWalletAddress.data">
+          <div class="flex justify-center">
+            Don't have a {{ token }} wallet yet?
+          </div>
+          <div class="flex justify-center">
+            <Button
+              :value="
+                generatedWalletAddress.loading ? 'Generating...' : 'Generate'
+              "
+              class="ma-1"
+              :background-color="generatedWalletAddress.loading ? 'warning' : 'primary-lighter'"
+              @click="generateWallet"
+              :loading="generatedWalletAddress.loading"
+            />
+          </div>
+        </div>
+      </div>
+    </Section>
+  </div>
+</template>
+
+<script>
+import { ref, inject, computed, reactive, watch, onMounted } from 'vue';
+
+import { _transformMonetaryUnit } from '../utils.js';
+
+import Navbar from '../components/Navbar';
+import Section from '../components/Section';
+import Copy from '../components/Copy';
+import Button from '../components/Button';
+import Input from '../components/Input';
+import Wallet from '../components/Wallet';
+import { TRANSFER_MODAL } from '../components/modals/constants.js';
+
+export default {
+  name: 'Home',
+  setup() {
+    const store = inject('store');
+
+    const inputs = ref(new Array(12));
+    const activeIndex = ref(0);
+    const passphrase = ref('');
+
+    for (let i = 0; i < inputs.value.length; i++) {
+      inputs.value[i] = { value: '' };
+    }
+
+    const backspace = (e, i) =>
+      e.target.value === '' &&
+      e.keyCode === 8 &&
+      i !== 0 &&
+      document.getElementById(`passphrase-${i - 1}`).focus();
+
+    watch(
+      () => inputs.value,
+      (n) => {
+        for (let i = 0; i < n.length; i++) {
+          const element = n[i].value;
+          const lastInput = document.getElementById(
+            `passphrase-${n.length - 1}`,
+          );
+
+          if (element && element.split(' ').length === 12) {
+            inputs.value = element.split(' ').map((el) => ({ value: el }));
+            lastInput.focus();
+          } else if (element && element.includes(' ')) {
+            const nextInput = document.getElementById(`passphrase-${i + 1}`);
+            if (nextInput) {
+              nextInput.focus();
+            }
+            inputs.value[i].value = inputs.value[i].value.replace(/\s/g, '');
+          }
+        }
+
+        passphrase.value = n.map((el) => el.value).join(' ');
+      },
+      {
+        deep: true,
+        immediate: false,
+      },
+    );
+
+    const hidden = ref(true);
+
+    const address = reactive({ loading: true, data: null, error: null });
+    const generatedWalletAddress = reactive({
+      loading: false,
+      data: null,
+      error: null,
+    });
+
+    const openTransferModal = () => {
+      store.toggleModal({ type: TRANSFER_MODAL });
+    };
+
+    const generateWallet = async () => {
+      generatedWalletAddress.loading = true;
+      await new Promise((res) => setTimeout(() => res(), 500));
+      try {
+        if (!generatedWalletAddress.data)
+          generatedWalletAddress.data = await store.client.value.generateWallet();
+        else return;
+      } catch (e) {
+        console.log(e);
+        generatedWalletAddress.error = e.message;
+      }
+      generatedWalletAddress.loading = false;
+    };
+
+    return {
+      address: computed(() => address),
+      authenticated: computed(() => store.state.authenticated),
+      loggingIn: computed(() => store.state.login.loading),
+      generateWallet,
+      generatedWalletAddress,
+      openTransferModal,
+      login: async () =>
+        await store.authenticate(generatedWalletAddress.data.passphrase),
+      signin: async () => await store.authenticate(passphrase.value),
+      passphrase,
+      hidden,
+      inputs,
+      toggleHidden: () => (hidden.value = !hidden.value),
+      backspace,
+      loading: computed(() => store.state.login.loading),
+      error: computed(() => store.state.login.error),
+      token: computed(() => store.state.config.networkSymbol.toUpperCase()),
+    };
+  },
+  components: { Section, Copy, Button, Input, Navbar, Wallet },
+  // mounted() {
+  //   this.$forceUpdate();
+  // },
+};
+</script>
+
+<style scoped>
+.login {
+  max-width: 980px;
+}
+
+.input-number {
+  width: 15px;
+}
+</style>

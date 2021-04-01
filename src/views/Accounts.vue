@@ -11,8 +11,8 @@
 <script>
 import { computed, inject, onMounted, ref } from 'vue';
 
-import Navbar from '../components/sections/Navbar.vue';
-import DataTable from '../components/parts/DataTable.vue';
+import Navbar from '../components/Navbar.vue';
+import DataTable from '../components/DataTable.vue';
 import { _transformMonetaryUnit } from '../utils';
 import { DETAIL_MODAL } from '../components/modals/constants';
 
