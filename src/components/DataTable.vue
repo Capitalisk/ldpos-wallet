@@ -1,6 +1,5 @@
 <template>
   <div class="table flex column">
-    <Progressbar :loading="loading" classes="table" />
     <div class="header flex justify-end pa-2">
       <div class="mr-auto">
         <slot name="header" />
@@ -19,12 +18,7 @@
         </Popup>
       </div>
     </div>
-    <div
-      v-if="!loading || firstLoadCompleted"
-      class="flex flex-wrap column overflow-y-hidden"
-      ref="table"
-      id="table"
-    >
+    <div class="flex flex-wrap column overflow-y-hidden" ref="table" id="table">
       <table>
         <thead>
           <template v-for="(c, i) in columns" :key="i">
@@ -90,7 +84,6 @@ import { DETAIL_MODAL } from './modals/constants';
 import Loading from './Loading';
 import Button from './Button';
 import Popup from './Popup.vue';
-import Progressbar from './Progressbar.vue';
 
 export default {
   name: 'DataTable',
@@ -100,7 +93,7 @@ export default {
     title: { type: String },
     clickable: { type: Boolean, default: false },
     fn: { type: [String, Function], default: null },
-    limit: { type: Number, default: 50 },
+    limit: { type: Number, default: 25 },
     order: { type: String, default: 'desc' },
     offset: { type: Number, default: 0 },
   },
@@ -110,13 +103,10 @@ export default {
     const rows = ref([]);
     const oldData = ref([]);
     const table = ref(null);
-    const firstLoadCompleted = ref(false);
-    const loading = ref(true);
     const limit = ref(props.limit);
     const order = ref(props.order);
     const offset = ref(props.offset);
     const columns = ref(props.columns);
-    const overflow = ref(null);
 
     const getData = async () => {
       if (typeof props.fn === 'string') {
@@ -137,6 +127,8 @@ export default {
     };
 
     onMounted(async () => {
+      store.mutateProgressbarLoading(true);
+
       if (props.fn) {
         try {
           await getData();
@@ -147,13 +139,22 @@ export default {
         rows.value = props.rows;
       }
 
-      loading.value = false;
+      store.mutateProgressbarLoading(false);
+
+      window.onscroll = () => {
+        if (
+          window.innerHeight + document.documentElement.scrollTop >=
+          document.documentElement.offsetHeight
+        ) {
+          loadMore();
+        }
+      };
     });
 
     const loadMore = async () => {
       if (props.fn) {
-        if (loading.value) return;
-        loading.value = true;
+        if (store.state.progressbarLoading) return;
+        store.mutateProgressbarLoading(true);
 
         offset.value = offset.value + 25;
         const d = await getData();
@@ -161,14 +162,13 @@ export default {
         rows.value = [...rows.value, ...d];
       }
 
-      loading.value = false;
+      store.mutateProgressbarLoading(false);
     };
 
-    // TODO: Sort the existing array without a new call
     const sort = async (c) => {
-      if (loading.value) return;
+      if (store.state.progressbarLoading) return;
 
-      loading.value = true;
+      store.mutateProgressbarLoading(true);
 
       order.value = c.sorted === 'asc' ? 'desc' : 'asc';
 
@@ -179,28 +179,8 @@ export default {
 
       await getData();
 
-      loading.value = false;
+      store.mutateProgressbarLoading(false);
     };
-
-    watch(
-      () => table.value,
-      (n) => {
-        if (!props.fn) return;
-        if (firstLoadCompleted.value) return;
-        table.value.addEventListener('scroll', (event) => {
-          if (
-            table.value.scrollTop >=
-            table.value.scrollHeight - table.value.offsetHeight - 20
-          )
-            if (rows.value.length > oldData.value.length) {
-              oldData.value = rows.value;
-              loadMore();
-            }
-        });
-        firstLoadCompleted.value = true;
-        overflow.value = table.value.scrollHeight - 1 > table.value.offsetHeight;
-      },
-    );
 
     const getShortValue = (val, shrinkable = true) => {
       if (val === 0) return val.toString();
@@ -227,10 +207,9 @@ export default {
     const popupActive = ref(false);
 
     return {
-      loading,
+      loading: computed(() => store.state.progressbarLoading),
       popupActive,
       table,
-      firstLoadCompleted,
       rows,
       columns,
       getShortValue,
@@ -241,10 +220,9 @@ export default {
           type: DETAIL_MODAL,
           data,
         }),
-      overflow,
     };
   },
-  components: { Loading, Button, Popup, Progressbar },
+  components: { Loading, Button, Popup },
 };
 </script>
 

@@ -1,4 +1,5 @@
 <template>
+  <Progressbar :loading="loading" class="progress-bar-top" />
   <Modal />
   <Sidebar />
   <div class="main-content">
@@ -18,12 +19,13 @@ import Loading from './components/Loading';
 import Modal from './components/Modal';
 import Notification from './components/Notification';
 import Sidebar from './components/Sidebar';
+import Progressbar from './components/Progressbar.vue';
 
 import { TOKEN_MODAL } from './components/modals/constants';
 
 export default {
   name: 'App',
-  components: { Loading, Modal, Sidebar, Notification },
+  components: { Loading, Modal, Sidebar, Notification, Progressbar },
   provide: { store },
   setup() {
     onMounted(async () => await store.connect());
@@ -31,12 +33,10 @@ export default {
       document.documentElement.setAttribute('dark-theme', store.state.darkMode),
     );
 
-    const toWallet = () => store.state.authenticated && router.push('/wallet');
-
     return {
-      toWallet,
       connected: computed(() => store.state.connected),
       TOKEN_MODAL,
+      loading: computed(() => store.state.progressbarLoading),
     };
   },
 };
@@ -50,6 +50,13 @@ export default {
   padding: var(--unit-2) var(--unit-2) var(--unit-2) 0;
   width: calc(100% - 285px);
   box-sizing: border-box;
+}
+
+.progress-bar-top {
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
 }
 
 @media screen and (max-width: 768px) {

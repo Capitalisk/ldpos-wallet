@@ -29,6 +29,7 @@ const state = reactive({
   },
   darkMode: true,
   notifications: [],
+  progressbarLoading: true,
 });
 
 export default {
@@ -109,4 +110,5 @@ export default {
   denotify: (index) => {
     state.notifications.splice(index, 1);
   },
+  mutateProgressbarLoading: (val) => (state.progressbarLoading = val),
 };

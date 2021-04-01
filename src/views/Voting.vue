@@ -9,7 +9,9 @@
         class="my-1"
         background-color="primary-darkest"
       />
-      <Button value="Vote" @click="voteForDelegate" :loading="vote.loading" />
+      <div class="flex justify-center">
+        <Button value="Vote" @click="voteForDelegate" :loading="vote.loading" />
+      </div>
     </Section>
   </div>
   <DataTable :columns="columns" :title="title" :fn="fn" />
@@ -120,6 +122,7 @@ export default {
       fn: async () => await store.client.value.getForgingDelegates(),
       authenticated: computed(() => store.state.authenticated),
       vote,
+      voteForDelegate,
     };
   },
   components: { Navbar, Button, DataTable, Input, Section },
