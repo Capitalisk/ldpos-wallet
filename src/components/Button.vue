@@ -8,7 +8,8 @@
     }"
     v-if="!routerLink"
   >
-    <i class="fa fa-circle-notch fa-spin mr-1" v-if="loading"></i>{{ value }}
+    <i class="fa fa-circle-notch fa-spin mr-1" v-if="loading"></i>
+    {{ value }}
   </a>
   <router-link
     class="button"
@@ -19,21 +20,22 @@
       color: `var(--${color})`,
       ...style,
     }"
-    >{{ value }}</router-link
   >
+    {{ value }}
+  </router-link>
 </template>
 
 <script>
 export default {
-  name: 'Button',
+  name: "Button",
   props: {
     value: { type: String },
-    color: { type: String, default: 'permanent-white' },
-    backgroundColor: { type: String, default: 'primary-lighter' },
+    color: { type: String, default: "permanent-white" },
+    backgroundColor: { type: String, default: "primary-lighter" },
     routerLink: { type: Boolean, default: false },
-    href: { type: String, default: '' },
+    href: { type: String, default: "" },
     loading: { type: Boolean, default: false },
-    style: { type: String, default: '' },
+    style: { type: String, default: "" },
   },
 };
 </script>

@@ -3,16 +3,16 @@
 </template>
 
 <script>
-import { computed, inject } from 'vue';
+import { computed, inject } from "vue";
 
-import DetailedData from '../DetailedData';
+import DetailedData from "../DetailedData";
 
-import { _transformMonetaryUnit, _parseDate } from '../../utils';
+import { _transformMonetaryUnit, _parseDate } from "../../utils";
 
 export default {
-  name: 'DetailModal',
+  name: "DetailModal",
   setup() {
-    const store = inject('store');
+    const store = inject("store");
 
     return {
       data: computed(() => store.state.modal.data),

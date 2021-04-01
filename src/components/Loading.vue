@@ -1,6 +1,5 @@
 <template>
   <div class="loading flex justify-center align-center">
-    <!-- <i class="fa fa-circle-o-notch fa-spin mr-1"></i> -->
     <i class="fa fa-circle-notch fa-spin mr-1"></i>
     Loading
   </div>
@@ -8,7 +7,7 @@
 
 <script>
 export default {
-  name: 'Loading',
+  name: "Loading",
   props: {
     size: {
       type: Number,

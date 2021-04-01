@@ -9,47 +9,47 @@
 </template>
 
 <script>
-import { computed, inject, onMounted, ref } from 'vue';
+import { computed, inject, onMounted, ref } from "vue";
 
-import Navbar from '../components/Navbar.vue';
-import DataTable from '../components/DataTable.vue';
-import { _integerToDecimal, _parseDate } from '../utils';
-import { DETAIL_MODAL } from '../components/modals/constants';
+import Navbar from "../components/Navbar.vue";
+import DataTable from "../components/DataTable.vue";
+import { _integerToDecimal, _parseDate } from "../utils";
+import { DETAIL_MODAL } from "../components/modals/constants";
 
 export default {
-  name: 'Blocks',
+  name: "Blocks",
   setup() {
     const columns = ref([
       // { name: 'type', label: 'type', field: 'type', sortable: false },
       {
-        name: 'height',
-        label: 'Height',
-        field: 'height',
+        name: "height",
+        label: "Height",
+        field: "height",
         sortable: false,
         active: true,
       },
       {
-        name: 'timestamp',
-        label: 'Date',
-        field: 'timestamp',
+        name: "timestamp",
+        label: "Date",
+        field: "timestamp",
         sortable: true,
         value: (val) => _parseDate(val),
         active: true,
-        sorted: 'desc',
+        sorted: "desc",
       },
       {
-        name: 'numberOfTransactions',
-        label: 'Transactions',
-        field: 'numberOfTransactions',
+        name: "numberOfTransactions",
+        label: "Transactions",
+        field: "numberOfTransactions",
         sortable: false,
         active: true,
       },
       {
-        name: 'forgerAddress',
-        label: 'Forger',
-        field: 'forgerAddress',
+        name: "forgerAddress",
+        label: "Forger",
+        field: "forgerAddress",
         sortable: false,
-        class: 'address',
+        class: "address",
         active: true,
       },
     ]);

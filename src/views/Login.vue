@@ -21,9 +21,7 @@
         v-if="!generatedWalletAddress.data"
         class="flex justify-center flex-wrap"
       >
-        <div class="flex-6 pa-2">
-          Passphrase
-        </div>
+        <div class="flex-6 pa-2">Passphrase</div>
         <div
           @click="toggleHidden"
           class="flex-6 pa-2 text-right cursor-pointer"
@@ -70,7 +68,9 @@
                 generatedWalletAddress.loading ? 'Generating...' : 'Generate'
               "
               class="ma-1"
-              :background-color="generatedWalletAddress.loading ? 'warning' : 'primary-lighter'"
+              :background-color="
+                generatedWalletAddress.loading ? 'warning' : 'primary-lighter'
+              "
               @click="generateWallet"
               :loading="generatedWalletAddress.loading"
             />
@@ -82,33 +82,33 @@
 </template>
 
 <script>
-import { ref, inject, computed, reactive, watch, onMounted } from 'vue';
+import { ref, inject, computed, reactive, watch, onMounted } from "vue";
 
-import { _transformMonetaryUnit } from '../utils.js';
+import { _transformMonetaryUnit } from "../utils.js";
 
-import Navbar from '../components/Navbar';
-import Section from '../components/Section';
-import Copy from '../components/Copy';
-import Button from '../components/Button';
-import Input from '../components/Input';
-import Wallet from '../components/Wallet';
-import { TRANSFER_MODAL } from '../components/modals/constants.js';
+import Navbar from "../components/Navbar";
+import Section from "../components/Section";
+import Copy from "../components/Copy";
+import Button from "../components/Button";
+import Input from "../components/Input";
+import Wallet from "../components/Wallet";
+import { TRANSFER_MODAL } from "../components/modals/constants.js";
 
 export default {
-  name: 'Home',
+  name: "Home",
   setup() {
-    const store = inject('store');
+    const store = inject("store");
 
     const inputs = ref(new Array(12));
     const activeIndex = ref(0);
-    const passphrase = ref('');
+    const passphrase = ref("");
 
     for (let i = 0; i < inputs.value.length; i++) {
-      inputs.value[i] = { value: '' };
+      inputs.value[i] = { value: "" };
     }
 
     const backspace = (e, i) =>
-      e.target.value === '' &&
+      e.target.value === "" &&
       e.keyCode === 8 &&
       i !== 0 &&
       document.getElementById(`passphrase-${i - 1}`).focus();
@@ -119,27 +119,27 @@ export default {
         for (let i = 0; i < n.length; i++) {
           const element = n[i].value;
           const lastInput = document.getElementById(
-            `passphrase-${n.length - 1}`,
+            `passphrase-${n.length - 1}`
           );
 
-          if (element && element.split(' ').length === 12) {
-            inputs.value = element.split(' ').map((el) => ({ value: el }));
+          if (element && element.split(" ").length === 12) {
+            inputs.value = element.split(" ").map((el) => ({ value: el }));
             lastInput.focus();
-          } else if (element && element.includes(' ')) {
+          } else if (element && element.includes(" ")) {
             const nextInput = document.getElementById(`passphrase-${i + 1}`);
             if (nextInput) {
               nextInput.focus();
             }
-            inputs.value[i].value = inputs.value[i].value.replace(/\s/g, '');
+            inputs.value[i].value = inputs.value[i].value.replace(/\s/g, "");
           }
         }
 
-        passphrase.value = n.map((el) => el.value).join(' ');
+        passphrase.value = n.map((el) => el.value).join(" ");
       },
       {
         deep: true,
         immediate: false,
-      },
+      }
     );
 
     const hidden = ref(true);

@@ -11,10 +11,10 @@
 </template>
 
 <script>
-import Section from './Section';
+import Section from "./Section";
 
 export default {
-  name: 'Popup',
+  name: "Popup",
   props: {
     active: { type: Boolean, default: false },
   },

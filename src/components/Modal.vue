@@ -1,9 +1,7 @@
 <template>
   <div class="modal-background flex justify-center align-center" v-if="active">
     <div class="wrapper">
-      <div class="close-btn cursor-pointer" @click="toggleModal">
-        &#10005;
-      </div>
+      <div class="close-btn cursor-pointer" @click="toggleModal">&#10005;</div>
       <Section
         :title="capitalize(type.toLowerCase())"
         backgroundColor="white"
@@ -20,18 +18,18 @@
 </template>
 
 <script>
-import { computed, inject } from 'vue';
+import { computed, inject } from "vue";
 
-import Section from './Section';
+import modals from "./modals";
+import * as modalConstants from "./modals/constants";
+import { _capitalize } from "../utils";
 
-import modals from './modals';
-import * as modalConstants from './modals/constants';
-import { _capitalize } from '../utils';
+import Section from "./Section";
 
 export default {
-  name: 'Modal',
+  name: "Modal",
   setup() {
-    const store = inject('store');
+    const store = inject("store");
 
     return {
       active: computed(() => store.state.modal.active),

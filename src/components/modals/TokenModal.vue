@@ -11,15 +11,15 @@
 </template>
 
 <script>
-import { computed, inject } from 'vue';
+import { computed, inject } from "vue";
 
-import Input from '../Input';
-import Button from '../Button';
+import Input from "../Input";
+import Button from "../Button";
 
 export default {
-  name: 'TOKEN_MODAL',
+  name: "TOKEN_MODAL",
   setup() {
-    const store = inject('store');
+    const store = inject("store");
 
     return {
       config: computed(() => store.state.config),

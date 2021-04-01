@@ -7,7 +7,7 @@
           <strong>{{ transformTitle(key) }}</strong>
         </div>
         <div>
-          {{ transformValue(key, value) || '-'  }}
+          {{ transformValue(key, value) || "-" }}
         </div>
       </div>
       <div v-else class="my-2">
@@ -22,7 +22,7 @@
                   <strong class="subtitle">{{ transformTitle(k) }}:</strong>
                 </div>
                 <div class="flex-9">
-                  {{ v ? v : '-' }}
+                  {{ v ? v : "-" }}
                 </div>
               </div>
             </template>
@@ -40,27 +40,27 @@ import {
   _transformMonetaryUnit,
   _splitCamelCaseWords,
   _capitalize,
-} from '../utils';
+} from "../utils";
 
 export default {
-  name: 'DetailedData',
+  name: "DetailedData",
   props: {
     data: { type: Object, default: {} },
   },
   setup(props) {
     const titleTransformations = {
-      timestamp: 'Date',
+      timestamp: "Date",
     };
 
     const valueTransformations = {
       timestamp: (val) => _parseDate(val),
       amount: (val) => _transformMonetaryUnit(val),
       fee: (val) => _transformMonetaryUnit(val),
-      type: (val) => _capitalize(_splitCamelCaseWords(val).join(' ')),
+      type: (val) => _capitalize(_splitCamelCaseWords(val).join(" ")),
     };
 
     const transformTitle = (key) =>
-      titleTransformations[key] || _splitCamelCaseWords(key).join(' ');
+      titleTransformations[key] || _splitCamelCaseWords(key).join(" ");
 
     const transformValue = (key, value) =>
       valueTransformations[key] ? valueTransformations[key](value) : value;

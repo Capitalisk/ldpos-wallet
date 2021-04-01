@@ -32,17 +32,17 @@
 </template>
 
 <script>
-import { reactive, inject, onMounted, computed, ref } from 'vue';
+import { reactive, inject, onMounted, computed, ref } from "vue";
 
-import { _decimalToInteger, _integerToDecimal } from '../../utils';
+import { _decimalToInteger, _integerToDecimal } from "../../utils";
 
-import Input from '../Input';
-import Button from '../Button';
+import Input from "../Input";
+import Button from "../Button";
 
 export default {
-  name: 'TransferModal',
+  name: "TransferModal",
   setup() {
-    const store = inject('store');
+    const store = inject("store");
 
     const loading = ref(false);
     const transfer = reactive({
@@ -60,7 +60,7 @@ export default {
       },
       message: {
         error: null,
-        data: '',
+        data: "",
       },
     });
 
@@ -77,17 +77,17 @@ export default {
         loading.value = true;
 
         if (transfer.address.data.length !== 44) {
-          transfer.address.error = 'Invalid address';
+          transfer.address.error = "Invalid address";
         }
 
         for (let i = 0; i < Object.keys(transfer).length; i++) {
           const key = Object.keys(transfer)[i];
           if (!transfer[key].data || !transfer[key].data.length)
-            transfer[key].error = 'Required field.';
+            transfer[key].error = "Required field.";
         }
 
         const preparedTxn = await store.client.value.prepareTransaction({
-          type: 'transfer',
+          type: "transfer",
           recipientAddress: transfer.address.data,
           amount: _decimalToInteger(transfer.amount.data),
           fee: _decimalToInteger(transfer.fee.data),

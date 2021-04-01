@@ -10,27 +10,27 @@
 </template>
 
 <script>
-import { onMounted, ref, watch, computed, inject } from 'vue';
+import { onMounted, ref, watch, computed, inject } from "vue";
 
-import router from './router';
-import store from './store';
+import router from "./router";
+import store from "./store";
 
-import Loading from './components/Loading';
-import Modal from './components/Modal';
-import Notification from './components/Notification';
-import Sidebar from './components/Sidebar';
-import Progressbar from './components/Progressbar.vue';
+import Loading from "./components/Loading";
+import Modal from "./components/Modal";
+import Notification from "./components/Notification";
+import Sidebar from "./components/Sidebar";
+import Progressbar from "./components/Progressbar.vue";
 
-import { TOKEN_MODAL } from './components/modals/constants';
+import { TOKEN_MODAL } from "./components/modals/constants";
 
 export default {
-  name: 'App',
+  name: "App",
   components: { Loading, Modal, Sidebar, Notification, Progressbar },
   provide: { store },
   setup() {
     onMounted(async () => await store.connect());
     onMounted(() =>
-      document.documentElement.setAttribute('dark-theme', store.state.darkMode),
+      document.documentElement.setAttribute("dark-theme", store.state.darkMode)
     );
 
     return {
@@ -43,7 +43,7 @@ export default {
 </script>
 
 <style>
-@import url('./styles/main.css');
+@import url("./styles/main.css");
 
 .main-content {
   margin-left: 285px;

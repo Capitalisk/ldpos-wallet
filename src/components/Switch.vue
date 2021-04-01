@@ -1,18 +1,22 @@
 <template>
   <label class="switch">
-    <input type="checkbox" :checked="modelValue" @change="$emit('update:modelValue', !modelValue)" />
+    <input
+      type="checkbox"
+      :checked="modelValue"
+      @change="$emit('update:modelValue', !modelValue)"
+    />
     <span class="slider cursor-pointer" :id="id"></span>
   </label>
 </template>
 
 <script>
-import { getCurrentInstance } from 'vue';
+import { getCurrentInstance } from "vue";
 
 export default {
-  name: 'Switch',
+  name: "Switch",
   props: {
     modelValue: { type: Boolean, default: false },
-    id: { type: String, default: '' },
+    id: { type: String, default: "" },
   },
 };
 </script>
@@ -46,7 +50,7 @@ export default {
 .slider:before {
   border-radius: 50%;
   position: absolute;
-  content: '';
+  content: "";
   height: 13px;
   width: 13px;
   left: 1px;

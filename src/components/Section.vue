@@ -20,23 +20,23 @@
 </template>
 
 <script>
-import { computed, inject, onMounted, ref } from 'vue';
+import { computed, inject, onMounted, ref } from "vue";
 
-import Loading from './Loading';
+import Loading from "./Loading";
 
 export default {
-  name: 'Section',
+  name: "Section",
   props: {
     title: { type: String },
     loading: { type: Boolean },
     error: { type: String, default: null },
-    backgroundColor: { type: String, default: 'primary' },
-    color: { type: String, default: 'dark' },
+    backgroundColor: { type: String, default: "primary" },
+    color: { type: String, default: "dark" },
     border: { type: String, default: null },
   },
   components: { Loading },
   setup() {
-    const store = inject('store');
+    const store = inject("store");
 
     return {
       authenticated: computed(() => store.state.authenticated),
@@ -46,7 +46,6 @@ export default {
 </script>
 
 <style scoped>
-
 .section {
   position: relative;
   border-radius: var(--border-radius);

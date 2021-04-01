@@ -1,6 +1,6 @@
 <template>
-  <span class="connection"
-    >{{ connected ? `Connected: ${network}` : 'Disconnected' }}
+  <span class="connection">
+    {{ connected ? `Connected: ${network}` : "Disconnected" }}
   </span>
   <span
     class="dot"
@@ -11,17 +11,17 @@
 </template>
 
 <script>
-import { computed, inject } from 'vue';
+import { computed, inject } from "vue";
 
 export default {
-  name: 'Connected',
+  name: "Connected",
   setup() {
-    const store = inject('store');
+    const store = inject("store");
 
     return {
       connected: computed(() => store.state.connected),
       network: computed(() =>
-        store.client.value.options.port === '7001' ? 'Testnet' : 'Mainnet',
+        store.client.value.options.port === "7001" ? "Testnet" : "Mainnet"
       ),
     };
   },

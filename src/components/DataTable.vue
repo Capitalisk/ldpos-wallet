@@ -48,21 +48,19 @@
           <tr v-for="r in rows" :key="r.id">
             <template v-for="(c, i) in columns" :key="i">
               <td
-                :class="
-                  `px-2 py-4 mr-2  ${c.class || ''} ${
-                    clickable ? 'cursor-pointer' : ''
-                  }`
-                "
+                :class="`px-2 py-4 mr-2  ${c.class || ''} ${
+                  clickable ? 'cursor-pointer' : ''
+                }`"
                 @click="clickable ? detail(r) : ''"
                 v-if="c.active"
               >
                 {{
                   getShortValue(
-                    c.value ? c.value(r[c.field], r) : r[c.field],
-                    c.shrinkable,
+                    c.value ? c.value(r[c.field], r, rows) : r[c.field],
+                    c.shrinkable
                   ) ||
-                    r.default ||
-                    '-'
+                  r.default ||
+                  "-"
                 }}
               </td>
             </template>
@@ -77,16 +75,15 @@
 </template>
 
 <script>
-import { computed, inject, onMounted, reactive, ref, watch } from 'vue';
+import { computed, inject, onMounted, reactive, ref, watch } from "vue";
 
-import { DETAIL_MODAL } from './modals/constants';
+import { DETAIL_MODAL } from "./modals/constants";
 
-import Loading from './Loading';
-import Button from './Button';
-import Popup from './Popup.vue';
+import Button from "./Button";
+import Popup from "./Popup.vue";
 
 export default {
-  name: 'DataTable',
+  name: "DataTable",
   props: {
     rows: { type: Array, default: null },
     columns: { type: Array, default: () => [] },
@@ -94,11 +91,11 @@ export default {
     clickable: { type: Boolean, default: false },
     fn: { type: [String, Function], default: null },
     limit: { type: Number, default: 25 },
-    order: { type: String, default: 'desc' },
+    order: { type: String, default: "desc" },
     offset: { type: Number, default: 0 },
   },
   setup(props, { emit }) {
-    const store = inject('store');
+    const store = inject("store");
 
     const rows = ref([]);
     const oldData = ref([]);
@@ -107,19 +104,20 @@ export default {
     const order = ref(props.order);
     const offset = ref(props.offset);
     const columns = ref(props.columns);
+    const popupActive = ref(false);
 
     const getData = async () => {
-      if (typeof props.fn === 'string') {
+      if (typeof props.fn === "string") {
         rows.value = await store.client.value[props.fn](
           offset.value,
           limit.value,
-          order.value,
+          order.value
         );
-      } else if (typeof props.fn === 'function') {
+      } else if (typeof props.fn === "function") {
         rows.value = await props.fn();
       } else {
         throw new Error(
-          `fn should be a function or string, not a ${typeof props.fn}`,
+          `fn should be a function or string, not a ${typeof props.fn}`
         );
       }
 
@@ -170,7 +168,7 @@ export default {
 
       store.mutateProgressbarLoading(true);
 
-      order.value = c.sorted === 'asc' ? 'desc' : 'asc';
+      order.value = c.sorted === "asc" ? "desc" : "asc";
 
       // TODO: This will be for filtering
       const index = columns.value.findIndex((e) => e.field === c.field);
@@ -188,23 +186,21 @@ export default {
       if (!shrinkable) return val.toString();
       if (
         table.value &&
-        typeof val === 'string' &&
+        typeof val === "string" &&
         (window.innerWidth < 1400 ||
           table.value.scrollWidth > table.value.offsetWidth)
       ) {
         if (val.length > 16) {
-          const arr = val.split('');
+          const arr = val.split("");
           return [
             ...arr.slice(0, 9),
-            '...',
+            "...",
             ...arr.slice(arr.length - 5, arr.length),
-          ].join('');
+          ].join("");
         }
       }
       return val.toString();
     };
-
-    const popupActive = ref(false);
 
     return {
       loading: computed(() => store.state.progressbarLoading),
@@ -222,7 +218,7 @@ export default {
         }),
     };
   },
-  components: { Loading, Button, Popup },
+  components: { Button, Popup },
 };
 </script>
 
