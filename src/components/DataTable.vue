@@ -277,7 +277,6 @@ td {
 
 tr:hover {
   background-color: var(--primary-darker);
-  color: var(--permanent-white);
 }
 
 th {

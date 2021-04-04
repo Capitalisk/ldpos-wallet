@@ -17,7 +17,7 @@
   --primary: #ffffff;
   --primary-lightest: #5cceee;
   --primary-lighter: #24c0eb;
-  --primary-darker: #5cceee;
+  --primary-darker: rgb(240, 240, 240);
   --primary-darkest: #e8e8e8;
 
   --unit-1: 0.5rem;
