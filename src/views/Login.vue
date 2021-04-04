@@ -54,7 +54,7 @@
             :value="loggingIn ? 'Hang in there...' : 'Login'"
             class="ma-1"
             :background-color="loggingIn ? 'warning' : 'primary-lighter'"
-            @click="login"
+            @click="signin"
             :loading="loggingIn"
           />
         </div>
@@ -178,9 +178,12 @@ export default {
       generateWallet,
       generatedWalletAddress,
       openTransferModal,
-      login: async () =>
-        await store.authenticate(generatedWalletAddress.data.passphrase),
-      signin: async () => await store.authenticate(passphrase.value),
+      // login: async () =>
+      // await store.authenticate(generatedWalletAddress.data.passphrase || passphrase.value),
+      signin: async () =>
+        generatedWalletAddress.data
+          ? await store.authenticate(generatedWalletAddress.data.passphrase)
+          : await store.authenticate(passphrase.value),
       passphrase,
       hidden,
       inputs,

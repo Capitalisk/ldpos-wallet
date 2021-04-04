@@ -29,13 +29,15 @@ const state = reactive({
   },
   darkMode: true,
   notifications: [],
-  progressbarLoading: true,
+  progressbarLoading: false,
 });
 
 export default {
   state: readonly(state),
   client,
   async connect(config = defaultConfig) {
+    this.mutateProgressbarLoading(true)
+
     state.connected = false;
     state.config = config;
     client.value = null;
@@ -46,8 +48,12 @@ export default {
       console.error(e);
     }
     state.connected = true;
+
+    this.mutateProgressbarLoading(false)
   },
   async authenticate(passphrase) {
+    this.mutateProgressbarLoading(true)
+
     state.login.loading = true;
     try {
       state.authenticated = false;
@@ -63,8 +69,12 @@ export default {
     }
     state.login.loading = false;
     if (state.authenticated) router.push('/');
+
+    this.mutateProgressbarLoading(false)
   },
   async deauthenticate(notify = false) {
+    this.mutateProgressbarLoading(true)
+
     if (notify)
       this.notify(
         'You have been logged out automatically after being inactive for 30 minutes.',
@@ -77,6 +87,8 @@ export default {
     }
     state.authenticated = false;
     if (state.authenticated) router.push('/');
+
+    this.mutateProgressbarLoading(false)
   },
   toggleModal({ type = null, data = null } = {}) {
     state.modal.active = !state.modal.active;
