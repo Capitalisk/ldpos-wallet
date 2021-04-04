@@ -2,7 +2,7 @@
   <Navbar />
   <Wallet v-if="authenticated" />
   <div v-else class="flex flex-wrap flex-gap">
-    <Section v-if="!address.data" title="Login" class="flex-12">
+    <Section v-if="!address.data" title="Sign in to your wallet" class="flex-12">
       <span class="text-error" v-if="generatedWalletAddress.error">
         {{ generatedWalletAddress.error }}
       </span>
@@ -51,7 +51,7 @@
       <div class="flex column">
         <div class="flex justify-center">
           <Button
-            :value="loggingIn ? 'Hang in there...' : 'Login'"
+            :value="loggingIn ? 'Hang in there...' : 'Sign in'"
             class="ma-1"
             :background-color="loggingIn ? 'warning' : 'primary-lighter'"
             @click="signin"
@@ -178,8 +178,6 @@ export default {
       generateWallet,
       generatedWalletAddress,
       openTransferModal,
-      // login: async () =>
-      // await store.authenticate(generatedWalletAddress.data.passphrase || passphrase.value),
       signin: async () =>
         generatedWalletAddress.data
           ? await store.authenticate(generatedWalletAddress.data.passphrase)

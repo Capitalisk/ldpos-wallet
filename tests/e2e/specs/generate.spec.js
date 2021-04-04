@@ -3,13 +3,13 @@ describe('Generates a wallet', () => {
     cy.visit('/');
 
     cy.get('a.button.cursor-pointer')
-      .contains('Generate')
+      .contains('Create one')
       .click();
 
     cy.wait(2000);
 
     cy.get('a.button.cursor-pointer')
-      .contains('Login')
+      .contains('Sign in')
       .click();
 
     cy.get('a.button.cursor-pointer').contains('Hang in there...')

@@ -4,13 +4,6 @@ const PASSPHRASE =
   'cat ten problem setup immense lens great profit viable second risk balcony';
 
 describe('Wallet testing', () => {
-  it('checks if wallet is disabled', () => {
-    cy.visit('/');
-    cy.get('div.sidebar')
-      .contains('WALLET')
-      .should('have.class', 'disabled');
-  });
-
   it('Pastes the password and spreads it over the inputs', () => {
     cy.visit('/');
     cy.get('input#passphrase-0')
@@ -62,7 +55,7 @@ describe('Wallet testing', () => {
     }
 
     // LOGIN
-    cy.get('a.button.cursor-pointer').contains('Sign In').click();
+    cy.get('a.button.cursor-pointer').contains('Sign in').click();
     cy.get('a.button.cursor-pointer').contains('Hang in there...');
   });
 });

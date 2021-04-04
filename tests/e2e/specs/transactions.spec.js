@@ -25,7 +25,7 @@ describe('Transactions page tests', () => {
 
   it('should load when scrolling to bottom', () => {
     cy.wait(500);
-    cy.get('#table').scrollTo('bottom');
+    cy.scrollTo('bottom');
     cy.get('progress');
   });
 });

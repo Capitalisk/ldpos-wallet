@@ -3,10 +3,10 @@ describe('Dark mode tests', () => {
     cy.visit('/');
     cy.get('#darkmode-switch')
       .click();
-    cy.get('html').should('have.attr', 'dark-theme', 'true');
+    cy.get('html').should('have.attr', 'dark-theme', 'false');
 
     cy.get('#darkmode-switch')
       .click();
-    cy.get('html').should('have.attr', 'dark-theme', 'false');
+    cy.get('html').should('have.attr', 'dark-theme', 'true');
   });
 });
