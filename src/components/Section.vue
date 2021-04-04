@@ -54,7 +54,7 @@ export default {
 
 h4 {
   margin-bottom: var(--unit-1);
-  color: var(--primary-darker);
+  color: var(--primary-lighter);
 }
 
 ul {

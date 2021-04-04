@@ -52,8 +52,6 @@ export default {
     this.mutateProgressbarLoading(false)
   },
   async authenticate(passphrase) {
-    this.mutateProgressbarLoading(true)
-
     state.login.loading = true;
     try {
       state.authenticated = false;
@@ -69,8 +67,6 @@ export default {
     }
     state.login.loading = false;
     if (state.authenticated) router.push('/');
-
-    this.mutateProgressbarLoading(false)
   },
   async deauthenticate(notify = false) {
     this.mutateProgressbarLoading(true)

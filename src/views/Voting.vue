@@ -14,7 +14,18 @@
       </div>
     </Section>
   </div>
-  <DataTable :columns="columns" :title="title" :fn="fn" />
+  <DataTable :columns="columns" :title="title" :fn="fn">
+    <template v-slot:vote="slotProps">
+      <Button
+        value="Vote"
+        @click="voteForDelegate(slotProps.row.address)"
+        :loading="votingForAddress === slotProps.row.address"
+      />
+    </template>
+    <template v-slot:address="slotProps">
+      <Copy :value="slotProps.row.address" />
+    </template>
+  </DataTable>
 </template>
 
 <script>
@@ -25,6 +36,7 @@ import Button from '../components/Button';
 import DataTable from '../components/DataTable';
 import Section from '../components/Section';
 import Input from '../components/Input';
+import Copy from '../components/Copy';
 
 import { _integerToDecimal } from '../utils';
 
@@ -34,6 +46,7 @@ export default {
     const store = inject('store');
 
     const vote = reactive({ loading: false, error: null, data: null });
+    const votingForAddress = ref(null);
 
     const columns = ref([
       {
@@ -49,7 +62,7 @@ export default {
         label: 'Address',
         field: 'address',
         sortable: false,
-        value: (val) => val,
+        value: val => val,
         active: true,
       },
       {
@@ -57,7 +70,7 @@ export default {
         label: 'Height',
         field: 'updateHeight',
         sortable: false,
-        value: (val) => new Intl.NumberFormat('be-NL').format(val),
+        value: val => new Intl.NumberFormat('be-NL').format(val),
         active: true,
       },
       {
@@ -65,51 +78,70 @@ export default {
         label: 'Vote weight',
         field: 'voteWeight',
         sortable: false,
-        value: (val) => _integerToDecimal(val),
+        value: val => _integerToDecimal(val),
         active: true,
         shrinkable: false,
       },
       {
-        name: 'voteWeight',
-        label: 'Vote weight',
-        field: 'voteWeight',
+        name: 'vote',
+        label: 'Vote for delegate',
         sortable: false,
-        value: (val) => 'Vote',
+        value: val => 'Vote',
         active: store.state.authenticated,
+        slot: true,
       },
     ]);
 
-    const voteForDelegate = async () => {
-      vote.loading = true;
-      if (!vote.data) {
-        vote.error = 'Field required.';
-        return;
-      }
+    const voteForDelegate = async wallet => {
+      if (!wallet) vote.loading = true;
+      else votingForAddress.value = wallet;
+
+      let voteTxn;
+
+      const { minTransactionFees } = await store.client.value.getMinFees();
 
       try {
-        vote.error = null;
-        const { minTransactionFees } = await store.client.value.getMinFees();
-        const valid = await store.client.value.getDelegate(vote.data);
+        if (wallet) {
+          const valid = await store.client.value.getDelegate(wallet);
 
-        if (!valid) {
-          vote.error = 'Delegate does not exist.';
-          return;
+          voteTxn = await store.client.value.prepareTransaction({
+            type: 'vote',
+            delegateAddress: wallet,
+            fee: minTransactionFees.vote,
+            timestamp: Date.now(),
+            message: '',
+          });
+        } else {
+          if (!vote.data) {
+            vote.error = 'Field required.';
+            return;
+          }
+
+          vote.error = null;
+          const valid = await store.client.value.getDelegate(vote.data);
+
+          if (!valid) {
+            vote.error = 'Delegate does not exist.';
+            return;
+          }
+
+          voteTxn = await store.client.value.prepareTransaction({
+            type: 'vote',
+            delegateAddress: vote.data,
+            fee: minTransactionFees.vote,
+            timestamp: Date.now(),
+            message: '',
+          });
         }
-
-        const voteTxn = await store.client.value.prepareTransaction({
-          type: 'vote',
-          delegateAddress: vote.data,
-          fee: minTransactionFees.vote,
-          timestamp: Date.now(),
-          message: '',
-        });
 
         await store.client.value.postTransaction(voteTxn);
         store.notify(`You have voted for ${vote.data}`, 5);
       } catch (e) {
-        vote.error = e.message;
+        store.notify(`Error: ${e.message}`, 5);
       }
+
       vote.loading = false;
+      votingForAddress.value = null;
     };
 
     return {
@@ -122,9 +154,10 @@ export default {
       authenticated: computed(() => store.state.authenticated),
       vote,
       voteForDelegate,
+      votingForAddress,
     };
   },
-  components: { Navbar, Button, DataTable, Input, Section },
+  components: { Navbar, Button, DataTable, Input, Section, Copy },
 };
 </script>
 

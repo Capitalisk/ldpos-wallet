@@ -35,11 +35,13 @@
           <li class="lineheight-3 font-12">
             <div class="flex align-center">
               <i
-                :class="`fas fa-${directions[transaction.direction]} mr-1 ${
-                  transaction.direction === 'INBOUND'
-                    ? 'text-success'
-                    : 'text-error'
-                }`"
+                :class="
+                  `fas fa-${directions[transaction.direction]} mr-1 ${
+                    transaction.direction === 'INBOUND'
+                      ? 'text-success'
+                      : 'text-error'
+                  }`
+                "
               ></i>
               <strong>{{ transaction.amount }}</strong
               >&nbsp;
@@ -62,12 +64,19 @@
       <p v-else>No latest transactions available</p>
     </Section>
   </div>
-  <DataTable
-    title="Wallet transactions"
-    :columns="columns"
-    clickable
-    :fn="fn"
-  />
+  <DataTable title="Wallet transactions" :columns="columns" clickable :fn="fn">
+    <template v-slot:direction="slotProps">
+      <i
+        :class="
+          `fas fa-${directions[slotProps.row.direction]} mr-1 ${
+            slotProps.row.direction === 'INBOUND'
+              ? 'text-success'
+              : 'text-error'
+          }`
+        "
+      ></i>
+    </template>
+  </DataTable>
 </template>
 
 <script>
@@ -132,8 +141,8 @@ export default {
       );
 
       const transactions = [
-        ...inboundTransactions.map((t) => ({ ...t, direction: 'INBOUND' })),
-        ...outboundTransactions.map((t) => ({ ...t, direction: 'OUTBOUND' })),
+        ...inboundTransactions.map(t => ({ ...t, direction: 'INBOUND' })),
+        ...outboundTransactions.map(t => ({ ...t, direction: 'OUTBOUND' })),
       ].sort((a, b) => (a.timestamp > b.timestamp ? -1 : 1));
 
       return Promise.resolve(transactions);
@@ -176,10 +185,10 @@ export default {
       {
         name: 'direction',
         label: 'Direction',
-        field: 'direction',
         sortable: false,
-        value: (val) => (val === 'INBOUND' ? 'incoming' : 'outgoing'),
+        value: val => (val === 'INBOUND' ? 'incoming' : 'outgoing'),
         active: true,
+        slot: true,
       },
       {
         name: 'type',
@@ -194,7 +203,7 @@ export default {
         label: 'Sender',
         field: 'senderAddress',
         sortable: false,
-        value: (val) => val,
+        value: val => val,
         active: true,
         class: 'address',
       },
@@ -203,7 +212,7 @@ export default {
         label: 'Recipient',
         field: 'recipientAddress',
         sortable: false,
-        value: (val) => val,
+        value: val => val,
         active: true,
         class: 'address',
       },
@@ -212,7 +221,7 @@ export default {
         label: 'Date',
         field: 'timestamp',
         sortable: false,
-        value: (val) => _parseDate(val),
+        value: val => _parseDate(val),
         active: true,
       },
       {
@@ -220,7 +229,7 @@ export default {
         label: 'Amount',
         field: 'amount',
         sortable: false,
-        value: (val) =>
+        value: val =>
           _transformMonetaryUnit(val, store.state.config.networkSymbol),
         active: true,
       },
@@ -229,7 +238,7 @@ export default {
         label: 'Fee',
         field: 'fee',
         sortable: false,
-        value: (val) =>
+        value: val =>
           _transformMonetaryUnit(val, store.state.config.networkSymbol),
         active: true,
       },

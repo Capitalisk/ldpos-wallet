@@ -48,20 +48,27 @@
           <tr v-for="r in rows" :key="r.id">
             <template v-for="(c, i) in columns" :key="i">
               <td
-                :class="`px-2 py-4 mr-2  ${c.class || ''} ${
-                  clickable ? 'cursor-pointer' : ''
-                }`"
+                :class="
+                  `px-2 py-4 mr-2  ${c.class || ''} ${
+                    clickable ? 'cursor-pointer' : ''
+                  }`
+                "
                 @click="clickable ? detail(r) : ''"
                 v-if="c.active"
               >
-                {{
-                  getShortValue(
-                    c.value ? c.value(r[c.field], r, rows) : r[c.field],
-                    c.shrinkable,
-                  ) ||
-                  r.default ||
-                  '-'
-                }}
+                <template v-if="c.slot">
+                  <slot :name="c.name" :row="r" :column="c" />
+                </template>
+                <template v-else>
+                  {{
+                    getShortValue(
+                      c.value ? c.value(r[c.field], r, rows) : r[c.field],
+                      c.shrinkable,
+                    ) ||
+                      r.default ||
+                      '-'
+                  }}
+                </template>
               </td>
             </template>
           </tr>
@@ -163,7 +170,7 @@ export default {
       store.mutateProgressbarLoading(false);
     };
 
-    const sort = async (c) => {
+    const sort = async c => {
       if (store.state.progressbarLoading) return;
 
       store.mutateProgressbarLoading(true);
@@ -171,7 +178,7 @@ export default {
       order.value = c.sorted === 'asc' ? 'desc' : 'asc';
 
       // TODO: This will be for filtering
-      const index = columns.value.findIndex((e) => e.field === c.field);
+      const index = columns.value.findIndex(e => e.field === c.field);
       c = { ...c, sorted: order.value };
       columns.value.splice(index, 1, c);
 
@@ -211,7 +218,7 @@ export default {
       getShortValue,
       sort,
       togglePopup: () => (popupActive.value = !popupActive.value),
-      detail: (data) =>
+      detail: data =>
         store.toggleModal({
           type: DETAIL_MODAL,
           data,
@@ -269,7 +276,7 @@ td {
 }
 
 tr:hover {
-  background-color: var(--primary-lightest);
+  background-color: var(--primary-darker);
   color: var(--permanent-white);
 }
 
