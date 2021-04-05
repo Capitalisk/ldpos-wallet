@@ -92,7 +92,7 @@ export default {
       document.documentElement.style.overflow = 'hidden';
       document.body.scroll = 'no';
     } else {
-      document.documentElement.style.overflow = 'scroll';
+      document.documentElement.style.overflow = 'auto';
       document.body.scroll = 'yes';
     }
     state.modal.type = type;
