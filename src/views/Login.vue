@@ -2,7 +2,11 @@
   <Navbar />
   <Wallet v-if="authenticated" />
   <div v-else class="flex flex-wrap flex-gap">
-    <Section v-if="!address.data" title="Sign in to your wallet" class="flex-12">
+    <Section
+      v-if="!address.data"
+      title="Sign in to your wallet"
+      class="flex-12"
+    >
       <span class="text-error" v-if="generatedWalletAddress.error">
         {{ generatedWalletAddress.error }}
       </span>
@@ -35,7 +39,7 @@
             <div class="input-number">{{ i + 1 }}.</div>
             <div>
               <Input
-                class="mx-1"
+                class="mx-1 text-center"
                 v-model="input.value"
                 :type="hidden ? 'password' : 'text'"
                 :id="`passphrase-${i}`"
@@ -43,6 +47,7 @@
                 @keydown="e => backspace(e, i)"
                 @keyup.enter="signin"
                 background-color="primary-darkest"
+                :rules="[val => !val || val.length > 0 || 'Required']"
               />
             </div>
           </div>

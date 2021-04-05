@@ -1,9 +1,33 @@
 <template>
   <div class="flex flex-gap pa-1 column">
-    <div>Hostname: <Input v-model="config.hostname" /></div>
-    <div>Port: <Input v-model="config.port" /></div>
-    <div>Network Symbol: <Input v-model="config.networkSymbol" /></div>
-    <div>Chain Module Name: <Input v-model="config.chainModuleName" /></div>
+    <div>
+      Hostname:
+      <Input
+        v-model="config.hostname"
+        :rules="[val => !val || val.length > 0 || 'Required']"
+      />
+    </div>
+    <div>
+      Port:
+      <Input
+        v-model="config.port"
+        :rules="[val => !val || val.length > 0 || 'Required']"
+      />
+    </div>
+    <div>
+      Network Symbol:
+      <Input
+        v-model="config.networkSymbol"
+        :rules="[val => !val || val.length > 0 || 'Required']"
+      />
+    </div>
+    <div>
+      Chain Module Name:
+      <Input
+        v-model="config.chainModuleName"
+        :rules="[val => !val || val.length > 0 || 'Required']"
+      />
+    </div>
   </div>
   <div class="flex justify-end">
     <Button value="Connect" @click="connect" />
