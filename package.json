@@ -2,6 +2,14 @@
   "name": "ldpos-wallet",
   "version": "0.1.0",
   "private": true,
+  "author": {
+    "email": "martinuske@gmail.com",
+    "name": "Maarten Coppens"
+  },
+  "maintainers": [
+    "Jonathan Gros-Dubois",
+    "Maarten Coppens"
+  ],
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
