@@ -36,7 +36,7 @@ export default {
   state: readonly(state),
   client,
   async connect(config = defaultConfig) {
-    this.mutateProgressbarLoading(true)
+    this.mutateProgressbarLoading(true);
 
     state.connected = false;
     state.config = config;
@@ -49,7 +49,7 @@ export default {
     }
     state.connected = true;
 
-    this.mutateProgressbarLoading(false)
+    this.mutateProgressbarLoading(false);
   },
   async authenticate(passphrase) {
     state.login.loading = true;
@@ -69,7 +69,7 @@ export default {
     if (state.authenticated) router.push('/');
   },
   async deauthenticate(notify = false) {
-    this.mutateProgressbarLoading(true)
+    this.mutateProgressbarLoading(true);
 
     if (notify)
       this.notify(
@@ -84,10 +84,17 @@ export default {
     state.authenticated = false;
     if (state.authenticated) router.push('/');
 
-    this.mutateProgressbarLoading(false)
+    this.mutateProgressbarLoading(false);
   },
   toggleModal({ type = null, data = null } = {}) {
     state.modal.active = !state.modal.active;
+    if (state.modal.active) {
+      document.documentElement.style.overflow = 'hidden';
+      document.body.scroll = 'no';
+    } else {
+      document.documentElement.style.overflow = 'scroll';
+      document.body.scroll = 'yes';
+    }
     state.modal.type = type;
     state.modal.data = data;
   },
@@ -95,7 +102,7 @@ export default {
     state.darkMode = !state.darkMode;
     document.documentElement.setAttribute('dark-theme', state.darkMode);
   },
-  toggleNav: (action) => (state.nav = action === false ? action : !state.nav),
+  toggleNav: action => (state.nav = action === false ? action : !state.nav),
   initiateOrRenewTimeout() {
     if (!state.authenticated) return;
     state.authenticationTimeout && clearTimeout(state.authenticationTimeout);
@@ -111,12 +118,12 @@ export default {
 
     if (seconds)
       setTimeout(() => {
-        const index = state.notifications.findIndex((m) => m === message);
+        const index = state.notifications.findIndex(m => m === message);
         this.denotify(index);
       }, seconds * 1000);
   },
-  denotify: (index) => {
+  denotify: index => {
     state.notifications.splice(index, 1);
   },
-  mutateProgressbarLoading: (val) => (state.progressbarLoading = val),
+  mutateProgressbarLoading: val => (state.progressbarLoading = val),
 };

@@ -65,6 +65,7 @@ export default {
   right: 0.25rem;
   font-size: var(--unit-4);
   color: var(--permanent-white);
+  z-index: 2;
 }
 
 .force-modal-scroll {
@@ -81,10 +82,11 @@ export default {
 
   .section {
     border-radius: 0 !important;
+    padding: var(--unit-4) 0 !important;
   }
 
   .force-modal-scroll {
-    height: 100vh;
+    max-height: 100vh;
   }
 
   .close-btn {

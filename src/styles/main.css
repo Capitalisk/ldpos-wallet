@@ -225,6 +225,11 @@ th {
   padding-bottom: var(--unit-3);
 }
 
+.px-1 {
+  padding-left: var(--unit-1);
+  padding-right: var(--unit-1);
+}
+
 .px-2 {
   padding-left: var(--unit-2);
   padding-right: var(--unit-2);
