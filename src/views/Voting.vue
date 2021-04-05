@@ -2,15 +2,20 @@
   <Navbar />
   <div class="flex flex-gap mb-2">
     <Section title="Quick vote" v-if="authenticated" class="flex-3">
-      <div v-if="vote.error" class="text-error">{{ vote.error }}</div>
       <Input
-        v-model="vote.data"
+        v-model="vote"
         placeholder="Wallet address"
         class="my-1"
         background-color="primary-darkest"
+        :rules="[
+          val => !val || val.length > 0 || 'Required',
+          val => (val && val.length === 44) || 'Invalid address',
+          async val => await checkDelegate(val),
+        ]"
+        ref="voteRef"
       />
       <div class="flex justify-center">
-        <Button value="Vote" @click="voteForDelegate" :loading="vote.loading" />
+        <Button value="Vote" @click="voteForDelegate" :loading="loading" />
       </div>
     </Section>
   </div>
@@ -45,7 +50,9 @@ export default {
   setup() {
     const store = inject('store');
 
-    const vote = reactive({ loading: false, error: null, data: null });
+    const vote = ref(null);
+    const voteRef = ref(null);
+    const loading = ref(false);
     const votingForAddress = ref(null);
 
     const columns = ref([
@@ -93,7 +100,10 @@ export default {
     ]);
 
     const voteForDelegate = async wallet => {
-      if (!wallet) vote.loading = true;
+      await voteRef.value.validate();
+
+      if (voteRef.value.error) return;
+      if (!wallet) loading = true;
       else votingForAddress.value = wallet;
 
       let voteTxn;
@@ -112,19 +122,6 @@ export default {
             message: '',
           });
         } else {
-          if (!vote.data) {
-            vote.error = 'Field required.';
-            return;
-          }
-
-          vote.error = null;
-          const valid = await store.client.value.getDelegate(vote.data);
-
-          if (!valid) {
-            vote.error = 'Delegate does not exist.';
-            return;
-          }
-
           voteTxn = await store.client.value.prepareTransaction({
             type: 'vote',
             delegateAddress: vote.data,
@@ -140,12 +137,11 @@ export default {
         store.notify(`Error: ${e.message}`, 5);
       }
 
-      vote.loading = false;
+      loading = false;
       votingForAddress.value = null;
     };
 
     return {
-      // vote: async () => await store.client.value.vote(),
       title: computed(() =>
         store.state.authenticated ? 'Voting for delegates' : 'Delegates',
       ),
@@ -153,8 +149,16 @@ export default {
       fn: async () => await store.client.value.getForgingDelegates(),
       authenticated: computed(() => store.state.authenticated),
       vote,
+      voteRef,
       voteForDelegate,
       votingForAddress,
+      checkDelegate: async val => {
+        try {
+          await store.client.value.getDelegate(val);
+        } catch (e) {
+          return 'Not a delegate';
+        }
+      },
     };
   },
   components: { Navbar, Button, DataTable, Input, Section, Copy },
