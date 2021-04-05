@@ -35,7 +35,7 @@ progress.progress-indeterminate {
   overflow: hidden;
   padding: 0;
   background: var(--primary-darker)
-    linear-gradient(to right, var(--primary) 30%, var(--primary-darker) 30%) top
+    linear-gradient(to right, var(--primary) 30%, var(--primary-lightest) 30%) top
     left / 150% 150% no-repeat;
 }
 
