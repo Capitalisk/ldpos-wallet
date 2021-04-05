@@ -4,21 +4,28 @@
     <input
       v-bind="$attrs"
       class=""
-      :class="`input ${error ? 'input-error ' : ''}${
-        prefix ? 'input-prefix ' : ''
-      }${suffix ? 'input-suffix' : ''}`"
+      :class="
+        `input ${error || error ? 'input-error ' : ''}${
+          prefix ? 'input-prefix ' : ''
+        }${suffix ? 'input-suffix' : ''}`
+      "
       :value="modelValue"
-      @input="(e) => $emit('update:modelValue', e.target.value)"
+      @input="e => $emit('update:modelValue', e.target.value)"
       :placeholder="placeholder"
       :style="{
         backgroundColor: `var(--${backgroundColor})`,
         color: `var(--${color})`,
       }"
       :id="id"
+      @blur="validate"
+      @ended="validate"
+      @focus="reset"
     />
     <span class="suffix">{{ suffix }}</span>
   </div>
-  <span v-if="error" class="text-error">{{ error }}</span>
+  <span v-if="dirty && error" class="text-error ml-1">
+    {{ error }}
+  </span>
 </template>
 
 <script>
@@ -35,6 +42,33 @@ export default {
     suffix: { type: String, default: null },
     prefix: { type: String, default: null },
     error: { type: String, default: null },
+    rules: { type: Array, default: null },
+  },
+  setup(props) {
+    const error = ref(props.error);
+    const dirty = ref(props.error ? true : false);
+
+    return {
+      error,
+      dirty,
+      reset: () => (error.value = null),
+      validate: async () => {
+        if (!props.rules || !props.rules.length) return;
+
+        dirty.value = true;
+
+        for (let i = 0; i < props.rules.length; i++) {
+          const rule = props.rules[i];
+          const e = await rule(props.modelValue);
+          const hasError = e.length > 0;
+
+          if (hasError) {
+            error.value = e;
+            break;
+          }
+        }
+      },
+    };
   },
 };
 </script>

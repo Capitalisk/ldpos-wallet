@@ -2,7 +2,14 @@
   <div class="flex flex-gap pa-1 column">
     <div>
       Address:
-      <Input v-model="transfer.address.data" :error="transfer.address.error" />
+      <Input
+        v-model="transfer.address.data"
+        :rules="[
+          val => !val || val.length > 0 || 'Required',
+          val => (val && val.length === 44) || 'Invalid address',
+        ]"
+        :ref="el => (transfer.address.ref = el)"
+      />
     </div>
     <div>
       Amount:
@@ -10,6 +17,13 @@
         v-model="transfer.amount.data"
         :error="transfer.amount.error"
         :suffix="unit"
+        :ref="el => (transfer.amount.ref = el)"
+        :rules="[
+          val => !val || val.length > 0 || 'Required',
+          val =>
+            (val && Number.isInteger(parseInt(decimalToInteger(val)))) ||
+            'Not a valid amount',
+        ]"
       />
     </div>
     <div>
@@ -19,15 +33,25 @@
         :error="transfer.fee.error"
         :suffix="unit"
         disabled
+        :ref="el => (transfer.fee.ref = el)"
       />
     </div>
     <div>
       Message:
-      <Input v-model="transfer.message.data" :error="transfer.message.error" />
+      <Input
+        v-model="transfer.message.data"
+        :error="transfer.message.error"
+        :ref="el => (transfer.message.ref = el)"
+      />
     </div>
   </div>
   <div class="flex justify-center">
-    <Button value="Send" @click="send" :loading="loading" />
+    <Button
+      value="Send"
+      @click="send"
+      :loading="loading"
+      :backgroundColor="error ? 'danger' : 'primary-lightest'"
+    />
   </div>
 </template>
 
@@ -45,21 +69,22 @@ export default {
     const store = inject('store');
 
     const loading = ref(false);
+    const error = ref(false);
     const transfer = reactive({
       address: {
-        error: null,
+        ref: null,
         data: null,
       },
       amount: {
-        error: null,
+        ref: null,
         data: null,
       },
       fee: {
-        error: null,
+        ref: null,
         data: null,
       },
       message: {
-        error: null,
+        ref: null,
         data: '',
       },
     });
@@ -72,24 +97,24 @@ export default {
     return {
       transfer,
       loading,
+      error,
       unit: computed(() => store.state.config.networkSymbol.toUpperCase()),
       send: async () => {
         loading.value = true;
+        error.value = false;
 
-        if (transfer.address.data.length !== 44) {
-          transfer.address.error = 'Invalid address';
-        }
+        transfer.address.ref.validate();
+        transfer.amount.ref.validate();
+        transfer.fee.ref.validate();
+        transfer.message.ref.validate();
 
-        for (let i = 0; i < Object.keys(transfer).length; i++) {
-          const key = Object.keys(transfer)[i];
-          if (!transfer[key].data || !transfer[key].data.length)
-            transfer[key].error = 'Required field.';
-        }
+        if (transfer) console.log(transfer);
 
         try {
-          Object.value(transfer).forEach(t => {
-            if (t.error) throw new Error(t.error);
-          });
+          for (let i = 0; i < Object.keys(transfer).length; i++) {
+            const key = Object.keys(transfer)[i];
+            if (transfer[key].ref.error) throw new Error(transfer[key].ref.error);
+          }
 
           const preparedTxn = await store.client.value.prepareTransaction({
             type: 'transfer',
@@ -103,6 +128,7 @@ export default {
           await store.client.value.postTransaction(preparedTxn);
         } catch (e) {
           store.notify(`Error: ${e.message}`, 5);
+          error.value = true;
           loading.value = false;
           return;
         }
@@ -111,6 +137,7 @@ export default {
 
         store.toggleModal();
       },
+      decimalToInteger: _decimalToInteger,
     };
   },
   components: { Input, Button },

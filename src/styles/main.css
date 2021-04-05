@@ -240,6 +240,22 @@ th {
   padding-right: var(--unit-3);
 }
 
+.ml-1 {
+  margin-left: var(--unit-1);
+}
+
+.ml-2 {
+  margin-left: var(--unit-2);
+}
+
+.pl-1 {
+  padding-left: var(--unit-1);
+}
+
+.pl-2 {
+  padding-left: var(--unit-2);
+}
+
 .pa-0 {
   padding: 0;
 }
@@ -272,10 +288,6 @@ th {
 .my-2 {
   margin-top: var(--unit-2);
   margin-bottom: var(--unit-2);
-}
-
-.pl-1 {
-  padding: var(--unit-1);
 }
 
 .pa-1 {
