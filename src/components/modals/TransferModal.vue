@@ -86,18 +86,30 @@ export default {
             transfer[key].error = 'Required field.';
         }
 
-        const preparedTxn = await store.client.value.prepareTransaction({
-          type: 'transfer',
-          recipientAddress: transfer.address.data,
-          amount: _decimalToInteger(transfer.amount.data),
-          fee: _decimalToInteger(transfer.fee.data),
-          timestamp: Date.now(),
-          message: transfer.message.data,
-        });
+        try {
+          Object.value(transfer).forEach(t => {
+            if (t.error) throw new Error(t.error);
+          });
 
-        await store.client.value.postTransaction(preparedTxn);
+          const preparedTxn = await store.client.value.prepareTransaction({
+            type: 'transfer',
+            recipientAddress: transfer.address.data,
+            amount: _decimalToInteger(transfer.amount.data),
+            fee: _decimalToInteger(transfer.fee.data),
+            timestamp: Date.now(),
+            message: transfer.message.data,
+          });
 
+          await store.client.value.postTransaction(preparedTxn);
+        } catch (e) {
+          store.notify(`Error: ${e.message}`, 5);
+          loading.value = false;
+          return;
+        }
+        store.notify(`Transaction sent to ${transfer.address.data}`, 5);
         loading.value = false;
+
+        store.toggleModal();
       },
     };
   },
