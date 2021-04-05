@@ -32,18 +32,12 @@
           v-for="transaction in pendingTransactions.data"
           :key="transaction.id"
         >
-          <li class="lineheight-3 font-12">
+          <li
+            class="lineheight-3 font-12 cursor-pointer"
+            @click="details(transaction)"
+          >
             <div class="flex align-center">
-              <i
-                :class="
-                  `fas fa-${directions[transaction.direction]} mr-1 ${
-                    transaction.direction === 'INBOUND'
-                      ? 'text-success'
-                      : 'text-error'
-                  }`
-                "
-              ></i>
-              <strong>{{ transaction.amount }}</strong
+              <strong>{{ transformMonetaryUnit(transaction.amount) }}</strong
               >&nbsp;
               {{ transaction.direction === 'INBOUND' ? 'from' : 'to' }}&nbsp;
               <strong>
@@ -256,6 +250,12 @@ export default {
       balance: computed(() => balance),
       pendingTransactions: computed(() => pendingTransactions),
       openTransferModal: () => store.toggleModal({ type: TRANSFER_MODAL }),
+      details: data =>
+        store.toggleModal({
+          type: DETAIL_MODAL,
+          data,
+        }),
+      transformMonetaryUnit: _transformMonetaryUnit,
     };
   },
   components: { Navbar, DataTable, Copy, Section, Button },
@@ -265,5 +265,9 @@ export default {
 <style scoped>
 .wallet {
   width: 100%;
+}
+
+ul {
+  list-style: none;
 }
 </style>
