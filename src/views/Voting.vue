@@ -14,7 +14,12 @@
         ref="voteRef"
       />
       <div class="flex justify-center">
-        <Button value="Vote" @click="voteForDelegate" :loading="loading" />
+        <Button
+          value="Vote"
+          @click="() => voteForDelegate()"
+          :loading="loading"
+          :class="voteRef && voteRef.error ? 'danger' : ''"
+        />
       </div>
     </Section>
   </div>
@@ -100,12 +105,14 @@ export default {
 
     const voteForDelegate = async wallet => {
       if (!wallet) {
-        loading = true;
+        loading.value = true;
         await voteRef.value.validate();
       }
 
-      if (voteRef.value.error) return;
-      else votingForAddress.value = wallet;
+      if (voteRef.value.error) {
+        loading.value = false;
+        return;
+      } else votingForAddress.value = wallet;
 
       let voteTxn;
 
