@@ -3,7 +3,9 @@
     class="button cursor-pointer text-center"
     :style="{
       backgroundColor: `var(--${backgroundColor})`,
-      color: `var(--${color})`,
+      color: `var(--${
+        backgroundColor === 'warning' ? 'permanent-dark' : color
+      })`,
       ...style,
     }"
     v-if="!routerLink"
