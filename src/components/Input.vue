@@ -32,8 +32,6 @@ export default {
   props: {
     modelValue: { type: String, default: '' },
     placeholder: { type: String, default: '' },
-    backgroundColor: { type: String, default: 'primary' },
-    color: { type: String, default: 'dark' },
     id: { type: String, default: null },
     suffix: { type: String, default: null },
     prefix: { type: String, default: null },
