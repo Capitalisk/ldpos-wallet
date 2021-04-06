@@ -64,12 +64,20 @@ jobs:
       - uses: softprops/action-gh-release@v1
         with:
           files: |
-            dist_electron/ldpos-wallet*amd64.deb
-            dist_electron/ldpos-wallet*i386.deb
-            dist_electron/ldpos-wallet*x86_64.AppImage
-            dist_electron/ldpos-wallet*i386.AppImage
-            dist_electron/ldpos-wallet*amd64.snap
+            dist_electron/ldpos-wallet*mac.zip
+            dist_electron/ldpos-wallet*-ia32.tar.gz
+            dist_electron/ldpos-wallet*-x64.tar.gz
+            dist_electron/ldpos-wallet*-amd64.deb
+            dist_electron/ldpos-wallet*-i386.deb
+            dist_electron/ldpos-wallet*-x86_64.AppImage
+            dist_electron/ldpos-wallet*-i386.AppImage
+            dist_electron/ldpos-wallet*-amd64.snap
             dist_electron/ldpos-wallet*.exe
+            dist_electron/ldpos-wallet*.exe.blockmap
+            dist_electron/ldpos-wallet*-ia32.nsis.7z
+            dist_electron/ldpos-wallet*-x64.nsis.7z
+            dist_electron/ldpos-wallet*-win-ia32.zip
+            dist_electron/ldpos-wallet*-win-x64.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
