@@ -203,6 +203,11 @@ th {
   margin-right: var(--unit-2);
 }
 
+.mr-4 {
+  margin-right: var(--unit-4);
+}
+
+
 .mt-1 {
   margin-top: var(--unit-1);
 }

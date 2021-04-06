@@ -103,17 +103,16 @@ export default {
         loading.value = true;
         error.value = false;
 
-        transfer.address.ref.validate();
-        transfer.amount.ref.validate();
-        transfer.fee.ref.validate();
-        transfer.message.ref.validate();
-
-        if (transfer) console.log(transfer);
+        await transfer.address.ref.validate();
+        await transfer.amount.ref.validate();
+        await transfer.fee.ref.validate();
+        await transfer.message.ref.validate();
 
         try {
           for (let i = 0; i < Object.keys(transfer).length; i++) {
             const key = Object.keys(transfer)[i];
-            if (transfer[key].ref.error) throw new Error(transfer[key].ref.error);
+            if (transfer[key].ref.error)
+              throw new Error(transfer[key].ref.error);
           }
 
           const preparedTxn = await store.client.value.prepareTransaction({
