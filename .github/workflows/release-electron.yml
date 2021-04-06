@@ -1,0 +1,111 @@
+name: Create Release
+
+on:
+  push:
+    # Sequence of patterns matched against refs/tags
+    tags:
+      - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
+
+jobs:
+  build:
+    name: Upload Release Asset
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [14.x]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Install wine (for Windows build)
+        run: |
+          sudo dpkg --add-architecture i386
+          wget -qO - https://dl.winehq.org/wine-builds/winehq.key | sudo apt-key add -
+          sudo add-apt-repository ppa:cybermax-dexter/sdl2-backport
+          sudo apt-add-repository "deb https://dl.winehq.org/wine-builds/ubuntu $(lsb_release -cs) main"
+          sudo apt install --install-recommends winehq-stable
+      - name: Install and build electron
+        run: |
+          npm ci
+          npm run electron:build
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Get the version
+        id: get_version
+        run: echo ::set-output name=VERSION::$(echo $GITHUB_REF | cut -d / -f 3)
+
+      - name: Zip Release Linux Snap # This would actually build your project, using zip for an example artifact
+        run: |
+          zip --junk-paths release-${{ steps.get_version.outputs.VERSION }}-snap.zip dist_electron/ldpos-wallet*.snap dist_electron/ldpos-wallet*.deb dist_electron/ldpos-wallet*.AppImage
+
+      - name: Zip Release Linux AppImage # This would actually build your project, using zip for an example artifact
+        run: |
+          zip --junk-paths release-${{ steps.get_version.outputs.VERSION }}-appimage.zip dist_electron/ldpos-wallet*.snap dist_electron/ldpos-wallet*.deb dist_electron/ldpos-wallet*.AppImage
+
+      - name: Zip Release Linux Deb # This would actually build your project, using zip for an example artifact
+        run: |
+          zip --junk-paths release-${{ steps.get_version.outputs.VERSION }}-deb.zip dist_electron/ldpos-wallet*.deb
+
+      - name: Zip Release Windows # This would actually build your project, using zip for an example artifact
+        run: |
+          zip --junk-paths release-${{ steps.get_version.outputs.VERSION }}-windows.zip dist_electron/ldpos-wallet*.exe*
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ steps.get_version.outputs.VERSION }}
+          draft: false
+          prerelease: false
+
+      - name: Upload Release Snap
+        id: upload-release-asset-snap
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
+          asset_path: ./release-${{ steps.get_version.outputs.VERSION }}-snap.zip
+          asset_name: release-${{ steps.get_version.outputs.VERSION }}-snap.zip
+          asset_content_type: application/zip
+
+      - name: Upload Release AppImage
+        id: upload-release-asset-appimage
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
+          asset_path: ./release-${{ steps.get_version.outputs.VERSION }}-appimage.zip
+          asset_name: release-${{ steps.get_version.outputs.VERSION }}-appimage.zip
+          asset_content_type: application/zip
+
+      - name: Upload Release Deb
+        id: upload-release-asset-deb
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
+          asset_path: ./release-${{ steps.get_version.outputs.VERSION }}-deb.zip
+          asset_name: release-${{ steps.get_version.outputs.VERSION }}-deb.zip
+          asset_content_type: application/zip
+
+      - name: Upload Release Windows
+        id: upload-release-asset-windows
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
+          asset_path: ./release-${{ steps.get_version.outputs.VERSION }}-windows.zip
+          asset_name: release-${{ steps.get_version.outputs.VERSION }}-windows.zip
+          asset_content_type: application/zip
