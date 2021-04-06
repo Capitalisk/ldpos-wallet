@@ -1,7 +1,8 @@
 <template>
   <div class="navbar align-center fullwidth">
     <div class="mr-auto">
-      <Button value="Sign in" router-link href="/" />
+      <Button value="Sign in" router-link href="/" v-if="!authenticated" />
+      <Button value="Sign out" @click="deauthenticate" v-else />
     </div>
     <div
       :class="burgerActive ? 'change cursor-pointer' : 'cursor-pointer'"
@@ -61,8 +62,9 @@ export default {
         store.state.config.networkSymbol.toUpperCase(),
       ),
       TOKEN_MODAL,
-      toggleModal: (type) => store.toggleModal({ type }),
+      toggleModal: type => store.toggleModal({ type }),
       toggleBurger: () => store.toggleNav(),
+      deauthenticate: () => store.deauthenticate(),
     };
   },
   components: { Button },
@@ -80,7 +82,6 @@ export default {
   padding: 0;
   margin: var(--unit-2);
   border-radius: var(--border-radius);
-  /* background: linear-gradient(-30deg, var(--primary), var(--primary-lightest)); */
   background-color: var(--primary);
   color: var(--white);
   text-transform: uppercase;

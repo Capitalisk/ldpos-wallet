@@ -62,7 +62,7 @@ export default {
 @media screen and (max-width: 768px) {
   .main-content {
     margin-left: 0;
-    margin-top: 50px;
+    margin-top: 56px;
     width: 100%;
     padding: var(--unit-2) 0;
   }
