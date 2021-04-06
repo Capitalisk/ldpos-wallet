@@ -7,6 +7,25 @@ on:
       - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
 
 jobs:
+  create-release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Get the version
+        id: get_version
+        run: echo ::set-output name=VERSION::$(echo $GITHUB_REF | cut -d / -f 3)
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ steps.get_version.outputs.VERSION }}
+          draft: false
+          prerelease: false
+
   build:
     name: Upload Release Asset
     runs-on: ubuntu-latest
@@ -42,27 +61,18 @@ jobs:
         id: get_version
         run: echo ::set-output name=VERSION::$(echo $GITHUB_REF | cut -d / -f 3)
 
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
+      - uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            dist_electron/ldpos-wallet*amd64.deb
+            dist_electron/ldpos-wallet*i386.deb
+            dist_electron/ldpos-wallet*x86_64.AppImage
+            dist_electron/ldpos-wallet*i386.AppImage
+            dist_electron/ldpos-wallet*amd64.snap
+            dist_electron/ldpos-wallet*.exe
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ steps.get_version.outputs.VERSION }}
-          draft: false
-          prerelease: false
 
-      - uses: actions/upload-artifact@v2
-        with:
-          name: ldpos-wallet-${{ steps.get_version.outputs.VERSION }}
-          path: |
-            ldpos-wallet*amd64.deb
-            ldpos-wallet*i386.deb
-            ldpos-wallet*x86_64.AppImage
-            ldpos-wallet*i386.AppImage
-            ldpos-wallet*amd64.snap
-            ldpos-wallet*.exe
   build-mac:
     name: Upload Release Asset Mac
     runs-on: macos-latest
@@ -91,19 +101,8 @@ jobs:
         id: get_version
         run: echo ::set-output name=VERSION::$(echo $GITHUB_REF | cut -d / -f 3)
 
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
+      - uses: softprops/action-gh-release@v1
+        with:
+          files: dist_electron/ldpos-wallet*.dmg
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ steps.get_version.outputs.VERSION }}
-          draft: false
-          prerelease: false
-
-      - uses: actions/upload-artifact@v2
-        with:
-          name: ldpos-wallet-${{ steps.get_version.outputs.VERSION }}
-          path: |
-            ldpos-wallet*.dmg
