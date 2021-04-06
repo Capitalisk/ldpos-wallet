@@ -58,7 +58,7 @@
           <Button
             :value="loggingIn ? 'Hang in there...' : 'Sign in'"
             class="ma-1"
-            :background-color="loggingIn ? 'warning' : 'primary-lighter'"
+            :class="loggingIn ? 'warning' : ''"
             @click="signin"
             :loading="loggingIn"
           />
@@ -76,9 +76,7 @@
               generatedWalletAddress.loading ? 'Generating...' : 'Create one'
             "
             class="ma-1"
-            :background-color="
-              generatedWalletAddress.loading ? 'warning' : 'primary-lighter'
-            "
+            :class="generatedWalletAddress.loading ? 'warning' : ''"
             @click="generateWallet"
             :loading="generatedWalletAddress.loading"
           />

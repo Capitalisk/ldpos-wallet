@@ -50,7 +50,7 @@
       value="Send"
       @click="send"
       :loading="loading"
-      :backgroundColor="error ? 'danger' : 'primary-lightest'"
+      :class="error ? 'danger' : ''"
     />
   </div>
 </template>
