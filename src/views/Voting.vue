@@ -149,6 +149,7 @@ export default {
       fn: async () => await store.client.value.getForgingDelegates(),
       authenticated: computed(() => store.state.authenticated),
       vote,
+      loading,
       voteRef,
       voteForDelegate,
       votingForAddress,
