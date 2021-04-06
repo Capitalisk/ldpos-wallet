@@ -63,3 +63,47 @@ jobs:
             ldpos-wallet*i386.AppImage
             ldpos-wallet*amd64.snap
             ldpos-wallet*.exe
+  build-mac:
+    name: Upload Release Asset Mac
+    runs-on: macos-latest
+
+    strategy:
+      matrix:
+        node-version: [14.x]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Install and build electron for mac
+        run: |
+          npm ci
+          npm run electron:build:mac
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Get the version
+        id: get_version
+        run: echo ::set-output name=VERSION::$(echo $GITHUB_REF | cut -d / -f 3)
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ steps.get_version.outputs.VERSION }}
+          draft: false
+          prerelease: false
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: ldpos-wallet-${{ steps.get_version.outputs.VERSION }}
+          path: |
+            ldpos-wallet*.dmg
