@@ -70,6 +70,7 @@ export default {
   },
   async deauthenticate(notify = false) {
     this.mutateProgressbarLoading(true);
+    state.authenticated = false;
 
     if (notify)
       this.notify(
@@ -81,7 +82,6 @@ export default {
     } catch (e) {
       console.error(e);
     }
-    state.authenticated = false;
     if (state.authenticated) router.push('/');
 
     this.mutateProgressbarLoading(false);
