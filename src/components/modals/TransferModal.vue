@@ -12,7 +12,10 @@
       />
     </div>
     <div>
-      Amount:
+      Amount:<br />
+      <small @click="populate" class="cursor-pointer"
+        >Max: {{ transformMonetaryUnit(decimalToInteger(maxBalance)) }}</small
+      >
       <Input
         v-model="transfer.amount.data"
         :error="transfer.amount.error"
@@ -23,6 +26,9 @@
           val =>
             (val && Number.isInteger(parseInt(decimalToInteger(val)))) ||
             'Not a valid amount',
+          val =>
+            parseFloat(val) <= parseFloat(maxBalance) ||
+            'You are trying to transfer more than you have',
         ]"
       />
     </div>
@@ -58,7 +64,11 @@
 <script>
 import { reactive, inject, onMounted, computed, ref } from 'vue';
 
-import { _decimalToInteger, _integerToDecimal } from '../../utils';
+import {
+  _decimalToInteger,
+  _integerToDecimal,
+  _transformMonetaryUnit,
+} from '../../utils';
 
 import Input from '../Input';
 import Button from '../Button';
@@ -70,6 +80,7 @@ export default {
 
     const loading = ref(false);
     const error = ref(false);
+    const maxBalance = ref(null);
     const transfer = reactive({
       address: {
         ref: null,
@@ -92,13 +103,23 @@ export default {
     onMounted(async () => {
       const { minTransactionFees } = await store.client.value.getMinFees();
       transfer.fee.data = _integerToDecimal(minTransactionFees.transfer);
+
+      const address = await store.client.value.getWalletAddress();
+
+      const { balance } = await store.client.value.getAccount(address);
+
+      maxBalance.value = _integerToDecimal(
+        balance - minTransactionFees.transfer,
+      );
     });
 
     return {
       transfer,
       loading,
       error,
+      maxBalance,
       unit: computed(() => store.state.config.networkSymbol.toUpperCase()),
+      populate: () => (transfer.amount.data = maxBalance.value),
       send: async () => {
         loading.value = true;
         error.value = false;
@@ -131,12 +152,16 @@ export default {
           loading.value = false;
           return;
         }
-        store.notify({ message: `Transaction sent to ${transfer.address.data}` }, 5);
+        store.notify(
+          { message: `Transaction sent to ${transfer.address.data}` },
+          5,
+        );
         loading.value = false;
 
         store.toggleModal();
       },
       decimalToInteger: _decimalToInteger,
+      transformMonetaryUnit: _transformMonetaryUnit,
     };
   },
   components: { Input, Button },
