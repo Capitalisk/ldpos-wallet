@@ -1,10 +1,6 @@
 <template>
   <div v-if="active" class="popup">
-    <Section
-      backgroundColor="primary-darkest"
-      color="dark"
-      border="primary-darker"
-    >
+    <Section>
       <slot />
     </Section>
   </div>

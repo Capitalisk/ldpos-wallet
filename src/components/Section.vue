@@ -1,12 +1,5 @@
 <template>
-  <div
-    class="section pa-2"
-    :style="{
-      backgroundColor: `var(--${backgroundColor})`,
-      color: `var(--${color})`,
-      border: border ? `1px solid var(--${border})` : '',
-    }"
-  >
+  <div class="section pa-2">
     <h4>{{ title }}</h4>
 
     <Loading v-if="loading" />
@@ -30,8 +23,6 @@ export default {
     title: { type: String },
     loading: { type: Boolean },
     error: { type: String, default: null },
-    backgroundColor: { type: String, default: 'primary' },
-    color: { type: String, default: 'dark' },
     border: { type: String, default: null },
   },
   components: { Loading },
@@ -50,6 +41,8 @@ export default {
   position: relative;
   border-radius: var(--border-radius);
   padding: var(--unit-2);
+  background-color: var(--primary);
+  color: var(--dark);
 }
 
 h4 {
