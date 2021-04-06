@@ -289,6 +289,14 @@ th {
   margin: var(--unit-2);
 }
 
+.ma-3 {
+  margin: var(--unit-3);
+}
+
+.ma-4 {
+  margin: var(--unit-4);
+}
+
 .mb-2 {
   margin-bottom: var(--unit-2);
 }

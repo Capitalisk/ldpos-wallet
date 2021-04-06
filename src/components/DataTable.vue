@@ -19,7 +19,7 @@
       </div>
     </div>
     <div class="flex flex-wrap column overflow-y-hidden" ref="table" id="table">
-      <table>
+      <table v-if="rows && rows.length">
         <thead>
           <template v-for="(c, i) in columns" :key="i">
             <th v-if="c.active" class="px-2 py-4">
@@ -74,6 +74,7 @@
           </tr>
         </tbody>
       </table>
+      <span v-else class="ma-3">No data available...</span>
     </div>
     <div class="footer">
       <slot name="header" class="pa-2" />
