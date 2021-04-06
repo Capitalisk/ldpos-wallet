@@ -25,16 +25,16 @@
         v-if="!generatedWalletAddress.data"
         class="flex justify-center flex-wrap"
       >
-        <div class="flex-6 pa-2">Passphrase</div>
-        <div
-          @click="toggleHidden"
-          class="flex-6 pa-2 text-right cursor-pointer"
-          id="show"
-        >
-          <span v-if="hidden"><i class="fas fa-eye-slash mr-1"></i>Show</span>
-          <span v-else><i class="fas fa-eye mr-1"></i>Hide</span>
-        </div>
         <div class="login flex flex-wrap flex-gap justify-center pb-2">
+          <div class="flex-6 pa-2">Passphrase</div>
+          <div
+            @click="toggleHidden"
+            class="flex-6 pa-2 text-right cursor-pointer"
+            id="show"
+          >
+            <span v-if="hidden"><i class="fas fa-eye-slash mr-1"></i>Show</span>
+            <span v-else><i class="fas fa-eye mr-1"></i>Hide</span>
+          </div>
           <div v-for="(input, i) in inputs" :key="i" class="flex align-center">
             <div class="input-number">{{ i + 1 }}.</div>
             <div>
