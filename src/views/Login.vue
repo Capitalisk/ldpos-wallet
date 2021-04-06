@@ -56,7 +56,7 @@
         <div class="flex justify-center">
           <Button
             :value="loggingIn ? 'Hang in there...' : 'Sign in'"
-            class="ma-1"
+            class="ma-2"
             :class="loggingIn ? 'warning' : ''"
             @click="signin"
             :loading="loggingIn"
