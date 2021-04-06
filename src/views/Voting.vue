@@ -99,10 +99,12 @@ export default {
     ]);
 
     const voteForDelegate = async wallet => {
-      await voteRef.value.validate();
+      if (!wallet) {
+        loading = true;
+        await voteRef.value.validate();
+      }
 
       if (voteRef.value.error) return;
-      if (!wallet) loading = true;
       else votingForAddress.value = wallet;
 
       let voteTxn;
@@ -136,7 +138,7 @@ export default {
         store.notify({ message: `Error: ${e.message}`, error: true }, 5);
       }
 
-      loading = false;
+      loading.value = false;
       votingForAddress.value = null;
     };
 

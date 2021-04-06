@@ -60,7 +60,7 @@ export default {
   bottom: 0px;
   right: 0px;
   background-color: var(--primary);
-  max-width: 200px;
+  max-width: 30vw;
   z-index: 10;
 }
 
