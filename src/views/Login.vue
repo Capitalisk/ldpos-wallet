@@ -39,14 +39,13 @@
             <div class="input-number">{{ i + 1 }}.</div>
             <div>
               <Input
-                class="mx-1 text-center"
+                class="mx-1 text-center primary-darkest"
                 v-model="input.value"
                 :type="hidden ? 'password' : 'text'"
                 :id="`passphrase-${i}`"
                 placeholder="__________"
                 @keydown="e => backspace(e, i)"
                 @keyup.enter="signin"
-                background-color="primary-darkest"
                 :rules="[val => !val || val.length > 0 || 'Required']"
               />
             </div>

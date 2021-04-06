@@ -5,8 +5,7 @@
       <Input
         v-model="vote"
         placeholder="Wallet address"
-        class="my-1"
-        background-color="primary-darkest"
+        class="my-1 primary-darkest"
         :rules="[
           val => !val || val.length > 0 || 'Required',
           val => (val && val.length === 44) || 'Invalid address',

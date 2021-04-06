@@ -12,10 +12,6 @@
       :value="modelValue"
       @input="e => $emit('update:modelValue', e.target.value)"
       :placeholder="placeholder"
-      :style="{
-        backgroundColor: `var(--${backgroundColor})`,
-        color: `var(--${color})`,
-      }"
       :id="id"
       @blur="validate"
       @ended="validate"
@@ -80,6 +76,18 @@ export default {
   border-radius: var(--border-radius);
   text-decoration: none;
   flex: 1;
+  background-color: var(--primary);
+  color: var(--dark);
+}
+
+.input.danger {
+  background-color: var(--danger);
+  color: var(--permanent-white);
+}
+
+.input.primary-darkest {
+  background-color: var(--primary-darkest);
+  color: var(--permanent-white);
 }
 
 .input:disabled {
