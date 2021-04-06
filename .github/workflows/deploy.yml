@@ -22,9 +22,9 @@ jobs:
       - name: NPM Install
         run: |
           npm ci
-      # - name: Test
-      #   run: |
-      #     npm run test:e2e:headless
+       - name: Test
+         run: |
+           npm run test:e2e:docker
       - name: Build
         run: |
           npm run build
