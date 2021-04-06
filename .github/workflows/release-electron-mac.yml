@@ -8,8 +8,8 @@ on:
 
 jobs:
   build:
-    name: Upload Release Asset
-    runs-on: ubuntu-latest
+    name: Upload Release Asset Mac
+    runs-on: macos-latest
 
     strategy:
       matrix:
@@ -18,23 +18,16 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
 
-      - name: Install wine (for Windows build)
-        run: |
-          sudo dpkg --add-architecture i386
-          wget -qO - https://dl.winehq.org/wine-builds/winehq.key | sudo apt-key add -
-          sudo add-apt-repository ppa:cybermax-dexter/sdl2-backport
-          sudo apt-add-repository "deb https://dl.winehq.org/wine-builds/ubuntu $(lsb_release -cs) main"
-          sudo apt install --install-recommends winehq-stable
-
-      - name: Install and build electron
+      - name: Install and build electron for mac
         run: |
           npm ci
-          npm run electron:build:platforms
+          npm run electron:build:mac
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -57,9 +50,4 @@ jobs:
         with:
           name: ldpos-wallet-${{ steps.get_version.outputs.VERSION }}
           path: |
-            ldpos-wallet*amd64.deb
-            ldpos-wallet*i386.deb
-            ldpos-wallet*x86_64.AppImage
-            ldpos-wallet*i386.AppImage
-            ldpos-wallet*amd64.snap
-            ldpos-wallet*.exe
+            ldpos-wallet*.dmg
