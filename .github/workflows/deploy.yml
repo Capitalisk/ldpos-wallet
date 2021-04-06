@@ -24,7 +24,7 @@ jobs:
           npm ci
       - name: Test
         run: |
-          npm run test:e2e:docker
+          npm run test:e2e:headless
       - name: Build
         run: |
           npm run build
