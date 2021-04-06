@@ -11,7 +11,7 @@
       "
     >
       <div class="close-btn cursor-pointer" @click="denotify(i)">&#10005;</div>
-      <div class="break">{{ notification }}</div>
+      <div class="break mr-2">{{ notification }}</div>
     </div>
   </template>
 </template>
@@ -59,6 +59,7 @@ export default {
   right: 0px;
   background-color: var(--primary);
   max-width: 200px;
+  z-index: 10;
 }
 
 .close-btn {
