@@ -1,8 +1,17 @@
 <template>
   <div class="navbar align-center fullwidth">
     <div class="mr-auto">
-      <Button value="Sign in" router-link href="/" v-if="!authenticated" />
-      <Button value="Sign out" @click="deauthenticate" v-else />
+      <Button
+        value="Sign in"
+        router-link
+        href="/"
+        v-if="!authenticated && $router.currentRoute.value.path !== '/'"
+      />
+      <Button
+        value="Sign out"
+        @click="deauthenticate"
+        v-else-if="authenticated"
+      />
     </div>
     <div
       :class="burgerActive ? 'change cursor-pointer' : 'cursor-pointer'"
@@ -48,7 +57,6 @@ import { computed, inject, ref } from 'vue';
 import Button from './Button';
 
 import { TOKEN_MODAL } from './modals/constants';
-import router from '../router';
 
 export default {
   name: 'Sidebar',

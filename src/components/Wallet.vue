@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-gap mb-2">
+  <div class="flex flex-wrap flex-gap mb-2">
     <Section
       :loading="address.loading"
       title="Wallet address"

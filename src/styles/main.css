@@ -365,6 +365,12 @@ th {
   word-wrap: break-word;
 }
 
+@media screen and (max-width: 768px) {
+  .flex-3 {
+    flex-basis: 100%
+  }
+}
+
 @keyframes progress-indeterminate {
   0% {
     background-position: 200% 0;
