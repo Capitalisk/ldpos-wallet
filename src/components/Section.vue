@@ -45,6 +45,10 @@ export default {
   color: var(--dark);
 }
 
+.section.modal {
+  background-color: var(--white);
+}
+
 h4 {
   margin-bottom: var(--unit-1);
   color: var(--primary-lighter);

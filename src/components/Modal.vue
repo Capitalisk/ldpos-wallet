@@ -4,6 +4,7 @@
       <div class="close-btn cursor-pointer" @click="toggleModal">&#10005;</div>
       <Section
         :title="capitalize(type.toLowerCase())"
+        class="modal"
         :style="{ height: '100%', paddingTop: 'var(--unit-4)' }"
       >
         <div class="force-modal-scroll">
