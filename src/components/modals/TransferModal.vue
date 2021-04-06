@@ -126,7 +126,7 @@ export default {
 
           await store.client.value.postTransaction(preparedTxn);
         } catch (e) {
-          store.notify({ message: `Error: ${e.message}`, error: true });
+          store.notify({ message: `Error: ${e.message}`, error: true }), 5;
           error.value = true;
           loading.value = false;
           return;
