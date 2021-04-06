@@ -74,7 +74,7 @@
           </tr>
         </tbody>
       </table>
-      <span v-else class="ma-3">No data available...</span>
+      <span v-else-if="!loading && rows && !rows.length" class="ma-3">No data available...</span>
     </div>
     <div class="footer">
       <slot name="header" class="pa-2" />
