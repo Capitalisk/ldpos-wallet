@@ -131,9 +131,9 @@ export default {
         }
 
         await store.client.value.postTransaction(voteTxn);
-        store.notify(`You have voted for ${vote.data}`, 5);
+        store.notify({ message: `You have voted for ${vote.data}` }, 5);
       } catch (e) {
-        store.notify(`Error: ${e.message}`, 5);
+        store.notify({ message: `Error: ${e.message}`, error: true }, 5);
       }
 
       loading = false;

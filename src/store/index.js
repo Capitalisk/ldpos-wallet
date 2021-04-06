@@ -73,9 +73,10 @@ export default {
     state.authenticated = false;
 
     if (notify)
-      this.notify(
-        'You have been logged out automatically after being inactive for 30 minutes.',
-      );
+      this.notify({
+        message:
+          'You have been logged out automatically after being inactive for 30 minutes.',
+      });
     try {
       await client.value.disconnect();
       await this.connect();
@@ -111,10 +112,14 @@ export default {
       await this.deauthenticate(true);
     }, 30 * 1000 * 60);
   },
-  notify(message, seconds = null) {
-    if (state.notifications.includes(message)) return;
+  notify({ message, error = false }, seconds = null) {
+    for (let i = 0; i < state.notifications.length; i++) {
+      const n = state.notifications[i];
+      if (n.message === message) return;
+    }
+
     if (state.notifications.length === 3) state.notifications.splice(0, 1);
-    state.notifications.push(message);
+    state.notifications.push({ message, error });
 
     if (seconds)
       setTimeout(() => {

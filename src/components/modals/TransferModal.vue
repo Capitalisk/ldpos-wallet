@@ -126,12 +126,12 @@ export default {
 
           await store.client.value.postTransaction(preparedTxn);
         } catch (e) {
-          store.notify(`Error: ${e.message}`, 5);
+          store.notify({ message: `Error: ${e.message}`, error: true });
           error.value = true;
           loading.value = false;
           return;
         }
-        store.notify(`Transaction sent to ${transfer.address.data}`, 5);
+        store.notify({ message: `Transaction sent to ${transfer.address.data}` }, 5);
         loading.value = false;
 
         store.toggleModal();

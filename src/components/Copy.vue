@@ -28,7 +28,7 @@ export default {
         document.execCommand('copy');
         document.body.removeChild(copyText);
 
-        store.notify(`Copied: ${props.value}`, 5);
+        store.notify({ message: `Copied: ${props.value}` }, 5);
       },
       copyRef,
       value: computed(() =>

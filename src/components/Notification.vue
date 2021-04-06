@@ -4,14 +4,15 @@
       v-for="(notification, i) in notifications"
       :key="i"
       class="notification pa-4 ma-2"
+      :class="notification.error ? 'danger' : ''"
       :ref="
-        (el) => {
+        el => {
           if (el) divs[i] = el;
         }
       "
     >
       <div class="close-btn cursor-pointer" @click="denotify(i)">&#10005;</div>
-      <div class="break mr-2">{{ notification }}</div>
+      <div class="break mr-2">{{ notification.message }}</div>
     </div>
   </template>
 </template>
@@ -41,10 +42,11 @@ export default {
       notifications,
       divs,
       notify: () =>
-        store.notify(
-          'Your session was automatically ended after being inactive for 15 minutes.',
-        ),
-      denotify: (i) => store.denotify(i),
+        store.notify({
+          message:
+            'Your session was automatically ended after being inactive for 15 minutes.',
+        }),
+      denotify: i => store.denotify(i),
     };
   },
 };
@@ -62,10 +64,17 @@ export default {
   z-index: 10;
 }
 
+.notification.danger {
+  border: 1px solid var(--danger);
+  color: var(--danger);
+  font-weight: 900;
+}
+
 .close-btn {
   position: absolute;
   right: var(--unit-2);
-  top: var(--unit-2);
+  /* top: var(--unit-2); */
   font-size: var(--unit-2);
+  color: var(--permanent-white) !important;
 }
 </style>

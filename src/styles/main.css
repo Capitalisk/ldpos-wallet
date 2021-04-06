@@ -212,6 +212,14 @@ th {
   margin-top: var(--unit-1);
 }
 
+.mt-2 {
+  margin-top: var(--unit-2);
+}
+
+.mt-3 {
+  margin-top: var(--unit-3);
+}
+
 .mt-4 {
   margin-top: var(--unit-3);
 }
