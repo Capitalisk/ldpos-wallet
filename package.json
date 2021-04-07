@@ -1,30 +1,42 @@
 {
   "name": "ldpos-wallet",
-  "description": "A LDPoS Wallet application",
   "version": "0.0.10",
   "private": true,
+  "description": "A LDPoS Wallet application",
   "author": {
     "email": "martinuske@gmail.com",
     "name": "Maarten Coppens"
   },
-  "maintainers": [
-    "Jonathan Gros-Dubois",
-    "Maarten Coppens"
-  ],
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "test:e2e": "vue-cli-service test:e2e",
+    "cordova-build-android": "cross-env CORDOVA_PLATFORM=android vue-cli-service cordova-build-android",
+    "cordova-build-browser": "cross-env CORDOVA_PLATFORM=browser vue-cli-service cordova-build-browser",
+    "cordova-build-electron": "cross-env CORDOVA_PLATFORM=electron vue-cli-service cordova-build-electron",
+    "cordova-build-ios": "cross-env CORDOVA_PLATFORM=ios vue-cli-service cordova-build-ios",
+    "cordova-build-only-www-android": "cross-env CORDOVA_PLATFORM=android vue-cli-service cordova-build-only-www-android",
+    "cordova-build-only-www-browser": "cross-env CORDOVA_PLATFORM=browser vue-cli-service cordova-build-only-www-browser",
+    "cordova-build-only-www-electron": "cross-env CORDOVA_PLATFORM=electron vue-cli-service cordova-build-only-www-electron",
+    "cordova-build-only-www-ios": "cross-env CORDOVA_PLATFORM=ios vue-cli-service cordova-build-only-www-ios",
+    "cordova-build-only-www-osx": "cross-env CORDOVA_PLATFORM=osx vue-cli-service cordova-build-only-www-osx",
+    "cordova-build-osx": "cross-env CORDOVA_PLATFORM=osx vue-cli-service cordova-build-osx",
+    "cordova-prepare": "vue-cli-service cordova-prepare",
+    "cordova-serve-android": "cross-env CORDOVA_PLATFORM=android vue-cli-service cordova-serve-android",
+    "cordova-serve-browser": "cross-env CORDOVA_PLATFORM=browser vue-cli-service cordova-serve-browser",
+    "cordova-serve-electron": "cross-env CORDOVA_PLATFORM=electron vue-cli-service cordova-serve-electron",
+    "cordova-serve-ios": "cross-env CORDOVA_PLATFORM=ios vue-cli-service cordova-serve-ios",
+    "cordova-serve-osx": "cross-env CORDOVA_PLATFORM=osx vue-cli-service cordova-serve-osx",
     "electron:build": "vue-cli-service electron:build",
-    "electron:build:platforms": "vue-cli-service electron:build --win --linux --mac",
     "electron:build:mac": "vue-cli-service electron:build --mac dmg",
+    "electron:build:platforms": "vue-cli-service electron:build --win --linux --mac",
     "electron:serve": "vue-cli-service electron:serve",
     "postinstall": "electron-builder install-app-deps",
     "postuninstall": "electron-builder install-app-deps",
     "start:dev": "vue-cli-service serve",
+    "test:e2e:docker": "docker run --rm -v $PWD:/wallet -e HOME=/wallet -e NODE_OPTIONS='--max-old-space-size=6144' --name=ldpos-wallet -w /wallet --entrypoint=\"\" cypress/included:4.9.0 bash -c \"./run-cypress.sh\"",
     "test:e2e:headless": "vue-cli-service test:e2e --headless",
-    "test:e2e:record": "vue-cli-service test:e2e --headless",
-    "test:e2e:docker": "docker run --rm -v $PWD:/wallet -e HOME=/wallet -e NODE_OPTIONS='--max-old-space-size=6144' --name=ldpos-wallet -w /wallet --entrypoint=\"\" cypress/included:4.9.0 bash -c \"./run-cypress.sh\""
+    "test:e2e:record": "vue-cli-service test:e2e --headless"
   },
   "main": "background.js",
   "dependencies": {
@@ -39,6 +51,11 @@
     "@vue/compiler-sfc": "^3.0.0",
     "electron": "^11.0.0",
     "electron-devtools-installer": "^3.1.0",
+    "vue-cli-plugin-cordova": "~2.4.1",
     "vue-cli-plugin-electron-builder": "~2.0.0-rc.6"
-  }
+  },
+  "maintainers": [
+    "Jonathan Gros-Dubois",
+    "Maarten Coppens"
+  ]
 }
