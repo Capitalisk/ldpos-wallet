@@ -1,8 +1,18 @@
 [
   {
-    "hostname": "34.227.22.98",
-    "port": "7001",
-    "networkSymbol": "clsk",
-    "chainModuleName": "capitalisk_chain"
+    "name": "Capitalisk",
+    "active": true,
+    "mainnet": {
+      "hostname": "34.227.22.98",
+      "port": "8001",
+      "networkSymbol": "clsk",
+      "chainModuleName": "capitalisk_chain"
+    },
+    "testnet": {
+      "hostname": "34.227.22.98",
+      "port": "7001",
+      "networkSymbol": "clsk",
+      "chainModuleName": "capitalisk_chain"
+    }
   }
 ]

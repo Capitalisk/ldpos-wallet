@@ -1,5 +1,6 @@
 <template>
   <div class="flex flex-gap pa-1 column">
+    {{ isElectron }}
     <div>
       Hostname:
       <Input
@@ -30,12 +31,13 @@
     </div>
   </div>
   <div class="flex justify-end">
+    <!-- <Button value="Save" @click="saveConfig" /> -->
     <Button value="Connect" @click="connect" />
   </div>
 </template>
 
 <script>
-import { computed, inject } from 'vue';
+import { ref, reactive, computed, inject } from 'vue';
 
 import Input from '../Input';
 import Button from '../Button';
@@ -45,12 +47,29 @@ export default {
   setup() {
     const store = inject('store');
 
+    // const isElectron = ref(process.env.IS_ELECTRON || false);
+
+    const config = reactive({
+      hostname: store.state.config.hostname,
+      port: store.state.config.port,
+      networkSymbol: store.state.config.networkSymbol,
+      chainModuleName: store.state.config.chainModuleName,
+    });
+
     return {
-      config: computed(() => store.state.config),
+      // isElectron,
+      config,
       connect: async () => {
-        await store.connect(store.state.config);
-        store.toggleModal();
+        try {
+          // TODO: Handle validation and keyup events
+          await store.connect(config);
+          store.toggleModal();
+        } catch (e) {
+          store.notify({ message: `Error: ${e.message}`, error: true }, 5);
+          console.error(e);
+        }
       },
+      // saveConfig: config => store.saveConfig(config),
     };
   },
   components: { Input, Button },

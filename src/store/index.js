@@ -1,19 +1,24 @@
 import { reactive, readonly, ref } from 'vue';
 import ldposClient from 'ldpos-client';
 
+import configs from '../config.json';
 import router from '../router';
+// import { ipcRenderer } from 'electron';
 
-const defaultConfig = {
-  hostname: '34.227.22.98',
-  port: '7001',
-  networkSymbol: 'clsk',
-  chainModuleName: 'capitalisk_chain',
-};
+const isDevelopment = process.env.NODE_ENV === 'development';
+
+const defaultConfig = isDevelopment
+  ? configs[0].testnet
+    ? configs[0].testnet
+    : configs[0].mainnet
+  : configs[0].mainnet;
 
 const client = ref(null);
 
 const state = reactive({
+  activeClientIndex: 0,
   config: defaultConfig,
+  clients: [],
   connected: false,
   authenticated: false,
   authenticationTimeout: null,
@@ -38,12 +43,20 @@ export default {
   async connect(config = defaultConfig) {
     this.mutateProgressbarLoading(true);
 
+    // Config contains all configs of the user
+    // It connects to the default (default: true)
+    // It can add configs
+    // Upon switching it should connect but retain it's old connection
+    //
+
     state.connected = false;
     state.config = config;
-    client.value = null;
     client.value = ldposClient.createClient(config);
+    state.clients.push(client.value);
+
     try {
-      await client.value.connect();
+      state.activeClientIndex = state.clients.length - 1;
+      await state.clients[state.activeClientIndex].connect();
     } catch (e) {
       console.error(e);
     }
@@ -56,7 +69,7 @@ export default {
     try {
       state.authenticated = false;
 
-      await client.value.connect({ passphrase });
+      await state.clients[state.activeClientIndex].connect({ passphrase });
       state.authenticated = true;
 
       this.initiateOrRenewTimeout();
@@ -78,8 +91,8 @@ export default {
           'You have been logged out automatically after being inactive for 30 minutes.',
       });
     try {
-      await client.value.disconnect();
-      await this.connect();
+      await state.clients[state.activeClientIndex].disconnect();
+      await this.connect(state.config);
     } catch (e) {
       console.error(e);
     }
@@ -131,4 +144,13 @@ export default {
     state.notifications.splice(index, 1);
   },
   mutateProgressbarLoading: val => (state.progressbarLoading = val),
+  // async saveConfig(config) {
+  //   const isElectron = process.env.IS_ELECTRON || false;
+  //   if (!isElectron) throw new Error('Not electron');
+  //   try {
+  //     await ipcRenderer.invoke('save-config', config);
+  //   } catch (e) {
+  //     this.notify({ message: `Error: ${e.message}`, error: true }, 5);
+  //   }
+  // },
 };
