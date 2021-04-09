@@ -3,7 +3,6 @@ import ldposClient from 'ldpos-client';
 
 import configs from '../config.json';
 import router from '../router';
-// import { ipcRenderer } from 'electron';
 
 const isDevelopment = process.env.NODE_ENV === 'development';
 
@@ -144,13 +143,4 @@ export default {
     state.notifications.splice(index, 1);
   },
   mutateProgressbarLoading: val => (state.progressbarLoading = val),
-  // async saveConfig(config) {
-  //   const isElectron = process.env.IS_ELECTRON || false;
-  //   if (!isElectron) throw new Error('Not electron');
-  //   try {
-  //     await ipcRenderer.invoke('save-config', config);
-  //   } catch (e) {
-  //     this.notify({ message: `Error: ${e.message}`, error: true }, 5);
-  //   }
-  // },
 };

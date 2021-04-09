@@ -3,7 +3,7 @@
     <span class="prefix">{{ prefix }}</span>
     <input
       v-bind="$attrs"
-      class=""
+      class="input"
       :class="
         `input ${error || error ? 'input-error ' : ''}${
           prefix ? 'input-prefix ' : ''

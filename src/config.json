@@ -1,7 +1,6 @@
 [
   {
-    "name": "Capitalisk",
-    "active": true,
+    "name": "capitalisk",
     "mainnet": {
       "hostname": "34.227.22.98",
       "port": "8001",
