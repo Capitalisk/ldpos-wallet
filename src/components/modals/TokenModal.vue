@@ -1,10 +1,10 @@
 <template>
   <div class="flex flex-gap pa-1 column">
-    <div>
+    <div v-if="isElectron">
       Name:
       <Input v-model="name" />
     </div>
-    <div>
+    <div v-if="isElectron">
       Type:
       <Select v-model="type" :options="['mainnet', 'testnet']" />
     </div>

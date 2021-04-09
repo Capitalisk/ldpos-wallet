@@ -1,8 +1,7 @@
 <template>
-  <Input list="options" :value="modelValue" />
+  <Input list="options" v-model="modelValue" v-bind="$attrs" />
   <datalist
     id="options"
-    v-bind="$attrs"
     :value="modelValue"
     @input="e => $emit('update:modelValue', e.target.value)"
     class="select"
