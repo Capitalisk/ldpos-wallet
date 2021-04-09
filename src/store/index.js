@@ -42,12 +42,6 @@ export default {
   async connect(config = defaultConfig) {
     this.mutateProgressbarLoading(true);
 
-    // Config contains all configs of the user
-    // It connects to the default (default: true)
-    // It can add configs
-    // Upon switching it should connect but retain it's old connection
-    //
-
     state.connected = false;
     state.config = config;
     client.value = ldposClient.createClient(config);
@@ -89,9 +83,13 @@ export default {
         message:
           'You have been logged out automatically after being inactive for 30 minutes.',
       });
+
     try {
-      await state.clients[state.activeClientIndex].disconnect();
-      await this.connect(state.config);
+      for (let i = 0; i < state.clients.length; i++) {
+        const client = state.clients[i];
+        await client.disconnect();
+        await client.connect();
+      }
     } catch (e) {
       console.error(e);
     }
