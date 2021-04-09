@@ -1,8 +1,9 @@
 'use strict';
 
-import { app, protocol, BrowserWindow } from 'electron';
+import { app, protocol, BrowserWindow, ipcMain } from 'electron';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
+import fs from 'fs';
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
 // Scheme must be registered before the app is ready
@@ -60,13 +61,33 @@ app.on('ready', async () => {
       console.error('Vue Devtools failed to install:', e.toString());
     }
   }
+
+  // Events
+  ipcMain.handle('get-config', () => {
+    return new Promise((res, rej) => {
+      fs.readFile('./src/config.json', (err, data) => {
+        if (err) rej(err);
+        res(Buffer.from(data, 'base64').toString('utf8'));
+      });
+    });
+  });
+
+  ipcMain.handle('save-config', async (event, config) => {
+    console.log(`Trying to save file ${config}`);
+    return new Promise((res, rej) => {
+      fs.writeFile('./src/config.json', config, err => {
+        if (err) rej(err);
+        res({ message: 'File saved!' });
+      });
+    });
+  });
   createWindow();
 });
 
 // Exit cleanly on request from parent process in development mode.
 if (isDevelopment) {
   if (process.platform === 'win32') {
-    process.on('message', (data) => {
+    process.on('message', data => {
       if (data === 'graceful-exit') {
         app.quit();
       }

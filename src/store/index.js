@@ -1,19 +1,23 @@
 import { reactive, readonly, ref } from 'vue';
 import ldposClient from 'ldpos-client';
 
+import configs from '../config.json';
 import router from '../router';
 
-const defaultConfig = {
-  hostname: '34.227.22.98',
-  port: '7001',
-  networkSymbol: 'clsk',
-  chainModuleName: 'capitalisk_chain',
-};
+const isDevelopment = process.env.NODE_ENV === 'development';
+
+const defaultConfig = isDevelopment
+  ? configs[0].testnet
+    ? configs[0].testnet
+    : configs[0].mainnet
+  : configs[0].mainnet;
 
 const client = ref(null);
 
 const state = reactive({
+  activeClientIndex: 0,
   config: defaultConfig,
+  clients: [],
   connected: false,
   authenticated: false,
   authenticationTimeout: null,
@@ -40,10 +44,12 @@ export default {
 
     state.connected = false;
     state.config = config;
-    client.value = null;
     client.value = ldposClient.createClient(config);
+    state.clients.push(client.value);
+
     try {
-      await client.value.connect();
+      state.activeClientIndex = state.clients.length - 1;
+      await state.clients[state.activeClientIndex].connect();
     } catch (e) {
       console.error(e);
     }
@@ -56,7 +62,7 @@ export default {
     try {
       state.authenticated = false;
 
-      await client.value.connect({ passphrase });
+      await state.clients[state.activeClientIndex].connect({ passphrase });
       state.authenticated = true;
 
       this.initiateOrRenewTimeout();
@@ -77,9 +83,13 @@ export default {
         message:
           'You have been logged out automatically after being inactive for 30 minutes.',
       });
+
     try {
-      await client.value.disconnect();
-      await this.connect();
+      for (let i = 0; i < state.clients.length; i++) {
+        const client = state.clients[i];
+        await client.disconnect();
+        await client.connect();
+      }
     } catch (e) {
       console.error(e);
     }

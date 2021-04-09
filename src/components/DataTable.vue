@@ -139,7 +139,7 @@ export default {
         try {
           await getData();
         } catch (e) {
-          console.log(e);
+          console.error(e);
         }
       } else {
         rows.value = props.rows;
