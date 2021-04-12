@@ -136,7 +136,7 @@ export default {
       connect: async () => {
         try {
           if (isElectron.value && !showForm.value) {
-            selectRef.value.input.validate();
+            await selectRef.value.input.validate();
             if (selectRef.value.input.error)
               throw new Error(selectRef.value.input.error);
 

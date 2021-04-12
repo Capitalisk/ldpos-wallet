@@ -46,7 +46,14 @@
                 placeholder="__________"
                 @keydown="e => backspace(e, i)"
                 @keyup.enter="signin"
-                :rules="[val => !!val || val && val.length <= 0 || 'Required']"
+                :rules="[
+                  val => !!val || (val && val.length <= 0) || 'Required',
+                ]"
+                :ref="
+                  el => {
+                    if (el) inputRefs[i] = el;
+                  }
+                "
               />
             </div>
           </div>
@@ -104,6 +111,7 @@ export default {
     const store = inject('store');
 
     const inputs = ref(new Array(12));
+    const inputRefs = ref([]);
     const activeIndex = ref(0);
     const passphrase = ref('');
 
@@ -117,9 +125,23 @@ export default {
       i !== 0 &&
       document.getElementById(`passphrase-${i - 1}`).focus();
 
+    const validateAllInputs = async () => {
+      await new Promise(res => setTimeout(() => res(), 100));
+      return await new Promise(async (res, rej) => {
+        let errors = [];
+        for (let i = 0; i < inputRefs.value.length; i++) {
+          const v = inputRefs.value[i];
+          await v.validate();
+          if (v.error) errors.push(v.error);
+        }
+        if (errors.length) rej(new Error('One or more of the field are invalid.'));
+        res();
+      });
+    };
+
     watch(
       () => inputs.value,
-      n => {
+      async n => {
         for (let i = 0; i < n.length; i++) {
           const element = n[i].value;
           const lastInput = document.getElementById(
@@ -128,6 +150,11 @@ export default {
 
           if (element && element.split(' ').length === 12) {
             inputs.value = element.split(' ').map(el => ({ value: el }));
+
+            try {
+              await validateAllInputs();
+            } catch (e) {}
+
             lastInput.focus();
           } else if (element && element.includes(' ')) {
             const nextInput = document.getElementById(`passphrase-${i + 1}`);
@@ -180,13 +207,23 @@ export default {
       generateWallet,
       generatedWalletAddress,
       openTransferModal,
-      signin: async () =>
-        generatedWalletAddress.data
-          ? await store.authenticate(generatedWalletAddress.data.passphrase)
-          : await store.authenticate(passphrase.value),
+      signin: async () => {
+        if (generatedWalletAddress.data)
+          await store.authenticate(generatedWalletAddress.data.passphrase);
+        else {
+          try {
+            await validateAllInputs();
+            await store.authenticate(passphrase.value);
+          } catch (e) {
+            store.notify({ message: `Error: ${e.message}`, error: true }, 5);
+            console.error(e);
+          }
+        }
+      },
       passphrase,
       hidden,
       inputs,
+      inputRefs,
       toggleHidden: () => (hidden.value = !hidden.value),
       backspace,
       loading: computed(() => store.state.login.loading),
