@@ -134,7 +134,8 @@ export default {
           await v.validate();
           if (v.error) errors.push(v.error);
         }
-        if (errors.length) rej(new Error('One or more of the field are invalid.'));
+        if (errors.length)
+          rej(new Error('One or more of the field are invalid.'));
         res();
       });
     };
