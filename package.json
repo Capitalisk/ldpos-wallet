@@ -14,7 +14,7 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "test:e2e": "vue-cli-service test:e2e",
+    "test:e2e": "NODE_ENV='development' vue-cli-service test:e2e",
     "electron:build": "vue-cli-service electron:build",
     "electron:build:platforms": "vue-cli-service electron:build --win --linux --mac",
     "electron:build:mac": "vue-cli-service electron:build --mac dmg",
@@ -22,7 +22,7 @@
     "postinstall": "electron-builder install-app-deps",
     "postuninstall": "electron-builder install-app-deps",
     "start:dev": "vue-cli-service serve",
-    "test:e2e:headless": "vue-cli-service test:e2e --headless",
+    "test:e2e:headless": "NODE_ENV='development' vue-cli-service test:e2e --headless",
     "test:e2e:record": "vue-cli-service test:e2e --headless",
     "test:e2e:docker": "docker run --rm -v $PWD:/wallet -e HOME=/wallet -e NODE_OPTIONS='--max-old-space-size=6144' --name=ldpos-wallet -w /wallet --entrypoint=\"\" cypress/included:4.9.0 bash -c \"./run-cypress.sh\""
   },
