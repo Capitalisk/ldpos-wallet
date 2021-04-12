@@ -75,7 +75,7 @@
     <Button
       value="Connect"
       @click="connect"
-      :class="selectRef.input.error ? 'danger' : ''"
+      :class="selectRef && selectRef.input && selectRef.input.error ? 'danger' : '' || ''"
     />
   </div>
 </template>
