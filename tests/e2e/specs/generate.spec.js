@@ -6,7 +6,7 @@ describe('Generates a wallet', () => {
       .contains('Create one')
       .click();
 
-    cy.wait(2000);
+    cy.wait(7000);
 
     cy.get('a.button.cursor-pointer')
       .contains('Sign in')
