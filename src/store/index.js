@@ -42,7 +42,7 @@ export default {
   async connect(config = defaultConfig) {
     this.mutateProgressbarLoading(true);
 
-    const clientIndex = state.clients.findIndex(
+    let clientIndex = state.clients.findIndex(
       c => JSON.stringify(c.options) === JSON.stringify(config),
     );
 
@@ -51,15 +51,16 @@ export default {
       state.config = config;
       client.value = ldposClient.createClient(config);
       state.clients.push(client.value);
+      clientIndex = 0
     }
 
     try {
-      if (clientIndex !== -1) {
+      if (clientIndex === 0) {
         await state.clients[clientIndex].connect();
-        state.activeClientIndex = state.clients.length - 1;
+        state.activeClientIndex = clientIndex;
       } else {
         await state.clients[state.activeClientIndex].connect();
-        state.activeClientIndex = clientIndex;
+        state.activeClientIndex = state.clients.length - 1;
       }
     } catch (e) {
       state.connected = true;
