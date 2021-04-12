@@ -6,6 +6,14 @@
         v-model="network"
         :options="networks && networks.map(n => n.name)"
         :extra-options="['mainnet', 'testnet']"
+        ref="selectRef"
+        @keyup.enter="connect"
+        :rules="[
+          val => !!val || val && val.length <= 0 || 'Required',
+          val =>
+            (val && val.split(' ').length === 2) ||
+            'Should consist of two words. E.g. capitalisk mainnet',
+        ]"
       />
     </template>
     <template v-else>
@@ -21,28 +29,28 @@
         Hostname:
         <Input
           v-model="config.hostname"
-          :rules="[val => !val || val.length > 0 || 'Required']"
+          :rules="[val => !!val || val && val.length <= 0 || 'Required']"
         />
       </div>
       <div>
         Port:
         <Input
           v-model="config.port"
-          :rules="[val => !val || val.length > 0 || 'Required']"
+          :rules="[val => !!val || val && val.length <= 0 || 'Required']"
         />
       </div>
       <div>
         Network Symbol:
         <Input
           v-model="config.networkSymbol"
-          :rules="[val => !val || val.length > 0 || 'Required']"
+          :rules="[val => !!val || val && val.length <= 0 || 'Required']"
         />
       </div>
       <div>
         Chain Module Name:
         <Input
           v-model="config.chainModuleName"
-          :rules="[val => !val || val.length > 0 || 'Required']"
+          :rules="[val => !!val || val && val.length <= 0 || 'Required']"
         />
       </div>
     </template>
@@ -63,6 +71,7 @@
       value="Save"
       @click="addConfig"
       class="mr-2"
+      :class="selectRef.error ? 'danger' : ''"
     />
     <Button value="Connect" @click="connect" />
   </div>
@@ -85,6 +94,7 @@ export default {
     const showForm = ref(false);
     const networks = ref(null);
     const network = ref(null);
+    const selectRef = ref(null);
 
     const getConfig = async () => {
       const config = await import('../../config.json');
@@ -118,14 +128,20 @@ export default {
       showForm,
       network,
       networks,
+      selectRef,
       toggleForm: () => (showForm.value = !showForm.value),
       connect: async () => {
         try {
-          // TODO: Handle validation and enter keyup
           if (isElectron.value && !showForm.value) {
+            selectRef.value.input.validate();
+            if (selectRef.value.input.error)
+              throw new Error(selectRef.value.input.error);
+
             const arr = network.value.split(' ');
-            // TODO: Error handling when entry isn't found
+
             const i = networks.value.findIndex(n => n.name === arr[0]);
+            if (i === -1) throw new Error('Network not found in the config.');
+
             const c = networks.value[i][arr[1]];
             await store.connect(c);
           } else {

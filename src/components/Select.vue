@@ -1,10 +1,10 @@
 <template>
-  {{ modelValue }}
   <Input
     list="options"
     v-model="modelValue"
     v-bind="$attrs"
     @input="e => $emit('update:modelValue', e.target.value)"
+    ref="input"
   />
   <datalist id="options" :value="modelValue" class="select">
     <template v-for="option in options" :key="option">
@@ -26,6 +26,8 @@
 </template>
 
 <script>
+import { ref } from 'vue';
+
 import Input from './Input';
 
 export default {
@@ -35,7 +37,13 @@ export default {
     options: { type: Array, default: () => [] },
     extraOptions: { type: Array, default: null },
   },
-  setup() {},
+  setup() {
+    const input = ref(null);
+
+    return {
+      input,
+    };
+  },
   components: { Input },
 };
 </script>

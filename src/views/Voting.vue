@@ -7,7 +7,7 @@
         placeholder="Wallet address"
         class="my-1 primary-darkest"
         :rules="[
-          val => !val || val.length > 0 || 'Required',
+          val => !!val || val && val.length <= 0 || 'Required',
           val => (val && val.length === 44) || 'Invalid address',
           async val => await checkDelegate(val),
         ]"

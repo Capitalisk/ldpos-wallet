@@ -46,7 +46,7 @@
                 placeholder="__________"
                 @keydown="e => backspace(e, i)"
                 @keyup.enter="signin"
-                :rules="[val => !val || val.length > 0 || 'Required']"
+                :rules="[val => !!val || val && val.length <= 0 || 'Required']"
               />
             </div>
           </div>
