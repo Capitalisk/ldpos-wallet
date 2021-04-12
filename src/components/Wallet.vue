@@ -17,7 +17,7 @@
       v-if="authenticated"
       class="flex-3"
     >
-      <h2 class="mb-auto">{{ balance.data }}</h2>
+      <h2 class="mb-auto">{{ transformMonetaryUnit(balance.data) }}</h2>
       <Button value="Send" class="mt-4" @click="openTransferModal" />
     </Section>
     <Section
@@ -154,13 +154,13 @@ export default {
         const { balance: b } = await store.client.value.getAccount(
           address.data,
         );
-        balance.data = _transformMonetaryUnit(b);
+        balance.data = b;
       } catch (err) {
         if (err.sourceError.name === 'AccountDidNotExistError') {
           if (
             store.client.value.validatePassphrase(store.client.value.passphrase)
           ) {
-            balance.data = _transformMonetaryUnit('0');
+            balance.data = '0';
             balance.loading = false;
           }
         } else {
@@ -249,7 +249,17 @@ export default {
       address: computed(() => address),
       balance: computed(() => balance),
       pendingTransactions: computed(() => pendingTransactions),
-      openTransferModal: () => store.toggleModal({ type: TRANSFER_MODAL }),
+      openTransferModal: () =>
+        balance.data > 0
+          ? store.toggleModal({ type: TRANSFER_MODAL })
+          : store.notify(
+              {
+                message:
+                  "Cross your fingers and hope for a miraculous transaction. Until that, you don't have any balance to transfer.",
+                error: true,
+              },
+              5,
+            ),
       details: data =>
         store.toggleModal({
           type: DETAIL_MODAL,

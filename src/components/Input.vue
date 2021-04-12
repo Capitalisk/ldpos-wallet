@@ -87,7 +87,7 @@ export default {
 
 .input.primary-darkest {
   background-color: var(--primary-darkest);
-  color: var(--permanent-white);
+  color: var(--dark);
 }
 
 .input:disabled {

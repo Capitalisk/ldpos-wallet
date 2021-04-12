@@ -73,8 +73,7 @@ export default {
 .close-btn {
   position: absolute;
   right: var(--unit-2);
-  /* top: var(--unit-2); */
   font-size: var(--unit-2);
-  color: var(--permanent-white) !important;
+  color: var(--dark) !important;
 }
 </style>
