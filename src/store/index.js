@@ -42,14 +42,25 @@ export default {
   async connect(config = defaultConfig) {
     this.mutateProgressbarLoading(true);
 
-    state.connected = false;
-    state.config = config;
-    client.value = ldposClient.createClient(config);
-    state.clients.push(client.value);
+    const clientIndex = state.clients.findIndex(
+      c => JSON.stringify(c.options) === JSON.stringify(config),
+    );
+
+    if (clientIndex === -1) {
+      state.connected = false;
+      state.config = config;
+      client.value = ldposClient.createClient(config);
+      state.clients.push(client.value);
+    }
 
     try {
-      state.activeClientIndex = state.clients.length - 1;
-      await state.clients[state.activeClientIndex].connect();
+      if (clientIndex !== -1) {
+        await state.clients[clientIndex].connect();
+        state.activeClientIndex = state.clients.length - 1;
+      } else {
+        await state.clients[state.activeClientIndex].connect();
+        state.activeClientIndex = clientIndex;
+      }
     } catch (e) {
       console.error(e);
     }

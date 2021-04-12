@@ -1,15 +1,26 @@
 <template>
-  <Input list="options" v-model="modelValue" v-bind="$attrs" />
-  <datalist
-    id="options"
-    :value="modelValue"
+  {{ modelValue }}
+  <Input
+    list="options"
+    v-model="modelValue"
+    v-bind="$attrs"
     @input="e => $emit('update:modelValue', e.target.value)"
-    class="select"
-  >
-    <template v-for="(option, i) in options" :key="i">
-      <option :value="option" class="option">
-        {{ option }}
-      </option>
+  />
+  <datalist id="options" :value="modelValue" class="select">
+    <template v-for="option in options" :key="option">
+      <template v-if="extraOptions">
+        <option
+          v-for="e in extraOptions"
+          :key="e"
+          :value="`${option} ${e}`"
+          class="option"
+        >
+          {{ e }}
+        </option>
+      </template>
+      <template v-else>
+        <option :value="option" class="option"></option>
+      </template>
     </template>
   </datalist>
 </template>
@@ -22,6 +33,7 @@ export default {
   props: {
     modelValue: { type: String, default: null },
     options: { type: Array, default: () => [] },
+    extraOptions: { type: Array, default: null },
   },
   setup() {},
   components: { Input },

@@ -1,50 +1,75 @@
 <template>
   <div class="flex flex-gap pa-1 column">
-    <div v-if="isElectron">
-      Name:
-      <Input v-model="name" />
-    </div>
-    <div v-if="isElectron">
-      Type:
-      <Select v-model="type" :options="['mainnet', 'testnet']" />
-    </div>
-    <div>
-      Hostname:
-      <Input
-        v-model="config.hostname"
-        :rules="[val => !val || val.length > 0 || 'Required']"
+    <template v-if="!showForm && isElectron">
+      Networks:
+      <Select
+        v-model="network"
+        :options="networks && networks.map(n => n.name)"
+        :extra-options="['mainnet', 'testnet']"
       />
-    </div>
-    <div>
-      Port:
-      <Input
-        v-model="config.port"
-        :rules="[val => !val || val.length > 0 || 'Required']"
-      />
-    </div>
-    <div>
-      Network Symbol:
-      <Input
-        v-model="config.networkSymbol"
-        :rules="[val => !val || val.length > 0 || 'Required']"
-      />
-    </div>
-    <div>
-      Chain Module Name:
-      <Input
-        v-model="config.chainModuleName"
-        :rules="[val => !val || val.length > 0 || 'Required']"
-      />
+    </template>
+    <template v-else>
+      <div v-if="isElectron">
+        Name:
+        <Input v-model="name" />
+      </div>
+      <div v-if="isElectron">
+        Type:
+        <Select v-model="type" :options="['mainnet', 'testnet']" />
+      </div>
+      <div>
+        Hostname:
+        <Input
+          v-model="config.hostname"
+          :rules="[val => !val || val.length > 0 || 'Required']"
+        />
+      </div>
+      <div>
+        Port:
+        <Input
+          v-model="config.port"
+          :rules="[val => !val || val.length > 0 || 'Required']"
+        />
+      </div>
+      <div>
+        Network Symbol:
+        <Input
+          v-model="config.networkSymbol"
+          :rules="[val => !val || val.length > 0 || 'Required']"
+        />
+      </div>
+      <div>
+        Chain Module Name:
+        <Input
+          v-model="config.chainModuleName"
+          :rules="[val => !val || val.length > 0 || 'Required']"
+        />
+      </div>
+    </template>
+  </div>
+  <div class="flex justify-center">
+    <div @click="toggleForm" v-if="isElectron" class="cursor-pointer">
+      <template v-if="showForm">
+        <i class="fas fa-chevron-up"></i> Hide form
+      </template>
+      <template v-else>
+        <i class="fas fa-chevron-down"></i> Add network
+      </template>
     </div>
   </div>
   <div class="flex justify-end">
-    <Button v-if="isElectron" value="Save" @click="addConfig" class="mr-2" />
+    <Button
+      v-if="isElectron && showForm"
+      value="Save"
+      @click="addConfig"
+      class="mr-2"
+    />
     <Button value="Connect" @click="connect" />
   </div>
 </template>
 
 <script>
-import { ref, reactive, computed, inject } from 'vue';
+import { ref, reactive, computed, inject, onUpdated, onMounted } from 'vue';
 
 import Input from '../Input';
 import Button from '../Button';
@@ -56,6 +81,23 @@ export default {
     const store = inject('store');
 
     const isElectron = ref(process.env.IS_ELECTRON || false);
+
+    const showForm = ref(false);
+    const networks = ref(null);
+    const network = ref(null);
+
+    const getConfig = async () => {
+      const config = await import('../../config.json');
+      networks.value = config.default;
+    };
+
+    onMounted(async () => {
+      await getConfig();
+    });
+
+    onUpdated(async () => {
+      await getConfig();
+    });
 
     const type = ref(
       process.env.NODE_ENV !== 'production' ? 'testnet' : 'mainnet',
@@ -73,10 +115,23 @@ export default {
       config,
       type,
       name,
+      showForm,
+      network,
+      networks,
+      toggleForm: () => (showForm.value = !showForm.value),
       connect: async () => {
         try {
           // TODO: Handle validation and enter keyup
-          await store.connect(config);
+          if (isElectron.value && !showForm.value) {
+            const arr = network.value.split(' ');
+            // TODO: Error handling when entry isn't found
+            const i = networks.value.findIndex(n => n.name === arr[0]);
+            const c = networks.value[i][arr[1]];
+            // TODO: Throw error to not close the modal
+            await store.connect(c);
+          } else {
+            await store.connect(config);
+          }
           store.toggleModal();
         } catch (e) {
           store.notify({ message: `Error: ${e.message}`, error: true }, 5);
