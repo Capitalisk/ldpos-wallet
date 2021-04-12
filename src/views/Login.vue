@@ -166,7 +166,10 @@ export default {
           }
         }
 
-        passphrase.value = n.map(el => el.value).join(' ');
+        passphrase.value = n
+          .filter(el => el.value !== '')
+          .map(el => el.value)
+          .join(' ');
       },
       {
         deep: true,

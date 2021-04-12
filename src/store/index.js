@@ -51,7 +51,7 @@ export default {
       state.config = config;
       client.value = ldposClient.createClient(config);
       state.clients.push(client.value);
-      clientIndex = 0
+      clientIndex = 0;
     }
 
     try {
@@ -85,6 +85,7 @@ export default {
       state.login.error = e.message;
       state.authenticated = false;
     }
+    client.value = state.clients[state.activeClientIndex];
     state.login.loading = false;
     if (state.authenticated) router.push('/');
   },
