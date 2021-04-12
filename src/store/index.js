@@ -62,7 +62,9 @@ export default {
         state.activeClientIndex = clientIndex;
       }
     } catch (e) {
-      console.error(e);
+      state.connected = true;
+      this.mutateProgressbarLoading(false);
+      throw new Error('Failed to connect to the network.');
     }
     state.connected = true;
 

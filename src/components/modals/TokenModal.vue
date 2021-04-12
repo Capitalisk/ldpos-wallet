@@ -127,7 +127,6 @@ export default {
             // TODO: Error handling when entry isn't found
             const i = networks.value.findIndex(n => n.name === arr[0]);
             const c = networks.value[i][arr[1]];
-            // TODO: Throw error to not close the modal
             await store.connect(c);
           } else {
             await store.connect(config);
