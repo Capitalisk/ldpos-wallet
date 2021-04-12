@@ -9,7 +9,7 @@
         ref="selectRef"
         @keyup.enter="connect"
         :rules="[
-          val => !!val || val && val.length <= 0 || 'Required',
+          val => !!val || (val && val.length <= 0) || 'Required',
           val =>
             (val && val.split(' ').length === 2) ||
             'Should consist of two words. E.g. capitalisk mainnet',
@@ -29,28 +29,28 @@
         Hostname:
         <Input
           v-model="config.hostname"
-          :rules="[val => !!val || val && val.length <= 0 || 'Required']"
+          :rules="[val => !!val || (val && val.length <= 0) || 'Required']"
         />
       </div>
       <div>
         Port:
         <Input
           v-model="config.port"
-          :rules="[val => !!val || val && val.length <= 0 || 'Required']"
+          :rules="[val => !!val || (val && val.length <= 0) || 'Required']"
         />
       </div>
       <div>
         Network Symbol:
         <Input
           v-model="config.networkSymbol"
-          :rules="[val => !!val || val && val.length <= 0 || 'Required']"
+          :rules="[val => !!val || (val && val.length <= 0) || 'Required']"
         />
       </div>
       <div>
         Chain Module Name:
         <Input
           v-model="config.chainModuleName"
-          :rules="[val => !!val || val && val.length <= 0 || 'Required']"
+          :rules="[val => !!val || (val && val.length <= 0) || 'Required']"
         />
       </div>
     </template>
@@ -71,9 +71,12 @@
       value="Save"
       @click="addConfig"
       class="mr-2"
-      :class="selectRef.error ? 'danger' : ''"
     />
-    <Button value="Connect" @click="connect" />
+    <Button
+      value="Connect"
+      @click="connect"
+      :class="selectRef.input.error ? 'danger' : ''"
+    />
   </div>
 </template>
 
