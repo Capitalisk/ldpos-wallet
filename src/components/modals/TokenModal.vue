@@ -75,13 +75,19 @@
     <Button
       value="Connect"
       @click="connect"
-      :class="selectRef && selectRef.input && selectRef.input.error ? 'danger' : '' || ''"
+      :class="
+        selectRef && selectRef.input && selectRef.input.error
+          ? 'danger'
+          : '' || ''
+      "
     />
   </div>
 </template>
 
 <script>
 import { ref, reactive, computed, inject, onUpdated, onMounted } from 'vue';
+
+import { FULL_CONFIG_PATH } from '../../constants';
 
 import Input from '../Input';
 import Button from '../Button';
@@ -100,7 +106,9 @@ export default {
     const selectRef = ref(null);
 
     const getConfig = async () => {
-      const config = await import('../../config.json');
+      const config = await import(
+        isElectron.value ? FULL_CONFIG_PATH : '../../config.json'
+      );
       networks.value = config.default;
     };
 
@@ -171,6 +179,9 @@ export default {
               'save-config',
               JSON.stringify(originalConfig, null, 2),
             );
+
+            networks.value = originalConfig;
+
             store.notify({ message: 'Config saved!' }, 5);
           };
 

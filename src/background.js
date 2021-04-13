@@ -5,15 +5,7 @@ import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
 import fs from 'fs';
 import defaultConfig from './config.json';
-
-// Gets users home dir to store config files
-const CONFIG_PATH = process.env.APPDATA
-  ? `${process.env.APPDATA}\\ldpos-wallet\\`
-  : process.platform == 'darwin'
-  ? process.env.HOME + '/Library/Preferences/ldpos-wallet/'
-  : process.env.HOME + '/.local/share/ldpos-wallet/';
-
-const CONFIG_FILE_PATH = `${CONFIG_PATH}config.json`;
+import { CONFIG_FILE_PATH, CONFIG_PATH } from './constants';
 
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
