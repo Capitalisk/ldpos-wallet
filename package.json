@@ -25,7 +25,7 @@
     "test:e2e:headless": "NODE_ENV='development' vue-cli-service test:e2e --headless",
     "test:e2e:record": "vue-cli-service test:e2e --headless",
     "test:e2e:docker": "docker run --rm -v $PWD:/wallet -e HOME=/wallet -e NODE_OPTIONS='--max-old-space-size=6144' --name=ldpos-wallet -w /wallet --entrypoint=\"\" cypress/included:4.9.0 bash -c \"./run-cypress.sh\"",
-    "preversion": "npm test:e2e:headless",
+    "preversion": "npm run test:e2e:headless",
     "postversion": "git push && git push --follow-tags"
   },
   "main": "background.js",
