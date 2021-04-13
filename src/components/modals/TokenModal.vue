@@ -87,7 +87,7 @@
 <script>
 import { ref, reactive, computed, inject, onUpdated, onMounted } from 'vue';
 
-import { FULL_CONFIG_PATH } from '../../constants';
+import { CONFIG_FILE_PATH, CONFIG_PATH } from '../../constants';
 
 import Input from '../Input';
 import Button from '../Button';
@@ -106,10 +106,13 @@ export default {
     const selectRef = ref(null);
 
     const getConfig = async () => {
-      const config = await import(
-        isElectron.value ? FULL_CONFIG_PATH : '../../config.json'
-      );
-      networks.value = config.default;
+      if (isElectron.value) {
+        const { ipcRenderer } = await import('electron');
+        const config = JSON.parse(await ipcRenderer.invoke('get-config'));
+        networks.value = config;
+        return;
+      }
+      const config = await import('../../config.json');
     };
 
     onMounted(async () => {

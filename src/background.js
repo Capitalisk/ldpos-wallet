@@ -26,6 +26,8 @@ async function createWindow() {
     },
   });
 
+  win.maximize();
+
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode
     await win.loadURL(process.env.WEBPACK_DEV_SERVER_URL);
@@ -65,6 +67,7 @@ app.on('ready', async () => {
     }
   }
 
+  // Create config file if it doesn't exist
   if (!fs.existsSync(CONFIG_FILE_PATH)) {
     fs.mkdir(CONFIG_PATH, { recursive: true }, err => {
       if (err) console.error(err);
