@@ -4,6 +4,17 @@ import { app, protocol, BrowserWindow, ipcMain } from 'electron';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
 import fs from 'fs';
+import defaultConfig from './config.json';
+
+// Gets users home dir to store config files
+const CONFIG_PATH = process.env.APPDATA
+  ? `${process.env.APPDATA}\\ldpos-wallet\\`
+  : process.platform == 'darwin'
+  ? process.env.HOME + '/Library/Preferences/ldpos-wallet/'
+  : process.env.HOME + '/.local/share/ldpos-wallet/';
+
+const CONFIG_FILE_PATH = `${CONFIG_PATH}config.json`;
+
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
 // Scheme must be registered before the app is ready
@@ -62,10 +73,23 @@ app.on('ready', async () => {
     }
   }
 
+  if (!fs.existsSync(CONFIG_FILE_PATH)) {
+    fs.mkdir(CONFIG_PATH, { recursive: true }, err => {
+      if (err) console.error(err);
+      fs.writeFile(
+        CONFIG_FILE_PATH,
+        JSON.stringify(defaultConfig, null, 2),
+        err => {
+          if (err) console.error(err);
+        },
+      );
+    });
+  }
+
   // Events
   ipcMain.handle('get-config', () => {
     return new Promise((res, rej) => {
-      fs.readFile('./src/config.json', (err, data) => {
+      fs.readFile(CONFIG_FILE_PATH, (err, data) => {
         if (err) rej(err);
         res(Buffer.from(data, 'base64').toString('utf8'));
       });
@@ -75,7 +99,7 @@ app.on('ready', async () => {
   ipcMain.handle('save-config', async (event, config) => {
     console.log(`Trying to save file ${config}`);
     return new Promise((res, rej) => {
-      fs.writeFile('./src/config.json', config, err => {
+      fs.writeFile(CONFIG_FILE_PATH, config, err => {
         if (err) rej(err);
         res({ message: 'File saved!' });
       });
