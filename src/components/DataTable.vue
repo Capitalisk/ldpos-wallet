@@ -74,7 +74,9 @@
           </tr>
         </tbody>
       </table>
-      <span v-else-if="!loading && rows && !rows.length" class="ma-3">No data available...</span>
+      <span v-else-if="!loading && rows && !rows.length" class="ma-3"
+        >No data available...</span
+      >
     </div>
     <div class="footer">
       <slot name="header" class="pa-2" />
@@ -115,21 +117,22 @@ export default {
     const popupActive = ref(false);
 
     const getData = async () => {
+      let data;
       if (typeof props.fn === 'string') {
-        rows.value = await store.client.value[props.fn](
+        data = await store.client.value[props.fn](
           offset.value,
           limit.value,
           order.value,
         );
       } else if (typeof props.fn === 'function') {
-        rows.value = await props.fn();
+        data = await props.fn();
       } else {
         throw new Error(
           `fn should be a function or string, not a ${typeof props.fn}`,
         );
       }
 
-      return rows.value;
+      return data;
     };
 
     onMounted(async () => {
@@ -137,7 +140,7 @@ export default {
 
       if (props.fn) {
         try {
-          await getData();
+          rows.value = await getData();
         } catch (e) {
           console.error(e);
         }
