@@ -58,6 +58,10 @@ hr {
   border-width: 1px;
 }
 
+input::placeholder {
+  opacity: 0.4;
+}
+
 #app {
   display: flex;
   flex-wrap: wrap;

@@ -1,6 +1,6 @@
 'use strict';
 
-import { app, protocol, BrowserWindow, ipcMain } from 'electron';
+import { app, protocol, BrowserWindow, ipcMain, Menu, shell } from 'electron';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
 import fs from 'fs';
@@ -14,11 +14,37 @@ protocol.registerSchemesAsPrivileged([
   { scheme: 'app', privileges: { secure: true, standard: true } },
 ]);
 
+const setMainMenu = () => {
+  const template = [
+    {
+      label: 'External links',
+      submenu: [
+        {
+          label: 'Github',
+          accelerator: 'Shift+CmdOrCtrl+G',
+          click: () =>
+            shell.openExternal('http://www.github.com/Capitalisk/ldpos-wallet'),
+        },
+        {
+          label: 'Discord',
+          accelerator: 'Shift+CmdOrCtrl+D',
+          click: () =>
+            shell.openExternal('http://www.github.com/Capitalisk/ldpos-wallet'),
+        },
+      ],
+    },
+  ];
+  Menu.setApplicationMenu(Menu.buildFromTemplate(template));
+};
+
 async function createWindow() {
   // Create the browser window.
   const win = new BrowserWindow({
     width: 800,
     height: 600,
+    titleBarStyle: 'hidden',
+    title: 'LDPoS Wallet',
+    fullscreenWindowTitle: 'LDPoS Wallet',
     webPreferences: {
       // Use pluginOptions.nodeIntegration, leave this alone
       // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
@@ -27,6 +53,8 @@ async function createWindow() {
   });
 
   win.maximize();
+
+  setMainMenu();
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode

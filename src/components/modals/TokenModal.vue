@@ -1,19 +1,20 @@
 <template>
   <div class="flex flex-gap pa-1 column">
     <template v-if="!showForm && isElectron">
+      Type:
+      <Select
+        v-model="type"
+        :options="['mainnet', 'testnet']"
+        placeholder="type"
+      />
       Networks:
       <Select
         v-model="network"
-        :options="networks && networks.map(n => n.name)"
-        :extra-options="['mainnet', 'testnet']"
+        :options="networks"
         ref="selectRef"
+        placeholder="network"
         @keyup.enter="connect"
-        :rules="[
-          val => !!val || (val && val.length <= 0) || 'Required',
-          val =>
-            (val && val.split(' ').length === 2) ||
-            'Should consist of two words. E.g. capitalisk mainnet',
-        ]"
+        :rules="[val => !!val || (val && val.length <= 0) || 'Required']"
       />
     </template>
     <template v-else>
@@ -109,17 +110,14 @@ export default {
       if (isElectron.value) {
         const { ipcRenderer } = await import('electron');
         const config = JSON.parse(await ipcRenderer.invoke('get-config'));
-        networks.value = config;
+        networks.value = config.map(el => el.name);
+        network.value = config[0].name;
         return;
       }
       const config = await import('../../config.json');
     };
 
     onMounted(async () => {
-      await getConfig();
-    });
-
-    onUpdated(async () => {
       await getConfig();
     });
 
@@ -151,12 +149,10 @@ export default {
             if (selectRef.value.input.error)
               throw new Error(selectRef.value.input.error);
 
-            const arr = network.value.split(' ');
-
-            const i = networks.value.findIndex(n => n.name === arr[0]);
+            const i = networks.value.findIndex(n => n.name === network.value);
             if (i === -1) throw new Error('Network not found in the config.');
 
-            const c = networks.value[i][arr[1]];
+            const c = networks.value[i][type];
             await store.connect(c);
           } else {
             await store.connect(config);
