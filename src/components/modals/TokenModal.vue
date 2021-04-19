@@ -9,12 +9,7 @@
           v-model="type"
           :options="['mainnet', 'testnet']"
           placeholder="type"
-          :rules="[
-            val => !!val || (val && val.length <= 0) || 'Required',
-            val =>
-              ['mainnet', 'testnet'].includes(val) ||
-              'Value should be mainnet or testnet',
-          ]"
+          :rules="[val => !!val || (val && val.length <= 0) || 'Required']"
         />
       </div>
       <div class="mb-1">
@@ -22,8 +17,9 @@
       </div>
       <div class="mb-2">
         <Select
+          v-if="networks"
           v-model="network"
-          :options="networks"
+          :options="networks.map(n => n.name)"
           ref="selectRef"
           placeholder="network"
           @keyup.enter="connect"
@@ -51,12 +47,7 @@
           <Select
             v-model="type"
             :options="['mainnet', 'testnet']"
-            :rules="[
-              val => !!val || (val && val.length <= 0) || 'Required',
-              val =>
-                !['mainnet', 'testnet'].includes(val) ||
-                'Value should be mainnet or testnet',
-            ]"
+            :rules="[val => !!val || (val && val.length <= 0) || 'Required']"
           />
         </div>
       </div>
@@ -160,7 +151,7 @@ export default {
       if (isElectron.value) {
         const { ipcRenderer } = await import('electron');
         const config = JSON.parse(await ipcRenderer.invoke('get-config'));
-        networks.value = config.map(el => el.name);
+        networks.value = config;
         network.value = config[0].name;
         return;
       }
@@ -191,7 +182,14 @@ export default {
       network,
       networks,
       selectRef,
-      toggleForm: () => (showForm.value = !showForm.value),
+      toggleForm: () => {
+        showForm.value = !showForm.value;
+        store.changeModalTitle(
+          showForm.value
+            ? 'Add a custom network to the config or connect to the network'
+            : 'Connect to a network in the config',
+        );
+      },
       connect: async () => {
         try {
           if (isElectron.value && !showForm.value) {

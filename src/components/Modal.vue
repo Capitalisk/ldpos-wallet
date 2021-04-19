@@ -3,7 +3,7 @@
     <div class="wrapper">
       <div class="close-btn cursor-pointer" @click="toggleModal">&#10005;</div>
       <Section
-        :title="capitalize(type.toLowerCase())"
+        :title="title || capitalize(type.toLowerCase())"
         class="modal"
         :style="{ height: '100%', paddingTop: 'var(--unit-4)' }"
       >
@@ -34,6 +34,7 @@ export default {
     return {
       active: computed(() => store.state.modal.active),
       type: computed(() => store.state.modal.type),
+      title: computed(() => store.state.modal.title),
       data: computed(() => store.state.modal.data),
       toggleModal: () => store.toggleModal(),
       ...modalConstants,

@@ -29,6 +29,7 @@ const state = reactive({
   modal: {
     active: false,
     type: null,
+    title: null,
     data: null,
   },
   darkMode: true,
@@ -112,7 +113,10 @@ export default {
 
     this.mutateProgressbarLoading(false);
   },
-  toggleModal({ type = null, data = null } = {}) {
+  changeModalTitle(title = null) {
+    state.modal.title = title;
+  },
+  toggleModal({ type = null, data = null, title = null } = {}) {
     state.modal.active = !state.modal.active;
     if (state.modal.active) {
       document.documentElement.style.overflow = 'hidden';
@@ -122,6 +126,7 @@ export default {
       document.body.scroll = 'yes';
     }
     state.modal.type = type;
+    state.modal.title = title;
     state.modal.data = data;
   },
   toggleDarkMode() {

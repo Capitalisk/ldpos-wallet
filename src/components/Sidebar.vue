@@ -70,7 +70,13 @@ export default {
         store.state.config.networkSymbol.toUpperCase(),
       ),
       TOKEN_MODAL,
-      toggleModal: type => store.toggleModal({ type }),
+      toggleModal: type =>
+        store.toggleModal({
+          type,
+          title: process.env.IS_ELECTRON
+            ? 'Connect to a network in the config'
+            : 'Connect to a custom network',
+        }),
       toggleBurger: () => store.toggleNav(),
       deauthenticate: () => store.deauthenticate(),
     };
