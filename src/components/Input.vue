@@ -19,7 +19,7 @@
     />
     <span class="suffix">{{ suffix }}</span>
   </div>
-  <span v-if="dirty && error" class="text-error ml-1">
+  <span v-if="dirty && error && !hideValidation" class="text-error ml-1">
     {{ error }}
   </span>
 </template>
@@ -37,6 +37,7 @@ export default {
     prefix: { type: String, default: null },
     error: { type: String, default: null },
     rules: { type: Array, default: null },
+    hideValidation: { type: Boolean, default: false },
   },
   setup(props) {
     const error = ref(props.error);
@@ -78,6 +79,7 @@ export default {
   flex: 1;
   background-color: var(--primary);
   color: var(--dark);
+  box-sizing: border-box;
 }
 
 .input.danger {

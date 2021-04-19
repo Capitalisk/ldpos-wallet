@@ -54,6 +54,7 @@
                     if (el) inputRefs[i] = el;
                   }
                 "
+                hide-validation
               />
             </div>
           </div>
@@ -77,6 +78,7 @@
           Don't have a {{ token }} wallet yet?
         </div>
         <div class="flex justify-center">
+          <!-- TODO: Color danger on invalid -->
           <Button
             :value="
               generatedWalletAddress.loading ? 'Generating...' : 'Create one'
