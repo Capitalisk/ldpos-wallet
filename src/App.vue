@@ -46,7 +46,7 @@ export default {
 @import url('./styles/main.css');
 
 .main-content {
-  margin-left: 285px;
+  margin-left: 284px;
   padding: var(--unit-2) var(--unit-2) var(--unit-2) 0;
   width: calc(100% - 285px);
   box-sizing: border-box;

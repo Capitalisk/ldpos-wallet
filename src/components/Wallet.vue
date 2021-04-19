@@ -11,7 +11,7 @@
     </Section>
     <Section
       :loading="balance.loading"
-      title="Current balance"
+      title="Balance"
       :needsAuthentication="true"
       :error="balance.error"
       v-if="authenticated"
