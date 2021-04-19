@@ -55,7 +55,7 @@ export default {
 <style scoped>
 .notification {
   position: absolute;
-  border: 1px solid var(--primary-darker);
+  border: 1px solid var(--dark);
   border-radius: var(--border-radius);
   bottom: 0px;
   right: 0px;
