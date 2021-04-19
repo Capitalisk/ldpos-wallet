@@ -5,7 +5,7 @@
       <Input
         v-model="transfer.address.data"
         :rules="[
-          val => !!val || val && val.length <= 0 || 'Required',
+          val => !!val || (val && val.length <= 0) || 'Required',
           val => (val && val.length === 44) || 'Invalid address',
         ]"
         :ref="el => (transfer.address.ref = el)"
@@ -13,16 +13,19 @@
     </div>
     <div>
       Amount:<br />
-      <small @click="populate" class="cursor-pointer"
-        >Max: {{ transformMonetaryUnit(decimalToInteger(maxBalance)) }}</small
-      >
+      <small @click="populate" class="cursor-pointer">
+        Maximum:
+        <span class="amount">
+          {{ transformMonetaryUnit(decimalToInteger(maxBalance)) }}
+        </span>
+      </small>
       <Input
         v-model="transfer.amount.data"
         :error="transfer.amount.error"
         :suffix="unit"
         :ref="el => (transfer.amount.ref = el)"
         :rules="[
-          val => !!val || val && val.length <= 0 || 'Required',
+          val => !!val || (val && val.length <= 0) || 'Required',
           val =>
             (val && Number.isInteger(parseInt(decimalToInteger(val)))) ||
             'Not a valid amount',
@@ -167,3 +170,9 @@ export default {
   components: { Input, Button },
 };
 </script>
+
+<style scoped>
+.amount {
+  color: var(--primary-lighter);
+}
+</style>
