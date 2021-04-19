@@ -100,6 +100,11 @@ export default {
   color: var(--disabled) !important;
 }
 
+.input:focus {
+  outline: none;
+  border: 1px solid var(--dark)
+}
+
 .input-error {
   border: 1px solid var(--danger);
 }
