@@ -186,7 +186,7 @@ export default {
       c = { ...c, sorted: order.value };
       columns.value.splice(index, 1, c);
 
-      await getData();
+      rows.value = await getData();
 
       store.mutateProgressbarLoading(false);
     };

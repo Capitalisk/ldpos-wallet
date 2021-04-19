@@ -22,7 +22,6 @@ describe('Transactions page tests', () => {
 
   it('should sort', () => {
     cy.get('#sorting').click();
-    cy.get('progress');
   });
 
   it('should load when scrolling to bottom', () => {
@@ -39,6 +38,6 @@ describe('Transactions page tests', () => {
 
     cy.get('div.modal-background');
 
-    cy.get('div.close-btn.cursor-pointer').click()
+    cy.get('div.close-btn.cursor-pointer').click();
   });
 });
