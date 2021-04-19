@@ -211,7 +211,6 @@ th {
   margin-right: var(--unit-4);
 }
 
-
 .mt-1 {
   margin-top: var(--unit-1);
 }
@@ -301,6 +300,10 @@ th {
   margin: var(--unit-4);
 }
 
+.mb-1 {
+  margin-bottom: var(--unit-1);
+}
+
 .mb-2 {
   margin-bottom: var(--unit-2);
 }
@@ -371,7 +374,7 @@ th {
 
 @media screen and (max-width: 768px) {
   .flex-3 {
-    flex-basis: 100%
+    flex-basis: 100%;
   }
 }
 
