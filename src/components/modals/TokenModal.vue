@@ -1,58 +1,108 @@
 <template>
-  <div class="flex flex-gap pa-1 column">
+  <div class="flex pa-1 column">
     <template v-if="!showForm && isElectron">
-      Type:
-      <Select
-        v-model="type"
-        :options="['mainnet', 'testnet']"
-        placeholder="type"
-      />
-      Networks:
-      <Select
-        v-model="network"
-        :options="networks"
-        ref="selectRef"
-        placeholder="network"
-        @keyup.enter="connect"
-        :rules="[val => !!val || (val && val.length <= 0) || 'Required']"
-      />
+      <div class="mb-1">
+        Type:
+      </div>
+      <div class="mb-2">
+        <Select
+          v-model="type"
+          :options="['mainnet', 'testnet']"
+          placeholder="type"
+          :rules="[
+            val => !!val || (val && val.length <= 0) || 'Required',
+            val =>
+              ['mainnet', 'testnet'].includes(val) ||
+              'Value should be mainnet or testnet',
+          ]"
+        />
+      </div>
+      <div class="mb-1">
+        Networks:
+      </div>
+      <div class="mb-2">
+        <Select
+          v-model="network"
+          :options="networks"
+          ref="selectRef"
+          placeholder="network"
+          @keyup.enter="connect"
+          :rules="[val => !!val || (val && val.length <= 0) || 'Required']"
+        />
+      </div>
     </template>
     <template v-else>
       <div v-if="isElectron">
-        Name:
-        <Input v-model="name" />
+        <div class="mb-1">
+          Name:
+        </div>
+        <div class="mb-2">
+          <Input
+            v-model="name"
+            :rules="[val => !!val || (val && val.length <= 0) || 'Required']"
+          />
+        </div>
       </div>
       <div v-if="isElectron">
-        Type:
-        <Select v-model="type" :options="['mainnet', 'testnet']" />
+        <div class="mb-1">
+          Type:
+        </div>
+        <div class="mb-2">
+          <Select
+            v-model="type"
+            :options="['mainnet', 'testnet']"
+            :rules="[
+              val => !!val || (val && val.length <= 0) || 'Required',
+              val =>
+                !['mainnet', 'testnet'].includes(val) ||
+                'Value should be mainnet or testnet',
+            ]"
+          />
+        </div>
       </div>
       <div>
-        Hostname:
-        <Input
-          v-model="config.hostname"
-          :rules="[val => !!val || (val && val.length <= 0) || 'Required']"
-        />
+        <div class="mb-1">
+          Hostname:
+        </div>
+        <div class="mb-2">
+          <Input
+            v-model="config.hostname"
+            :rules="[val => !!val || (val && val.length <= 0) || 'Required']"
+          />
+        </div>
       </div>
       <div>
-        Port:
-        <Input
-          v-model="config.port"
-          :rules="[val => !!val || (val && val.length <= 0) || 'Required']"
-        />
+        <div class="mb-1">
+          Port:
+        </div>
+        <div class="mb-2">
+          <Input
+            v-model="config.port"
+            :rules="[val => !!val || (val && val.length <= 0) || 'Required']"
+          />
+        </div>
       </div>
       <div>
-        Network Symbol:
-        <Input
-          v-model="config.networkSymbol"
-          :rules="[val => !!val || (val && val.length <= 0) || 'Required']"
-        />
+        <div class="mb-1">
+          Network Symbol:
+        </div>
+        <div class="mb-2">
+          <Input
+            v-model="config.networkSymbol"
+            :rules="[val => !!val || (val && val.length <= 0) || 'Required']"
+          />
+        </div>
       </div>
       <div>
-        Chain Module Name:
-        <Input
-          v-model="config.chainModuleName"
-          :rules="[val => !!val || (val && val.length <= 0) || 'Required']"
-        />
+        <div class="mb-1">
+          Chain Module Name:
+        </div>
+        <div class="mb-2">
+          <Input
+            v-model="config.chainModuleName"
+            :rules="[val => !!val || (val && val.length <= 0) || 'Required']"
+          />
+        </div>
       </div>
     </template>
   </div>
