@@ -15,7 +15,9 @@ describe('Transactions page tests', () => {
   // });
 
   it('should hover a td', () => {
-    cy.get('td').first().trigger('mouseover');
+    cy.get('td')
+      .first()
+      .trigger('mouseover');
   });
 
   it('should sort', () => {
@@ -27,5 +29,16 @@ describe('Transactions page tests', () => {
     cy.wait(500);
     cy.scrollTo('bottom');
     cy.get('progress');
+  });
+
+  it('shows details modal', () => {
+    cy.get('td')
+      .contains('clsk')
+      .first()
+      .click();
+
+    cy.get('div.modal-background');
+
+    cy.get('div.close-btn.cursor-pointer').click()
   });
 });

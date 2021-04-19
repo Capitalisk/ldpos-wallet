@@ -4,6 +4,17 @@ const PASSPHRASE =
   'cat ten problem setup immense lens great profit viable second risk balcony';
 
 describe('Wallet testing', () => {
+  it('Validates the input correctly', () => {
+    cy.visit('/');
+
+    for (let i = 0; i < 11; i++) {
+      cy.get(`input#passphrase-${i}`).focus();
+
+      if (i > 0)
+        cy.get(`input#passphrase-${i - 1}`).should('have.class', 'input-error');
+    }
+  });
+
   it('Pastes the password and spreads it over the inputs', () => {
     cy.visit('/');
     cy.get('input#passphrase-0')
@@ -27,7 +38,7 @@ describe('Wallet testing', () => {
     // cy.get('.navbar.flex.justify-end a.button')
     //   .contains('Sign in')
     //   .click();
-    cy.get('input#passphrase-0').should(($input) => {
+    cy.get('input#passphrase-0').should($input => {
       const type = $input[0].type;
       expect(type).to.match(/password/);
     });
@@ -41,7 +52,7 @@ describe('Wallet testing', () => {
     cy.get('div#show')
       .contains('Show')
       .click();
-    cy.get('input#passphrase-0').should(($input) => {
+    cy.get('input#passphrase-0').should($input => {
       const type = $input[0].type;
       console.log($input);
       expect(type).to.match(/text/);
@@ -55,7 +66,9 @@ describe('Wallet testing', () => {
     }
 
     // LOGIN
-    cy.get('a.button.cursor-pointer').contains('Sign in').click();
+    cy.get('a.button.cursor-pointer')
+      .contains('Sign in')
+      .click();
     cy.get('a.button.cursor-pointer').contains('Hang in there...');
   });
 });
