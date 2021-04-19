@@ -55,7 +55,11 @@ export default {
         for (let i = 0; i < props.rules.length; i++) {
           const rule = props.rules[i];
           const e = await rule(props.modelValue);
-          if (typeof e !== 'string') continue;
+
+          if (typeof e !== 'string') {
+            error.value = null;
+            continue;
+          }
 
           const hasError = e.length > 0;
 
