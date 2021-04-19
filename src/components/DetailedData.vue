@@ -54,6 +54,7 @@ export default {
 
     const valueTransformations = {
       timestamp: (val) => _parseDate(val),
+      balance: (val) => _transformMonetaryUnit(val),
       amount: (val) => _transformMonetaryUnit(val),
       fee: (val) => _transformMonetaryUnit(val),
       type: (val) => _capitalize(_splitCamelCaseWords(val).join(' ')),
