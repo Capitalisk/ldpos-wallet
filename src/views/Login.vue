@@ -246,7 +246,7 @@ export default {
 
 <style scoped>
 .login {
-  max-width: 980px;
+  max-width: 985px;
 }
 
 .input-number {
