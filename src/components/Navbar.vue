@@ -11,6 +11,7 @@
       router-link
       href="/"
       v-else-if="$router.currentRoute.value.path !== '/' && !authenticated"
+      class="ml-2"
     />
   </div>
 </template>

@@ -53,9 +53,9 @@ export default {
   content: '';
   height: 13px;
   width: 13px;
-  left: 1px;
+  left: 3px;
   bottom: 2px;
-  background-color: white;
+  background-color: var(--dark);
   -webkit-transition: 0.4s;
   transition: 0.4s;
 }
