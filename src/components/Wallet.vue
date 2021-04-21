@@ -142,14 +142,8 @@ export default {
       return Promise.resolve(transactions);
     };
 
-    onMounted(async () => {
-      try {
-        address.data = await store.client.value.getWalletAddress();
-      } catch (e) {
-        address.error = e;
-      }
-      address.loading = false;
-
+    const getBalance = async () => {
+      balance.loading = true
       try {
         const { balance: b } = await store.client.value.getAccount(
           address.data,
@@ -168,9 +162,20 @@ export default {
         }
       }
       balance.loading = false;
+    };
 
+    onMounted(async () => {
+      try {
+        address.data = await store.client.value.getWalletAddress();
+      } catch (e) {
+        address.error = e;
+      }
+      address.loading = false;
+
+      await getBalance();
       await getPendingTransactions();
       setInterval(async () => {
+        await getBalance()
         await getPendingTransactions();
       }, 10000);
     });
