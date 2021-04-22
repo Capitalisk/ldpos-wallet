@@ -74,7 +74,7 @@
 </template>
 
 <script>
-import { computed, inject, onMounted, ref, reactive } from 'vue';
+import { computed, inject, onMounted, ref, reactive, watch } from 'vue';
 
 import Navbar from './Navbar';
 import DataTable from './DataTable';
@@ -91,6 +91,8 @@ export default {
   name: 'Wallet',
   setup() {
     const store = inject('store');
+
+    const interval = ref(null);
 
     const address = reactive({ loading: true, data: null, error: null });
     const balance = reactive({ loading: true, data: null, error: null });
@@ -143,7 +145,7 @@ export default {
     };
 
     const getBalance = async () => {
-      balance.loading = true
+      balance.loading = true;
       try {
         const { balance: b } = await store.client.value.getAccount(
           address.data,
@@ -164,6 +166,16 @@ export default {
       balance.loading = false;
     };
 
+    watch(
+      () => store.authenticated,
+      () => {
+        clearInterval(interval);
+        address.loading = true;
+        balance.loading = true;
+        pendingTransactions.loading = true;
+      },
+    );
+
     onMounted(async () => {
       try {
         address.data = await store.client.value.getWalletAddress();
@@ -174,8 +186,8 @@ export default {
 
       await getBalance();
       await getPendingTransactions();
-      setInterval(async () => {
-        await getBalance()
+      interval.value = setInterval(async () => {
+        await getBalance();
         await getPendingTransactions();
       }, 10000);
     });

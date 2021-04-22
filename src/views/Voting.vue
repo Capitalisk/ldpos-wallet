@@ -7,7 +7,7 @@
         placeholder="Wallet address"
         class="my-1 primary-darkest"
         :rules="[
-          val => !!val || val && val.length <= 0 || 'Required',
+          val => !!val || (val && val.length <= 0) || 'Required',
           val => (val && val.length === 44) || 'Invalid address',
           async val => await checkDelegate(val),
         ]"
@@ -58,6 +58,7 @@ export default {
     const voteRef = ref(null);
     const loading = ref(false);
     const votingForAddress = ref(null);
+    const authenticated = computed(() => store.state.authenticated);
 
     const columns = ref([
       {
@@ -98,7 +99,7 @@ export default {
         label: 'Vote for delegate',
         sortable: false,
         value: val => 'Vote',
-        active: store.state.authenticated,
+        active: authenticated,
         slot: true,
       },
     ]);
@@ -155,7 +156,7 @@ export default {
       ),
       columns,
       fn: async () => await store.client.value.getForgingDelegates(),
-      authenticated: computed(() => store.state.authenticated),
+      authenticated,
       vote,
       loading,
       voteRef,
