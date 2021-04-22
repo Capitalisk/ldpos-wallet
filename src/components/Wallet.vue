@@ -74,7 +74,7 @@
 </template>
 
 <script>
-import { computed, inject, onMounted, ref, reactive, watch } from 'vue';
+import { computed, inject, onMounted, ref, reactive, onUnmounted } from 'vue';
 
 import Navbar from './Navbar';
 import DataTable from './DataTable';
@@ -166,15 +166,12 @@ export default {
       balance.loading = false;
     };
 
-    watch(
-      () => store.authenticated,
-      () => {
-        clearInterval(interval);
-        address.loading = true;
-        balance.loading = true;
-        pendingTransactions.loading = true;
-      },
-    );
+    onUnmounted(() => {
+      clearInterval(interval);
+      address.loading = true;
+      balance.loading = true;
+      pendingTransactions.loading = true;
+    });
 
     onMounted(async () => {
       try {

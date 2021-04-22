@@ -95,7 +95,15 @@
 </template>
 
 <script>
-import { ref, inject, computed, reactive, watch, onMounted } from 'vue';
+import {
+  ref,
+  inject,
+  computed,
+  reactive,
+  watch,
+  watchEffect,
+  onMounted,
+} from 'vue';
 
 import { _transformMonetaryUnit } from '../utils.js';
 
@@ -205,6 +213,15 @@ export default {
       }
       generatedWalletAddress.loading = false;
     };
+
+    watch(
+      () => store.state.authenticated,
+      () => {
+        generatedWalletAddress.loading = false;
+        generatedWalletAddress.data = null;
+        generatedWalletAddress.error = null;
+      },
+    );
 
     return {
       address: computed(() => address),
