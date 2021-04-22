@@ -27,18 +27,20 @@
       <i class="fa fa-coins mr-1" />{{ networkSymbol }}</a
     >
     <hr />
-    <router-link to="/">
-      <i class="fa fa-wallet mr-1" />
-      WALLET
+    <router-link :to="{ name: 'home' }">
+      <i class="fa fa-wallet mr-1" v-if="isElectron" />
+      <i class="fa fa-exchange-alt mr-1" v-else />
+      {{ isElectron ? 'WALLET' : 'TRANSACTIONS' }}
     </router-link>
     <router-link to="/voting">
       <i class="fa fa-poll mr-1" />
       {{ authenticated ? 'VOTING' : 'DELEGATES' }}
     </router-link>
-    <hr />
-    <router-link to="/transactions">
-      <i class="fa fa-exchange-alt mr-1" />
-      TRANSACTIONS
+    <hr v-if="isElectron" />
+    <router-link :to="{ name: isElectron ? 'transactions' : 'login' }">
+      <i class="fa fa-exchange-alt mr-1" v-if="isElectron" />
+      <i class="fa fa-wallet mr-1" v-else  />
+      {{ isElectron ? 'TRANSACTIONS' : 'WALLET' }}
     </router-link>
     <router-link to="/blocks">
       <i class="fa fa-th-large mr-1" />
@@ -79,6 +81,7 @@ export default {
         }),
       toggleBurger: () => store.toggleNav(),
       deauthenticate: () => store.deauthenticate(),
+      isElectron: process.env.IS_ELECTRON,
     };
   },
   components: { Button },

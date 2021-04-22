@@ -1,12 +1,18 @@
 import { createRouter, createWebHashHistory } from 'vue-router';
 import store from '../store';
 
+// TODO: add property to environment to force transactions to be the homepage
+
 const routes = [
   {
     path: '/',
-    name: 'Login',
+    name: 'home',
     component: () =>
-      import(/* webpackChunkName: "login" */ '../views/Login.vue'),
+      process.env.IS_ELECTRON
+        ? import(/* webpackChunkName: "login" */ '../views/Login.vue')
+        : import(
+            /* webpackChunkName: "transactions" */ '../views/Transactions.vue'
+          ),
   },
   {
     path: '/voting',
@@ -15,12 +21,14 @@ const routes = [
       import(/* webpackChunkName: "voting" */ '../views/Voting.vue'),
   },
   {
-    path: '/transactions',
-    name: 'Transactions',
+    path: process.env.IS_ELECTRON ? '/transactions' : '/login',
+    name: process.env.IS_ELECTRON ? 'transactions' : 'login',
     component: () =>
-      import(
-        /* webpackChunkName: "transactions" */ '../views/Transactions.vue'
-      ),
+      process.env.IS_ELECTRON
+        ? import(
+            /* webpackChunkName: "transactions" */ '../views/Transactions.vue'
+          )
+        : import(/* webpackChunkName: "login" */ '../views/Login.vue'),
   },
   {
     path: '/blocks',
