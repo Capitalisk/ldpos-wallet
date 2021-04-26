@@ -1,22 +1,18 @@
-import { reactive, readonly, ref } from 'vue';
+import { computed, reactive, readonly, ref } from 'vue';
 import ldposClient from 'ldpos-client';
 
-import configs from '../config.json';
+import config from '../config.json';
 import router from '../router';
 
 const isDevelopment = process.env.NODE_ENV === 'development';
 
-const defaultConfig = isDevelopment
-  ? configs[0].testnet
-    ? configs[0].testnet
-    : configs[0].mainnet
-  : configs[0].mainnet;
-
-const client = ref(null);
+const defaultConfig = config.clsk;
 
 const state = reactive({
-  activeClientIndex: 0,
-  config: defaultConfig,
+  selectedNetwork: null,
+  config: isDevelopment
+    ? { ...defaultConfig.testnet, network: 'testnet' }
+    : { ...defaultConfig.mainnet, network: 'mainnet' },
   clients: [],
   connected: false,
   authenticated: false,
@@ -39,45 +35,57 @@ const state = reactive({
 
 export default {
   state: readonly(state),
-  client,
-  async connect(config = defaultConfig) {
+  client: computed(
+    () => state.clients[state.config.networkSymbol][state.selectedNetwork],
+  ),
+  async connect(
+    config = defaultConfig,
+    network = isDevelopment ? 'testnet' : 'mainnet',
+  ) {
     this.mutateProgressbarLoading(true);
+    state.connected = false;
 
-    let clientIndex = state.clients.findIndex(
-      c => JSON.stringify(c.options) === JSON.stringify(config),
-    );
+    const networkSymbol = config[network].networkSymbol;
+    state.selectedNetwork = network;
 
-    if (clientIndex === -1) {
-      state.connected = false;
-      state.config = config;
-      client.value = ldposClient.createClient(config);
-      state.clients.push(client.value);
-      clientIndex = 0;
+    state.config = config[network];
+    if (!state.clients.hasOwnProperty(networkSymbol)) {
+      state.clients[networkSymbol] = {};
+      state.clients[networkSymbol][network] = ldposClient.createClient(
+        state.config,
+      );
+    } else if (
+      state.client.hasOwnProperty(networkSymbol) &&
+      !state.clients[networkSymbol].hasOwnProperty(network)
+    ) {
+      state.clients[networkSymbol][network] = ldposClient.createClient(
+        state.config,
+      );
     }
 
     try {
-      if (clientIndex === 0) {
-        await state.clients[clientIndex].connect();
-        state.activeClientIndex = clientIndex;
-      } else {
-        await state.clients[state.activeClientIndex].connect();
-        state.activeClientIndex = state.clients.length - 1;
-      }
+      await state.clients[networkSymbol][network].connect();
     } catch (e) {
-      state.connected = true;
+      console.log(e);
+      state.connected = false;
       this.mutateProgressbarLoading(false);
       throw new Error('Failed to connect to the network.');
     }
+
     state.connected = true;
 
     this.mutateProgressbarLoading(false);
   },
   async authenticate(passphrase) {
+    const networkSymbol = state.config.networkSymbol;
+    const network = state.selectedNetwork;
+
     state.login.loading = true;
     try {
       state.authenticated = false;
 
-      await state.clients[state.activeClientIndex].connect({ passphrase });
+      await state.clients[networkSymbol][network].connect({ passphrase });
+
       state.authenticated = true;
 
       this.initiateOrRenewTimeout();
@@ -86,7 +94,6 @@ export default {
       state.login.error = e.message;
       state.authenticated = false;
     }
-    client.value = state.clients[state.activeClientIndex];
     state.login.loading = false;
     if (state.authenticated) router.push('/');
   },
@@ -100,11 +107,15 @@ export default {
           'You have been logged out automatically after being inactive for 30 minutes.',
       });
 
+    // Disconnect and connect all clients and all nets
     try {
-      for (let i = 0; i < state.clients.length; i++) {
-        const client = state.clients[i];
-        await client.disconnect();
-        await client.connect();
+      for (let i = 0; i < Object.keys(state.clients).length; i++) {
+        const client = Object.values(state.clients)[i];
+        for (let i = 0; i < Object.keys(client).length; i++) {
+          const c = Object.value(client)[i];
+          await c.disconnect();
+          await c.connect();
+        }
       }
     } catch (e) {
       console.error(e);
