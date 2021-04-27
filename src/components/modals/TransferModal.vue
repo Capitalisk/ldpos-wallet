@@ -6,7 +6,7 @@
         v-model="transfer.address.data"
         :rules="[
           val => !!val || (val && val.length <= 0) || 'Required',
-          val => (val && val.length === 44) || 'Invalid address',
+          val => (val && val.length <= 44) || 'Invalid address',
         ]"
         :ref="el => (transfer.address.ref = el)"
       />
