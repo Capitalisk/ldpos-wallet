@@ -45,6 +45,8 @@ export default {
     this.mutateProgressbarLoading(true);
     state.connected = false;
 
+    await this.deauthenticate()
+
     const networkSymbol = config[network].networkSymbol;
     state.selectedNetwork = network;
 
@@ -112,7 +114,7 @@ export default {
       for (let i = 0; i < Object.keys(state.clients).length; i++) {
         const client = Object.values(state.clients)[i];
         for (let i = 0; i < Object.keys(client).length; i++) {
-          const c = Object.value(client)[i];
+          const c = Object.values(client)[i];
           await c.disconnect();
           await c.connect();
         }
