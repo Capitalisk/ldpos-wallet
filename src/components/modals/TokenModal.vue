@@ -19,7 +19,7 @@
         <Select
           v-if="networks"
           v-model="network"
-          :options="networks.map(n => n.name)"
+          :options="Object.keys(networks)"
           ref="selectRef"
           placeholder="network"
           @keyup.enter="connect"
@@ -28,13 +28,13 @@
       </div>
     </template>
     <template v-else>
-      <div v-if="isElectron">
+      <div>
         <div class="mb-1">
-          Name:
+          Network Symbol:
         </div>
         <div class="mb-2">
           <Input
-            v-model="name"
+            v-model="config.networkSymbol"
             :rules="[val => !!val || (val && val.length <= 0) || 'Required']"
           />
         </div>
@@ -69,17 +69,6 @@
         <div class="mb-2">
           <Input
             v-model="config.port"
-            :rules="[val => !!val || (val && val.length <= 0) || 'Required']"
-          />
-        </div>
-      </div>
-      <div>
-        <div class="mb-1">
-          Network Symbol:
-        </div>
-        <div class="mb-2">
-          <Input
-            v-model="config.networkSymbol"
             :rules="[val => !!val || (val && val.length <= 0) || 'Required']"
           />
         </div>
@@ -143,7 +132,7 @@ export default {
     const isElectron = ref(process.env.IS_ELECTRON || false);
 
     const showForm = ref(false);
-    const networks = ref(null);
+    const networks = ref({});
     const network = ref(null);
     const selectRef = ref(null);
 
@@ -152,7 +141,7 @@ export default {
         const { ipcRenderer } = await import('electron');
         const config = JSON.parse(await ipcRenderer.invoke('get-config'));
         networks.value = config;
-        network.value = config[0].name;
+        network.value = store.state.config.networkSymbol;
         return;
       }
       const config = await import('../../config.json');
@@ -166,12 +155,7 @@ export default {
       process.env.NODE_ENV !== 'production' ? 'testnet' : 'mainnet',
     );
     const name = ref('Capitalisk');
-    const config = reactive({
-      hostname: store.state.config.hostname,
-      port: store.state.config.port,
-      networkSymbol: store.state.config.networkSymbol,
-      chainModuleName: store.state.config.chainModuleName,
-    });
+    const config = reactive({ ...store.state.config });
 
     return {
       isElectron,
@@ -197,13 +181,17 @@ export default {
             if (selectRef.value.input.error)
               throw new Error(selectRef.value.input.error);
 
-            const i = networks.value.findIndex(n => n.name === network.value);
-            if (i === -1) throw new Error('Network not found in the config.');
+            if (!networks.value.hasOwnProperty(config.networkSymbol))
+              throw new Error('Network not found in the config.');
+            if (
+              !networks.value[config.networkSymbol].hasOwnProperty(type.value)
+            )
+              throw new Error('Type is not found in the network config.');
 
-            const c = networks.value[i][type];
+            const c = networks.value[config.networkSymbol][type.value];
             await store.connect(c);
           } else {
-            await store.connect(config);
+            await store.connect({ [type.value]: config }, type.value);
           }
           store.toggleModal();
         } catch (e) {
@@ -221,50 +209,27 @@ export default {
             await ipcRenderer.invoke('get-config'),
           );
 
-          const send = async () => {
-            await ipcRenderer.invoke(
-              'save-config',
-              JSON.stringify(originalConfig, null, 2),
-            );
-
-            networks.value = originalConfig;
-
-            store.notify({ message: 'Config saved!' }, 5);
-          };
-
-          for (let i = 0; i < originalConfig.length; i++) {
-            const c = originalConfig[i];
-            if (c.name === name.value.toLowerCase()) {
-              // In the case testnet exists but mainnet doesn't or the other way around
-              if (!c[type]) {
-                originalConfig[i][type.value] = config;
-
-                await send();
-
-                return;
-              }
-
-              store.notify(
-                { message: 'Name is already being used', error: true },
-                5,
-              );
-              return;
+          if (originalConfig[config.networkSymbol]) {
+            if (originalConfig[config.networkSymbol][type.value]) {
+              const response = await ipcRenderer.invoke('warn-overwrite');
+              if (!response) throw Error('Cancelling');
+              originalConfig[config.networkSymbol][type.value] = config;
+            } else {
+              originalConfig[config.networkSymbol][type.value] = config;
             }
-            if (JSON.stringify(c[type.value]) === JSON.stringify(config)) {
-              store.notify(
-                { message: 'Config is already been found', error: true },
-                5,
-              );
-              return;
-            }
+          } else {
+            originalConfig[config.networkSymbol] = {};
+            originalConfig[config.networkSymbol][type.value] = config;
           }
 
-          originalConfig.push({
-            name: name.value.toLowerCase(),
-            [type.value]: config,
-          });
+          await ipcRenderer.invoke(
+            'save-config',
+            JSON.stringify(originalConfig, null, 2),
+          );
 
-          await send();
+          await getConfig();
+
+          store.notify({ message: 'Config saved!' }, 5);
         } catch (e) {
           console.error(e);
           store.notify({ message: `Error: ${e.message}`, error: true }, 5);

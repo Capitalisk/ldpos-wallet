@@ -1,6 +1,14 @@
 'use strict';
 
-import { app, protocol, BrowserWindow, ipcMain, Menu, shell } from 'electron';
+import {
+  app,
+  protocol,
+  BrowserWindow,
+  ipcMain,
+  Menu,
+  shell,
+  dialog,
+} from 'electron';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
 import fs from 'fs';
@@ -96,18 +104,22 @@ app.on('ready', async () => {
   }
 
   // Create config file if it doesn't exist
-  if (!fs.existsSync(CONFIG_FILE_PATH)) {
-    fs.mkdir(CONFIG_PATH, { recursive: true }, err => {
-      if (err) console.error(err);
-      fs.writeFile(
-        CONFIG_FILE_PATH,
-        JSON.stringify(defaultConfig, null, 2),
-        err => {
-          if (err) console.error(err);
-        },
-      );
-    });
-  }
+  const createConfig = () => {
+    if (!fs.existsSync(CONFIG_FILE_PATH)) {
+      fs.mkdir(CONFIG_PATH, { recursive: true }, err => {
+        if (err) console.error(err);
+        fs.writeFile(
+          CONFIG_FILE_PATH,
+          JSON.stringify(defaultConfig, null, 2),
+          err => {
+            if (err) console.error(err);
+          },
+        );
+      });
+    }
+  };
+
+  createConfig();
 
   // Events
   ipcMain.handle('get-config', () => {
@@ -120,6 +132,7 @@ app.on('ready', async () => {
   });
 
   ipcMain.handle('save-config', async (event, config) => {
+    createConfig();
     console.log(`Trying to save file ${config}`);
     return new Promise((res, rej) => {
       fs.writeFile(CONFIG_FILE_PATH, config, err => {
@@ -128,6 +141,18 @@ app.on('ready', async () => {
       });
     });
   });
+
+  ipcMain.handle('warning-overwrite', async () => {
+    const response = await dialog.showMessageBox(BrowserWindow, {
+      message: 'Config entry already exists, do you want to overwrite it?',
+      type: 'warning',
+      buttons: ['Overwrite', 'Cancel'],
+    });
+
+    // Picks the index of the response
+    return response === 0 ? true : false;
+  });
+
   createWindow();
 });
 

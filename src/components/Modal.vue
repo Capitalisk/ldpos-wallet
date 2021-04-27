@@ -1,9 +1,13 @@
 <template>
-  <div class="modal-background flex justify-center align-center" v-if="active" @click.self="toggleModal">
+  <div
+    class="modal-background flex justify-center align-center"
+    v-if="active"
+    @click.self="toggleModal"
+  >
     <div class="wrapper">
       <div class="close-btn cursor-pointer" @click="toggleModal">&#10005;</div>
       <Section
-        :title="title || capitalize(type.toLowerCase())"
+        :title="title || (type && capitalize(type.toLowerCase()))"
         class="modal"
         :style="{ height: '100%', paddingTop: 'var(--unit-4)' }"
       >
