@@ -55,7 +55,7 @@ export default {
         state.config,
       );
     } else if (
-      state.client.hasOwnProperty(networkSymbol) &&
+      state.clients.hasOwnProperty(networkSymbol) &&
       !state.clients[networkSymbol].hasOwnProperty(network)
     ) {
       state.clients[networkSymbol][network] = ldposClient.createClient(

@@ -154,7 +154,7 @@ export default {
     const type = ref(
       process.env.NODE_ENV !== 'production' ? 'testnet' : 'mainnet',
     );
-    const name = ref('Capitalisk');
+    const name = ref(null);
     const config = reactive({ ...store.state.config });
 
     return {
@@ -177,19 +177,19 @@ export default {
       connect: async () => {
         try {
           if (isElectron.value && !showForm.value) {
-            await selectRef.value.input.validate();
+            if (!selectRef.value.input.dirty)
+              await selectRef.value.input.validate();
+
             if (selectRef.value.input.error)
               throw new Error(selectRef.value.input.error);
 
             if (!networks.value.hasOwnProperty(config.networkSymbol))
               throw new Error('Network not found in the config.');
-            if (
-              !networks.value[config.networkSymbol].hasOwnProperty(type.value)
-            )
+            if (!networks.value[network.value].hasOwnProperty(type.value))
               throw new Error('Type is not found in the network config.');
 
-            const c = networks.value[config.networkSymbol][type.value];
-            await store.connect(c);
+            const c = networks.value[network.value][type.value];
+            await store.connect({ [type.value]: c }, type.value);
           } else {
             await store.connect({ [type.value]: config }, type.value);
           }
