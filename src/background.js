@@ -131,7 +131,7 @@ app.on('ready', async () => {
     });
   });
 
-  ipcMain.handle('save-config', async (event, config) => {
+  ipcMain.handle('save-config', (event, config) => {
     createConfig();
     console.log(`Trying to save file ${config}`);
     return new Promise((res, rej) => {
@@ -142,15 +142,17 @@ app.on('ready', async () => {
     });
   });
 
-  ipcMain.handle('warning-overwrite', async () => {
-    const response = await dialog.showMessageBox(BrowserWindow, {
+  ipcMain.handle('warn-overwrite', async () => {
+    const response = await dialog.showMessageBox(null, {
       message: 'Config entry already exists, do you want to overwrite it?',
       type: 'warning',
       buttons: ['Overwrite', 'Cancel'],
+      defaultId: 0,
+      cancelId: 1,
     });
 
     // Picks the index of the response
-    return response === 0 ? true : false;
+    return response.response === 0 ? true : false;
   });
 
   createWindow();
