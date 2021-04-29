@@ -1,7 +1,7 @@
 {
   "clsk": {
     "mainnet": {
-      "hostname": "34.227.22.98",
+      "hostname": "3.83.164.195",
       "port": "8001",
       "networkSymbol": "clsk",
       "chainModuleName": "capitalisk_chain"
