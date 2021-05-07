@@ -141,8 +141,6 @@ export default {
                 JSON.stringify(originalConfig, null, 2),
               );
 
-              await getConfig();
-
               store.notify({ message: 'Config saved!' }, 5);
             } catch (e) {
               console.error(e);
