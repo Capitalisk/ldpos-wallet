@@ -126,12 +126,14 @@ export default {
       const inboundTransactions = await store.client.value.getInboundTransactions(
         store.client.value.getWalletAddress(),
         null,
+        0,
         50,
         'asc',
       );
       const outboundTransactions = await store.client.value.getOutboundTransactions(
         store.client.value.getWalletAddress(),
         null,
+        0,
         50,
         'asc',
       );
