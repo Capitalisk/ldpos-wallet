@@ -155,6 +155,17 @@ app.on('ready', async () => {
     return response.response === 0 ? true : false;
   });
 
+  ipcMain.handle('delete-config', () => {
+    return new Promise((res, rej) => {
+      console.log(removeFile);
+      // TODO: This doesn't work for some reason...
+      fs.rm(CONFIG_FILE_PATH, err => {
+        if (err) rej(err);
+        res();
+      });
+    });
+  });
+
   createWindow();
 });
 
