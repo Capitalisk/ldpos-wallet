@@ -78,9 +78,14 @@ export default {
         network.value = store.state.config.networkSymbol;
         return;
       }
-      // TODO: Implement localStorage
-      const config = await import('../../config.json');
-      networks.value = config.default;
+
+      const localStorageConfig = localStorage.getItem('config');
+      if (!localStorageConfig) {
+        const config = (config = await import('../../config.json'));
+        networks.value = config.default;
+        return;
+      }
+      networks.value = localStorageConfig;
     };
 
     onMounted(async () => {
