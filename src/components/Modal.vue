@@ -1,8 +1,5 @@
 <template>
-  <div
-    class="modal-background flex justify-center align-center"
-    v-if="active"
-  >
+  <div class="modal-background flex justify-center align-center" v-if="active">
     <div class="wrapper">
       <div class="close-btn cursor-pointer" @click="toggleModal">&#10005;</div>
       <Section

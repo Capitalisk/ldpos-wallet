@@ -39,7 +39,7 @@
     <hr v-if="isElectron" />
     <router-link :to="{ name: isElectron ? 'transactions' : 'login' }">
       <i class="fa fa-exchange-alt mr-1" v-if="isElectron" />
-      <i class="fa fa-wallet mr-1" v-else  />
+      <i class="fa fa-wallet mr-1" v-else />
       {{ isElectron ? 'TRANSACTIONS' : 'WALLET' }}
     </router-link>
     <router-link to="/blocks">
