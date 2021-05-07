@@ -23,9 +23,18 @@
     </div>
   </div>
   <div :class="`sidebar${burgerActive ? ' sidebar-active' : ''}`">
-    <a to="/" class="first" @click="toggleModal(TOKEN_MODAL)">
-      <i class="fa fa-coins mr-1" />{{ networkSymbol }}</a
+    <a
+      to="/"
+      class="first"
+      @click="
+        toggleModal({
+          type: TOKEN_MODAL,
+          title: 'Connect to a network in the config',
+        })
+      "
     >
+      <i class="fa fa-coins mr-1" />{{ networkSymbol }}
+    </a>
     <hr />
     <router-link :to="{ name: 'home' }">
       <i class="fa fa-wallet mr-1" v-if="isElectron" />
@@ -46,10 +55,20 @@
       <i class="fa fa-th-large mr-1" />
       BLOCKS
     </router-link>
-    <router-link to="/accounts" class="last">
+    <router-link to="/accounts">
       <i class="fa fa-users mr-1" />
       ACCOUNTS
     </router-link>
+    <template v-if="isDevelopment">
+      <hr />
+      <a
+        to="/"
+        class="last"
+        @click="toggleModal({ type: SETTINGS_MODAL, title: 'Settings' })"
+      >
+        <i class="fa fa-user-cog mr-1" />SETTINGS
+      </a>
+    </template>
   </div>
 </template>
 
@@ -58,7 +77,7 @@ import { computed, inject, ref } from 'vue';
 
 import Button from './Button';
 
-import { TOKEN_MODAL } from './modals/constants';
+import { TOKEN_MODAL, SETTINGS_MODAL } from './modals/constants';
 
 export default {
   name: 'Sidebar',
@@ -72,16 +91,12 @@ export default {
         store.state.config.networkSymbol.toUpperCase(),
       ),
       TOKEN_MODAL,
-      toggleModal: type =>
-        store.toggleModal({
-          type,
-          title: process.env.IS_ELECTRON
-            ? 'Connect to a network in the config'
-            : 'Connect to a custom network',
-        }),
+      SETTINGS_MODAL,
+      toggleModal: m => store.toggleModal(m),
       toggleBurger: () => store.toggleNav(),
       deauthenticate: () => store.deauthenticate(),
       isElectron: process.env.IS_ELECTRON,
+      isDevelopment: process.env.NODE_ENV === 'development',
     };
   },
   components: { Button },
