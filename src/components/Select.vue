@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 
 import Input from './Input';
 
@@ -29,6 +29,8 @@ export default {
 
     return {
       input,
+      validate: computed(() => input.value && input.value.validate),
+      error: computed(() => input.value && input.value.error),
     };
   },
   components: { Input },

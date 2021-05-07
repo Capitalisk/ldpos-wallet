@@ -126,9 +126,6 @@ export default {
 
     this.mutateProgressbarLoading(false);
   },
-  changeModalTitle(title = null) {
-    state.modal.title = title;
-  },
   toggleModal({ type = null, data = null, title = null } = {}) {
     state.modal.active = !state.modal.active;
     if (state.modal.active) {
