@@ -1,21 +1,6 @@
 <template>
   <div class="flex pa-1 column">
     <div class="mb-1">
-      Type:
-    </div>
-    <div class="mb-2">
-      <Select
-        v-model="type"
-        :options="['mainnet', 'testnet']"
-        :ref="el => (validationRefs.type = el)"
-        placeholder="type"
-        :rules="[
-          val => !!val || (val && val.length <= 0) || 'Required',
-          val => validateType(val),
-        ]"
-      />
-    </div>
-    <div class="mb-1">
       Networks:
     </div>
     <div class="mb-2">
@@ -31,6 +16,21 @@
           val =>
             networks.hasOwnProperty(val) ||
             'This network is not defined in the config',
+        ]"
+      />
+    </div>
+    <div class="mb-1">
+      Type:
+    </div>
+    <div class="mb-2">
+      <Select
+        v-model="type"
+        :options="['mainnet', 'testnet']"
+        :ref="el => (validationRefs.type = el)"
+        placeholder="type"
+        :rules="[
+          val => !!val || (val && val.length <= 0) || 'Required',
+          val => validateType(val),
         ]"
       />
     </div>
