@@ -6,11 +6,12 @@
     <div class="mb-2">
       <Input
         v-model="config.networkSymbol"
+        :ref="el => (validationRefs.networkSymbol = el)"
         :rules="[val => !!val || (val && val.length <= 0) || 'Required']"
       />
     </div>
   </div>
-  <div v-if="isElectron">
+  <div>
     <div class="mb-1">
       Type:
     </div>
@@ -18,6 +19,7 @@
       <Select
         v-model="type"
         :options="['mainnet', 'testnet']"
+        :ref="el => (validationRefs.type = el)"
         :rules="[val => !!val || (val && val.length <= 0) || 'Required']"
       />
     </div>
@@ -29,6 +31,7 @@
     <div class="mb-2">
       <Input
         v-model="config.hostname"
+        :ref="el => (validationRefs.hostname = el)"
         :rules="[val => !!val || (val && val.length <= 0) || 'Required']"
       />
     </div>
@@ -40,6 +43,7 @@
     <div class="mb-2">
       <Input
         v-model="config.port"
+        :ref="el => (validationRefs.port = el)"
         :rules="[val => !!val || (val && val.length <= 0) || 'Required']"
       />
     </div>
@@ -51,17 +55,13 @@
     <div class="mb-2">
       <Input
         v-model="config.chainModuleName"
+        :ref="el => (validationRefs.chainModuleName = el)"
         :rules="[val => !!val || (val && val.length <= 0) || 'Required']"
       />
     </div>
   </div>
   <div class="flex justify-end">
-    <Button
-      v-if="isElectron && showForm"
-      value="Save"
-      @click="addConfig"
-      class="mr-2"
-    />
+    <Button value="Save" @click="addConfig" class="mr-2" />
   </div>
 </template>
 
@@ -79,7 +79,16 @@ export default {
   setup() {
     const store = inject('store');
 
+    const validationRefs = reactive({
+      networkSymbol: null,
+      type: null,
+      hostname: null,
+      port: null,
+      chainModuleName: null,
+    });
+
     const isElectron = ref(process.env.IS_ELECTRON || false);
+    const type = ref(null);
     const name = ref(null);
     const config = reactive({
       networkSymbol: null,
@@ -88,43 +97,82 @@ export default {
       chainModuleName: null,
     });
 
+    const validate = async () => {
+      let hasErrors = false;
+      for (let i = 0; i < Object.values(validationRefs).length; i++) {
+        const v = Object.values(validationRefs)[i];
+        await v.validate();
+        if (v.error) hasErrors = true;
+      }
+      return Promise.resolve(hasErrors);
+    };
+
     return {
       config,
+      type,
+      validationRefs,
       // TODO: Implement localStorage
       async addConfig() {
-        if (!isElectron.value) throw new Error('Not electron');
-
-        const { ipcRenderer } = await import('electron');
-
         try {
-          const originalConfig = JSON.parse(
-            await ipcRenderer.invoke('get-config'),
-          );
+          if (await validate()) throw new Error('Fields are invalid.');
+          if (isElectron.value) {
+            const { ipcRenderer } = await import('electron');
 
-          if (originalConfig[config.networkSymbol]) {
-            if (originalConfig[config.networkSymbol][type.value]) {
-              const response = await ipcRenderer.invoke('warn-overwrite');
-              if (!response) throw Error('Cancelling');
-              originalConfig[config.networkSymbol][type.value] = config;
-            } else {
-              originalConfig[config.networkSymbol][type.value] = config;
+            try {
+              const originalConfig = JSON.parse(
+                await ipcRenderer.invoke('get-config'),
+              );
+
+              if (originalConfig[config.networkSymbol]) {
+                if (originalConfig[config.networkSymbol][type.value]) {
+                  const response = await ipcRenderer.invoke('warn-overwrite');
+                  if (!response) throw Error('Cancelling');
+                  originalConfig[config.networkSymbol][type.value] = config;
+                } else {
+                  originalConfig[config.networkSymbol][type.value] = config;
+                }
+              } else {
+                originalConfig[config.networkSymbol] = {};
+                originalConfig[config.networkSymbol][type.value] = config;
+              }
+
+              await ipcRenderer.invoke(
+                'save-config',
+                JSON.stringify(originalConfig, null, 2),
+              );
+
+              await getConfig();
+
+              store.notify({ message: 'Config saved!' }, 5);
+            } catch (e) {
+              console.error(e);
+              store.notify({ message: `Error: ${e.message}`, error: true }, 5);
             }
           } else {
-            originalConfig[config.networkSymbol] = {};
-            originalConfig[config.networkSymbol][type.value] = config;
+            let originalConfig = JSON.parse(localStorage.getItem('config'));
+
+            if (!originalConfig) {
+              originalConfig = await import('../../config.json');
+              originalConfig = originalConfig.default;
+            }
+
+            if (originalConfig[config.networkSymbol]) {
+              if (originalConfig[config.networkSymbol][type.value]) {
+                console.log('overwriting');
+                originalConfig[config.networkSymbol][type.value] = config;
+              } else {
+                originalConfig[config.networkSymbol][type.value] = config;
+              }
+            } else {
+              originalConfig[config.networkSymbol] = {};
+              originalConfig[config.networkSymbol][type.value] = config;
+            }
+
+            localStorage.setItem('config', JSON.stringify(originalConfig));
           }
-
-          await ipcRenderer.invoke(
-            'save-config',
-            JSON.stringify(originalConfig, null, 2),
-          );
-
-          await getConfig();
-
-          store.notify({ message: 'Config saved!' }, 5);
         } catch (e) {
-          console.error(e);
           store.notify({ message: `Error: ${e.message}`, error: true }, 5);
+          console.error(e);
         }
       },
     };
