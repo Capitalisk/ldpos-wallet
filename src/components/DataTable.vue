@@ -108,7 +108,7 @@ export default {
     const store = inject('store');
 
     const rows = ref([]);
-    const oldData = ref([]);
+    const countLoadMore = ref(1);
     const table = ref(null);
     const limit = ref(props.limit);
     const order = ref(props.order);
@@ -161,6 +161,11 @@ export default {
     });
 
     const loadMore = async () => {
+      // If less rows then limit don't load more
+      if (rows.value.length < limit.value * countLoadMore.value) return;
+
+      countLoadMore.value++
+
       if (props.fn) {
         if (store.state.progressbarLoading) return;
         store.mutateProgressbarLoading(true);
