@@ -61,12 +61,6 @@
     </div>
   </div>
   <div class="flex justify-end">
-    <Button
-      v-if="false"
-      value="Delete config file"
-      @click="deleteConfig"
-      class="mr-2 danger"
-    />
     <Button value="Save" @click="addConfig" class="mr-2" />
   </div>
 </template>
@@ -177,19 +171,6 @@ export default {
           }
         } catch (e) {
           store.notify({ message: `Error: ${e.message}`, error: true }, 5);
-          console.error(e);
-        }
-      },
-      deleteConfig: async () => {
-        const { ipcRenderer } = await import('electron');
-
-        try {
-          await ipcRenderer.invoke('delete-config');
-        } catch (e) {
-          store.notify(
-            { message: `Failed to delete config, try again.`, error: true },
-            5,
-          );
           console.error(e);
         }
       },
