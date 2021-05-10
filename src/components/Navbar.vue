@@ -9,8 +9,12 @@
     <Button
       value="Sign in"
       router-link
-      href="/"
-      v-else-if="$router.currentRoute.value.path !== '/' && !authenticated"
+      :href="isElectron ? '/' : '/login'"
+      v-else-if="
+        (($router.currentRoute.value.path !== '/' && isElectron) ||
+          (!isElectron && $router.currentRoute.value.path !== '/login')) &&
+          !authenticated
+      "
       class="ml-2"
     />
   </div>
@@ -33,8 +37,9 @@ export default {
       signout: async () => store.deauthenticate(),
       darkMode: computed({
         get: () => store.state.darkMode,
-        set: (val) => store.toggleDarkMode(),
+        set: val => store.toggleDarkMode(),
       }),
+      isElectron: process.env.IS_ELECTRON,
     };
   },
   components: { Button, Connected, Switch },
