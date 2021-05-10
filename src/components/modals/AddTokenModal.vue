@@ -80,7 +80,7 @@ import Button from '../Button';
 
 // TODO: THIS IS A WIP AND NOT USED
 export default {
-  name: 'SettingsModal',
+  name: 'AddTokenModal',
   components: { Input, Select, Button },
   setup() {
     const store = inject('store');

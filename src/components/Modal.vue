@@ -11,7 +11,7 @@
           <TokenModal v-if="type === TOKEN_MODAL" />
           <DetailModal v-if="type === DETAIL_MODAL" />
           <TransferModal v-if="type === TRANSFER_MODAL" />
-          <SettingsModal v-if="type === SETTINGS_MODAL" />
+          <AddTokenModal v-if="type === ADD_TOKEN_MODAL" />
         </div>
       </Section>
     </div>

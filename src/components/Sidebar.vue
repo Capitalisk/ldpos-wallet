@@ -64,7 +64,7 @@
       <a
         to="/"
         class="last"
-        @click="toggleModal({ type: SETTINGS_MODAL, title: 'Settings' })"
+        @click="toggleModal({ type: ADD_TOKEN_MODAL, title: 'Settings' })"
       >
         <i class="fa fa-user-cog mr-1" />SETTINGS
       </a>
@@ -77,7 +77,7 @@ import { computed, inject, ref } from 'vue';
 
 import Button from './Button';
 
-import { TOKEN_MODAL, SETTINGS_MODAL } from './modals/constants';
+import { TOKEN_MODAL, ADD_TOKEN_MODAL } from './modals/constants';
 
 export default {
   name: 'Sidebar',
@@ -91,7 +91,7 @@ export default {
         store.state.config.networkSymbol.toUpperCase(),
       ),
       TOKEN_MODAL,
-      SETTINGS_MODAL,
+      ADD_TOKEN_MODAL,
       toggleModal: m => store.toggleModal(m),
       toggleBurger: () => store.toggleNav(),
       deauthenticate: () => store.deauthenticate(),
