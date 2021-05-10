@@ -1,7 +1,11 @@
 <template>
   <div class="nowrap">
     <span ref="copyRef">{{ value }}</span>
-    <i class="fas fa-copy cursor-pointer pl-1" @click="copy"></i>
+    <i
+      class="fas fa-copy cursor-pointer pl-1"
+      @click.prevent.stop
+      @click="copy"
+    ></i>
   </div>
 </template>
 

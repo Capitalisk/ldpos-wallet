@@ -76,6 +76,7 @@ export default {
         sortable: false,
         value: val => val,
         active: true,
+        slot: true,
       },
       {
         name: 'voteWeight',

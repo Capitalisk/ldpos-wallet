@@ -5,7 +5,11 @@
     title="All accounts in the chain"
     clickable
     fn="getAccountsByBalance"
-  />
+  >
+    <template v-slot:address="slotProps">
+      <Copy :value="slotProps.row.address" />
+    </template>
+  </DataTable>
 </template>
 
 <script>
@@ -35,7 +39,6 @@ export default {
         label: 'Address',
         field: 'address',
         sortable: false,
-        class: 'address',
         active: true,
       },
       {
@@ -43,7 +46,7 @@ export default {
         label: 'Balance',
         field: 'balance',
         sortable: false,
-        value: (val) =>
+        value: val =>
           _transformMonetaryUnit(val, store.state.config.networkSymbol),
         active: true,
         sorted: 'desc',

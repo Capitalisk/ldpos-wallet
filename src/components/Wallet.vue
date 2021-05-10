@@ -68,7 +68,13 @@
               : 'text-error'
           }`
         "
-      ></i>
+      />
+    </template>
+    <template v-slot:sender-address="slotProps">
+      <Copy :value="slotProps.row.senderAddress" />
+    </template>
+    <template v-slot:recipient-address="slotProps">
+      <Copy :value="slotProps.row.recipientAddress" />
     </template>
   </DataTable>
 </template>
@@ -215,7 +221,7 @@ export default {
         sortable: false,
         value: val => val,
         active: true,
-        class: 'address',
+        slot: true,
       },
       {
         name: 'recipientAddress',
@@ -224,7 +230,7 @@ export default {
         sortable: false,
         value: val => val,
         active: true,
-        class: 'address',
+        slot: true,
       },
       {
         name: 'timestamp',

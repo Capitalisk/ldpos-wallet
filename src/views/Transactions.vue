@@ -6,7 +6,15 @@
     clickable
     order="desc"
     fn="getTransactionsByTimestamp"
-  />
+  >
+    <template v-slot:senderAddress="slotProps">
+      <Copy :value="slotProps.row.senderAddress" />
+    </template>
+    <template v-slot:recipientAddress="slotProps">
+      <Copy :value="slotProps.row.recipientAddress" v-if="slotProps.row.recipientAddress" />
+      <span v-else>-</span>
+    </template>
+  </DataTable>
 </template>
 
 <script>
@@ -14,6 +22,7 @@ import { computed, inject, onMounted, ref } from 'vue';
 
 import Navbar from '../components/Navbar.vue';
 import DataTable from '../components/DataTable.vue';
+import Copy from '../components/Copy.vue';
 import { _transformMonetaryUnit, _parseDate } from '../utils';
 
 export default {
@@ -28,16 +37,16 @@ export default {
         label: 'Sender',
         field: 'senderAddress',
         sortable: false,
-        class: 'address',
         active: true,
+        slot: true,
       },
       {
         name: 'recipientAddress',
         label: 'Recipient',
         field: 'recipientAddress',
         sortable: false,
-        class: 'address',
         active: true,
+        slot: true,
       },
       {
         name: 'timestamp',
@@ -72,7 +81,7 @@ export default {
       columns,
     };
   },
-  components: { DataTable, Navbar },
+  components: { DataTable, Navbar, Copy },
 };
 </script>
 

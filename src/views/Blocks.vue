@@ -5,7 +5,11 @@
     title="All blocks in the chain"
     clickable
     fn="getBlocksByTimestamp"
-  />
+  >
+    <template v-slot:forger-address="slotProps">
+      <Copy :value="slotProps.row.forgerAddress" />
+    </template>
+  </DataTable>
 </template>
 
 <script>
@@ -13,6 +17,7 @@ import { computed, inject, onMounted, ref } from 'vue';
 
 import Navbar from '../components/Navbar.vue';
 import DataTable from '../components/DataTable.vue';
+import Copy from '../components/Copy.vue';
 import { _integerToDecimal, _parseDate } from '../utils';
 import { DETAIL_MODAL } from '../components/modals/constants';
 
@@ -33,7 +38,7 @@ export default {
         label: 'Date',
         field: 'timestamp',
         sortable: true,
-        value: (val) => _parseDate(val),
+        value: val => _parseDate(val),
         active: true,
         sorted: 'desc',
       },
@@ -49,8 +54,8 @@ export default {
         label: 'Forger',
         field: 'forgerAddress',
         sortable: false,
-        class: 'address',
         active: true,
+        slot: true,
       },
     ]);
 
@@ -58,7 +63,7 @@ export default {
       columns,
     };
   },
-  components: { DataTable, Navbar },
+  components: { DataTable, Navbar, Copy },
 };
 </script>
 
