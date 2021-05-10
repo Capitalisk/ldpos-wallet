@@ -5,7 +5,7 @@ const PASSPHRASE =
 
 describe('Wallet testing', () => {
   it('Validates the input correctly', () => {
-    cy.visit('/');
+    cy.visit('/#/login');
 
     for (let i = 0; i < 11; i++) {
       cy.get(`input#passphrase-${i}`).focus();
@@ -16,7 +16,7 @@ describe('Wallet testing', () => {
   });
 
   it('Pastes the password and spreads it over the inputs', () => {
-    cy.visit('/');
+    cy.visit('/#/login');
     cy.get('input#passphrase-0')
       .invoke('val', PASSPHRASE)
       .trigger('input');
@@ -30,7 +30,7 @@ describe('Wallet testing', () => {
   });
 
   it('It clicks signin button and signs in correcly', () => {
-    cy.visit('/');
+    cy.visit('/#/login');
 
     cy.wait(1000);
 

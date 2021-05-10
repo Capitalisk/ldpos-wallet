@@ -1,6 +1,6 @@
-describe('Transactions page tests', () => {
+describe('Blocks page tests', () => {
   it('should be loading the transactions', () => {
-    cy.visit('/#/transactions');
+    cy.visit('/#/blocks');
     cy.get('progress');
   });
 
@@ -32,7 +32,7 @@ describe('Transactions page tests', () => {
 
   it('shows details modal', () => {
     cy.get('td')
-      .contains('clsk')
+      .contains('1')
       .first()
       .click();
 
