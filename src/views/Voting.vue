@@ -78,14 +78,6 @@ export default {
         active: true,
       },
       {
-        name: 'updateHeight',
-        label: 'Height',
-        field: 'updateHeight',
-        sortable: false,
-        value: val => new Intl.NumberFormat('be-NL').format(val),
-        active: true,
-      },
-      {
         name: 'voteWeight',
         label: 'Vote weight',
         field: 'voteWeight',
