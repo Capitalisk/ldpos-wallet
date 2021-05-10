@@ -10,7 +10,7 @@
       <Copy class="mb-auto" :value="address.data" trim />
     </Section>
     <Section
-      :loading="balance.loading"
+      :loading="balance.loading && !balance.data"
       title="Balance"
       :needsAuthentication="true"
       :error="balance.error"

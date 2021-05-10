@@ -43,6 +43,7 @@ export default {
   padding: var(--unit-2);
   background-color: var(--primary);
   color: var(--dark);
+  min-height: 150px;
 }
 
 .section.modal {
