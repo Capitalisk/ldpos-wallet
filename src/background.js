@@ -15,7 +15,7 @@ import fs from 'fs';
 import defaultConfig from './config.json';
 import { CONFIG_FILE_PATH, CONFIG_PATH } from './constants';
 
-const isDevelopment = process.env.NODE_ENV !== 'production';
+const isDevelopment = process.env.NODE_ENV === 'development';
 
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([
