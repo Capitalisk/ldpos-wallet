@@ -58,7 +58,8 @@ export default {
   setup() {
     const store = inject('store');
 
-    const isElectron = ref(process.env.IS_ELECTRON || false);
+    const isDevelopment = process.env.NODE_ENV === 'development';
+    const isElectron = process.env.IS_ELECTRON || false;
 
     const validationRefs = reactive({
       type: null,
@@ -92,7 +93,7 @@ export default {
       await getConfig();
     });
 
-    const type = ref('mainnet');
+    const type = ref(isDevelopment ? null : 'mainnet');
 
     const validate = async () => {
       let hasErrors = false;
@@ -132,7 +133,7 @@ export default {
           'This net is not defined in the network'
         );
       },
-      isDevelopment: process.env.NODE_ENV === 'development',
+      isDevelopment,
     };
   },
   components: { Input, Button, Select },

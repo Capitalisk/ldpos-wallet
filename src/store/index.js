@@ -45,7 +45,7 @@ export default {
     this.mutateProgressbarLoading(true);
     state.connected = false;
 
-    await this.deauthenticate()
+    await this.deauthenticate();
 
     const networkSymbol = config[network].networkSymbol;
     state.selectedNetwork = network;
