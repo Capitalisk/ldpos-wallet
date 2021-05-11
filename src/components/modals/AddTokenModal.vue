@@ -11,7 +11,7 @@
       />
     </div>
   </div>
-  <div>
+  <div v-if="isDevelopment">
     <div class="mb-1">
       Type:
     </div>
@@ -88,7 +88,7 @@ export default {
     });
 
     const isElectron = ref(process.env.IS_ELECTRON || false);
-    const type = ref(null);
+    const type = ref('mainnet');
     const name = ref(null);
     const config = reactive({
       networkSymbol: null,
@@ -174,6 +174,7 @@ export default {
           console.error(e);
         }
       },
+      isDevelopment: process.env.NODE_ENV === 'development'
     };
   },
 };
