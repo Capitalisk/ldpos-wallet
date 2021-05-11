@@ -1,5 +1,5 @@
 describe('Blocks page tests', () => {
-  it('should be loading the transactions', () => {
+  it('should be loading the blocks', () => {
     cy.visit('/#/blocks');
     cy.get('progress');
   });
