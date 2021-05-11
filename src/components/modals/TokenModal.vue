@@ -1,7 +1,7 @@
 <template>
   <div class="flex pa-1 column">
     <div class="mb-1">
-      Networks:
+      Network:
     </div>
     <div class="mb-2">
       <Select
@@ -19,10 +19,10 @@
         ]"
       />
     </div>
-    <div class="mb-1">
+    <div class="mb-1" v-if="isDevelopment">
       Type:
     </div>
-    <div class="mb-2">
+    <div class="mb-2" v-if="isDevelopment">
       <Select
         v-model="type"
         :options="['mainnet', 'testnet']"
@@ -79,9 +79,9 @@ export default {
         return;
       }
 
-      const localStorageConfig = localStorage.getItem('config');
+      const localStorageConfig = JSON.parse(localStorage.getItem('config'));
       if (!localStorageConfig) {
-        const config = (config = await import('../../config.json'));
+        const config = await import('../../config.json');
         networks.value = config.default;
         return;
       }
@@ -92,12 +92,13 @@ export default {
       await getConfig();
     });
 
-    const type = ref(null);
+    const type = ref('mainnet');
 
     const validate = async () => {
       let hasErrors = false;
       for (let i = 0; i < Object.values(validationRefs).length; i++) {
         const v = Object.values(validationRefs)[i];
+        if (!v) continue;
         await v.validate();
         if (v.error) hasErrors = true;
       }
@@ -131,6 +132,7 @@ export default {
           'This net is not defined in the network'
         );
       },
+      isDevelopment: process.env.NODE_ENV === 'development',
     };
   },
   components: { Input, Button, Select },
