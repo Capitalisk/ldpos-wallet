@@ -70,10 +70,10 @@
         "
       />
     </template>
-    <template v-slot:sender-address="slotProps">
+    <template v-slot:senderAddress="slotProps">
       <Copy :value="slotProps.row.senderAddress" />
     </template>
-    <template v-slot:recipient-address="slotProps">
+    <template v-slot:recipientAddress="slotProps">
       <Copy :value="slotProps.row.recipientAddress" />
     </template>
   </DataTable>
