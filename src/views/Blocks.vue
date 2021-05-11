@@ -6,7 +6,7 @@
     clickable
     fn="getBlocksByTimestamp"
   >
-    <template v-slot:forger-address="slotProps">
+    <template v-slot:forgerAddress="slotProps">
       <Copy :value="slotProps.row.forgerAddress" />
     </template>
   </DataTable>
