@@ -59,7 +59,7 @@ export default {
     const store = inject('store');
 
     const isDevelopment = process.env.NODE_ENV === 'development';
-    const isElectron = process.env.IS_ELECTRON || false;
+    const isElectron = process.env.IS_ELECTRON;
 
     const validationRefs = reactive({
       type: null,
@@ -72,7 +72,7 @@ export default {
     const hasErrors = ref(false);
 
     const getConfig = async () => {
-      if (isElectron.value) {
+      if (isElectron) {
         const { ipcRenderer } = await import('electron');
         const config = JSON.parse(await ipcRenderer.invoke('get-config'));
         networks.value = config;

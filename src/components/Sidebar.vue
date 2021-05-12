@@ -59,19 +59,12 @@
       <i class="fa fa-users mr-1" />
       ACCOUNTS
     </router-link>
-    <!-- <template v-if="isDevelopment">
+    <template v-if="isDevelopment">
       <hr />
       <router-link to="/settings">
         <i class="fa fa-user-cog mr-1" />SETTINGS
       </router-link>
-      <a
-        to="/"
-        class="last"
-        @click="toggleModal({ type: ADD_TOKEN_MODAL, title: 'Add network token' })"
-      >
-        <i class="fa fa-user-cog mr-1" />SETTINGS
-      </a>
-    </template> -->
+    </template>
   </div>
 </template>
 

@@ -101,7 +101,7 @@ export default {
       secure: null,
     });
 
-    const isElectron = ref(process.env.IS_ELECTRON || false);
+    const isElectron = process.env.IS_ELECTRON;
     const type = ref('mainnet');
     const name = ref(null);
     const config = reactive({
@@ -131,7 +131,7 @@ export default {
       addConfig: async () => {
         try {
           if (await validate()) throw new Error('Fields are invalid.');
-          if (isElectron.value) {
+          if (isElectron) {
             const { ipcRenderer } = await import('electron');
 
             try {
@@ -183,6 +183,7 @@ export default {
             }
 
             localStorage.setItem('config', JSON.stringify(originalConfig));
+            store.notify({ message: 'Config saved!' }, 5);
           }
         } catch (e) {
           store.notify({ message: `Error: ${e.message}`, error: true }, 5);

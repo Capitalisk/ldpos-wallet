@@ -146,6 +146,10 @@ th {
   flex-basis: 10%;
 }
 
+.flex-auto {
+  flex: 1 auto;
+}
+
 .column {
   flex-direction: column;
 }
@@ -223,18 +227,20 @@ th {
   margin-top: var(--unit-3);
 }
 
+.pb-1 {
+  padding-bottom: var(--unit-1);
+}
+
 .pb-2 {
   padding-bottom: var(--unit-2);
 }
 
-.py-2 {
-  padding-top: var(--unit-2);
+.pb-2 {
   padding-bottom: var(--unit-2);
 }
 
-.py-4 {
-  padding-top: var(--unit-3);
-  padding-bottom: var(--unit-3);
+.pb-4 {
+  padding-bottom: var(--unit-4);
 }
 
 .px-1 {
@@ -247,9 +253,14 @@ th {
   padding-right: var(--unit-2);
 }
 
-.px-4 {
+.px-3 {
   padding-left: var(--unit-3);
   padding-right: var(--unit-3);
+}
+
+.px-4 {
+  padding-left: var(--unit-4);
+  padding-right: var(--unit-4);
 }
 
 .ml-1 {
@@ -258,6 +269,14 @@ th {
 
 .ml-2 {
   margin-left: var(--unit-2);
+}
+
+.ml-3 {
+  margin-left: var(--unit-3);
+}
+
+.ml-4 {
+  margin-left: var(--unit-4);
 }
 
 .pl-1 {
@@ -272,12 +291,40 @@ th {
   padding: 0;
 }
 
-.pa-4 {
+.pa-1 {
+  padding: var(--unit-1);
+}
+
+.pa-2 {
+  padding: var(--unit-2);
+}
+
+.pa-3 {
   padding: var(--unit-3);
 }
 
+.pa-4 {
+  padding: var(--unit-4);
+}
+
 .py-1 {
-  padding: var(--unit-1);
+  padding-left: var(--unit-1);
+  padding-right: var(--unit-1);
+}
+
+.py-2 {
+  padding-left: var(--unit-2);
+  padding-right: var(--unit-2);
+}
+
+.py-3 {
+  padding-top: var(--unit-3);
+  padding-bottom: var(--unit-3);
+}
+
+.py-4 {
+  padding-top: var(--unit-4);
+  padding-bottom: var(--unit-4);
 }
 
 .ma-1 {
@@ -314,12 +361,14 @@ th {
   margin-bottom: var(--unit-2);
 }
 
-.pa-1 {
-  padding: var(--unit-1);
+.my-3 {
+  margin-top: var(--unit-3);
+  margin-bottom: var(--unit-3);
 }
 
-.pa-2 {
-  padding: var(--unit-2);
+.my-4 {
+  margin-top: var(--unit-4);
+  margin-bottom: var(--unit-4);
 }
 
 .overflow-x {
@@ -366,6 +415,18 @@ th {
 
 .break {
   word-wrap: break-word;
+}
+
+.bg-primary-darker {
+  background-color: var(--primary-darker) !important;
+}
+
+.bg-primary {
+  background-color: var(--primary) !important;
+}
+
+.bg-primary-darkest {
+  background-color: var(--primary-darkest) !important;
 }
 
 @media screen and (max-width: 768px) {

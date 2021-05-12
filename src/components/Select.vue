@@ -1,16 +1,35 @@
 <template>
-  <Input
-    :list="`${options}-${_.uid}`"
-    v-model="modelValue"
+  <select
+    v-if="select"
+    class="select"
     v-bind="$attrs"
-    @input="e => $emit('update:modelValue', e.target.value)"
-    ref="input"
-  />
-  <datalist :id="`${options}-${_.uid}`" :value="modelValue" class="select">
-    <template v-for="option in options" :key="option">
-      <option :value="option" class="option"></option>
-    </template>
-  </datalist>
+    @change="
+      e =>
+        $emit(
+          'update:modelValue',
+          e.target.options[e.target.selectedIndex].label,
+        )
+    "
+  >
+    <option />
+    <option v-for="(option, i) in options" :key="i" :value="option">
+      {{ option }}
+    </option>
+  </select>
+  <template v-else>
+    <Input
+      :list="`${options}-${_.uid}`"
+      v-model="modelValue"
+      v-bind="$attrs"
+      @input="e => $emit('update:modelValue', e.target.value)"
+      ref="input"
+    />
+    <datalist :id="`${options}-${_.uid}`" :value="modelValue" class="select">
+      <template v-for="option in options" :key="option">
+        <option :value="option" class="option"></option>
+      </template>
+    </datalist>
+  </template>
 </template>
 
 <script>
@@ -23,6 +42,7 @@ export default {
   props: {
     modelValue: { type: String, default: null },
     options: { type: Array, default: () => [] },
+    select: { type: Boolean, default: false },
   },
   setup() {
     const input = ref(null);
@@ -46,6 +66,7 @@ export default {
   flex: 1;
   background-color: var(--primary);
   color: var(--dark);
-  text-indent: 5px;
+  box-sizing: border-box;
+  width: 100%;
 }
 </style>
