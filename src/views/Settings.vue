@@ -47,9 +47,11 @@
         </div>
       </template>
       <template v-if="type">
+        {{ networks[network][type] }}
         <NetworkForm
           class="bg-primary-darkest"
           v-model="networks[network][type]"
+          edit
         />
         <Button value="Edit" @click="editNetwork" class="mr-2" />
       </template>

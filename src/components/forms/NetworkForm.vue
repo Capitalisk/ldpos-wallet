@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="!edit">
     <div class="mb-1">
       Network Symbol:
     </div>
@@ -88,6 +88,10 @@ export default {
       type: Object,
       default: () => ({}),
     },
+    edit: {
+      type: Boolean,
+      default: false,
+    }
   },
   setup() {
     const validationRefs = reactive({
