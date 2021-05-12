@@ -3,6 +3,7 @@
     v-if="select"
     class="select"
     v-bind="$attrs"
+    :value="modelValue"
     @change="
       e =>
         $emit(

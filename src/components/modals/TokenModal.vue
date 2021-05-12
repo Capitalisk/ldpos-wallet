@@ -1,37 +1,25 @@
 <template>
   <div class="flex pa-1 column">
-    <div class="mb-1">
-      Network:
-    </div>
+    <div class="mb-1">Network: {{ network }}</div>
     <div class="mb-2">
       <Select
         v-if="networks"
         v-model="network"
         :options="Object.keys(networks)"
-        :ref="el => (validationRefs.network = el)"
         placeholder="network"
+        select
+        no-empty-option
         @keyup.enter="connect"
-        :rules="[
-          val => !!val || (val && val.length <= 0) || 'Required',
-          val =>
-            networks.hasOwnProperty(val) ||
-            'This network is not defined in the config',
-        ]"
       />
     </div>
-    <div class="mb-1" v-if="isDevelopment">
-      Type:
-    </div>
-    <div class="mb-2" v-if="isDevelopment">
+    <div class="mb-1" v-if="isDevelopment && network">Type:</div>
+    <div class="mb-2" v-if="isDevelopment && network">
       <Select
         v-model="type"
-        :options="['mainnet', 'testnet']"
-        :ref="el => (validationRefs.type = el)"
+        :options="Object.keys(networks[network])"
+        select
+        no-empty-option
         placeholder="type"
-        :rules="[
-          val => !!val || (val && val.length <= 0) || 'Required',
-          val => validateType(val),
-        ]"
       />
     </div>
   </div>
@@ -61,22 +49,17 @@ export default {
     const isDevelopment = process.env.NODE_ENV === 'development';
     const isElectron = process.env.IS_ELECTRON;
 
-    const validationRefs = reactive({
-      type: null,
-      network: null,
-    });
-
     const networks = ref({});
     const network = ref(null);
 
     const hasErrors = ref(false);
 
     const getConfig = async () => {
+      network.value = store.state.config.networkSymbol;
       if (isElectron) {
         const { ipcRenderer } = await import('electron');
         const config = JSON.parse(await ipcRenderer.invoke('get-config'));
         networks.value = config;
-        network.value = store.state.config.networkSymbol;
         return;
       }
 
@@ -93,30 +76,16 @@ export default {
       await getConfig();
     });
 
-    const type = ref(isDevelopment ? null : 'mainnet');
-
-    const validate = async () => {
-      let hasErrors = false;
-      const values = Object.values(validationRefs);
-      for (let i = 0; i < values.length; i++) {
-        const v = values[i];
-        if (!v) continue;
-        await v.validate();
-        if (v.error) hasErrors = true;
-      }
-      return Promise.resolve(hasErrors);
-    };
+    const type = ref(isDevelopment ? 'testnet' : 'mainnet');
 
     return {
       isElectron,
       type,
       network,
       networks,
-      validationRefs,
       hasErrors,
       connect: async () => {
         try {
-          if (await validate()) throw new Error('Fields are invalid.');
           const config = networks.value[network.value][type.value];
           await store.connect({ [type.value]: config }, type.value);
           store.toggleModal();

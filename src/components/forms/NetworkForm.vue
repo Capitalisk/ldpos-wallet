@@ -12,7 +12,7 @@
       />
     </div>
   </div>
-  <div v-if="isDevelopment">
+  <div v-if="isDevelopment && !edit">
     <div class="mb-1">
       Type:
     </div>
