@@ -6,7 +6,7 @@
 </template>
 
 <script>
-import { ref, reactive, inject, computed } from 'vue';
+import { ref, reactive, inject, computed, onMounted } from 'vue';
 
 import Button from '../Button';
 import NetworkForm from '../forms/NetworkForm';
@@ -37,7 +37,6 @@ export default {
       type,
       isElectron,
       networkFormRef,
-      // TODO: Implement localStorage
       addConfig: async () => {
         try {
           if (await networkFormRef.value.validate())
@@ -52,9 +51,9 @@ export default {
 
               if (originalConfig[config.networkSymbol]) {
                 if (originalConfig[config.networkSymbol][type]) {
-                  const response = await ipcRenderer.invoke('warn-overwrite');
-                  if (!response) throw Error('Cancelling');
-                  originalConfig[config.networkSymbol][type] = config;
+                  throw new Error(
+                    `Type ${type} already exists. Remove it in the settings or give it another name.`,
+                  );
                 } else {
                   originalConfig[config.networkSymbol][type] = config;
                 }
@@ -83,8 +82,9 @@ export default {
 
             if (originalConfig[config.networkSymbol]) {
               if (originalConfig[config.networkSymbol][type]) {
-                console.log('overwriting');
-                originalConfig[config.networkSymbol][type] = config;
+                throw new Error(
+                  `Type ${type} already exists. Remove it in the settings or give it another name.`,
+                );
               } else {
                 originalConfig[config.networkSymbol][type] = config;
               }
