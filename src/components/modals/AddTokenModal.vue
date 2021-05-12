@@ -67,7 +67,8 @@ export default {
                 JSON.stringify(originalConfig, null, 2),
               );
 
-              store.notify({ message: 'Config saved!' }, 5);
+              store.notify({ message: 'Added network!' }, 5);
+              store.toggleModal();
             } catch (e) {
               console.error(e);
               store.notify({ message: `Error: ${e.message}`, error: true }, 5);
@@ -94,7 +95,8 @@ export default {
             }
 
             localStorage.setItem('config', JSON.stringify(originalConfig));
-            store.notify({ message: 'Config saved!' }, 5);
+            store.notify({ message: 'Added network!' }, 5);
+            store.toggleModal();
           }
         } catch (e) {
           store.notify({ message: `Error: ${e.message}`, error: true }, 5);
