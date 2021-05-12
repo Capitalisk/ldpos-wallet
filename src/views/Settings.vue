@@ -1,16 +1,19 @@
 <template>
   <Navbar />
-  <Wallet v-if="authenticated" />
-  <div v-else class="flex flex-wrap flex-gap">
-    <Section title="Settings" class="flex-12">
-      SettingsPage
+  <div class="flex flex-wrap flex-gap">
+    <Section height-auto class="flex-12">
+      
     </Section>
   </div>
 </template>
 
 <script>
+import Navbar from '../components/Navbar';
+import Section from '../components/Section';
+
 export default {
   name: 'Settings',
+  components: { Navbar, Section },
   setup() {
     return {};
   },

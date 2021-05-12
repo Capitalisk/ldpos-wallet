@@ -1,15 +1,11 @@
 <template>
-  <a
-    class="button cursor-pointer text-center"
-    v-if="!routerLink"
-  >
+  <a class="button cursor-pointer text-center" v-if="!routerLink">
+    <i v-if="!loading && icon" :class="`fa fa-${icon} mr-1`" />
     <i class="fa fa-circle-notch fa-spin mr-1" v-if="loading"></i>{{ value }}
   </a>
-  <router-link
-    class="button"
-    v-else
-    :to="href"
-  >{{ value }}
+  <router-link class="button" v-else :to="href">
+    <i v-if="!loading && icon" :class="`fa fa-${icon} mr-2`" />
+    {{ value }}
   </router-link>
 </template>
 
@@ -21,6 +17,7 @@ export default {
     routerLink: { type: Boolean, default: false },
     href: { type: String, default: '' },
     loading: { type: Boolean, default: false },
+    icon: { type: String, default: null },
   },
 };
 </script>
@@ -29,11 +26,11 @@ export default {
 a.button {
   display: block;
   border: 0;
-  padding: var(--unit-1) var(--unit-5);
+  padding: var(--unit-1) var(--unit-3);
   border-radius: var(--border-radius);
   text-decoration: none;
   background-color: var(--primary-lighter);
-  color: var(--permanent-white)
+  color: var(--permanent-white);
 }
 
 a.button.warning {

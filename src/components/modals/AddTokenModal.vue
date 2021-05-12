@@ -61,7 +61,7 @@
     </div>
   </div>
   <div class="flex justify-end">
-    <Button value="Save" @click="addConfig" class="mr-2" />
+    <Button value="Add" @click="addConfig" class="mr-2" />
   </div>
 </template>
 

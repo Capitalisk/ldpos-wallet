@@ -1,11 +1,21 @@
 <template>
   <div class="navbar flex justify-end align-center text-right">
     <Connected />
-    <span class="flex justify-center align-center mr-1">
-      <span class="mr-1">Dark mode: </span>
+    <span class="flex justify-center align-center mr-2">
       <Switch v-model="darkMode" id="darkmode-switch" />
+      <span class="ml-1">Dark mode</span>
     </span>
-    <Button v-if="authenticated" value="Sign out" @click="signout" />
+    <Button
+      icon="cog"
+      value="Add network"
+      @click="toggleModal({ type: ADD_TOKEN_MODAL, title: 'Add a network' })"
+    />
+    <Button
+      v-if="authenticated"
+      value="Sign out"
+      @click="signout"
+      class="ml-1"
+    />
     <Button
       value="Sign in"
       router-link
@@ -15,13 +25,14 @@
           (!isElectron && $router.currentRoute.value.path !== '/login')) &&
           !authenticated
       "
-      class="ml-2"
+      class="ml-1"
     />
   </div>
 </template>
 
 <script>
 import { computed, inject } from 'vue';
+import { ADD_TOKEN_MODAL } from './modals/constants';
 
 import Button from './Button';
 import Connected from './Connected.vue';
@@ -40,6 +51,8 @@ export default {
         set: val => store.toggleDarkMode(),
       }),
       isElectron: process.env.IS_ELECTRON,
+      ADD_TOKEN_MODAL,
+      toggleModal: store.toggleModal,
     };
   },
   components: { Button, Connected, Switch },

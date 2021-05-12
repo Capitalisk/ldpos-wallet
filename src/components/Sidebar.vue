@@ -29,7 +29,7 @@
       @click="
         toggleModal({
           type: TOKEN_MODAL,
-          title: 'Connect to a network in the config',
+          title: 'Connect to an existing network'
         })
       "
     >
@@ -55,20 +55,23 @@
       <i class="fa fa-th-large mr-1" />
       BLOCKS
     </router-link>
-    <router-link to="/accounts">
+    <router-link to="/accounts" class="last">
       <i class="fa fa-users mr-1" />
       ACCOUNTS
     </router-link>
-    <template v-if="isDevelopment">
+    <!-- <template v-if="isDevelopment">
       <hr />
+      <router-link to="/settings">
+        <i class="fa fa-user-cog mr-1" />SETTINGS
+      </router-link>
       <a
         to="/"
         class="last"
-        @click="toggleModal({ type: ADD_TOKEN_MODAL, title: 'Settings' })"
+        @click="toggleModal({ type: ADD_TOKEN_MODAL, title: 'Add network token' })"
       >
         <i class="fa fa-user-cog mr-1" />SETTINGS
       </a>
-    </template>
+    </template> -->
   </div>
 </template>
 
