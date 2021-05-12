@@ -18,6 +18,7 @@
   --primary-lighter: #0366d6;
   --primary-darker: rgb(240, 240, 240);
   --primary-darkest: #e8e8e8;
+  --switch-background: #d0d0d0;
 
   --unit-1: 0.5rem;
   --unit-2: 1rem;
@@ -37,6 +38,7 @@
   --primary-darker: #222435;
   --primary-darkest: #0d1117;
   --disabled: #a0a0a0;
+  --switch-background: rgb(43, 56, 75);
 }
 
 * {

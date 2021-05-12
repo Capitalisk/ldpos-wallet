@@ -60,6 +60,18 @@
       />
     </div>
   </div>
+  <div>
+    <div class="mb-1">
+      Secure:
+    </div>
+    <div class="mb-2">
+      <Switch
+        v-model="config.secure"
+        :ref="el => (validationRefs.type = el)"
+        :rules="[val => !!val || (val && val.length <= 0) || 'Required']"
+      />
+    </div>
+  </div>
   <div class="flex justify-end">
     <Button value="Add" @click="addConfig" class="mr-2" />
   </div>
@@ -71,11 +83,12 @@ import { ref, reactive, inject } from 'vue';
 import Input from '../Input';
 import Select from '../Select';
 import Button from '../Button';
+import Switch from '../Switch';
 
 // TODO: THIS IS A WIP AND NOT USED
 export default {
   name: 'AddTokenModal',
-  components: { Input, Select, Button },
+  components: { Input, Select, Button, Switch },
   setup() {
     const store = inject('store');
 
@@ -85,6 +98,7 @@ export default {
       hostname: null,
       port: null,
       chainModuleName: null,
+      secure: null,
     });
 
     const isElectron = ref(process.env.IS_ELECTRON || false);
@@ -95,6 +109,7 @@ export default {
       hostname: null,
       port: null,
       chainModuleName: null,
+      secure: false,
     });
 
     const validate = async () => {
@@ -174,7 +189,7 @@ export default {
           console.error(e);
         }
       },
-      isDevelopment: process.env.NODE_ENV === 'development'
+      isDevelopment: process.env.NODE_ENV === 'development',
     };
   },
 };

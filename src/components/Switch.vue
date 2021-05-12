@@ -42,7 +42,7 @@ export default {
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: var(--primary);
+  background-color: var(--switch-background);
   -webkit-transition: 0.4s;
   transition: 0.4s;
 }
@@ -69,8 +69,9 @@ input:focus + .slider {
 }
 
 input:checked + .slider:before {
-  -webkit-transform: translateX(13px);
-  -ms-transform: translateX(13px);
-  transform: translateX(13px);
+  -webkit-transform: translateX(11px);
+  -ms-transform: translateX(11px);
+  transform: translateX(11px);
+  background-color: var(--permanent-white);
 }
 </style>
