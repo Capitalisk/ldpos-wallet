@@ -91,7 +91,7 @@ export default {
     edit: {
       type: Boolean,
       default: false,
-    }
+    },
   },
   setup() {
     const validationRefs = reactive({
@@ -105,8 +105,9 @@ export default {
 
     const validate = async () => {
       let hasErrors = false;
-      for (let i = 0; i < Object.values(validationRefs).length; i++) {
-        const v = Object.values(validationRefs)[i];
+      const values = Object.values(validationRefs);
+      for (let i = 0; i < values.length; i++) {
+        const v = values[i];
         await v.validate();
         if (v.error) hasErrors = true;
       }
