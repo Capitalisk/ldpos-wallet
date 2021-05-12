@@ -1,5 +1,5 @@
 <template>
-  <NetworkForm v-model="config" ref="networkFormRef" />
+  <NetworkForm v-model:config="config" ref="networkFormRef" />
   <div class="flex justify-end">
     <Button value="Add" @click="addConfig" class="mr-2" />
   </div>
@@ -30,7 +30,7 @@ export default {
       secure: false,
     });
 
-    const type = computed(() => networkFromRef.type);
+    const type = computed(() => networkFormRef.value.type);
 
     return {
       config,
@@ -50,16 +50,16 @@ export default {
               );
 
               if (originalConfig[config.networkSymbol]) {
-                if (originalConfig[config.networkSymbol][type]) {
+                if (originalConfig[config.networkSymbol][type.value]) {
                   throw new Error(
                     `Type ${type} already exists. Remove it in the settings or give it another name.`,
                   );
                 } else {
-                  originalConfig[config.networkSymbol][type] = config;
+                  originalConfig[config.networkSymbol][type.value] = config;
                 }
               } else {
                 originalConfig[config.networkSymbol] = {};
-                originalConfig[config.networkSymbol][type] = config;
+                originalConfig[config.networkSymbol][type.value] = config;
               }
 
               await ipcRenderer.invoke(
@@ -81,16 +81,16 @@ export default {
             }
 
             if (originalConfig[config.networkSymbol]) {
-              if (originalConfig[config.networkSymbol][type]) {
+              if (originalConfig[config.networkSymbol][type.value]) {
                 throw new Error(
                   `Type ${type} already exists. Remove it in the settings or give it another name.`,
                 );
               } else {
-                originalConfig[config.networkSymbol][type] = config;
+                originalConfig[config.networkSymbol][type.value] = config;
               }
             } else {
               originalConfig[config.networkSymbol] = {};
-              originalConfig[config.networkSymbol][type] = config;
+              originalConfig[config.networkSymbol][type.value] = config;
             }
 
             localStorage.setItem('config', JSON.stringify(originalConfig));

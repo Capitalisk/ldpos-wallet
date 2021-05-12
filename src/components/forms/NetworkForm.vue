@@ -6,7 +6,7 @@
     <div class="mb-2">
       <Input
         v-bind="$attrs"
-        v-model="modelValue.networkSymbol"
+        v-model="config.networkSymbol"
         :ref="el => (validationRefs.networkSymbol = el)"
         :rules="[val => !!val || (val && val.length <= 0) || 'Required']"
       />
@@ -31,7 +31,7 @@
     <div class="mb-2">
       <Input
         v-bind="$attrs"
-        v-model="modelValue.hostname"
+        v-model="config.hostname"
         :ref="el => (validationRefs.hostname = el)"
         :rules="[val => !!val || (val && val.length <= 0) || 'Required']"
       />
@@ -44,7 +44,7 @@
     <div class="mb-2">
       <Input
         v-bind="$attrs"
-        v-model="modelValue.port"
+        v-model="config.port"
         :ref="el => (validationRefs.port = el)"
         :rules="[val => !!val || (val && val.length <= 0) || 'Required']"
       />
@@ -57,7 +57,7 @@
     <div class="mb-2">
       <Input
         v-bind="$attrs"
-        v-model="modelValue.chainModuleName"
+        v-model="config.chainModuleName"
         :ref="el => (validationRefs.chainModuleName = el)"
         :rules="[val => !!val || (val && val.length <= 0) || 'Required']"
       />
@@ -68,7 +68,7 @@
       Secure:
     </div>
     <div class="mb-2">
-      <Switch v-model="modelValue.secure" />
+      <Switch v-model="config.secure" />
     </div>
   </div>
 </template>
@@ -84,7 +84,7 @@ export default {
   name: 'NetworkForm',
   components: { Input, Select, Switch },
   props: {
-    modelValue: {
+    config: {
       type: Object,
       default: () => ({}),
     },

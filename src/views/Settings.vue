@@ -50,7 +50,7 @@
         {{ networks[network][type] }}
         <NetworkForm
           class="bg-primary-darkest"
-          v-model="networks[network][type]"
+          v-model:config="networks[network][type]"
           edit
         />
         <Button value="Edit" @click="editNetwork" class="mr-2" />
