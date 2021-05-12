@@ -111,10 +111,12 @@ export default {
 
     // Disconnect and connect all clients and all nets
     try {
+      const values = Object.values(state.clients)
       for (let i = 0; i < Object.keys(state.clients).length; i++) {
-        const client = Object.values(state.clients)[i];
+        const client = values[i];
+        const clientValues = Object.values(client)
         for (let i = 0; i < Object.keys(client).length; i++) {
-          const c = Object.values(client)[i];
+          const c = clientValues[i];
           await c.disconnect();
           await c.connect();
         }

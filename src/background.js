@@ -142,19 +142,6 @@ app.on('ready', async () => {
     });
   });
 
-  ipcMain.handle('warn-overwrite', async () => {
-    const response = await dialog.showMessageBox(null, {
-      message: 'Config entry already exists, do you want to overwrite it?',
-      type: 'warning',
-      buttons: ['Overwrite', 'Cancel'],
-      defaultId: 0,
-      cancelId: 1,
-    });
-
-    // Picks the index of the response
-    return response.response === 0 ? true : false;
-  });
-
   createWindow();
 });
 
