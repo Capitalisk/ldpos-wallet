@@ -3,7 +3,6 @@
   <div class="flex flex-wrap flex-gap">
     <Section title="Manage networks" class="flex-12">
       Network:
-      {{ network }}
       <div class="flex row my-1">
         <div class="flex-auto">
           <Select
@@ -47,7 +46,6 @@
         </div>
       </template>
       <template v-if="type">
-        {{ networks[network][type] }}
         <NetworkForm
           class="bg-primary-darkest"
           v-model:config="networks[network][type]"
