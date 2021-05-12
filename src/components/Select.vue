@@ -11,7 +11,7 @@
         )
     "
   >
-    <option />
+    <option v-if="!noEmptyOption" />
     <option v-for="(option, i) in options" :key="i" :value="option">
       {{ option }}
     </option>
@@ -43,6 +43,7 @@ export default {
     modelValue: { type: String, default: null },
     options: { type: Array, default: () => [] },
     select: { type: Boolean, default: false },
+    noEmptyOption: { type: Boolean, default: false },
   },
   setup() {
     const input = ref(null);

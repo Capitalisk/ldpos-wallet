@@ -1,0 +1,120 @@
+<template>
+  <div>
+    <div class="mb-1">
+      Network Symbol:
+    </div>
+    <div class="mb-2">
+      <Input
+        v-bind="$attrs"
+        v-model="modelValue.networkSymbol"
+        :ref="el => (validationRefs.networkSymbol = el)"
+        :rules="[val => !!val || (val && val.length <= 0) || 'Required']"
+      />
+    </div>
+  </div>
+  <div v-if="isDevelopment">
+    <div class="mb-1">
+      Type:
+    </div>
+    <div class="mb-2">
+      <Select
+        v-bind="$attrs"
+        v-model="type"
+        :options="['mainnet', 'testnet']"
+      />
+    </div>
+  </div>
+  <div>
+    <div class="mb-1">
+      Hostname:
+    </div>
+    <div class="mb-2">
+      <Input
+        v-bind="$attrs"
+        v-model="modelValue.hostname"
+        :ref="el => (validationRefs.hostname = el)"
+        :rules="[val => !!val || (val && val.length <= 0) || 'Required']"
+      />
+    </div>
+  </div>
+  <div>
+    <div class="mb-1">
+      Port:
+    </div>
+    <div class="mb-2">
+      <Input
+        v-bind="$attrs"
+        v-model="modelValue.port"
+        :ref="el => (validationRefs.port = el)"
+        :rules="[val => !!val || (val && val.length <= 0) || 'Required']"
+      />
+    </div>
+  </div>
+  <div>
+    <div class="mb-1">
+      Chain Module Name:
+    </div>
+    <div class="mb-2">
+      <Input
+        v-bind="$attrs"
+        v-model="modelValue.chainModuleName"
+        :ref="el => (validationRefs.chainModuleName = el)"
+        :rules="[val => !!val || (val && val.length <= 0) || 'Required']"
+      />
+    </div>
+  </div>
+  <div>
+    <div class="mb-1">
+      Secure:
+    </div>
+    <div class="mb-2">
+      <Switch v-model="modelValue.secure" />
+    </div>
+  </div>
+</template>
+
+<script>
+import { reactive, ref } from 'vue';
+
+import Input from '../Input';
+import Select from '../Select';
+import Switch from '../Switch';
+
+export default {
+  name: 'NetworkForm',
+  components: { Input, Select, Switch },
+  props: {
+    modelValue: {
+      type: Object,
+      default: () => ({}),
+    },
+  },
+  setup() {
+    const validationRefs = reactive({
+      networkSymbol: null,
+      hostname: null,
+      port: null,
+      chainModuleName: null,
+    });
+
+    const type = ref('mainnet');
+
+    const validate = async () => {
+      let hasErrors = false;
+      for (let i = 0; i < Object.values(validationRefs).length; i++) {
+        const v = Object.values(validationRefs)[i];
+        await v.validate();
+        if (v.error) hasErrors = true;
+      }
+      return Promise.resolve(hasErrors);
+    };
+
+    return {
+      type,
+      validationRefs,
+      validate,
+      isDevelopment: process.env.NODE_ENV === 'development',
+    };
+  },
+};
+</script>

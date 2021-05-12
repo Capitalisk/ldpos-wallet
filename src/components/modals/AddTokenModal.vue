@@ -1,77 +1,5 @@
 <template>
-  <div>
-    <div class="mb-1">
-      Network Symbol:
-    </div>
-    <div class="mb-2">
-      <Input
-        v-model="config.networkSymbol"
-        :ref="el => (validationRefs.networkSymbol = el)"
-        :rules="[val => !!val || (val && val.length <= 0) || 'Required']"
-      />
-    </div>
-  </div>
-  <div v-if="isDevelopment">
-    <div class="mb-1">
-      Type:
-    </div>
-    <div class="mb-2">
-      <Select
-        v-model="type"
-        :options="['mainnet', 'testnet']"
-        :ref="el => (validationRefs.type = el)"
-        :rules="[val => !!val || (val && val.length <= 0) || 'Required']"
-      />
-    </div>
-  </div>
-  <div>
-    <div class="mb-1">
-      Hostname:
-    </div>
-    <div class="mb-2">
-      <Input
-        v-model="config.hostname"
-        :ref="el => (validationRefs.hostname = el)"
-        :rules="[val => !!val || (val && val.length <= 0) || 'Required']"
-      />
-    </div>
-  </div>
-  <div>
-    <div class="mb-1">
-      Port:
-    </div>
-    <div class="mb-2">
-      <Input
-        v-model="config.port"
-        :ref="el => (validationRefs.port = el)"
-        :rules="[val => !!val || (val && val.length <= 0) || 'Required']"
-      />
-    </div>
-  </div>
-  <div>
-    <div class="mb-1">
-      Chain Module Name:
-    </div>
-    <div class="mb-2">
-      <Input
-        v-model="config.chainModuleName"
-        :ref="el => (validationRefs.chainModuleName = el)"
-        :rules="[val => !!val || (val && val.length <= 0) || 'Required']"
-      />
-    </div>
-  </div>
-  <div>
-    <div class="mb-1">
-      Secure:
-    </div>
-    <div class="mb-2">
-      <Switch
-        v-model="config.secure"
-        :ref="el => (validationRefs.type = el)"
-        :rules="[val => !!val || (val && val.length <= 0) || 'Required']"
-      />
-    </div>
-  </div>
+  <NetworkForm v-model="config" ref="networkFromRef" />
   <div class="flex justify-end">
     <Button value="Add" @click="addConfig" class="mr-2" />
   </div>
@@ -80,30 +8,20 @@
 <script>
 import { ref, reactive, inject } from 'vue';
 
-import Input from '../Input';
-import Select from '../Select';
 import Button from '../Button';
-import Switch from '../Switch';
+import NetworkForm from '../forms/NetworkForm';
 
-// TODO: THIS IS A WIP AND NOT USED
 export default {
   name: 'AddTokenModal',
-  components: { Input, Select, Button, Switch },
+  components: { Button, NetworkForm },
   setup() {
     const store = inject('store');
 
-    const validationRefs = reactive({
-      networkSymbol: null,
-      type: null,
-      hostname: null,
-      port: null,
-      chainModuleName: null,
-      secure: null,
-    });
-
     const isElectron = process.env.IS_ELECTRON;
-    const type = ref('mainnet');
     const name = ref(null);
+
+    const networkFromRef = ref(null);
+
     const config = reactive({
       networkSymbol: null,
       hostname: null,
@@ -112,25 +30,18 @@ export default {
       secure: false,
     });
 
-    const validate = async () => {
-      let hasErrors = false;
-      for (let i = 0; i < Object.values(validationRefs).length; i++) {
-        const v = Object.values(validationRefs)[i];
-        await v.validate();
-        if (v.error) hasErrors = true;
-      }
-      return Promise.resolve(hasErrors);
-    };
+    const type = computed(() => networkFromRef.type);
 
     return {
       config,
       type,
-      validationRefs,
       isElectron,
+      networkFromRef,
       // TODO: Implement localStorage
       addConfig: async () => {
         try {
-          if (await validate()) throw new Error('Fields are invalid.');
+          if (await networkFormRef.validate())
+            throw new Error('Fields are invalid.');
           if (isElectron) {
             const { ipcRenderer } = await import('electron');
 
@@ -140,16 +51,16 @@ export default {
               );
 
               if (originalConfig[config.networkSymbol]) {
-                if (originalConfig[config.networkSymbol][type.value]) {
+                if (originalConfig[config.networkSymbol][type]) {
                   const response = await ipcRenderer.invoke('warn-overwrite');
                   if (!response) throw Error('Cancelling');
-                  originalConfig[config.networkSymbol][type.value] = config;
+                  originalConfig[config.networkSymbol][type] = config;
                 } else {
-                  originalConfig[config.networkSymbol][type.value] = config;
+                  originalConfig[config.networkSymbol][type] = config;
                 }
               } else {
                 originalConfig[config.networkSymbol] = {};
-                originalConfig[config.networkSymbol][type.value] = config;
+                originalConfig[config.networkSymbol][type] = config;
               }
 
               await ipcRenderer.invoke(
@@ -171,15 +82,15 @@ export default {
             }
 
             if (originalConfig[config.networkSymbol]) {
-              if (originalConfig[config.networkSymbol][type.value]) {
+              if (originalConfig[config.networkSymbol][type]) {
                 console.log('overwriting');
-                originalConfig[config.networkSymbol][type.value] = config;
+                originalConfig[config.networkSymbol][type] = config;
               } else {
-                originalConfig[config.networkSymbol][type.value] = config;
+                originalConfig[config.networkSymbol][type] = config;
               }
             } else {
               originalConfig[config.networkSymbol] = {};
-              originalConfig[config.networkSymbol][type.value] = config;
+              originalConfig[config.networkSymbol][type] = config;
             }
 
             localStorage.setItem('config', JSON.stringify(originalConfig));
@@ -190,7 +101,6 @@ export default {
           console.error(e);
         }
       },
-      isDevelopment: process.env.NODE_ENV === 'development',
     };
   },
 };

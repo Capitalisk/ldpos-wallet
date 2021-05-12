@@ -2,24 +2,17 @@
   <Navbar />
   <div class="flex flex-wrap flex-gap">
     <Section title="Manage networks" class="flex-12">
-      Edit a network:
+      Network:
       {{ network }}
-      <div class="flex row">
+      <div class="flex row my-1">
         <div class="flex-auto">
           <Select
             v-if="networks"
             v-model="network"
             select
             :options="Object.keys(networks)"
-            :ref="el => (validationRefs.network = el)"
             placeholder="network"
             class="bg-primary-darkest"
-            :rules="[
-              val => !!val || (val && val.length <= 0) || 'Required',
-              val =>
-                networks.hasOwnProperty(val) ||
-                'This network is not defined in the config',
-            ]"
           />
         </div>
         <div v-if="network" class="flex align-center justify-center py-2">
@@ -30,31 +23,70 @@
           />
         </div>
       </div>
-      <template v-if="network"> {{ networks[network] }} </template>
+      <template v-if="network && networks[network]">
+        Type:
+        <div class="flex row my-1">
+          <div class="flex-auto">
+            <Select
+              v-if="network"
+              v-model="type"
+              select
+              no-empty-option
+              :options="Object.keys(networks[network])"
+              placeholder="network"
+              class="bg-primary-darkest"
+            />
+          </div>
+          <div v-if="network" class="flex align-center justify-center py-2">
+            <i
+              class="fa fa-trash-alt text-error"
+              v-if="network"
+              @click="deleteType"
+            />
+          </div>
+        </div>
+      </template>
+      <template v-if="type">
+        <NetworkForm
+          class="bg-primary-darkest"
+          v-model="networks[network][type]"
+        />
+        <Button value="Edit" @click="editNetwork" class="mr-2" />
+      </template>
     </Section>
   </div>
 </template>
 
 <script>
-import { onMounted, reactive, ref, inject } from 'vue';
+import { onMounted, reactive, ref, inject, watch } from 'vue';
 
 import Navbar from '../components/Navbar';
 import Section from '../components/Section';
 import Select from '../components/Select';
+import Button from '../components/Button';
+import NetworkForm from '../components/forms/NetworkForm';
 
 export default {
   name: 'Settings',
-  components: { Navbar, Section, Select },
+  components: { Navbar, Section, Select, Button, NetworkForm },
   setup() {
-    const store = inject('store')
+    const store = inject('store');
 
     const isElectron = process.env.IS_ELECTRON;
 
     const networks = ref(null);
     const network = ref(null);
-    const validationRefs = reactive({
-      network: null,
-    });
+    const type = ref(null);
+
+    watch(
+      () => network.value,
+      n => {
+        if (!n) {
+          network.value = null;
+          type.value = null;
+        }
+      },
+    );
 
     onMounted(async () => {
       if (isElectron) {
@@ -65,35 +97,70 @@ export default {
     });
 
     return {
-      validationRefs,
       network,
       networks,
+      type,
       deleteNetwork: async () => {
         try {
           // if (await validate()) throw new Error('Fields are invalid.');
+          delete networks.value[network.value];
           if (isElectron) {
-            try {
-              const { ipcRenderer } = await import('electron');
+            const { ipcRenderer } = await import('electron');
 
-              delete networks.value[config.network];
+            await ipcRenderer.invoke(
+              'save-config',
+              JSON.stringify(networks.value, null, 2),
+            );
 
-              await ipcRenderer.invoke(
-                'save-config',
-                JSON.stringify(networks.value, null, 2),
-              );
-
-              store.notify({ message: 'Network deleted!' }, 5);
-            } catch (e) {
-              console.error(e);
-              store.notify({ message: `Error: ${e.message}`, error: true }, 5);
-            }
+            store.notify({ message: 'Network deleted!' }, 5);
+            network.value = null;
           } else {
             localStorage.setItem('config', JSON.stringify(networks.value));
             store.notify({ message: 'Network deleted!' }, 5);
+            network.value = null;
           }
         } catch (e) {
           store.notify({ message: `Error: ${e.message}`, error: true }, 5);
           console.error(e);
+        }
+      },
+      deleteType: async () => {
+        try {
+          delete networks.value[network.value][type.value];
+          if (isElectron) {
+            const { ipcRenderer } = await import('electron');
+
+            await ipcRenderer.invoke(
+              'save-config',
+              JSON.stringify(networks.value, null, 2),
+            );
+
+            store.notify({ message: 'Network deleted!' }, 5);
+            type.value = null;
+          } else {
+            localStorage.setItem('config', JSON.stringify(networks.value));
+            store.notify({ message: 'Network deleted!' }, 5);
+            type.value = null;
+          }
+        } catch (e) {
+          store.notify({ message: `Error: ${e.message}`, error: true }, 5);
+          console.error(e);
+        }
+      },
+      editNetwork: async () => {
+        if (isElectron) {
+          const { ipcRenderer } = await import('electron');
+
+          await ipcRenderer.invoke(
+            'save-config',
+            JSON.stringify(networks.value, null, 2),
+          );
+
+          store.notify({ message: 'Network edited!' }, 5);
+          type.value = null;
+        } else {
+          localStorage.setItem('config', JSON.stringify(networks.value));
+          store.notify({ message: 'Network edited!' }, 5);
         }
       },
     };
