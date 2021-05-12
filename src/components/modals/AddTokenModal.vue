@@ -1,12 +1,12 @@
 <template>
-  <NetworkForm v-model="config" ref="networkFromRef" />
+  <NetworkForm v-model="config" ref="networkFormRef" />
   <div class="flex justify-end">
     <Button value="Add" @click="addConfig" class="mr-2" />
   </div>
 </template>
 
 <script>
-import { ref, reactive, inject } from 'vue';
+import { ref, reactive, inject, computed } from 'vue';
 
 import Button from '../Button';
 import NetworkForm from '../forms/NetworkForm';
@@ -20,7 +20,7 @@ export default {
     const isElectron = process.env.IS_ELECTRON;
     const name = ref(null);
 
-    const networkFromRef = ref(null);
+    const networkFormRef = ref(null);
 
     const config = reactive({
       networkSymbol: null,
@@ -36,11 +36,11 @@ export default {
       config,
       type,
       isElectron,
-      networkFromRef,
+      networkFormRef,
       // TODO: Implement localStorage
       addConfig: async () => {
         try {
-          if (await networkFormRef.validate())
+          if (await networkFormRef.value.validate())
             throw new Error('Fields are invalid.');
           if (isElectron) {
             const { ipcRenderer } = await import('electron');
