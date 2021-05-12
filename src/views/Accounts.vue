@@ -14,11 +14,12 @@
 
 <script>
 import { computed, inject, onMounted, ref } from 'vue';
+import { _transformMonetaryUnit } from '../utils';
+import { DETAIL_MODAL } from '../components/modals/constants';
 
 import Navbar from '../components/Navbar.vue';
 import DataTable from '../components/DataTable.vue';
-import { _transformMonetaryUnit } from '../utils';
-import { DETAIL_MODAL } from '../components/modals/constants';
+import Copy from '../components/Copy.vue';
 
 export default {
   name: 'Accounts',
@@ -40,6 +41,7 @@ export default {
         field: 'address',
         sortable: false,
         active: true,
+        slot: true,
       },
       {
         name: 'balance',
@@ -58,7 +60,7 @@ export default {
       columns,
     };
   },
-  components: { DataTable, Navbar },
+  components: { DataTable, Navbar, Copy },
 };
 </script>
 
