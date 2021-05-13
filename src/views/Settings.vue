@@ -2,7 +2,7 @@
   <Navbar />
   <div class="flex flex-wrap flex-gap">
     <Section title="Manage networks" class="flex-12">
-      Network:
+      Network
       <div class="flex row my-1">
         <div class="flex-auto">
           <Select
@@ -23,7 +23,7 @@
         </div>
       </div>
       <template v-if="network && networks[network]">
-        Type:
+        Type
         <div class="flex row my-1">
           <div class="flex-auto">
             <Select

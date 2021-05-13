@@ -1,6 +1,6 @@
 <template>
   <div class="flex pa-1 column">
-    <div class="mb-1">Network: {{ network }}</div>
+    <div class="mb-1">Network</div>
     <div class="mb-2">
       <Select
         v-if="networks"
@@ -12,7 +12,7 @@
         @keyup.enter="connect"
       />
     </div>
-    <div class="mb-1" v-if="isDevelopment && network">Type:</div>
+    <div class="mb-1" v-if="isDevelopment && network">Type</div>
     <div class="mb-2" v-if="isDevelopment && network">
       <Select
         v-model="type"
