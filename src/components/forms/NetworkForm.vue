@@ -1,7 +1,7 @@
 <template>
   <div v-if="!edit">
     <div class="mb-1">
-      Network Symbol:
+      Network Symbol
     </div>
     <div class="mb-2">
       <Input
@@ -26,7 +26,7 @@
   </div>
   <div>
     <div class="mb-1">
-      Hostname:
+      Hostname
     </div>
     <div class="mb-2">
       <Input
@@ -39,7 +39,7 @@
   </div>
   <div>
     <div class="mb-1">
-      Port:
+      Port
     </div>
     <div class="mb-2">
       <Input
@@ -52,7 +52,7 @@
   </div>
   <div>
     <div class="mb-1">
-      Chain Module Name:
+      Chain Module Name
     </div>
     <div class="mb-2">
       <Input
