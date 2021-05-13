@@ -24,11 +24,11 @@ describe('Blocks page tests', () => {
     cy.get('#sorting').click();
   });
 
-  it('should load when scrolling to bottom', () => {
-    cy.wait(500);
-    cy.scrollTo('bottom');
-    cy.get('progress');
-  });
+  // it('should load when scrolling to bottom', () => {
+  //   cy.wait(500);
+  //   cy.scrollTo('bottom');
+  //   cy.get('progress');
+  // });
 
   it('shows details modal', () => {
     cy.get('td')
