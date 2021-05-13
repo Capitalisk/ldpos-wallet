@@ -65,7 +65,7 @@
   </div>
   <div>
     <div class="mb-1">
-      Secure:
+      WSS <tooltip content="The majority of cases this will need to be unchecked. If you don't know, leave it unchecked." />
     </div>
     <div class="mb-2">
       <Switch v-model="config.secure" />
@@ -79,10 +79,11 @@ import { reactive, ref } from 'vue';
 import Input from '../Input';
 import Select from '../Select';
 import Switch from '../Switch';
+import Tooltip from '../Tooltip.vue';
 
 export default {
   name: 'NetworkForm',
-  components: { Input, Select, Switch },
+  components: { Input, Select, Switch, Tooltip },
   props: {
     config: {
       type: Object,
