@@ -1,6 +1,6 @@
 <template>
   <div class="section pa-2">
-    <h4>{{ title }}</h4>
+    <h2>{{ title }}</h2>
 
     <Loading v-if="loading" />
     <p v-else-if="!loading && error" class="text-error">
@@ -50,9 +50,9 @@ export default {
   background-color: var(--white);
 }
 
-h4 {
+h2 {
   margin-bottom: var(--unit-1);
-  color: var(--primary-lighter);
+  color: var(--dark);
 }
 
 ul {
