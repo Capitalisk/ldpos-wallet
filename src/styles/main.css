@@ -429,6 +429,10 @@ th {
   background-color: var(--primary-darkest) !important;
 }
 
+.no-select {
+  user-select: none;
+}
+
 @media screen and (max-width: 768px) {
   .flex-3 {
     flex-basis: 100%;

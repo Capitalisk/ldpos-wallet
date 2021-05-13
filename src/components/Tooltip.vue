@@ -6,7 +6,7 @@
   />
   <div
     v-if="tooltipActive"
-    class="tooltip pa-1"
+    class="tooltip pa-1 no-select"
     :style="{
       top: $refs.tooltipRef.getBoundingClientRect().bottom + 5 + 'px',
       left: $refs.tooltipRef.getBoundingClientRect().left + 5 + 'px',
