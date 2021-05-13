@@ -23,7 +23,7 @@
       </div>
     </Section>
   </div>
-  <DataTable :columns="columns" :title="title" :fn="fn">
+  <DataTable :columns="columns" :title="title" fn="getDelegatesByVoteWeight">
     <template v-slot:vote="slotProps">
       <Button
         value="Vote"
@@ -148,7 +148,6 @@ export default {
         store.state.authenticated ? 'Voting for delegates' : 'Delegates',
       ),
       columns,
-      fn: async () => await store.client.value.getForgingDelegates(),
       authenticated,
       vote,
       loading,
