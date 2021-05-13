@@ -1,6 +1,6 @@
 <template>
   <i
-    class="fa fa-question-circle cursor-pointer"
+    class="far fa-question-circle cursor-pointer"
     @click="tooltipActive = !tooltipActive"
     ref="tooltipRef"
   />
