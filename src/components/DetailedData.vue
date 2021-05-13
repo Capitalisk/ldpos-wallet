@@ -35,6 +35,7 @@
 </template>
 
 <script>
+import { inject } from 'vue';
 import {
   _parseDate,
   _transformMonetaryUnit,
@@ -48,19 +49,23 @@ export default {
     data: { type: Object, default: {} },
   },
   setup(props) {
+    const store = inject('store');
+
     const titleTransformations = {
       timestamp: 'Date',
     };
 
     const valueTransformations = {
-      timestamp: (val) => _parseDate(val),
-      balance: (val) => _transformMonetaryUnit(val),
-      amount: (val) => _transformMonetaryUnit(val),
-      fee: (val) => _transformMonetaryUnit(val),
-      type: (val) => _capitalize(_splitCamelCaseWords(val).join(' ')),
+      timestamp: val => _parseDate(val),
+      balance: val =>
+        _transformMonetaryUnit(val, store.state.config.networkSymbol),
+      amount: val =>
+        _transformMonetaryUnit(val, store.state.config.networkSymbol),
+      fee: val => _transformMonetaryUnit(val, store.state.config.networkSymbol),
+      type: val => _capitalize(_splitCamelCaseWords(val).join(' ')),
     };
 
-    const transformTitle = (key) =>
+    const transformTitle = key =>
       titleTransformations[key] || _splitCamelCaseWords(key).join(' ');
 
     const transformValue = (key, value) =>
