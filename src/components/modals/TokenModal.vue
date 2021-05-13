@@ -54,22 +54,36 @@ export default {
 
     const hasErrors = ref(false);
 
+    const filterNetworks = networks => {
+      if (isDevelopment) {
+        return networks;
+      } else {
+        const keys = Object.keys(networks);
+        const newNetworks = [];
+        for (let i = 0; i < keys.length; i++) {
+          const network = keys[i];
+          if (!networks[network].mainnet) delete networks[network];
+        }
+        return networks;
+      }
+    };
+
     const getConfig = async () => {
       network.value = store.state.config.networkSymbol;
       if (isElectron) {
         const { ipcRenderer } = await import('electron');
         const config = JSON.parse(await ipcRenderer.invoke('get-config'));
-        networks.value = config;
+        networks.value = filterNetworks(config);
         return;
       }
 
       const localStorageConfig = JSON.parse(localStorage.getItem('config'));
       if (!localStorageConfig) {
         const config = await import('../../config.json');
-        networks.value = config.default;
+        networks.value = filterNetworks(config.default);
         return;
       }
-      networks.value = localStorageConfig;
+      networks.value = filterNetworks(localStorageConfig);
     };
 
     onMounted(async () => {
