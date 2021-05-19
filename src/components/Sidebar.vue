@@ -156,6 +156,15 @@ a.router-link-active::before {
   background: var(--primary-lightest);
 }
 
+a.router-link-active.last::before {
+  border-bottom-left-radius: var(--border-radius);
+}
+
+a.router-link-active.first::before {
+  border-top-left-radius: var(--border-radius);
+}
+
+
 .first {
   border-top-left-radius: var(--border-radius);
   border-top-right-radius: var(--border-radius);
