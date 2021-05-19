@@ -33,7 +33,10 @@
         })
       "
     >
-      <i class="fa fa-coins mr-1" />{{ networkSymbol }}
+      <div class="flex justify-end">
+        Blockchain: {{ networkSymbol }}
+        <i class="fa fa-cog ml-auto" />
+      </div>
     </a>
     <hr />
     <router-link :to="{ name: isElectron ? 'Wallet' : 'Transactions' }">
@@ -147,7 +150,7 @@ a.disabled:hover {
 }
 
 a.router-link-active::before {
-  content: "";
+  content: '';
   position: absolute;
   width: 4px;
   left: 0px;
@@ -163,7 +166,6 @@ a.router-link-active.last::before {
 a.router-link-active.first::before {
   border-top-left-radius: var(--border-radius);
 }
-
 
 .first {
   border-top-left-radius: var(--border-radius);

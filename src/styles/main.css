@@ -192,6 +192,10 @@ th {
   margin-right: auto !important;
 }
 
+.ml-auto {
+  margin-left: auto !important;
+}
+
 .mx-1 {
   margin-left: var(--unit-1);
   margin-right: var(--unit-1);
