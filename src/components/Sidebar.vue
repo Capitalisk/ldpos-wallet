@@ -122,6 +122,7 @@ export default {
   display: block;
   font-size: 12px;
   cursor: pointer;
+  position: relative;
 }
 
 a.disabled {
@@ -138,6 +139,21 @@ a.disabled:hover {
 .sidebar a:hover {
   background-color: var(--primary-lightest);
   color: var(--permanent-white);
+}
+
+.router-link-active {
+  background-color: var(--secondary);
+  color: var(--primary-lightest);
+}
+
+a.router-link-active::before {
+  content: "";
+  position: absolute;
+  width: 4px;
+  left: 0px;
+  top: 0px;
+  bottom: 0px;
+  background: var(--primary-lightest);
 }
 
 .first {

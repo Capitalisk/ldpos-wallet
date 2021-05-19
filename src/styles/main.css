@@ -20,6 +20,8 @@
   --primary-darkest: #e8e8e8;
   --switch-background: #d0d0d0;
 
+  --secondary: #353A46;
+
   --unit-1: 0.5rem;
   --unit-2: 1rem;
   --unit-3: 1.5rem;
@@ -54,7 +56,7 @@ body {
 
 hr {
   border: 0;
-  border-top: 1px solid rgba(12, 138, 228, 0.4);
+  border-top: 1px solid var(--secondary);
   border-width: 1px;
 }
 
