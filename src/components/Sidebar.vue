@@ -61,7 +61,8 @@
     </router-link>
     <hr />
     <router-link to="/settings" class="last">
-      <i class="fa fa-user-cog mr-1" />SETTINGS
+      <i class="fa fa-user-cog mr-1" />
+      BLOCKCHAINS
     </router-link>
   </div>
 </template>
