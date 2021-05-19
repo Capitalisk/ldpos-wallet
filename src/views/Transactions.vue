@@ -2,7 +2,6 @@
   <Navbar />
   <DataTable
     :columns="columns"
-    title="All transactions on the chain"
     clickable
     order="desc"
     fn="getTransactionsByTimestamp"
@@ -11,7 +10,10 @@
       <Copy :value="slotProps.row.senderAddress" />
     </template>
     <template v-slot:recipientAddress="slotProps">
-      <Copy :value="slotProps.row.recipientAddress" v-if="slotProps.row.recipientAddress" />
+      <Copy
+        :value="slotProps.row.recipientAddress"
+        v-if="slotProps.row.recipientAddress"
+      />
       <span v-else>-</span>
     </template>
   </DataTable>
@@ -53,7 +55,7 @@ export default {
         label: 'Date',
         field: 'timestamp',
         sortable: true,
-        value: (val) => _parseDate(val),
+        value: val => _parseDate(val),
         active: true,
         sorted: 'desc',
       },
@@ -62,7 +64,7 @@ export default {
         label: 'Amount',
         field: 'amount',
         sortable: false,
-        value: (val) =>
+        value: val =>
           _transformMonetaryUnit(val, store.state.config.networkSymbol),
         active: true,
       },
@@ -71,7 +73,7 @@ export default {
         label: 'Fee',
         field: 'fee',
         sortable: false,
-        value: (val) =>
+        value: val =>
           _transformMonetaryUnit(val, store.state.config.networkSymbol),
         active: true,
       },

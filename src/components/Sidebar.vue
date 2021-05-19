@@ -36,7 +36,7 @@
       <i class="fa fa-coins mr-1" />{{ networkSymbol }}
     </a>
     <hr />
-    <router-link :to="{ name: 'home' }">
+    <router-link :to="{ name: isElectron ? 'Wallet' : 'Transactions' }">
       <i class="fa fa-wallet mr-1" v-if="isElectron" />
       <i class="fa fa-exchange-alt mr-1" v-else />
       {{ isElectron ? 'WALLET' : 'TRANSACTIONS' }}
@@ -46,7 +46,7 @@
       {{ authenticated ? 'VOTING' : 'DELEGATES' }}
     </router-link>
     <hr v-if="isElectron" />
-    <router-link :to="{ name: isElectron ? 'transactions' : 'login' }">
+    <router-link :to="{ name: isElectron ? 'Transactions' : 'Wallet' }">
       <i class="fa fa-exchange-alt mr-1" v-if="isElectron" />
       <i class="fa fa-wallet mr-1" v-else />
       {{ isElectron ? 'TRANSACTIONS' : 'WALLET' }}

@@ -3,7 +3,7 @@
     {{ connected ? `Connected: ${network}` : 'Disconnected' }}
   </span>
   <span
-    class="dot"
+    class="dot mr-2"
     :style="{
       backgroundColor: connected ? 'var(--success)' : 'var(--danger)',
     }"
@@ -34,7 +34,6 @@ export default {
   width: 6px;
   display: inline-block;
   border-radius: 50%;
-  margin-right: auto;
 }
 
 .connection {

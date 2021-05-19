@@ -1,6 +1,6 @@
 <template>
   <div class="section pa-2">
-    <h2>{{ title }}</h2>
+    <h2 v-if="title">{{ title }}</h2>
 
     <Loading v-if="loading" />
     <p v-else-if="!loading && error" class="text-error">
@@ -20,7 +20,7 @@ import Loading from './Loading';
 export default {
   name: 'Section',
   props: {
-    title: { type: String },
+    title: { type: String, default: null },
     loading: { type: Boolean },
     error: { type: String, default: null },
     border: { type: String, default: null },

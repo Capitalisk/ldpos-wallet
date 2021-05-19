@@ -1,15 +1,15 @@
 <template>
   <div class="navbar flex justify-end align-center text-right">
+    <h1 class="mr-auto">{{ $route.name }}</h1>
     <Connected />
     <span class="flex justify-center align-center mr-2">
       <Switch v-model="darkMode" id="darkmode-switch" />
-      <span class="ml-1">Dark mode</span>
     </span>
-    <Button
+    <!-- <Button
       icon="cog"
       value="Add network"
       @click="toggleModal({ type: ADD_TOKEN_MODAL, title: 'Add a network' })"
-    />
+    /> -->
     <Button
       v-if="authenticated"
       value="Sign out"

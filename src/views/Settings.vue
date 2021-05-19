@@ -1,7 +1,7 @@
 <template>
   <Navbar />
   <div class="flex flex-wrap flex-gap">
-    <Section title="Manage networks" class="flex-12">
+    <Section class="flex-12">
       Network
       <div class="flex row my-1">
         <div class="flex-auto">

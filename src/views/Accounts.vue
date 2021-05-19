@@ -2,7 +2,6 @@
   <Navbar />
   <DataTable
     :columns="columns"
-    title="All accounts in the chain"
     clickable
     fn="getAccountsByBalance"
   >

@@ -2,7 +2,6 @@
   <Navbar />
   <DataTable
     :columns="columns"
-    title="All blocks in the chain"
     clickable
     fn="getBlocksByTimestamp"
   >

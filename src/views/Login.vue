@@ -4,7 +4,6 @@
   <div v-else class="flex flex-wrap flex-gap">
     <Section
       v-if="!address.data"
-      title="Sign in to your wallet"
       class="flex-12"
     >
       <span class="text-error" v-if="generatedWalletAddress.error">
@@ -72,7 +71,7 @@
         </div>
       </div>
     </Section>
-    <Section v-if="!generatedWalletAddress.data" title="" class="flex-12">
+    <Section v-if="!generatedWalletAddress.data" class="flex-12">
       <div>
         <div class="flex justify-center">
           Don't have a {{ token }} wallet yet?

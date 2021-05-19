@@ -6,7 +6,7 @@ import store from '../store';
 const routes = [
   {
     path: '/',
-    name: 'home',
+    name: process.env.IS_ELECTRON ? 'Wallet' : 'Transactions',
     component: () =>
       process.env.IS_ELECTRON
         ? import(/* webpackChunkName: "login" */ '../views/Login.vue')
@@ -22,7 +22,7 @@ const routes = [
   },
   {
     path: process.env.IS_ELECTRON ? '/transactions' : '/login',
-    name: process.env.IS_ELECTRON ? 'transactions' : 'login',
+    name: process.env.IS_ELECTRON ? 'Transactions' : 'Wallet',
     component: () =>
       process.env.IS_ELECTRON
         ? import(
