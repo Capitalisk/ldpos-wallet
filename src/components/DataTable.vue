@@ -1,6 +1,6 @@
 <template>
   <div class="table flex column">
-    <div class="header flex justify-end pa-2">
+    <div v-if="hasHeaderSlot" class="header flex justify-end pa-2">
       <div class="mr-auto">
         <slot name="header" />
         <h2 v-if="title">{{ title }}</h2>
@@ -22,7 +22,7 @@
       <table v-if="rows && rows.length">
         <thead>
           <template v-for="(c, i) in columns" :key="i">
-            <th v-if="c.active" class="px-2 py-4">
+            <th v-if="c.active" class="pa-2">
               <div class="flex justify-end">
                 <div class="mr-auto">
                   {{ c.label }}
@@ -49,7 +49,7 @@
             <template v-for="(c, i) in columns" :key="i">
               <td
                 :class="
-                  `px-2 py-4 mr-2  ${c.class || ''} ${
+                  `px-2 py-3 mr-2  ${c.class || ''} ${
                     clickable ? 'cursor-pointer' : ''
                   }`
                 "
@@ -104,7 +104,7 @@ export default {
     order: { type: String, default: 'desc' },
     offset: { type: Number, default: 0 },
   },
-  setup(props, { emit }) {
+  setup(props, { emit, slots }) {
     const store = inject('store');
 
     const rows = ref([]);
@@ -164,7 +164,7 @@ export default {
       // If less rows then limit don't load more
       if (rows.value.length < limit.value * countLoadMore.value) return;
 
-      countLoadMore.value++
+      countLoadMore.value++;
 
       if (props.fn) {
         if (store.state.progressbarLoading) return;
@@ -232,6 +232,7 @@ export default {
           type: DETAIL_MODAL,
           data,
         }),
+      hasHeaderSlot: !!slots.header,
     };
   },
   components: { Button, Popup },
