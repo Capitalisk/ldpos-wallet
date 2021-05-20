@@ -31,6 +31,13 @@ a.button {
   text-decoration: none;
   background-color: var(--primary-lighter);
   color: var(--permanent-white);
+  text-transform: uppercase;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 16px;
+  letter-spacing: 1.25px;
+  text-transform: uppercase;
 }
 
 a.button.warning {

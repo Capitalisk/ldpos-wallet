@@ -2,10 +2,7 @@
   <Navbar />
   <Wallet v-if="authenticated" />
   <div v-else class="flex flex-wrap flex-gap">
-    <Section
-      v-if="!address.data"
-      class="flex-12"
-    >
+    <Section v-if="!address.data" class="flex-12">
       <span class="text-error" v-if="generatedWalletAddress.error">
         {{ generatedWalletAddress.error }}
       </span>
