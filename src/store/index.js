@@ -27,6 +27,8 @@ const state = reactive({
     type: null,
     title: null,
     data: null,
+    // Used for navigation through modals and being able to go back
+    stack: [],
   },
   darkMode: true,
   notifications: [],
@@ -111,10 +113,10 @@ export default {
 
     // Disconnect and connect all clients and all nets
     try {
-      const values = Object.values(state.clients)
+      const values = Object.values(state.clients);
       for (let i = 0; i < Object.keys(state.clients).length; i++) {
         const client = values[i];
-        const clientValues = Object.values(client)
+        const clientValues = Object.values(client);
         for (let i = 0; i < Object.keys(client).length; i++) {
           const c = clientValues[i];
           await c.disconnect();
@@ -128,8 +130,27 @@ export default {
 
     this.mutateProgressbarLoading(false);
   },
-  toggleModal({ type = null, data = null, title = null } = {}) {
-    state.modal.active = !state.modal.active;
+  toggleOrBrowseModal({
+    type = null,
+    data = null,
+    title = null,
+    back = false,
+  } = {}) {
+    if (!type && !back) {
+      state.modal.active = false;
+      state.modal.stack = [];
+    } else {
+      if (back) state.modal.stack = state.modal.stack.slice(0, -1);
+      else state.modal.stack.push({ type, data, title });
+
+      const i = state.modal.stack.length - 1;
+      state.modal.type = state.modal.stack[i].type;
+      state.modal.title = state.modal.stack[i].title;
+      state.modal.data = state.modal.stack[i].data;
+      state.modal.active = true;
+    }
+
+    // state.modal.active = !state.modal.active;
     if (state.modal.active) {
       document.documentElement.style.overflow = 'hidden';
       document.body.scroll = 'no';
@@ -137,9 +158,6 @@ export default {
       document.documentElement.style.overflow = 'auto';
       document.body.scroll = 'yes';
     }
-    state.modal.type = type;
-    state.modal.title = title;
-    state.modal.data = data;
   },
   toggleDarkMode() {
     state.darkMode = !state.darkMode;

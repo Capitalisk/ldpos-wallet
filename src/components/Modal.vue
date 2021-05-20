@@ -1,7 +1,12 @@
 <template>
   <div class="modal-background flex justify-center align-center" v-if="active">
     <div class="wrapper">
-      <div class="close-btn cursor-pointer" @click="toggleModal">&#10005;</div>
+      <div class="close-btn cursor-pointer" @click="toggleOrBrowseModal()">
+        &#10005;
+      </div>
+      <div v-if="stack.length > 1" class="back-btn cursor-pointer" @click="toggleOrBrowseModal({ back: true })">
+        <i class="fa fa-arrow-left" />
+      </div>
       <Section
         :title="title || (type && capitalize(type.toLowerCase()))"
         class="modal"
@@ -37,7 +42,8 @@ export default {
       type: computed(() => store.state.modal.type),
       title: computed(() => store.state.modal.title),
       data: computed(() => store.state.modal.data),
-      toggleModal: () => store.toggleModal(),
+      stack: computed(() => store.state.modal.stack),
+      toggleOrBrowseModal: store.toggleOrBrowseModal,
       ...modalConstants,
       capitalize: _capitalize,
     };
@@ -70,6 +76,15 @@ export default {
   z-index: 2;
 }
 
+.back-btn {
+  position: absolute;
+  top: -2.5rem;
+  left: 0.25rem;
+  font-size: var(--unit-3);
+  color: var(--permanent-white);
+  z-index: 2;
+}
+
 .force-modal-scroll {
   overflow-y: auto;
   max-height: 70vh;
@@ -95,6 +110,13 @@ export default {
     position: fixed;
     top: 15px;
     right: 15px;
+    color: var(--dark);
+  }
+
+  .back-btn {
+    position: fixed;
+    top: 15px;
+    left: 15px;
     color: var(--dark);
   }
 }

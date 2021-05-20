@@ -5,11 +5,6 @@
     <span class="flex justify-center align-center mr-2">
       <Switch v-model="darkMode" id="darkmode-switch" />
     </span>
-    <!-- <Button
-      icon="cog"
-      value="Add network"
-      @click="toggleModal({ type: ADD_TOKEN_MODAL, title: 'Add a network' })"
-    /> -->
     <Button
       v-if="authenticated"
       value="Sign out"
@@ -32,7 +27,6 @@
 
 <script>
 import { computed, inject } from 'vue';
-import { ADD_TOKEN_MODAL } from './modals/constants';
 
 import Button from './Button';
 import Connected from './Connected.vue';
@@ -51,8 +45,6 @@ export default {
         set: val => store.toggleDarkMode(),
       }),
       isElectron: process.env.IS_ELECTRON,
-      ADD_TOKEN_MODAL,
-      toggleModal: store.toggleModal,
     };
   },
   components: { Button, Connected, Switch },

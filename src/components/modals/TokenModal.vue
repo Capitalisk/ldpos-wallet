@@ -25,6 +25,11 @@
   </div>
   <div class="flex justify-end">
     <Button
+      value="Add network"
+      @click="toggleOrBrowseModal({ type: ADD_TOKEN_MODAL, title: 'Add a network' })"
+      class="mr-1"
+    />
+    <Button
       value="Connect"
       @click="connect"
       :class="hasErrors ? 'danger' : '' || ''"
@@ -36,6 +41,7 @@
 import { ref, reactive, computed, inject, onUpdated, onMounted } from 'vue';
 
 import { CONFIG_FILE_PATH, CONFIG_PATH } from '../../constants';
+import { ADD_TOKEN_MODAL } from './constants';
 
 import Input from '../Input';
 import Button from '../Button';
@@ -102,7 +108,7 @@ export default {
         try {
           const config = networks.value[network.value][type.value];
           await store.connect({ [type.value]: config }, type.value);
-          store.toggleModal();
+          store.toggleOrBrowseModal();
         } catch (e) {
           store.notify({ message: `Error: ${e.message}`, error: true }, 5);
           console.error(e);
@@ -118,6 +124,8 @@ export default {
         );
       },
       isDevelopment,
+            ADD_TOKEN_MODAL,
+      toggleOrBrowseModal: store.toggleOrBrowseModal,
     };
   },
   components: { Input, Button, Select },

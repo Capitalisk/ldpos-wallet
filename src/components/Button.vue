@@ -1,7 +1,7 @@
 <template>
   <a class="button cursor-pointer text-center" v-if="!routerLink">
     <i v-if="!loading && icon" :class="`fa fa-${icon} mr-1`" />
-    <i class="fa fa-circle-notch fa-spin mr-1" v-if="loading"></i>{{ value }}
+    <i class="fa fa-circle-notch fa-spin mr-1" v-if="loading" />{{ value }}
   </a>
   <router-link class="button" v-else :to="href">
     <i v-if="!loading && icon" :class="`fa fa-${icon} mr-2`" />

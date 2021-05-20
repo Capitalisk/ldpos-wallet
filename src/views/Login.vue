@@ -196,7 +196,7 @@ export default {
     });
 
     const openTransferModal = () => {
-      store.toggleModal({ type: TRANSFER_MODAL });
+      store.toggleOrBrowseModal({ type: TRANSFER_MODAL });
     };
 
     const generateWallet = async () => {

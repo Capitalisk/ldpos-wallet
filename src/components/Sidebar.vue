@@ -27,7 +27,7 @@
       to="/"
       class="first"
       @click="
-        toggleModal({
+        toggleOrBrowseModal({
           type: TOKEN_MODAL,
           title: 'Connect to an existing network',
         })
@@ -90,7 +90,7 @@ export default {
       ),
       TOKEN_MODAL,
       ADD_TOKEN_MODAL,
-      toggleModal: m => store.toggleModal(m),
+      toggleOrBrowseModal: m => store.toggleOrBrowseModal(m),
       toggleBurger: () => store.toggleNav(),
       deauthenticate: () => store.deauthenticate(),
       isElectron: process.env.IS_ELECTRON,

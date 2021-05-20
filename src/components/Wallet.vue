@@ -273,7 +273,7 @@ export default {
       pendingTransactions: computed(() => pendingTransactions),
       openTransferModal: () =>
         balance.data > 0
-          ? store.toggleModal({ type: TRANSFER_MODAL })
+          ? store.toggleOrBrowseModal({ type: TRANSFER_MODAL })
           : store.notify(
               {
                 message:
@@ -283,7 +283,7 @@ export default {
               5,
             ),
       details: data =>
-        store.toggleModal({
+        store.toggleOrBrowseModal({
           type: DETAIL_MODAL,
           data,
         }),

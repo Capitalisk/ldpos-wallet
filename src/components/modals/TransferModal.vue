@@ -161,7 +161,7 @@ export default {
         );
         loading.value = false;
 
-        store.toggleModal();
+        store.toggleOrBrowseModal();
       },
       decimalToInteger: _decimalToInteger,
       transformMonetaryUnit: _transformMonetaryUnit,

@@ -68,7 +68,7 @@ export default {
               );
 
               store.notify({ message: 'Added network!' }, 5);
-              store.toggleModal();
+              store.toggleOrBrowseModal();
             } catch (e) {
               console.error(e);
               store.notify({ message: `Error: ${e.message}`, error: true }, 5);
@@ -96,7 +96,7 @@ export default {
 
             localStorage.setItem('config', JSON.stringify(originalConfig));
             store.notify({ message: 'Added network!' }, 5);
-            store.toggleModal();
+            store.toggleOrBrowseModal();
           }
         } catch (e) {
           store.notify({ message: `Error: ${e.message}`, error: true }, 5);

@@ -228,7 +228,7 @@ export default {
       sort,
       togglePopup: () => (popupActive.value = !popupActive.value),
       detail: data =>
-        store.toggleModal({
+        store.toggleOrBrowseModal({
           type: DETAIL_MODAL,
           data,
         }),
