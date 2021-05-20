@@ -25,7 +25,7 @@
   </div>
   <div class="flex justify-end">
     <Button
-      value="Add network"
+      value="Add blockchain"
       @click="toggleOrBrowseModal({ type: ADD_TOKEN_MODAL, title: 'Add a network' })"
       class="mr-1"
     />
