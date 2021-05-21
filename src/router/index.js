@@ -43,10 +43,10 @@ const routes = [
       import(/* webpackChunkName: "accounts" */ '../views/Accounts.vue'),
   },
   {
-    path: '/settings',
-    name: 'Settings',
+    path: '/blockchains',
+    name: 'Blockchains',
     component: () =>
-      import(/* webpackChunkName: "settings" */ '../views/Settings.vue'),
+      import(/* webpackChunkName: "blockchains" */ '../views/Blockchains.vue'),
   },
 ];
 
