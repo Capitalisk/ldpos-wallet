@@ -63,7 +63,7 @@
       ACCOUNTS
     </router-link>
     <hr />
-    <router-link to="/settings" class="last">
+    <router-link to="/blockchains" class="last">
       <i class="fa fa-user-cog mr-1" />
       BLOCKCHAINS
     </router-link>
