@@ -1,6 +1,5 @@
 <template>
   <div class="flex column fullwidth">
-    <hr />
     <template v-for="(value, key) in data" :key="key">
       <div v-if="!Array.isArray(value)" class="flex column my-2 px-1">
         <div class="title">
