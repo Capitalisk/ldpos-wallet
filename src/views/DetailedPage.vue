@@ -1,6 +1,5 @@
 <template>
   <Navbar />
-  <div v-if="dataTable">True</div>
   <Section>
     <DataTable
       v-if="dataTable && data.fn"
