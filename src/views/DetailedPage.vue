@@ -70,13 +70,13 @@ export default {
 
     const columns = ref([
       { name: 'type', label: 'type', field: 'type', sortable: false, active: true },
-      {
-        name: 'senderAddress',
-        label: 'Sender',
-        field: 'senderAddress',
-        sortable: false,
-        active: true,
-      },
+      // {
+      //   name: 'senderAddress',
+      //   label: 'Sender',
+      //   field: 'senderAddress',
+      //   sortable: false,
+      //   active: true,
+      // },
       {
         name: 'recipientAddress',
         label: 'Recipient',
