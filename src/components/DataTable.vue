@@ -103,6 +103,7 @@ export default {
     limit: { type: Number, default: 25 },
     order: { type: String, default: 'desc' },
     offset: { type: Number, default: 0 },
+    arg: { type: String, default: null },
   },
   setup(props, { emit, slots }) {
     const store = inject('store');
@@ -117,22 +118,28 @@ export default {
     const popupActive = ref(false);
 
     const getData = async () => {
-      let data;
       if (typeof props.fn === 'string') {
-        data = await store.client.value[props.fn](
+        if (props.arg) {
+          return await store.client.value[props.fn](
+            props.arg,
+            null,
+            offset.value,
+            limit.value,
+            order.value,
+          );
+        }
+        return await store.client.value[props.fn](
           offset.value,
           limit.value,
           order.value,
         );
       } else if (typeof props.fn === 'function') {
-        data = await props.fn();
+        return await props.fn();
       } else {
         throw new Error(
           `fn should be a function or string, not a ${typeof props.fn}`,
         );
       }
-
-      return data;
     };
 
     onMounted(async () => {
