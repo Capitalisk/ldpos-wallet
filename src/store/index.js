@@ -29,6 +29,7 @@ const state = reactive({
     data: null,
     // Used for navigation through modals and being able to go back
     stack: [],
+    routerGoBack: false,
   },
   darkMode: true,
   notifications: [],
@@ -135,7 +136,18 @@ export default {
     data = null,
     title = null,
     back = false,
+    hasPrefix = false,
   } = {}) {
+    // We changed the URL on opening the modal we need to change it back when we close it.
+    if (state.modal.routerGoBack) {
+      window.history.go(-1);
+      state.modal.routerGoBack = false;
+    }
+    if (hasPrefix) {
+      state.modal.routerGoBack = true;
+    }
+
+    // We want the modal to be stackable, opening a model inside a modal and return to the previous model
     if (!type && !back) {
       state.modal.active = false;
       state.modal.stack = [];

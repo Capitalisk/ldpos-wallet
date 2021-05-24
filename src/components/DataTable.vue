@@ -104,6 +104,7 @@ export default {
     order: { type: String, default: 'desc' },
     offset: { type: Number, default: 0 },
     arg: { type: String, default: null },
+    prefix: { type: String, default: null },
   },
   setup(props, { emit, slots }) {
     const store = inject('store');
@@ -234,11 +235,17 @@ export default {
       getShortValue,
       sort,
       togglePopup: () => (popupActive.value = !popupActive.value),
-      detail: data =>
+      detail: data => {
+        if (props.prefix) {
+          let newUrlIS = `${window.location.origin}/#/${props.prefix}/${data.id || data.address}`;
+          history.pushState({}, null, newUrlIS);
+        }
         store.toggleOrBrowseModal({
           type: DETAIL_MODAL,
           data,
-        }),
+          hasPrefix: true,
+        });
+      },
       hasHeaderSlot: !!slots.header,
     };
   },
