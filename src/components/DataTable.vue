@@ -243,7 +243,7 @@ export default {
         store.toggleOrBrowseModal({
           type: DETAIL_MODAL,
           data,
-          hasPrefix: true,
+          hasPrefix: props.prefix ? true : false,
         });
       },
       hasHeaderSlot: !!slots.header,
