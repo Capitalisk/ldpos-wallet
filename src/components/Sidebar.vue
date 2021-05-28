@@ -39,20 +39,21 @@
       </div>
     </a>
     <hr />
-    <router-link :to="{ name: isElectron ? 'Wallet' : 'Transactions' }">
-      <i class="fa fa-wallet mr-1" v-if="isElectron" />
+    <router-link :to="{ name: useAsWallet ? 'Wallet' : 'Transactions' }">
+      {{ useAsWallet }}
+      <i class="fa fa-wallet mr-1" v-if="useAsWallet" />
       <i class="fa fa-exchange-alt mr-1" v-else />
-      {{ isElectron ? 'WALLET' : 'TRANSACTIONS' }}
+      {{ useAsWallet ? 'WALLET' : 'TRANSACTIONS' }}
     </router-link>
     <router-link to="/voting">
       <i class="fa fa-poll mr-1" />
       {{ authenticated ? 'VOTING' : 'DELEGATES' }}
     </router-link>
-    <hr v-if="isElectron" />
-    <router-link :to="{ name: isElectron ? 'Transactions' : 'Wallet' }">
-      <i class="fa fa-exchange-alt mr-1" v-if="isElectron" />
+    <hr v-if="useAsWallet" />
+    <router-link :to="{ name: useAsWallet ? 'Transactions' : 'Wallet' }">
+      <i class="fa fa-exchange-alt mr-1" v-if="useAsWallet" />
       <i class="fa fa-wallet mr-1" v-else />
-      {{ isElectron ? 'TRANSACTIONS' : 'WALLET' }}
+      {{ useAsWallet ? 'TRANSACTIONS' : 'WALLET' }}
     </router-link>
     <router-link to="/blocks">
       <i class="fa fa-th-large mr-1" />
@@ -93,7 +94,7 @@ export default {
       toggleOrBrowseModal: m => store.toggleOrBrowseModal(m),
       toggleBurger: () => store.toggleNav(),
       deauthenticate: () => store.deauthenticate(),
-      isElectron: process.env.IS_ELECTRON,
+      useAsWallet: process.env.VUE_APP_USE_AS_WALLET === 'true',
       isDevelopment: process.env.NODE_ENV === 'development',
     };
   },
