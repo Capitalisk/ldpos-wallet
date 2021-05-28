@@ -40,6 +40,17 @@ a.button {
   text-transform: uppercase;
 }
 
+a.button.outline {
+  border: 1px solid var(--primary-lighter);
+  background-color: inherit;
+}
+
+a.button.outline.warning {
+  border: 1px solid var(--warning);
+  background-color: var(--warning);
+  color: var(--permanent-dark);
+}
+
 a.button.warning {
   background-color: var(--warning);
   color: var(--permanent-dark);

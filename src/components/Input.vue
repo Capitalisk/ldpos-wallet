@@ -96,6 +96,11 @@ export default {
   color: var(--dark);
 }
 
+.input.primary-darker {
+  background-color: var(--primary-darker);
+  color: var(--dark);
+}
+
 .input:disabled {
   color: var(--disabled) !important;
 }
@@ -119,7 +124,7 @@ export default {
 
 .prefix {
   position: absolute;
-  left: 0.5em;
+  left: 1.5em;
 }
 
 .suffix {

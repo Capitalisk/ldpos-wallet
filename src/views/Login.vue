@@ -2,40 +2,46 @@
   <Navbar />
   <Wallet v-if="authenticated" />
   <div v-else class="flex flex-wrap flex-gap">
-    <Section v-if="!address.data" class="flex-12">
-      <span class="text-error" v-if="generatedWalletAddress.error">
-        {{ generatedWalletAddress.error }}
-      </span>
-      <span v-else-if="generatedWalletAddress.data">
-        <p class="text-error pb-2">
-          <strong>IMPORTANT:</strong><br />
-          Write this down in a safe place!<br />
-          Losing the passphrase is losing its assets as well!
-        </p>
-        <strong>Address</strong>
-        <Copy :value="generatedWalletAddress.data.address" /><br />
-        <strong>Passphrase</strong>
-        <Copy :value="generatedWalletAddress.data.passphrase" />
-      </span>
-      <div
-        v-if="!generatedWalletAddress.data"
-        class="flex justify-center flex-wrap"
-      >
-        <div class="login flex flex-wrap flex-gap justify-center pb-2">
-          <div class="flex-6 pa-2">Passphrase</div>
-          <div
-            @click="toggleHidden"
-            class="flex-6 pa-2 text-right cursor-pointer"
-            id="show"
-          >
-            <span v-if="hidden"><i class="fas fa-eye-slash mr-1"></i>Show</span>
-            <span v-else><i class="fas fa-eye mr-1"></i>Hide</span>
-          </div>
-          <div v-for="(input, i) in inputs" :key="i" class="flex align-center">
-            <div class="input-number">{{ i + 1 }}.</div>
-            <div>
+    <Section v-if="!address.data" class="pa-0 fullwidth">
+      <div class="flex-12 pa-2">
+        <span class="text-error" v-if="generatedWalletAddress.error">
+          {{ generatedWalletAddress.error }}
+        </span>
+        <span v-else-if="generatedWalletAddress.data">
+          <p class="text-error pb-2">
+            <strong>IMPORTANT:</strong><br />
+            Write this down in a safe place!<br />
+            Losing the passphrase is losing its assets as well!
+          </p>
+          <strong>Address</strong>
+          <Copy :value="generatedWalletAddress.data.address" /><br />
+          <strong>Passphrase</strong>
+          <Copy :value="generatedWalletAddress.data.passphrase" />
+        </span>
+        <div
+          v-if="!generatedWalletAddress.data"
+          class="flex justify-center flex-wrap"
+        >
+          <div class="flex flex-wrap flex-gap justify-center pb-2">
+            <div class="flex-6 pa-2">Passphrase</div>
+            <div
+              @click="toggleHidden"
+              class="flex-6 pa-2 text-right cursor-pointer"
+              id="show"
+            >
+              <span v-if="hidden"
+                ><i class="fas fa-eye-slash mr-1"></i>Show</span
+              >
+              <span v-else><i class="fas fa-eye mr-1"></i>Hide</span>
+            </div>
+            <div
+              v-for="(input, i) in inputs"
+              :key="i"
+              class="flex align-center"
+            >
               <Input
-                class="mx-1 text-center primary-darkest"
+                :prefix="i + 1"
+                class="mx-1 text-center primary-darker"
                 v-model="input.value"
                 :type="hidden ? 'password' : 'text'"
                 :id="`passphrase-${i}`"
@@ -55,37 +61,40 @@
             </div>
           </div>
         </div>
-      </div>
-      <div class="flex column">
-        <div class="flex justify-center">
-          <Button
-            :value="loggingIn ? 'Hang in there...' : 'Sign in'"
-            class="ma-2"
-            :class="loggingIn ? 'warning' : ''"
-            @click="signin"
-            :loading="loggingIn"
-          />
+        <div class="flex column">
+          <div class="flex justify-center">
+            <Button
+              :value="loggingIn ? 'Hang in there...' : 'Sign in'"
+              class="ma-2"
+              :class="loggingIn ? 'warning' : ''"
+              @click="signin"
+              :loading="loggingIn"
+            />
+          </div>
         </div>
       </div>
-    </Section>
-    <Section v-if="!generatedWalletAddress.data" class="flex-12">
-      <div>
-        <div class="flex justify-center">
-          Don't have a {{ token }} wallet yet?
+      <Section
+        v-if="!generatedWalletAddress.data"
+        class="flex-12 bg-primary-darker"
+      >
+        <div>
+          <div class="flex justify-center">
+            Don't have a {{ token }} wallet yet?
+          </div>
+          <div class="flex justify-center">
+            <!-- TODO: Color danger on invalid -->
+            <Button
+              :value="
+                generatedWalletAddress.loading ? 'Generating...' : 'Create one'
+              "
+              class="ma-1 outline"
+              :class="generatedWalletAddress.loading ? 'warning' : ''"
+              @click="generateWallet"
+              :loading="generatedWalletAddress.loading"
+            />
+          </div>
         </div>
-        <div class="flex justify-center">
-          <!-- TODO: Color danger on invalid -->
-          <Button
-            :value="
-              generatedWalletAddress.loading ? 'Generating...' : 'Create one'
-            "
-            class="ma-1"
-            :class="generatedWalletAddress.loading ? 'warning' : ''"
-            @click="generateWallet"
-            :loading="generatedWalletAddress.loading"
-          />
-        </div>
-      </div>
+      </Section>
     </Section>
   </div>
 </template>
@@ -258,10 +267,6 @@ export default {
 </script>
 
 <style scoped>
-.login {
-  max-width: 985px;
-}
-
 .input-number {
   width: 15px;
 }

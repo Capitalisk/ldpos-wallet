@@ -46,6 +46,10 @@ export default {
   min-height: 150px;
 }
 
+.bg-primary-darker {
+  background-color: var(--primary-darker);
+}
+
 .section.modal {
   background-color: var(--white);
 }

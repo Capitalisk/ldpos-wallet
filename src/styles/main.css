@@ -303,7 +303,7 @@ th {
 }
 
 .pa-0 {
-  padding: 0;
+  padding: 0 !important;
 }
 
 .pa-1 {
