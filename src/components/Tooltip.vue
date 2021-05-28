@@ -39,9 +39,9 @@ export default {
 <style scoped>
 .tooltip {
   position: fixed;
-  border: 1px solid var(--dark);
+  /* border: 1px solid var(--dark); */
   border-radius: var(--border-radius);
-  background-color: var(--primary);
+  background-color: var(--primary-darker);
   max-width: 30vw;
   z-index: 10;
 }

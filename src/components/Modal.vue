@@ -63,7 +63,7 @@ export default {
 
 .wrapper {
   position: relative;
-  width: 75%;
+  width: 50%;
   max-height: 75%;
 }
 
