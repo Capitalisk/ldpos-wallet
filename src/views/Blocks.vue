@@ -7,7 +7,7 @@
     prefix="block"
   >
     <template v-slot:forgerAddress="slotProps">
-      <Copy :value="slotProps.row.forgerAddress" />
+      <Copy :value="slotProps.row.forgerAddress" :shrink="slotProps.shrink" />
     </template>
   </DataTable>
 </template>

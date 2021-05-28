@@ -1,6 +1,6 @@
 <template>
   <div class="nowrap">
-    <span ref="copyRef">{{ value }}</span>
+    <span ref="copyRef">{{ shrink(value) }}</span>
     <i
       class="fas fa-copy cursor-pointer pl-1"
       @click.prevent.stop
@@ -17,6 +17,7 @@ export default {
   props: {
     value: { type: String, default: '' },
     trim: { type: Boolean, default: false },
+    shrink: { type: Boolean, default: false },
   },
   setup(props) {
     const store = inject('store');
@@ -33,6 +34,17 @@ export default {
         document.body.removeChild(copyText);
 
         store.notify({ message: `Copied: ${props.value}` }, 5);
+      },
+      shrink: val => {
+        if (val.length > 16) {
+          const arr = val.split('');
+          return [
+            ...arr.slice(0, 9),
+            '...',
+            ...arr.slice(arr.length - 5, arr.length),
+          ].join('');
+        }
+        return val.toString();
       },
       copyRef,
       value: computed(() =>

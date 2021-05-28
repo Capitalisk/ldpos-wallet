@@ -8,12 +8,13 @@
     prefix="transaction"
   >
     <template v-slot:senderAddress="slotProps">
-      <Copy :value="slotProps.row.senderAddress" />
+      <Copy :value="slotProps.row.senderAddress" :shrink="slotProps.shrink" />
     </template>
     <template v-slot:recipientAddress="slotProps">
       <Copy
         :value="slotProps.row.recipientAddress"
         v-if="slotProps.row.recipientAddress"
+        :shrink="slotProps.shrink"
       />
       <span v-else>-</span>
     </template>

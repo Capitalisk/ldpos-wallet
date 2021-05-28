@@ -38,7 +38,7 @@
       />
     </template>
     <template v-slot:address="slotProps">
-      <Copy :value="slotProps.row.address" />
+      <Copy :value="slotProps.row.address" :shrink="slotProps.shrink" />
     </template>
   </DataTable>
 </template>

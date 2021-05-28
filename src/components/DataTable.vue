@@ -57,7 +57,14 @@
                 v-if="c.active"
               >
                 <template v-if="c.slot">
-                  <slot :name="c.name" :row="r" :column="c" />
+                  <slot
+                    :name="c.name"
+                    :row="r"
+                    :column="c"
+                    :shrink="
+                      innerWidth < 1400 || table.scrollWidth > table.offsetWidth
+                    "
+                  />
                 </template>
                 <template v-else>
                   {{
@@ -237,7 +244,9 @@ export default {
       togglePopup: () => (popupActive.value = !popupActive.value),
       detail: data => {
         if (props.prefix) {
-          let newUrlIS = `${window.location.origin}/#/${props.prefix}/${data.id || data.address}`;
+          let newUrlIS = `${window.location.origin}/#/${
+            props.prefix
+          }/${data.id || data.address}`;
           history.pushState({}, null, newUrlIS);
         }
         store.toggleOrBrowseModal({
@@ -247,6 +256,7 @@ export default {
         });
       },
       hasHeaderSlot: !!slots.header,
+      innerWidth: window.innerWidth,
     };
   },
   components: { Button, Popup },
