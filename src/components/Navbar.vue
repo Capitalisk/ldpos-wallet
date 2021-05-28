@@ -53,7 +53,6 @@ export default {
 
 <style scoped>
 .navbar {
-  align-items: center;
   padding: var(--unit-2) var(--unit-2);
   min-height: 36px;
 }

@@ -75,24 +75,22 @@
       </div>
       <Section
         v-if="!generatedWalletAddress.data"
-        class="flex-12 bg-primary-darker"
+        class="flex bg-primary-darker justify-center align-center"
       >
-        <div>
-          <div class="flex justify-center">
-            Don't have a {{ token }} wallet yet?
-          </div>
-          <div class="flex justify-center">
-            <!-- TODO: Color danger on invalid -->
-            <Button
-              :value="
-                generatedWalletAddress.loading ? 'Generating...' : 'Create one'
-              "
-              class="ma-1 outline"
-              :class="generatedWalletAddress.loading ? 'warning' : ''"
-              @click="generateWallet"
-              :loading="generatedWalletAddress.loading"
-            />
-          </div>
+        <div class="flex-12 align-center">
+          Don't have a {{ token }} wallet yet?
+        </div>
+        <div class="flex justify-center">
+          <!-- TODO: Color danger on invalid -->
+          <Button
+            :value="
+              generatedWalletAddress.loading ? 'Generating...' : 'Create one'
+            "
+            class="ma-1 outline"
+            :class="generatedWalletAddress.loading ? 'warning' : ''"
+            @click="generateWallet"
+            :loading="generatedWalletAddress.loading"
+          />
         </div>
       </Section>
     </Section>
