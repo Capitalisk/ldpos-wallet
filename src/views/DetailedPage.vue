@@ -50,6 +50,8 @@ export default {
             await store.client.value.getTransaction(route.params.transaction),
           delegate: async () =>
             await store.client.value.getDelegate(route.params.delegate),
+          block: async () =>
+            await store.client.value.getBlock(route.params.block),
           default: () => {},
         };
 
@@ -68,7 +70,13 @@ export default {
     });
 
     const columns = ref([
-      { name: 'type', label: 'type', field: 'type', sortable: false, active: true },
+      {
+        name: 'type',
+        label: 'type',
+        field: 'type',
+        sortable: false,
+        active: true,
+      },
       // {
       //   name: 'senderAddress',
       //   label: 'Sender',

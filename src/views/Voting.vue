@@ -23,7 +23,13 @@
       </div>
     </Section>
   </div>
-  <DataTable :columns="columns" :title="title" fn="getDelegatesByVoteWeight">
+  <DataTable
+    :columns="columns"
+    :title="title"
+    fn="getDelegatesByVoteWeight"
+    clickable
+    prefix="delegate"
+  >
     <template v-slot:vote="slotProps">
       <Button
         value="Vote"

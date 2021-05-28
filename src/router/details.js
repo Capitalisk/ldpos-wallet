@@ -29,6 +29,12 @@ export default [
       import(/* webpackChunkName: "delegateid" */ '../views/DetailedPage.vue'),
   },
   {
+    path: '/block/:block',
+    name: 'Block details',
+    component: () =>
+      import(/* webpackChunkName: "blockid" */ '../views/DetailedPage.vue'),
+  },
+  {
     path: '/:pathMatch(.*)',
     name: 'Error 404',
     component: () =>
