@@ -7,7 +7,7 @@
       v-if="authenticated"
       class="flex-3"
     >
-      <Copy class="mb-auto" :value="address.data" trim />
+      <Copy class="mb-auto" :value="address.data" shrink />
     </Section>
     <Section
       :loading="balance.loading && !balance.data"

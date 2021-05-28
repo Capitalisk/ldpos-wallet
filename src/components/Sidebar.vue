@@ -145,7 +145,7 @@ a.disabled:hover {
 }
 
 .router-link-active {
-  background-color: var(--secondary);
+  background-color: var(--primary-darker);
   color: var(--primary-lightest);
 }
 
