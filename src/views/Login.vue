@@ -3,8 +3,12 @@
   <Wallet v-if="authenticated" />
   <div v-else class="flex flex-wrap flex-gap">
     <Section v-if="!address.data" class="pa-0 fullwidth">
-      <div class="flex justify-center mt-2"><h4>Sign in to your wallet</h4></div>
-      <div class="flex justify-center"><h5>Use your passphrase to login to your wallet</h5></div>
+      <div class="flex justify-center mt-2">
+        <h4>Sign in to your wallet</h4>
+      </div>
+      <div class="flex justify-center">
+        <h5>Use your passphrase to login to your wallet</h5>
+      </div>
       <div class="flex-12 pa-2">
         <span class="text-error" v-if="generatedWalletAddress.error">
           {{ generatedWalletAddress.error }}
@@ -25,15 +29,13 @@
           class="flex justify-center flex-wrap"
         >
           <div class="flex flex-wrap flex-gap justify-center pb-2">
-            <div
-              @click="toggleHidden"
-              class="flex-12 pa-2 text-right cursor-pointer"
-              id="show"
-            >
-              <span v-if="hidden"
-                ><i class="fas fa-eye-slash mr-1"></i>Show</span
+            <div class="flex-12 pa-2 text-right" id="show">
+              <span @click="toggleHidden" class="cursor-pointer">
+                <span v-if="hidden"
+                  ><i class="fas fa-eye-slash mr-1"></i>Show</span
+                >
+                <span v-else><i class="fas fa-eye mr-1"></i>Hide</span></span
               >
-              <span v-else><i class="fas fa-eye mr-1"></i>Hide</span>
             </div>
             <div
               v-for="(input, i) in inputs"
@@ -76,7 +78,7 @@
       </div>
       <Section
         v-if="!generatedWalletAddress.data"
-        class="flex bg-primary-darker justify-center align-center"
+        class="flex bg-primary-darker justify-center pa-4"
       >
         <div class="flex-12 align-center">
           Don't have a {{ token }} wallet yet?

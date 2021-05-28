@@ -40,7 +40,6 @@ export default {
 .section {
   position: relative;
   border-radius: var(--border-radius);
-  padding: var(--unit-2);
   background-color: var(--primary);
   color: var(--dark);
 }
