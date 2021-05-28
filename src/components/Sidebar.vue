@@ -40,7 +40,6 @@
     </a>
     <hr />
     <router-link :to="{ name: useAsWallet ? 'Wallet' : 'Transactions' }">
-      {{ useAsWallet }}
       <i class="fa fa-wallet mr-1" v-if="useAsWallet" />
       <i class="fa fa-exchange-alt mr-1" v-else />
       {{ useAsWallet ? 'WALLET' : 'TRANSACTIONS' }}
