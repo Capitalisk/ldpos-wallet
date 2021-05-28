@@ -55,12 +55,29 @@ body {
 
 h1,
 h2,
-h3,
 h4,
 h5,
 h6,
 td {
   font-family: 'Roboto', sans-serif;
+}
+
+h2 {
+  font-family: 'Gilroy', sans-serif;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 18px;
+  line-height: 27px;
+  text-align: center;
+}
+
+h3 {
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 21px;
+  text-align: center;
+  letter-spacing: 0.25px;
 }
 
 hr {
