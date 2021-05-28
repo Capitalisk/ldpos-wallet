@@ -2,25 +2,23 @@
   <div class="flex flex-wrap flex-gap mb-2">
     <Section
       :loading="address.loading"
-      title="Wallet address"
       :error="address.error"
       v-if="authenticated"
-      class="flex-3"
+      class="flex-12"
     >
-      <Copy class="mb-auto" :value="address.data" shrink />
+      <div class="flex">
+        <div class="flex-6 mr-auto">
+          <strong>Balance:</strong> {{ transformMonetaryUnit(balance.data, networkSymbol) }}
+          <Button :value="`Send ${networkSymbol}`" class="mt-4" style="width: 110px" @click="openTransferModal" />
+        </div>
+        <div class="flex-6 text-right">
+          <h2>Wallet Address</h2>
+          <br />
+          <Copy class="mb-auto" :value="address.data" />
+        </div>
+      </div>
     </Section>
-    <Section
-      :loading="balance.loading && !balance.data"
-      title="Balance"
-      :needsAuthentication="true"
-      :error="balance.error"
-      v-if="authenticated"
-      class="flex-3"
-    >
-      <h2 class="mb-auto">{{ transformMonetaryUnit(balance.data) }}</h2>
-      <Button value="Send" class="mt-4" @click="openTransferModal" />
-    </Section>
-    <Section
+    <!-- <Section
       :loading="pendingTransactions.loading"
       title="Pending transactions"
       :error="pendingTransactions.error"
@@ -56,7 +54,7 @@
         </template>
       </ul>
       <p v-else>No latest transactions available</p>
-    </Section>
+    </Section> -->
   </div>
   <DataTable title="Wallet transactions" :columns="columns" clickable :fn="fn">
     <template v-slot:direction="slotProps">
@@ -288,6 +286,7 @@ export default {
           data,
         }),
       transformMonetaryUnit: _transformMonetaryUnit,
+      networkSymbol: store.state.config.networkSymbol,
     };
   },
   components: { Navbar, DataTable, Copy, Section, Button },

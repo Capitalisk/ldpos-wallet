@@ -6,7 +6,7 @@
     <p v-else-if="!loading && error" class="text-error">
       <strong>Error:</strong><br />{{ error }}
     </p>
-    <div v-else class="flex column justify-end custom-height">
+    <div v-else class="flex column justify-end">
       <slot></slot>
     </div>
   </div>
@@ -43,7 +43,6 @@ export default {
   padding: var(--unit-2);
   background-color: var(--primary);
   color: var(--dark);
-  min-height: 150px;
 }
 
 .bg-primary-darker {

@@ -3,8 +3,8 @@
   <Wallet v-if="authenticated" />
   <div v-else class="flex flex-wrap flex-gap">
     <Section v-if="!address.data" class="pa-0 fullwidth">
-      <div class="flex justify-center mt-2"><h2>Sign in to your wallet</h2></div>
-      <div class="flex justify-center"><h3>Use your passphrase to login to your wallet</h3></div>
+      <div class="flex justify-center mt-2"><h4>Sign in to your wallet</h4></div>
+      <div class="flex justify-center"><h5>Use your passphrase to login to your wallet</h5></div>
       <div class="flex-12 pa-2">
         <span class="text-error" v-if="generatedWalletAddress.error">
           {{ generatedWalletAddress.error }}
