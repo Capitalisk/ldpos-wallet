@@ -55,7 +55,7 @@ export default {
 <style scoped>
 .modal-background {
   position: fixed;
-  background: rgb(0, 0, 0, 0.7);
+  background: var(--modal-backdrop);
   width: 100vw;
   height: 100vh;
   z-index: 3;
@@ -72,7 +72,7 @@ export default {
   top: -3rem;
   right: 0.25rem;
   font-size: var(--unit-4);
-  color: var(--permanent-white);
+  color: var(--dark);
   z-index: 2;
 }
 

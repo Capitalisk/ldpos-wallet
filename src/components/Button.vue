@@ -43,6 +43,7 @@ a.button {
 a.button.outline {
   border: 1px solid var(--primary-lighter);
   background-color: inherit;
+  color: var(--dark);
 }
 
 a.button.outline.warning {

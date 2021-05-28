@@ -27,7 +27,7 @@
     <Button
       value="Add blockchain"
       @click="toggleOrBrowseModal({ type: ADD_TOKEN_MODAL, title: 'Add a network' })"
-      class="mr-1"
+      class="mr-1 outline"
     />
     <Button
       value="Connect"
