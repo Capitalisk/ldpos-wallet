@@ -24,11 +24,11 @@
   --primary-darkest: #e8e8e8;
   --switch-background: #d0d0d0;
 
-  --primary-bg: #ffffff20;
-  --primary-lightest-bg: #0366d620;
-  --primary-lighter-bg: #0366d620;
-  --primary-darker-bg: #f3f5f920;
-  --primary-darkest-bg: #e8e8e820;
+  --primary-bg: inherit;
+  --primary-lightest-bg: inherit;
+  --primary-lighter-bg: inherit;
+  --primary-darker-bg: inherit;
+  --primary-darkest-bg: inherit;
 
   --modal-backdrop: #74747470;
 
