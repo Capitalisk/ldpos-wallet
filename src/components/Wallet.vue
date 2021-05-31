@@ -317,9 +317,10 @@ export default {
       confirmationModal: async () => {
         try {
           const { minTransactionFees } = await store.client.value.getMinFees();
+
           const response = await confirmationRef.value.show({
             message: `Are you sure you want to register as a delegate? A fee of ${_transformMonetaryUnit(
-              minTransactionFees.vote,
+              minTransactionFees.registerForgingDetails,
             )} will be deducted from your account.`,
             showCancelButton: true,
           });
@@ -333,11 +334,16 @@ export default {
                 newNextForgingKeyIndex,
                 forgingPassphrase: passphrase.value,
                 message: 'Register as a delegate via ldpos-wallet',
-                fee: minTransactionFees.vote,
+                fee: minTransactionFees.registerForgingDetails,
               },
             );
 
             await store.client.value.postTransaction(registerTxn);
+
+            store.notify(
+              { message: 'Succesfully registered as a delegate' },
+              5,
+            );
           }
         } catch (e) {
           store.notify({
