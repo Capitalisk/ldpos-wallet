@@ -1,13 +1,13 @@
 <template>
   <div class="flex relative align-center">
-    <span class="prefix">{{ prefix }}</span>
+    <span class="prefix">{{ prefix }}<slot name="prefix"/></span>
     <input
       v-bind="$attrs"
       class="input"
       :class="
         `input ${error || error ? 'input-error ' : ''}${
-          prefix ? 'input-prefix ' : ''
-        }${suffix ? 'input-suffix' : ''}`
+          prefix || $slots.prefix ? 'input-prefix ' : ''
+        }${suffix || $slots.suffix ? 'input-suffix' : ''}`
       "
       :value="modelValue"
       @input="e => $emit('update:modelValue', e.target.value)"
@@ -17,7 +17,7 @@
       @ended="validate"
       @focus="reset"
     />
-    <span class="suffix">{{ suffix }}</span>
+    <span class="suffix">{{ suffix }}<slot name="suffix"/></span>
   </div>
   <span v-if="dirty && error && !hideValidation" class="text-danger ml-1">
     {{ error }}
@@ -107,7 +107,7 @@ export default {
 
 .input:focus {
   outline: none;
-  border: 1px solid var(--dark)
+  border: 1px solid var(--dark);
 }
 
 .input-error {
@@ -124,12 +124,12 @@ export default {
 
 .prefix {
   position: absolute;
-  left: 1.5em;
+  left: 1em;
 }
 
 .suffix {
   position: absolute;
-  right: 0.5rem;
+  right: 1rem;
 }
 
 label {
