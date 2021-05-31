@@ -14,11 +14,11 @@
           {{ generatedWalletAddress.error }}
         </span>
         <span v-else-if="generatedWalletAddress.data">
-          <p class="text-danger pb-2">
-            <strong>IMPORTANT:</strong><br />
+          <div class="notification-warning mb-2">
+            <strong>IMPORTANT</strong><br />
             Write this down in a safe place!<br />
             Losing the passphrase is losing its assets as well!
-          </p>
+          </div>
           <strong>Address</strong>
           <Copy :value="generatedWalletAddress.data.address" /><br />
           <strong>Passphrase</strong>
@@ -31,11 +31,11 @@
           <div class="flex flex-wrap flex-gap justify-center pb-2">
             <div class="flex-12 pa-2 text-right" id="show">
               <span @click="toggleHidden" class="cursor-pointer">
-                <span v-if="hidden"
-                  ><i class="fas fa-eye-slash mr-1"></i>Show</span
-                >
-                <span v-else><i class="fas fa-eye mr-1"></i>Hide</span></span
-              >
+                <span v-if="hidden">
+                  <i class="fas fa-eye-slash mr-1" />Show
+                </span>
+                <span v-else><i class="fas fa-eye mr-1" />Hide</span>
+              </span>
             </div>
             <div
               v-for="(input, i) in inputs"

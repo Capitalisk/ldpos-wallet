@@ -58,12 +58,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-.notification-danger {
-  border: 1px solid var(--danger);
-  border-radius: var(--border-radius);
-  padding: var(--unit-2);
-  color: var(--danger);
-}
-</style>

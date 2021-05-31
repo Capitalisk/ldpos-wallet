@@ -42,7 +42,7 @@ a.button {
 
 a.button.outline {
   border: 1px solid var(--primary-lighter);
-  background-color: inherit;
+  background-color: var(--primary-lighter-bg);
   color: var(--dark);
 }
 
@@ -54,7 +54,7 @@ a.button.outline.warning {
 
 a.button.outline.danger {
   border: 1px solid var(--danger);
-  background-color: inherit;
+  background-color: var(--danger-bg);
 }
 
 a.button.warning {

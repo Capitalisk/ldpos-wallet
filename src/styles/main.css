@@ -14,12 +14,21 @@
   --permanent-white: #fff;
   --permanent-dark: #404549;
 
+  --danger-bg: #f2544b20;
+  --warning-bg: #f8ca0020;
+
   --primary: #ffffff;
   --primary-lightest: #0366d6;
   --primary-lighter: #0366d6;
   --primary-darker: #f3f5f9;
   --primary-darkest: #e8e8e8;
   --switch-background: #d0d0d0;
+
+  --primary-bg: #ffffff20;
+  --primary-lightest-bg: #0366d620;
+  --primary-lighter-bg: #0366d620;
+  --primary-darker-bg: #f3f5f920;
+  --primary-darkest-bg: #e8e8e820;
 
   --modal-backdrop: #74747470;
 
@@ -40,6 +49,13 @@
   --primary-lighter: #0c8ae4;
   --primary-darker: #222435;
   --primary-darkest: #0d1117;
+
+  --primary-bg: rgb(22, 27, 34, 0.2);
+  --primary-lightest-bg: #0c8ae420;
+  --primary-lighter-bg: #0c8ae420;
+  --primary-darker-bg: #22243520;
+  --primary-darkest-bg: #0d111720;
+
   --disabled: #a0a0a0;
   --switch-background: rgb(43, 56, 75);
 
@@ -236,12 +252,10 @@ th {
   margin-right: var(--unit-2);
 }
 
-
 .mx-3 {
   margin-left: var(--unit-3);
   margin-right: var(--unit-3);
 }
-
 
 .mx-4 {
   margin-left: var(--unit-4);
@@ -488,6 +502,52 @@ th {
 
 .font-bold {
   font-weight: 700;
+}
+
+.notification-danger {
+  background-color: var(--danger-bg);
+  border: 1px solid var(--danger);
+  border-radius: var(--border-radius);
+  padding: var(--unit-2);
+  color: var(--danger);
+  display: block;
+  padding-left: 3rem;
+  position: relative;
+}
+
+.notification-danger::before {
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  position: absolute;
+  content: '\f071';
+  font-size: 16px;
+  margin: auto;
+  left: 1.5rem;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.notification-warning {
+  background-color: var(--warning-bg);
+  border: 1px solid var(--warning);
+  border-radius: var(--border-radius);
+  padding: var(--unit-2);
+  color: var(--warning);
+  display: block;
+  padding-left: 3rem;
+  position: relative;
+}
+
+.notification-warning::before {
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  position: absolute;
+  content: '\f071';
+  font-size: 16px;
+  margin: auto;
+  left: 1.5rem;
+  top: 50%;
+  transform: translate(-50%, -50%);
 }
 
 @media screen and (max-width: 768px) {
