@@ -16,7 +16,7 @@
       <div class="flex justify-center">
         <Button
           value="Vote"
-          @click="() => voteForDelegate()"
+          @click="voteForDelegate"
           :loading="loading"
           :class="voteRef && voteRef.error ? 'danger' : ''"
         />
@@ -32,9 +32,16 @@
   >
     <template v-slot:vote="slotProps">
       <Button
-        value="Vote"
-        @click="voteForDelegate(slotProps.row.address)"
+        :value="votes.includes(slotProps.row.address) ? 'Unvote' : 'Vote'"
+        @click.prevent.stop
+        @click="
+          voteForDelegate(
+            slotProps.row.address,
+            votes.includes(slotProps.row.address),
+          )
+        "
         :loading="votingForAddress === slotProps.row.address"
+        :class="votes.includes(slotProps.row.address) ? 'warning' : ''"
       />
     </template>
     <template v-slot:address="slotProps">
@@ -70,6 +77,7 @@ export default {
     const votingForAddress = ref(null);
     const maxBlockHeight = ref(null);
     const authenticated = computed(() => store.state.authenticated);
+    const votes = ref([]);
 
     const columns = ref([
       {
@@ -117,9 +125,15 @@ export default {
 
     onMounted(async () => {
       maxBlockHeight.value = await store.client.value.getMaxBlockHeight();
+
+      if (store.state.authenticated) {
+        votes.value = await store.client.value.getAccountVotes(
+          await store.client.value.getWalletAddress(),
+        );
+      }
     });
 
-    const voteForDelegate = async wallet => {
+    const voteForDelegate = async (wallet, unvote) => {
       if (!wallet) {
         loading.value = true;
         await voteRef.value.validate();
@@ -139,30 +153,40 @@ export default {
           const valid = await store.client.value.getDelegate(wallet);
 
           voteTxn = await store.client.value.prepareTransaction({
-            type: 'vote',
+            type: unvote ? 'unvote' : 'vote',
             delegateAddress: wallet,
-            fee: minTransactionFees.vote,
+            fee: unvote ? minTransactionFees.unvote : minTransactionFees.vote,
             timestamp: Date.now(),
-            message: '',
+            message: unvote
+              ? 'Unvote for delegate via ldpos-wallet'
+              : 'Vote for delegate via ldpos-wallet',
           });
         } else {
+          debugger;
           voteTxn = await store.client.value.prepareTransaction({
             type: 'vote',
-            delegateAddress: vote.data,
+            delegateAddress: vote.value,
             fee: minTransactionFees.vote,
             timestamp: Date.now(),
-            message: '',
+            message: 'Vote for delegate via ldpos-wallet',
           });
         }
 
         await store.client.value.postTransaction(voteTxn);
-        store.notify({ message: `You have voted for ${vote.data}` }, 5);
+        store.notify(
+          {
+            message: `You have voted for ${vote.value ||
+              wallet}. Take in account that this needs to be processed in the chain. This can take a while.`,
+          },
+          5,
+        );
       } catch (e) {
         store.notify({ message: `Error: ${e.message}`, error: true }, 5);
       }
 
       loading.value = false;
       votingForAddress.value = null;
+      vote.value = null;
     };
 
     return {
@@ -177,6 +201,7 @@ export default {
       voteForDelegate,
       votingForAddress,
       maxBlockHeight,
+      votes,
       checkDelegate: async val => {
         try {
           await store.client.value.getDelegate(val);
@@ -188,7 +213,6 @@ export default {
   },
   components: { Navbar, Button, DataTable, Input, Section, Copy, Dot },
 };
-Dot;
 </script>
 
 <style scoped>

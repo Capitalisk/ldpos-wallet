@@ -1,11 +1,14 @@
 <template>
   <div class="nowrap">
-    <span ref="copyRef">{{ shrink ? shrinkValue(value) : value }}</span>
-    <i
-      class="far fa-copy cursor-pointer pl-1"
-      @click.prevent.stop
-      @click="copy"
-    ></i>
+    <template v-if="value">
+      <span ref="copyRef">{{ shrink ? shrinkValue(value) : value }}</span>
+      <i
+        class="far fa-copy cursor-pointer pl-1"
+        @click.prevent.stop
+        @click="copy"
+      ></i>
+    </template>
+    <template v-else>-</template>
   </div>
 </template>
 
