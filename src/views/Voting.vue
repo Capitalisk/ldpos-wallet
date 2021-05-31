@@ -40,6 +40,9 @@
     <template v-slot:address="slotProps">
       <Copy :value="slotProps.row.address" :shrink="slotProps.shrink" />
     </template>
+    <template v-slot:forging="slotProps">
+      <Dot :active="slotProps.row.updateHeight === maxBlockHeight" />
+    </template>
   </DataTable>
 </template>
 
@@ -54,6 +57,7 @@ import Input from '../components/Input';
 import Copy from '../components/Copy';
 
 import { _integerToDecimal } from '../utils';
+import Dot from '../components/Dot.vue';
 
 export default {
   name: 'Home',
@@ -64,6 +68,7 @@ export default {
     const voteRef = ref(null);
     const loading = ref(false);
     const votingForAddress = ref(null);
+    const maxBlockHeight = ref(null);
     const authenticated = computed(() => store.state.authenticated);
 
     const columns = ref([
@@ -94,6 +99,13 @@ export default {
         shrinkable: false,
       },
       {
+        name: 'forging',
+        label: 'Forging',
+        field: 'forging',
+        active: true,
+        slot: true,
+      },
+      {
         name: 'vote',
         label: 'Vote for delegate',
         sortable: false,
@@ -102,6 +114,10 @@ export default {
         slot: true,
       },
     ]);
+
+    onMounted(async () => {
+      maxBlockHeight.value = await store.client.value.getMaxBlockHeight();
+    });
 
     const voteForDelegate = async wallet => {
       if (!wallet) {
@@ -160,6 +176,7 @@ export default {
       voteRef,
       voteForDelegate,
       votingForAddress,
+      maxBlockHeight,
       checkDelegate: async val => {
         try {
           await store.client.value.getDelegate(val);
@@ -169,8 +186,9 @@ export default {
       },
     };
   },
-  components: { Navbar, Button, DataTable, Input, Section, Copy },
+  components: { Navbar, Button, DataTable, Input, Section, Copy, Dot },
 };
+Dot;
 </script>
 
 <style scoped>
