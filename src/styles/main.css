@@ -550,6 +550,10 @@ th {
   transform: translate(-50%, -50%);
 }
 
+.display-none {
+  display: none;
+}
+
 @media screen and (max-width: 768px) {
   .flex-3 {
     flex-basis: 100%;

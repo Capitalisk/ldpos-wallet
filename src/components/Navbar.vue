@@ -1,18 +1,20 @@
 <template>
   <div class="navbar flex justify-end align-center text-right">
     <h1 class="mr-auto">{{ $route.name }}</h1>
-    <template v-if="searchActive">
-      <Input placeholder="Search">
-        <template v-slot:prefix><i class="fas fa-search"/></template>
+    <div v-show="searchActive" style="width: 70%;">
+      <Input placeholder="Search" ref="searchRef" @blur="searchActive = false">
         <template v-slot:suffix>
+          <i class="fas fa-search cursor-pointer" @click="search" />
+        </template>
+        <!-- <template v-slot:suffix>
           <i
             class="fas fa-times cursor-pointer"
             @click="searchActive = false"
           />
-        </template>
+        </template> -->
       </Input>
-    </template>
-    <template v-else>
+    </div>
+    <template v-if="!searchActive">
       <Connected />
       <span class="flex justify-center align-center mr-2">
         <Switch v-model="darkMode" id="darkmode-switch" />
@@ -37,7 +39,7 @@
       <Button
         v-if="!searchActive"
         icon="search"
-        @click="searchActive = true"
+        @click="activateSearch"
         class="pa-1 outline"
       />
     </template>
@@ -58,9 +60,15 @@ export default {
     const store = inject('store');
 
     const searchActive = ref(false);
+    const searchRef = ref(null);
 
     return {
       searchActive,
+      searchRef,
+      activateSearch: () => {
+        searchActive.value = true;
+        setTimeout(() => searchRef.value.focus(), 100);
+      },
       authenticated: computed(() => store.state.authenticated),
       signout: async () => store.deauthenticate(),
       darkMode: computed({

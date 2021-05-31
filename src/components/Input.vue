@@ -16,6 +16,7 @@
       @blur="validate"
       @ended="validate"
       @focus="reset"
+      ref="input"
     />
     <span class="suffix">{{ suffix }}<slot name="suffix"/></span>
   </div>
@@ -42,10 +43,13 @@ export default {
   setup(props) {
     const error = ref(props.error);
     const dirty = ref(props.error ? true : false);
+    const input = ref(null)
 
     return {
       error,
       dirty,
+      input,
+      focus: () => input.value.focus(),
       reset: () => (error.value = null),
       validate: async () => {
         if (!props.rules || !props.rules.length) return;
