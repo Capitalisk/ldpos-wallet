@@ -15,9 +15,9 @@
 <script>
 import { computed, inject, onMounted, ref } from 'vue';
 
-import Navbar from '../components/Navbar.vue';
-import DataTable from '../components/DataTable.vue';
-import Copy from '../components/Copy.vue';
+import Navbar from '../components/Navbar';
+import DataTable from '../components/DataTable';
+import Copy from '../components/Copy';
 import { _integerToDecimal, _parseDate } from '../utils';
 import { DETAIL_MODAL } from '../components/modals/constants';
 

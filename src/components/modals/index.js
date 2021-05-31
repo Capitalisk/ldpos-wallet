@@ -1,7 +1,7 @@
-import TokenModal from './TokenModal.vue';
-import DetailModal from './DetailModal.vue';
-import TransferModal from './TransferModal.vue';
-import AddTokenModal from './AddTokenModal.vue';
+import TokenModal from './TokenModal';
+import DetailModal from './DetailModal';
+import TransferModal from './TransferModal';
+import AddTokenModal from './AddTokenModal';
 
 export default {
   TokenModal,

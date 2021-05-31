@@ -97,7 +97,7 @@ import { computed, inject, onMounted, reactive, ref, watch } from 'vue';
 import { DETAIL_MODAL } from './modals/constants';
 
 import Button from './Button';
-import Popup from './Popup.vue';
+import Popup from './Popup';
 
 export default {
   name: 'DataTable',

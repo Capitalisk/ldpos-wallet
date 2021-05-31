@@ -19,7 +19,7 @@ import Loading from './components/Loading';
 import Modal from './components/Modal';
 import Notification from './components/Notification';
 import Sidebar from './components/Sidebar';
-import Progressbar from './components/Progressbar.vue';
+import Progressbar from './components/Progressbar';
 
 import { TOKEN_MODAL } from './components/modals/constants';
 

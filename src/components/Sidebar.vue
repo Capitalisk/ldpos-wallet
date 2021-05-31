@@ -93,7 +93,7 @@ export default {
       toggleOrBrowseModal: m => store.toggleOrBrowseModal(m),
       toggleBurger: () => store.toggleNav(),
       deauthenticate: () => store.deauthenticate(),
-      useAsWallet: process.env.VUE_APP_USE_AS_WALLET === 'true',
+      useAsWallet: process.env_APP_USE_AS_WALLET === 'true',
       isDevelopment: process.env.NODE_ENV === 'development',
     };
   },

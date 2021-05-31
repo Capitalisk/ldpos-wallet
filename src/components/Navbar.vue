@@ -29,8 +29,9 @@
 import { computed, inject } from 'vue';
 
 import Button from './Button';
-import Connected from './Connected.vue';
-import Switch from './Switch.vue';
+import Connected from './Connected';
+import Switch from './Switch';
+import Input from './Input'
 
 export default {
   name: 'Navbar',

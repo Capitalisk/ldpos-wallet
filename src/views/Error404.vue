@@ -6,7 +6,7 @@
 </template>
 
 <script>
-import Section from '../components/Section.vue';
+import Section from '../components/Section';
 
 export default {
   components: { Section },

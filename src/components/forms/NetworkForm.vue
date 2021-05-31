@@ -79,7 +79,7 @@ import { reactive, ref } from 'vue';
 import Input from '../Input';
 import Select from '../Select';
 import Switch from '../Switch';
-import Tooltip from '../Tooltip.vue';
+import Tooltip from '../Tooltip';
 
 export default {
   name: 'NetworkForm',

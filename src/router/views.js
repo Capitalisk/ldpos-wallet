@@ -4,16 +4,16 @@ export default [
     name: process.env.IS_ELECTRON ? 'Wallet' : 'Transactions',
     component: () =>
       process.env.IS_ELECTRON
-        ? import(/* webpackChunkName: "login" */ '../views/Login.vue')
+        ? import(/* webpackChunkName: "login" */ '../views/Login')
         : import(
-            /* webpackChunkName: "transactions" */ '../views/Transactions.vue'
+            /* webpackChunkName: "transactions" */ '../views/Transactions'
           ),
   },
   {
     path: '/voting',
     name: 'Voting',
     component: () =>
-      import(/* webpackChunkName: "voting" */ '../views/Voting.vue'),
+      import(/* webpackChunkName: "voting" */ '../views/Voting'),
   },
   {
     path: process.env.IS_ELECTRON ? '/transactions' : '/login',
@@ -21,26 +21,26 @@ export default [
     component: () =>
       process.env.IS_ELECTRON
         ? import(
-            /* webpackChunkName: "transactions" */ '../views/Transactions.vue'
+            /* webpackChunkName: "transactions" */ '../views/Transactions'
           )
-        : import(/* webpackChunkName: "login" */ '../views/Login.vue'),
+        : import(/* webpackChunkName: "login" */ '../views/Login'),
   },
   {
     path: '/blocks',
     name: 'Blocks',
     component: () =>
-      import(/* webpackChunkName: "blocks" */ '../views/Blocks.vue'),
+      import(/* webpackChunkName: "blocks" */ '../views/Blocks'),
   },
   {
     path: '/accounts',
     name: 'Accounts',
     component: () =>
-      import(/* webpackChunkName: "accounts" */ '../views/Accounts.vue'),
+      import(/* webpackChunkName: "accounts" */ '../views/Accounts'),
   },
   {
     path: '/blockchains',
     name: 'Blockchains',
     component: () =>
-      import(/* webpackChunkName: "blockchains" */ '../views/Blockchains.vue'),
+      import(/* webpackChunkName: "blockchains" */ '../views/Blockchains'),
   },
 ];

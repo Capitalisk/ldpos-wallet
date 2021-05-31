@@ -64,7 +64,7 @@ import Input from '../components/Input';
 import Copy from '../components/Copy';
 
 import { _integerToDecimal } from '../utils';
-import Dot from '../components/Dot.vue';
+import Dot from '../components/Dot';
 
 export default {
   name: 'Home',

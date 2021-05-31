@@ -111,8 +111,8 @@ import { _parseDate, _transformMonetaryUnit } from '../utils';
 import router from '../router';
 
 import { DETAIL_MODAL, TRANSFER_MODAL } from './modals/constants';
-import ConfirmationModal from './modals/ConfirmationModal.vue';
-import Input from './Input.vue';
+import ConfirmationModal from './modals/ConfirmationModal';
+import Input from './Input';
 
 export default {
   name: 'Wallet',

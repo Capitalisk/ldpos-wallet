@@ -19,10 +19,10 @@ import { useRoute, useRouter } from 'vue-router';
 
 import { _transformMonetaryUnit, _parseDate } from '../utils';
 
-import DetailedData from '../components/DetailedData.vue';
-import Section from '../components/Section.vue';
-import Navbar from '../components/Navbar.vue';
-import DataTable from '../components/DataTable.vue';
+import DetailedData from '../components/DetailedData';
+import Section from '../components/Section';
+import Navbar from '../components/Navbar';
+import DataTable from '../components/DataTable';
 
 export default {
   name: 'DetailedPage',
