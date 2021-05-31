@@ -18,16 +18,10 @@
         <Switch v-model="darkMode" id="darkmode-switch" />
       </span>
       <Button
-        v-if="!searchActive"
-        icon="search"
-        @click="searchActive = true"
-        class="pa-1 outline"
-      />
-      <Button
         v-if="authenticated"
         value="Sign out"
         @click="signout"
-        class="ml-1"
+        class="ml-1 mr-2"
       />
       <Button
         value="Sign in"
@@ -38,7 +32,13 @@
             (!isElectron && $router.currentRoute.value.path !== '/login')) &&
             !authenticated
         "
-        class="ml-1"
+        class="ml-1 mr-2"
+      />
+      <Button
+        v-if="!searchActive"
+        icon="search"
+        @click="searchActive = true"
+        class="pa-1 outline"
       />
     </template>
   </div>
