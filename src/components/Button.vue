@@ -52,6 +52,11 @@ a.button.outline.warning {
   color: var(--permanent-dark);
 }
 
+a.button.outline.danger {
+  border: 1px solid var(--danger);
+  background-color: inherit;
+}
+
 a.button.warning {
   background-color: var(--warning);
   color: var(--permanent-dark);

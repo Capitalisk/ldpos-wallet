@@ -16,7 +16,7 @@
         </div>
         <div v-if="network" class="flex align-center justify-center py-2">
           <i
-            class="fa fa-trash-alt text-error"
+            class="fa fa-trash-alt text-danger"
             v-if="network"
             @click="deleteNetwork"
           />
@@ -38,7 +38,7 @@
           </div>
           <div v-if="network" class="flex align-center justify-center py-2">
             <i
-              class="fa fa-trash-alt text-error"
+              class="fa fa-trash-alt text-danger"
               v-if="network"
               @click="deleteType"
             />

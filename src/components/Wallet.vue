@@ -1,4 +1,13 @@
 <template>
+  <ConfirmationModal ref="confirmationRef">
+    <div class="mb-1">
+      Forging passphrase
+    </div>
+    <Input
+      v-model="passphrase"
+      :rules="[val => !!val || (val && val.length <= 0) || 'Required']"
+    />
+  </ConfirmationModal>
   <div class="flex flex-wrap flex-gap mb-2">
     <Section
       :loading="address.loading"
@@ -8,13 +17,25 @@
     >
       <div class="flex">
         <div class="flex-6 mr-auto">
-          <strong>Balance:</strong> {{ transformMonetaryUnit(balance.data, networkSymbol) }}
-          <Button :value="`Send ${networkSymbol}`" class="mt-4" style="width: 110px" @click="openTransferModal" />
+          <strong>Balance:</strong>
+          {{ transformMonetaryUnit(balance.data, networkSymbol) }}
+          <Button
+            :value="`Send ${networkSymbol}`"
+            class="mt-4"
+            style="width: 110px"
+            @click="openTransferModal"
+          />
         </div>
         <div class="flex-6 text-right">
           <h2>Wallet Address</h2>
           <br />
           <Copy class="mb-auto" :value="address.data" />
+          <Button
+            value="Register as a delegate"
+            class="mt-4 ml-auto outline"
+            style="width: 250px"
+            @click="confirmationModal({ message: '' })"
+          />
         </div>
       </div>
     </Section>
@@ -63,7 +84,7 @@
           `fas fa-${directions[slotProps.row.direction]} mr-1 ${
             slotProps.row.direction === 'INBOUND'
               ? 'text-success'
-              : 'text-error'
+              : 'text-danger'
           }`
         "
       />
@@ -90,6 +111,8 @@ import { _parseDate, _transformMonetaryUnit } from '../utils';
 import router from '../router';
 
 import { DETAIL_MODAL, TRANSFER_MODAL } from './modals/constants';
+import ConfirmationModal from './modals/ConfirmationModal.vue';
+import Input from './Input.vue';
 
 export default {
   name: 'Wallet',
@@ -258,6 +281,9 @@ export default {
       },
     ]);
 
+    const confirmationRef = ref(null);
+    const passphrase = ref(null);
+
     return {
       columns,
       fn: getWallet,
@@ -287,9 +313,53 @@ export default {
         }),
       transformMonetaryUnit: _transformMonetaryUnit,
       networkSymbol: store.state.config.networkSymbol,
+      confirmationRef,
+      confirmationModal: async () => {
+        try {
+          const { minTransactionFees } = await store.client.value.getMinFees();
+          const response = await confirmationRef.value.show({
+            message: `Are you sure you want to register as a delegate? A fee of ${_transformMonetaryUnit(
+              minTransactionFees.vote,
+            )} will be deducted from your account.`,
+            showCancelButton: true,
+          });
+          if (response) {
+            const newNextForgingKeyIndex = 0;
+            if (!passphrase.value)
+              throw new Error('Passphrase should be present');
+
+            const registerTxn = await store.client.value.prepareRegisterForgingDetails(
+              {
+                newNextForgingKeyIndex,
+                forgingPassphrase: passphrase.value,
+                message: 'Register as a delegate via ldpos-wallet',
+                fee: minTransactionFees.vote,
+              },
+            );
+
+            await store.client.value.postTransaction(registerTxn);
+          }
+        } catch (e) {
+          store.notify({
+            message: e.message,
+            error: true,
+          });
+        }
+
+        passphrase.value = null;
+      },
+      passphrase,
     };
   },
-  components: { Navbar, DataTable, Copy, Section, Button },
+  components: {
+    Navbar,
+    DataTable,
+    Copy,
+    Section,
+    Button,
+    ConfirmationModal,
+    Input,
+  },
 };
 </script>
 

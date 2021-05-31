@@ -3,7 +3,7 @@
     <h2 v-if="title">{{ title }}</h2>
 
     <Loading v-if="loading" />
-    <p v-else-if="!loading && error" class="text-error">
+    <p v-else-if="!loading && error" class="text-danger">
       <strong>Error:</strong><br />{{ error }}
     </p>
     <div v-else class="flex column justify-end">

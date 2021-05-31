@@ -1,22 +1,37 @@
 <template>
-  <div class="modal-background flex justify-center align-center" v-if="active">
+  <div
+    class="modal-background flex justify-center align-center"
+    v-if="(!useSlot && active) || (useSlot && slotActive)"
+  >
     <div class="wrapper">
-      <div class="close-btn cursor-pointer" @click="toggleOrBrowseModal()">
+      <div
+        class="close-btn cursor-pointer"
+        @click="useSlot ? deactivateModal() : toggleOrBrowseModal()"
+      >
         &#10005;
       </div>
-      <div v-if="stack.length > 1" class="back-btn cursor-pointer" @click="toggleOrBrowseModal({ back: true })">
+      <div
+        v-if="stack.length > 1"
+        class="back-btn cursor-pointer"
+        @click="toggleOrBrowseModal({ back: true })"
+      >
         <i class="fa fa-arrow-left" />
       </div>
       <Section
-        :title="title || (type && capitalize(type.toLowerCase()))"
+        :title="
+          title ? title : slotTitle || (type && capitalize(type.toLowerCase()))
+        "
         class="modal"
         :style="{ height: '100%', paddingTop: 'var(--unit-4)' }"
       >
         <div class="force-modal-scroll">
-          <TokenModal v-if="type === TOKEN_MODAL" />
-          <DetailModal v-if="type === DETAIL_MODAL" />
-          <TransferModal v-if="type === TRANSFER_MODAL" />
-          <AddTokenModal v-if="type === ADD_TOKEN_MODAL" />
+          <template v-if="!useSlot">
+            <TokenModal v-if="type === TOKEN_MODAL" />
+            <DetailModal v-if="type === DETAIL_MODAL" />
+            <TransferModal v-if="type === TRANSFER_MODAL" />
+            <AddTokenModal v-if="type === ADD_TOKEN_MODAL" />
+          </template>
+          <slot v-if="useSlot && slotActive" />
         </div>
       </Section>
     </div>
@@ -24,7 +39,7 @@
 </template>
 
 <script>
-import { computed, inject } from 'vue';
+import { computed, inject, ref } from 'vue';
 
 import modals from './modals';
 import * as modalConstants from './modals/constants';
@@ -34,8 +49,17 @@ import Section from './Section';
 
 export default {
   name: 'Modal',
+  props: {
+    useSlot: {
+      type: Boolean,
+      default: false,
+    },
+  },
   setup() {
     const store = inject('store');
+
+    const slotActive = ref(false);
+    const slotTitle = ref(null);
 
     return {
       active: computed(() => store.state.modal.active),
@@ -46,6 +70,16 @@ export default {
       toggleOrBrowseModal: store.toggleOrBrowseModal,
       ...modalConstants,
       capitalize: _capitalize,
+      slotActive,
+      slotTitle,
+      activateModal: (opts = {}) => {
+        slotActive.value = true;
+        slotTitle.value = opts.title;
+      },
+      deactivateModal: () => {
+        slotActive.value = false;
+        slotTitle.value = null;
+      },
     };
   },
   components: { Section, ...modals },
@@ -56,9 +90,11 @@ export default {
 .modal-background {
   position: fixed;
   background: var(--modal-backdrop);
-  width: 100vw;
-  height: 100vh;
   z-index: 3;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
 }
 
 .wrapper {

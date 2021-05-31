@@ -10,11 +10,11 @@
         <h5>Use your passphrase to login to your wallet</h5>
       </div>
       <div class="flex-12 pa-2">
-        <span class="text-error" v-if="generatedWalletAddress.error">
+        <span class="text-danger" v-if="generatedWalletAddress.error">
           {{ generatedWalletAddress.error }}
         </span>
         <span v-else-if="generatedWalletAddress.data">
-          <p class="text-error pb-2">
+          <p class="text-danger pb-2">
             <strong>IMPORTANT:</strong><br />
             Write this down in a safe place!<br />
             Losing the passphrase is losing its assets as well!

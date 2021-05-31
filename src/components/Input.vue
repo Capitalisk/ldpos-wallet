@@ -19,7 +19,7 @@
     />
     <span class="suffix">{{ suffix }}</span>
   </div>
-  <span v-if="dirty && error && !hideValidation" class="text-error ml-1">
+  <span v-if="dirty && error && !hideValidation" class="text-danger ml-1">
     {{ error }}
   </span>
 </template>
@@ -34,7 +34,7 @@ export default {
     placeholder: { type: String, default: '' },
     id: { type: String, default: null },
     suffix: { type: String, default: null },
-    prefix: { type: String, default: null },
+    prefix: { type: [String, Number], default: null },
     error: { type: String, default: null },
     rules: { type: Array, default: null },
     hideValidation: { type: Boolean, default: false },

@@ -127,7 +127,7 @@ th {
   color: var(--success);
 }
 
-.text-error {
+.text-danger {
   color: var(--danger);
 }
 
@@ -229,6 +229,23 @@ th {
 .mx-1 {
   margin-left: var(--unit-1);
   margin-right: var(--unit-1);
+}
+
+.mx-2 {
+  margin-left: var(--unit-2);
+  margin-right: var(--unit-2);
+}
+
+
+.mx-3 {
+  margin-left: var(--unit-3);
+  margin-right: var(--unit-3);
+}
+
+
+.mx-4 {
+  margin-left: var(--unit-4);
+  margin-right: var(--unit-4);
 }
 
 .mb-auto {
@@ -467,6 +484,10 @@ th {
 
 .no-select {
   user-select: none;
+}
+
+.font-bold {
+  font-weight: 700;
 }
 
 @media screen and (max-width: 768px) {
