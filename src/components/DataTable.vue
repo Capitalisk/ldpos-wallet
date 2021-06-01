@@ -244,7 +244,7 @@ export default {
       togglePopup: () => (popupActive.value = !popupActive.value),
       detail: data => {
         if (props.prefix) {
-          let newUrlIS = `${window.location.origin}/#/${
+          let newUrlIS = `${window.location.origin}${process.env.VUE_APP_BASE_URL}/#/${
             props.prefix
           }/${data.id || data.address}`;
           history.pushState({}, null, newUrlIS);
