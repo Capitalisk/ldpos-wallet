@@ -10,10 +10,10 @@ export default [
           ),
   },
   {
-    path: '/voting',
-    name: 'Voting',
+    path: '/delegates',
+    name: 'Delegates',
     component: () =>
-      import(/* webpackChunkName: "voting" */ '../views/Voting'),
+      import(/* webpackChunkName: "delegates" */ '../views/Delegates'),
   },
   {
     path: process.env.IS_ELECTRON ? '/transactions' : '/login',

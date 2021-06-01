@@ -44,7 +44,7 @@
       <i class="fa fa-exchange-alt mr-1" v-else />
       {{ useAsWallet ? 'WALLET' : 'TRANSACTIONS' }}
     </router-link>
-    <router-link to="/voting">
+    <router-link to="/delegates">
       <i class="fa fa-poll mr-1" />
       {{ authenticated ? 'VOTING' : 'DELEGATES' }}
     </router-link>

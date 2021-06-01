@@ -6,12 +6,6 @@
         <template v-slot:suffix>
           <i class="fas fa-search cursor-pointer" @click="search" />
         </template>
-        <!-- <template v-slot:suffix>
-          <i
-            class="fas fa-times cursor-pointer"
-            @click="searchActive = false"
-          />
-        </template> -->
       </Input>
     </div>
     <template v-if="!searchActive">
