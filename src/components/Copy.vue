@@ -18,7 +18,7 @@ import { inject, ref, computed } from 'vue';
 export default {
   name: 'Copy',
   props: {
-    value: { type: String, default: '' },
+    value: { type: [String, Number], default: '' },
     shrink: { type: Boolean, default: false },
   },
   setup(props) {
