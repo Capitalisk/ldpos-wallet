@@ -43,3 +43,5 @@ export const _splitCamelCaseWords = str => {
 
 export const _capitalize = str =>
   str.replace(/(?:^|\s|[-"'([{])+\S/g, c => c.toUpperCase());
+
+export const _pluralToSingular = str => str.slice(0, -1);

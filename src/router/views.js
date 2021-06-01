@@ -1,7 +1,7 @@
 export default [
   {
     path: '/',
-    name: process.env.IS_ELECTRON ? 'Wallet' : 'Transactions',
+    name: process.env.IS_ELECTRON ? 'wallet' : 'transactions',
     component: () =>
       process.env.IS_ELECTRON
         ? import(/* webpackChunkName: "login" */ '../views/Login')
@@ -11,13 +11,13 @@ export default [
   },
   {
     path: '/delegates',
-    name: 'Delegates',
+    name: 'delegates',
     component: () =>
       import(/* webpackChunkName: "delegates" */ '../views/Delegates'),
   },
   {
     path: process.env.IS_ELECTRON ? '/transactions' : '/login',
-    name: process.env.IS_ELECTRON ? 'Transactions' : 'Wallet',
+    name: process.env.IS_ELECTRON ? 'transactions' : 'wallet',
     component: () =>
       process.env.IS_ELECTRON
         ? import(
@@ -27,19 +27,19 @@ export default [
   },
   {
     path: '/blocks',
-    name: 'Blocks',
+    name: 'blocks',
     component: () =>
       import(/* webpackChunkName: "blocks" */ '../views/Blocks'),
   },
   {
     path: '/accounts',
-    name: 'Accounts',
+    name: 'accounts',
     component: () =>
       import(/* webpackChunkName: "accounts" */ '../views/Accounts'),
   },
   {
     path: '/blockchains',
-    name: 'Blockchains',
+    name: 'blockchains',
     component: () =>
       import(/* webpackChunkName: "blockchains" */ '../views/Blockchains'),
   },

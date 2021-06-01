@@ -1,42 +1,42 @@
 export default [
   {
-    path: '/wallet/:wallet',
-    name: 'Wallet details',
+    path: '/accounts/:account',
+    name: 'account details',
     component: () =>
-      import(/* webpackChunkName: "walletid" */ '../views/DetailedPage'),
+      import(/* webpackChunkName: "accountid" */ '../views/DetailedPage'),
   },
   {
-    path: '/wallet/:wallet/transactions',
-    name: 'Wallet transaction details',
+    path: '/accounts/:account/transactions',
+    name: 'wallet transaction details',
     component: () =>
-      import(/* webpackChunkName: "walletidtransactions" */ '../views/DetailedPage'),
+      import(/* webpackChunkName: "accountidtransactions" */ '../views/DetailedPage'),
     props: {
       dataTable: true,
     },
   },
   {
-    path: '/transaction/:transaction',
-    name: 'Transaction details',
+    path: '/transactions/:transaction',
+    name: 'transaction details',
     component: () =>
       import(
         /* webpackChunkName: "transactionid" */ '../views/DetailedPage'
       ),
   },
   {
-    path: '/delegate/:delegate',
-    name: 'Delegate details',
+    path: '/delegates/:delegate',
+    name: 'delegate details',
     component: () =>
       import(/* webpackChunkName: "delegateid" */ '../views/DetailedPage'),
   },
   {
-    path: '/block/:block',
-    name: 'Block details',
+    path: '/blocks/:block',
+    name: 'block details',
     component: () =>
       import(/* webpackChunkName: "blockid" */ '../views/DetailedPage'),
   },
   {
     path: '/:pathMatch(.*)',
-    name: 'Error 404',
+    name: 'error 404',
     component: () =>
       import(/* webpackChunkName: "error404" */ '../views/Error404'),
   },

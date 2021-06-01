@@ -4,7 +4,7 @@
     :columns="columns"
     clickable
     fn="getBlocksByTimestamp"
-    prefix="block"
+    prefix="blocks"
   >
     <template v-slot:forgerAddress="slotProps">
       <Copy :value="slotProps.row.forgerAddress" :shrink="slotProps.shrink" />

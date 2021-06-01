@@ -5,7 +5,7 @@
     clickable
     order="desc"
     fn="getTransactionsByTimestamp"
-    prefix="transaction"
+    prefix="transactions"
   >
     <template v-slot:senderAddress="slotProps">
       <Copy :value="slotProps.row.senderAddress" :shrink="slotProps.shrink" />

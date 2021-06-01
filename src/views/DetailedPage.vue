@@ -44,8 +44,8 @@ export default {
         const key = Object.keys(route.params)[0];
 
         const sw = {
-          wallet: async () =>
-            await store.client.value.getAccount(route.params.wallet),
+          account: async () =>
+            await store.client.value.getAccount(route.params.account),
           transaction: async () =>
             await store.client.value.getTransaction(route.params.transaction),
           delegate: async () =>
@@ -58,8 +58,8 @@ export default {
         data.value = await (sw[key] || sw.default)();
       } else {
         const sw = {
-          'Wallet transaction details': () => ({
-            arg: route.params.wallet,
+          'Account transaction details': () => ({
+            arg: route.params.account,
             fn: 'getAccountTransactions',
           }),
           default: () => {},

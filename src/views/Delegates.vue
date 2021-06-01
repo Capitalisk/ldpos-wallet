@@ -28,7 +28,7 @@
     :title="title"
     fn="getDelegatesByVoteWeight"
     clickable
-    prefix="delegate"
+    prefix="delegates"
   >
     <template v-slot:vote="slotProps">
       <Button

@@ -39,7 +39,7 @@
       </div>
     </a>
     <hr />
-    <router-link :to="{ name: useAsWallet ? 'Wallet' : 'Transactions' }">
+    <router-link :to="{ name: useAsWallet ? 'wallet' : 'transactions' }">
       <i class="fa fa-wallet mr-1" v-if="useAsWallet" />
       <i class="fa fa-exchange-alt mr-1" v-else />
       {{ useAsWallet ? 'WALLET' : 'TRANSACTIONS' }}
@@ -49,7 +49,7 @@
       {{ authenticated ? 'VOTING' : 'DELEGATES' }}
     </router-link>
     <hr v-if="useAsWallet" />
-    <router-link :to="{ name: useAsWallet ? 'Transactions' : 'Wallet' }">
+    <router-link :to="{ name: useAsWallet ? 'transactions' : 'wallet' }">
       <i class="fa fa-exchange-alt mr-1" v-if="useAsWallet" />
       <i class="fa fa-wallet mr-1" v-else />
       {{ useAsWallet ? 'TRANSACTIONS' : 'WALLET' }}
