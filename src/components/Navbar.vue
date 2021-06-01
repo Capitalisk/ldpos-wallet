@@ -105,7 +105,6 @@ export default {
           const data = await (sw[key] || sw.default)();
           if (!data) return;
 
-          console.log(route.path);
           store.toggleOrBrowseModal({
             type: DETAIL_MODAL,
             data,
