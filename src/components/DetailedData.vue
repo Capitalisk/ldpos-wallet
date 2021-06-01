@@ -6,7 +6,7 @@
           <strong>{{ transformTitle(key) }}</strong>
         </div>
         <div>
-          {{ transformValue(key, value) || '-' }}
+          <Copy :value="transformValue(key, value)" />
         </div>
       </div>
       <div v-else class="my-2">
@@ -21,7 +21,7 @@
                   <strong class="subtitle">{{ transformTitle(k) }}:</strong>
                 </div>
                 <div class="flex-9">
-                  {{ v ? v : '-' }}
+                  <Copy :value="v" />
                 </div>
               </div>
             </template>
@@ -42,11 +42,14 @@ import {
   _capitalize,
 } from '../utils';
 
+import Copy from './Copy';
+
 export default {
   name: 'DetailedData',
   props: {
     data: { type: Object, default: {} },
   },
+  components: { Copy },
   setup(props) {
     const store = inject('store');
 

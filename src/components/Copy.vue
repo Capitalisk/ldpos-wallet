@@ -6,7 +6,7 @@
         class="far fa-copy cursor-pointer pl-1"
         @click.prevent.stop
         @click="copy"
-      ></i>
+      />
     </template>
     <template v-else>-</template>
   </div>
