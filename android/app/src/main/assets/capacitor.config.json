@@ -1,0 +1,6 @@
+{
+	"appId": "com.ldposwallet.app",
+	"appName": "ldpos-wallet",
+	"webDir": "dist",
+	"bundledWebRuntime": false
+}
