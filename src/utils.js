@@ -34,7 +34,11 @@ export const _parseDate = d => {
 };
 
 export const _transformMonetaryUnit = (amount, symbol = 'CLSK') =>
-  amount ? `${_integerToDecimal(amount)} ${symbol.toUpperCase()}` : null;
+  amount
+    ? `${new Intl.NumberFormat('en-US', {
+        minimumFractionDigits: 2,
+      }).format(_integerToDecimal(amount))} ${symbol.toUpperCase()}`
+    : null;
 
 export const _splitCamelCaseWords = str => {
   if (typeof str !== 'string') return [];

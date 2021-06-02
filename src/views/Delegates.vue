@@ -63,7 +63,7 @@ import Section from '../components/Section';
 import Input from '../components/Input';
 import Copy from '../components/Copy';
 
-import { _integerToDecimal } from '../utils';
+import { _transformMonetaryUnit } from '../utils';
 import Dot from '../components/Dot';
 
 export default {
@@ -102,7 +102,7 @@ export default {
         label: 'Vote weight',
         field: 'voteWeight',
         sortable: false,
-        value: val => _integerToDecimal(val),
+        value: val => _transformMonetaryUnit(val),
         active: true,
         shrinkable: false,
       },
