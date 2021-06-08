@@ -214,7 +214,7 @@ export default {
           generatedWalletAddress.data = await store.client.value.generateWallet();
         else return;
       } catch (e) {
-        console.log(e);
+        console.error(e);
         generatedWalletAddress.error = e.message;
       }
       generatedWalletAddress.loading = false;

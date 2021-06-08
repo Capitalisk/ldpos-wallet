@@ -36,7 +36,7 @@
     "@capacitor/android": "^3.0.0",
     "@capacitor/cli": "^3.0.0",
     "@capacitor/core": "^3.0.0",
-    "ldpos-client": "^9.3.0",
+    "ldpos-client": "^10.0.1",
     "vue": "^3.0.7",
     "vue-router": "^4.0.0-0"
   },
