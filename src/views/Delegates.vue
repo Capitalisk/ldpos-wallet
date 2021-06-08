@@ -49,10 +49,7 @@
     </template>
     <template v-slot:forging="slotProps">
       <Dot
-        :active="
-          slotProps.row.updateHeight ===
-            Math.max(...slotProps.rows.map(e => e.updateHeight))
-        "
+        :active="slotProps.row.updateHeight > maxBlockHeight - delegateCount"
       />
     </template>
   </DataTable>
@@ -83,6 +80,7 @@ export default {
     const maxBlockHeight = ref(null);
     const authenticated = computed(() => store.state.authenticated);
     const votes = ref([]);
+    const delegateCount = ref(null);
 
     const columns = ref([
       {
@@ -136,6 +134,8 @@ export default {
           await store.client.value.getWalletAddress(),
         );
       }
+
+      delegateCount.value = await store.client.value.getMaxBlockHeight();
     });
 
     const voteForDelegate = async (wallet, unvote) => {
@@ -214,6 +214,7 @@ export default {
           return 'Not a delegate';
         }
       },
+      delegateCount,
     };
   },
   components: { Navbar, Button, DataTable, Input, Section, Copy, Dot },
