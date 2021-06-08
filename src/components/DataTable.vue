@@ -61,6 +61,7 @@
                     :name="c.name"
                     :row="r"
                     :column="c"
+                    :rows="rows"
                     :shrink="
                       innerWidth < 1400 || table.scrollWidth > table.offsetWidth
                     "
