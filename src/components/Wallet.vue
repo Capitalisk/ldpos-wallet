@@ -29,7 +29,7 @@
         <div class="flex-6 flex-sm-12 wallet-address">
           <h2>Wallet Address</h2>
           <br />
-          <Copy class="mb-auto" :value="address.data" />
+          <Copy class="mb-auto" :value="address.data" :shrink="shrink" />
           <Button
             value="Register as a delegate"
             class="mt-4 outline wallet-address"
@@ -317,6 +317,7 @@ export default {
         passphrase.value = null;
       },
       passphrase,
+      shrink: window.innerWidth < 768,
     };
   },
   components: {
@@ -341,7 +342,7 @@ ul {
 }
 
 .wallet-address {
-  padding-top: var(--unit-2)
+  padding-top: var(--unit-2);
 }
 
 @media screen and (min-width: 768px) {
