@@ -147,6 +147,14 @@ th {
   color: var(--danger);
 }
 
+.text-warning {
+  color: var(--warning);
+}
+
+.capitalize {
+  text-transform: capitalize;
+}
+
 .flex {
   display: flex;
 }

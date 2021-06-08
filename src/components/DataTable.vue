@@ -176,6 +176,11 @@ export default {
       };
     });
 
+    watch(
+      () => props.rows,
+      n => !props.fn && (rows.value = n),
+    );
+
     const loadMore = async () => {
       // If less rows then limit don't load more
       if (rows.value.length < limit.value * countLoadMore.value) return;

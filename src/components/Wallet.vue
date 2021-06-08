@@ -39,55 +39,27 @@
         </div>
       </div>
     </Section>
-    <!-- <Section
-      :loading="pendingTransactions.loading"
-      title="Pending transactions"
-      :error="pendingTransactions.error"
-      v-if="authenticated"
-      class="flex-3"
-    >
-      <ul v-if="pendingTransactions.data.length">
-        <template
-          v-for="transaction in pendingTransactions.data"
-          :key="transaction.id"
-        >
-          <li
-            class="lineheight-3 font-12 cursor-pointer"
-            @click="details(transaction)"
-          >
-            <div class="flex align-center">
-              <strong>{{ transformMonetaryUnit(transaction.amount) }}</strong
-              >&nbsp;
-              {{ transaction.direction === 'INBOUND' ? 'from' : 'to' }}&nbsp;
-              <strong>
-                <Copy
-                  :value="
-                    transaction.direction === 'INBOUND'
-                      ? transaction.senderAddress
-                      : transaction.recipientAddress
-                  "
-                  trim
-                />
-              </strong>
-              <hr />
-            </div>
-          </li>
-        </template>
-      </ul>
-      <p v-else>No latest transactions available</p>
-    </Section> -->
   </div>
-  <DataTable title="Wallet transactions" :columns="columns" clickable :fn="fn">
+  <DataTable
+    title="Wallet transactions"
+    :columns="columns"
+    clickable
+    :rows="transactions.data"
+    :loading="transactions.loading"
+  >
     <template v-slot:direction="slotProps">
       <i
-        :class="
-          `fas fa-${directions[slotProps.row.direction]} mr-1 ${
-            slotProps.row.direction === 'INBOUND'
-              ? 'text-success'
-              : 'text-danger'
-          }`
-        "
+        v-if="slotProps.row.direction === 'inbound'"
+        class="fas fa-chevron-up text-success"
       />
+      <i
+        v-else-if="slotProps.row.direction === 'outbound'"
+        class="fas fa-chevron-down text-danger"
+      />
+      <span v-else>
+        <i class="far fa-circle mr-1 text-warning" />
+        Pending...
+      </span>
     </template>
     <template v-slot:senderAddress="slotProps">
       <Copy :value="slotProps.row.senderAddress" />
@@ -107,7 +79,7 @@ import Copy from './Copy';
 import Section from './Section';
 import Button from './Button';
 
-import { _parseDate, _transformMonetaryUnit } from '../utils';
+import { _capitalize, _parseDate, _transformMonetaryUnit } from '../utils';
 import router from '../router';
 
 import { DETAIL_MODAL, TRANSFER_MODAL } from './modals/constants';
@@ -123,54 +95,46 @@ export default {
 
     const address = reactive({ loading: true, data: null, error: null });
     const balance = reactive({ loading: true, data: null, error: null });
-    const pendingTransactions = reactive({
-      loading: true,
-      data: null,
-      error: null,
-    });
-
-    const getPendingTransactions = async () => {
-      pendingTransactions.loading = true;
-      try {
-        pendingTransactions.data = await store.client.value.getOutboundPendingTransactions(
-          store.client.value.getWalletAddress(),
-          null,
-          50,
-          'asc',
-        );
-      } catch (err) {
-        pendingTransactions.error = err.message;
-      }
-      pendingTransactions.loading = false;
-    };
+    const transactions = reactive({ loading: true, data: null, error: null });
 
     const getWallet = async () => {
       if (!store.state.authenticated) {
         router.push('/');
         return;
       }
+      try {
+        const inboundTransactions = await store.client.value.getInboundTransactions(
+          store.client.value.getWalletAddress(),
+          null,
+          0,
+          50,
+          'asc',
+        );
+        const outboundTransactions = await store.client.value.getOutboundTransactions(
+          store.client.value.getWalletAddress(),
+          null,
+          0,
+          50,
+          'asc',
+        );
 
-      const inboundTransactions = await store.client.value.getInboundTransactions(
-        store.client.value.getWalletAddress(),
-        null,
-        0,
-        50,
-        'asc',
-      );
-      const outboundTransactions = await store.client.value.getOutboundTransactions(
-        store.client.value.getWalletAddress(),
-        null,
-        0,
-        50,
-        'asc',
-      );
+        const pendingTransactions = await store.client.value.getOutboundPendingTransactions(
+          store.client.value.getWalletAddress(),
+          null,
+          50,
+          'asc',
+        );
 
-      const transactions = [
-        ...inboundTransactions.map(t => ({ ...t, direction: 'INBOUND' })),
-        ...outboundTransactions.map(t => ({ ...t, direction: 'OUTBOUND' })),
-      ].sort((a, b) => (a.timestamp > b.timestamp ? -1 : 1));
+        const transactions = [
+          ...pendingTransactions.map(t => ({ ...t, direction: 'pending' })),
+          ...inboundTransactions.map(t => ({ ...t, direction: 'inbound' })),
+          ...outboundTransactions.map(t => ({ ...t, direction: 'outbound' })),
+        ].sort((a, b) => (a.timestamp > b.timestamp ? -1 : 1));
 
-      return Promise.resolve(transactions);
+        return Promise.resolve(transactions);
+      } catch (e) {
+        transactions.error = e.message;
+      }
     };
 
     const getBalance = async () => {
@@ -199,7 +163,6 @@ export default {
       clearInterval(interval);
       address.loading = true;
       balance.loading = true;
-      pendingTransactions.loading = true;
     });
 
     onMounted(async () => {
@@ -211,11 +174,12 @@ export default {
       address.loading = false;
 
       await getBalance();
-      await getPendingTransactions();
+      transactions.data = await getWallet();
+      transactions.loading = false;
       interval.value = setInterval(async () => {
         await getBalance();
-        await getPendingTransactions();
-      }, 10000);
+        transactions.data = await getWallet();
+      }, 5000);
     });
 
     const columns = ref([
@@ -223,7 +187,6 @@ export default {
         name: 'direction',
         label: 'Direction',
         sortable: false,
-        value: val => (val === 'INBOUND' ? 'incoming' : 'outgoing'),
         active: true,
         slot: true,
       },
@@ -287,14 +250,10 @@ export default {
     return {
       columns,
       fn: getWallet,
-      directions: {
-        OUTBOUND: 'chevron-up',
-        INBOUND: 'chevron-down',
-      },
       authenticated: computed(() => store.state.authenticated),
       address: computed(() => address),
       balance: computed(() => balance),
-      pendingTransactions: computed(() => pendingTransactions),
+      transactions,
       openTransferModal: () =>
         balance.data > 0
           ? store.toggleOrBrowseModal({ type: TRANSFER_MODAL })
