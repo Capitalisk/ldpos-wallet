@@ -28,7 +28,7 @@ jobs:
 
   build:
     name: Upload Release Windows and Linux
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
 
     strategy:
       matrix:
@@ -117,7 +117,7 @@ jobs:
 
   android:
     name: Upload Release android
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
 
     strategy:
       matrix:
@@ -135,7 +135,6 @@ jobs:
       - name: Install and build for Android
         run: |
           npm ci
-          npx cap add android
           npx cap copy android
           cd android
           ./gradlew assembleDebug
