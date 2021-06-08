@@ -135,6 +135,7 @@ jobs:
       - name: Install and build for Android
         run: |
           npm ci
+          npm run build
           npx cap copy android
           cd android
           ./gradlew assembleDebug
