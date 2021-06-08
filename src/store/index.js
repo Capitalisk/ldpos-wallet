@@ -100,7 +100,7 @@ export default {
       state.authenticated = false;
     }
     state.login.loading = false;
-    if (state.authenticated) router.push('/');
+    if (state.authenticated) router.push({ name: 'wallet' });
   },
   async deauthenticate(notify = false) {
     this.mutateProgressbarLoading(true);
