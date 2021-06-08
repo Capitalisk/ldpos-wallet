@@ -136,15 +136,16 @@ jobs:
         run: |
           npm ci
           npm run build
-          rm -r android
-          npx cap add android
+          npm run android:generate:logo
           npx cap copy android
+          npx cap sync
           cd android
           ./gradlew assembleDebug
           cd ..
           mv android/app/build/outputs/apk/debug/app-debug.apk android/app/build/outputs/apk/debug/ldpos-wallet.apk
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_CONFIG_PREFIX: "~/.npm-global"
 
       - name: Get the version
         id: get_version

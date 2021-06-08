@@ -1,6 +1,6 @@
 {
 	"appId": "com.ldposwallet.app",
-	"appName": "ldpos-wallet",
+	"appName": "LDPoS Wallet by Capitalisk",
 	"webDir": "dist",
 	"bundledWebRuntime": false
 }
