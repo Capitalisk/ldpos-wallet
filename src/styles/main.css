@@ -172,6 +172,11 @@ th {
   flex-basis: 100%;
 }
 
+.flex-sm-12 {
+  flex-grow: 12 !important;
+  flex-basis: 100% !important;
+}
+
 .flex-9 {
   flex-grow: 9;
   flex-basis: 40%;

@@ -15,8 +15,8 @@
       v-if="authenticated"
       class="flex-12"
     >
-      <div class="flex">
-        <div class="flex-6 mr-auto">
+      <div class="flex flex-wrap">
+        <div class="flex-6 flex-sm-12 mr-auto">
           <strong>Balance:</strong>
           {{ transformMonetaryUnit(balance.data, networkSymbol) }}
           <Button
@@ -26,13 +26,13 @@
             @click="openTransferModal"
           />
         </div>
-        <div class="flex-6 text-right">
+        <div class="flex-6 flex-sm-12 wallet-address">
           <h2>Wallet Address</h2>
           <br />
           <Copy class="mb-auto" :value="address.data" />
           <Button
             value="Register as a delegate"
-            class="mt-4 ml-auto outline"
+            class="mt-4 outline wallet-address"
             style="width: 250px"
             @click="confirmationModal({ message: '' })"
           />
@@ -338,5 +338,17 @@ export default {
 
 ul {
   list-style: none;
+}
+
+.wallet-address {
+  padding-top: var(--unit-2)
+}
+
+@media screen and (min-width: 768px) {
+  .wallet-address {
+    padding-top: inherit;
+    text-align: right;
+    margin-left: auto;
+  }
 }
 </style>
