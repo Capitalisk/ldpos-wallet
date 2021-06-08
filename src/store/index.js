@@ -127,7 +127,8 @@ export default {
     } catch (e) {
       console.error(e);
     }
-    if (state.authenticated) router.push('/');
+
+    if (state.authenticated) router.push({ name: 'wallet' });
 
     this.mutateProgressbarLoading(false);
   },
