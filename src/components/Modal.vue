@@ -145,7 +145,7 @@ export default {
 
   .close-btn {
     position: fixed;
-    top: 12px;
+    top: 10px;
     right: 15px;
     color: var(--dark);
   }
