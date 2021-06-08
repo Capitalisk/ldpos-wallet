@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">ldpos-wallet</string>
+    <string name="title_activity_main">ldpos-wallet</string>
+    <string name="package_name">com.ldposwallet.app</string>
+    <string name="custom_url_scheme">com.ldposwallet.app</string>
+</resources>

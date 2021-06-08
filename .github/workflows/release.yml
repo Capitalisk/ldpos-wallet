@@ -27,7 +27,7 @@ jobs:
           prerelease: false
 
   build:
-    name: Upload Release Asset
+    name: Upload Release Windows and Linux
     runs-on: ubuntu-latest
 
     strategy:
@@ -82,7 +82,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   build-mac:
-    name: Upload Release Asset Mac
+    name: Upload Release Mac
     runs-on: macos-latest
 
     strategy:
@@ -112,5 +112,44 @@ jobs:
       - uses: softprops/action-gh-release@v1
         with:
           files: dist_electron/ldpos-wallet*.dmg
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  android:
+    name: Upload Release android
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [14.x]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Install and build for Android
+        run: |
+          npm ci
+          npx cap add android
+          npx cap copy android
+          cd android
+          ./gradlew assembleDebug
+          cd ..
+          mv android/app/build/outputs/apk/debug/app-debug.apk android/app/build/outputs/apk/debug/ldpos-wallet.apk
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Get the version
+        id: get_version
+        run: echo ::set-output name=VERSION::$(echo $GITHUB_REF | cut -d / -f 3)
+
+      - uses: softprops/action-gh-release@v1
+        with:
+          files: android/app/build/outputs/apk/debug/ldpos-wallet.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
