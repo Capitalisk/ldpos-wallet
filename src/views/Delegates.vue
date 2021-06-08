@@ -48,7 +48,12 @@
       <Copy :value="slotProps.row.address" :shrink="slotProps.shrink" />
     </template>
     <template v-slot:forging="slotProps">
-      <Dot :active="slotProps.row.updateHeight === maxBlockHeight" />
+      <Dot
+        :active="
+          slotProps.row.updateHeight ===
+            Math.max(...slotProps.rows.map(e => e.updateHeight))
+        "
+      />
     </template>
   </DataTable>
 </template>

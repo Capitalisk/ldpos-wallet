@@ -41,11 +41,6 @@ export default {
     return {
       notifications,
       divs,
-      notify: () =>
-        store.notify({
-          message:
-            'Your session was automatically ended after being inactive for 15 minutes.',
-        }),
       denotify: i => store.denotify(i),
     };
   },

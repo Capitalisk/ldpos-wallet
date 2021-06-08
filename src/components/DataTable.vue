@@ -61,6 +61,7 @@
                     :name="c.name"
                     :row="r"
                     :column="c"
+                    :rows="rows"
                     :shrink="
                       innerWidth < 1400 || table.scrollWidth > table.offsetWidth
                     "
@@ -174,6 +175,11 @@ export default {
         }
       };
     });
+
+    watch(
+      () => props.rows,
+      n => !props.fn && (rows.value = n),
+    );
 
     const loadMore = async () => {
       // If less rows then limit don't load more
