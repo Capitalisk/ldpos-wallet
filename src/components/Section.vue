@@ -1,6 +1,6 @@
 <template>
   <div class="section pa-2">
-    <h2 v-if="title">{{ title }}</h2>
+    <h2 v-if="title" :class="{ 'ml-4': backButton }">{{ title }}</h2>
 
     <Loading v-if="loading" />
     <p v-else-if="!loading && error" class="text-danger">
@@ -24,6 +24,7 @@ export default {
     loading: { type: Boolean },
     error: { type: String, default: null },
     border: { type: String, default: null },
+    backButton: { type: Boolean, default: false },
   },
   components: { Loading },
   setup() {
@@ -59,11 +60,5 @@ h2 {
 
 ul {
   list-style-type: none;
-}
-
-@media screen and (max-width: 768px) {
-  .section {
-    width: 100%;
-  }
 }
 </style>

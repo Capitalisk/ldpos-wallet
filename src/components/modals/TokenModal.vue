@@ -1,5 +1,5 @@
 <template>
-  <div class="flex pa-1 column">
+  <div class="flex py-1 column">
     <div class="mb-1">Network</div>
     <div class="mb-2">
       <Select
@@ -16,7 +16,7 @@
     <div class="mb-2" v-if="isDevelopment && network">
       <Select
         v-model="type"
-        :options="Object.keys(networks[network])"
+        :options="Object.keys(networks[network] || [])"
         select
         no-empty-option
         placeholder="type"
@@ -26,7 +26,9 @@
   <div class="flex justify-end">
     <Button
       value="Add blockchain"
-      @click="toggleOrBrowseModal({ type: ADD_TOKEN_MODAL, title: 'Add a network' })"
+      @click="
+        toggleOrBrowseModal({ type: ADD_TOKEN_MODAL, title: 'Add a network' })
+      "
       class="mr-1 outline"
     />
     <Button
@@ -124,7 +126,7 @@ export default {
         );
       },
       isDevelopment,
-            ADD_TOKEN_MODAL,
+      ADD_TOKEN_MODAL,
       toggleOrBrowseModal: store.toggleOrBrowseModal,
     };
   },

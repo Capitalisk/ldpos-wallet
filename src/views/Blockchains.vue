@@ -16,7 +16,7 @@
         </div>
         <div v-if="network" class="flex align-center justify-center py-2">
           <i
-            class="fa fa-trash-alt text-danger"
+            class="fa fa-trash-alt text-danger ml-2"
             v-if="network"
             @click="deleteNetwork"
           />
@@ -38,7 +38,7 @@
           </div>
           <div v-if="network" class="flex align-center justify-center py-2">
             <i
-              class="fa fa-trash-alt text-danger"
+              class="fa fa-trash-alt text-danger ml-2"
               v-if="network"
               @click="deleteType"
             />
@@ -66,6 +66,8 @@ import Select from '../components/Select';
 import Button from '../components/Button';
 import NetworkForm from '../components/forms/NetworkForm';
 
+import config from '../config';
+
 export default {
   name: 'Settings',
   components: { Navbar, Section, Select, Button, NetworkForm },
@@ -90,10 +92,14 @@ export default {
 
     onMounted(async () => {
       if (isElectron) {
+        const { ipcRenderer } = await import('electron');
+
         networks.value = JSON.parse(await ipcRenderer.invoke('get-config'));
       } else {
         networks.value = JSON.parse(localStorage.getItem('config'));
       }
+
+      if(!networks.value) networks.value = config
     });
 
     return {

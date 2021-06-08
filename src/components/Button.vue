@@ -22,7 +22,7 @@ export default {
   props: {
     value: { type: String },
     routerLink: { type: Boolean, default: false },
-    href: { type: String, default: '' },
+    href: { type: [String, Object], default: '' },
     loading: { type: Boolean, default: false },
     icon: { type: String, default: null },
   },

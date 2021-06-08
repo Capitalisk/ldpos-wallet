@@ -4,8 +4,8 @@
       <Button
         value="Sign in"
         router-link
-        href="/"
-        v-if="!authenticated && $router.currentRoute.value.path !== '/'"
+        :href="{ name: 'wallet' }"
+        v-if="!authenticated && $router.currentRoute.value.name !== 'wallet'"
       />
       <Button
         value="Sign out"
@@ -39,31 +39,31 @@
       </div>
     </a>
     <hr />
-    <router-link :to="{ name: useAsWallet ? 'wallet' : 'transactions' }">
+    <router-link class="navbar-link" :to="{ name: useAsWallet ? 'wallet' : 'transactions' }">
       <i class="fa fa-wallet mr-1" v-if="useAsWallet" />
       <i class="fa fa-exchange-alt mr-1" v-else />
       {{ useAsWallet ? 'WALLET' : 'TRANSACTIONS' }}
     </router-link>
-    <router-link to="/delegates">
+    <router-link class="navbar-link" to="/delegates">
       <i class="fa fa-poll mr-1" />
       {{ authenticated ? 'VOTING' : 'DELEGATES' }}
     </router-link>
     <hr v-if="useAsWallet" />
-    <router-link :to="{ name: useAsWallet ? 'transactions' : 'wallet' }">
+    <router-link class="navbar-link" :to="{ name: useAsWallet ? 'transactions' : 'wallet' }">
       <i class="fa fa-exchange-alt mr-1" v-if="useAsWallet" />
       <i class="fa fa-wallet mr-1" v-else />
       {{ useAsWallet ? 'TRANSACTIONS' : 'WALLET' }}
     </router-link>
-    <router-link to="/blocks">
+    <router-link class="navbar-link" to="/blocks">
       <i class="fa fa-th-large mr-1" />
       BLOCKS
     </router-link>
-    <router-link to="/accounts">
+    <router-link class="navbar-link" to="/accounts">
       <i class="fa fa-users mr-1" />
       ACCOUNTS
     </router-link>
     <hr />
-    <router-link to="/blockchains" class="last">
+    <router-link class="navbar-link last" to="/blockchains">
       <i class="fa fa-user-cog mr-1" />
       BLOCKCHAINS
     </router-link>
@@ -144,12 +144,12 @@ a.disabled:hover {
   color: var(--permanent-white);
 }
 
-.router-link-active {
+.router-link-active.navbar-link {
   background-color: var(--primary-darker);
   color: var(--primary-lightest);
 }
 
-a.router-link-active::before {
+a.router-link-active.navbar-link::before {
   content: '';
   position: absolute;
   width: 4px;

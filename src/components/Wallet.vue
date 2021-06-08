@@ -101,7 +101,7 @@ export default {
 
     const getWallet = async () => {
       if (!store.state.authenticated) {
-        router.push('/');
+        router.push({ name: 'wallet' });
         return;
       }
       try {

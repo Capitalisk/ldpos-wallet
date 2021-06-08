@@ -22,7 +22,8 @@
           title ? title : slotTitle || (type && capitalize(type.toLowerCase()))
         "
         class="modal"
-        :style="{ height: '100%', paddingTop: 'var(--unit-4)' }"
+        :back-button="stack.length > 1"
+        :style="{ height: '100%' }"
       >
         <div class="force-modal-scroll">
           <template v-if="!useSlot">
@@ -135,7 +136,7 @@ export default {
 
   .section {
     border-radius: 0 !important;
-    padding: var(--unit-4) 0 !important;
+    padding: var(--unit-2) var(--unit-2) var(--unit-2) var(--unit-2);
   }
 
   .force-modal-scroll {
@@ -144,14 +145,14 @@ export default {
 
   .close-btn {
     position: fixed;
-    top: 15px;
+    top: 12px;
     right: 15px;
     color: var(--dark);
   }
 
   .back-btn {
     position: fixed;
-    top: 15px;
+    top: 17px;
     left: 15px;
     color: var(--dark);
   }
