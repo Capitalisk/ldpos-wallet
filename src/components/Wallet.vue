@@ -44,8 +44,7 @@
     title="Wallet transactions"
     :columns="columns"
     clickable
-    :rows="transactions.data"
-    :loading="transactions.loading"
+    :rows="transactions"
   >
     <template v-slot:direction="slotProps">
       <i
@@ -65,7 +64,10 @@
       <Copy :value="slotProps.row.senderAddress" :shrink="slotProps.shrink" />
     </template>
     <template v-slot:recipientAddress="slotProps">
-      <Copy :value="slotProps.row.recipientAddress" :shrink="slotProps.shrink" />
+      <Copy
+        :value="slotProps.row.recipientAddress"
+        :shrink="slotProps.shrink"
+      />
     </template>
   </DataTable>
 </template>
@@ -95,7 +97,7 @@ export default {
 
     const address = reactive({ loading: true, data: null, error: null });
     const balance = reactive({ loading: true, data: null, error: null });
-    const transactions = reactive({ loading: true, data: null, error: null });
+    const transactions = ref(null);
 
     const getWallet = async () => {
       if (!store.state.authenticated) {
@@ -166,6 +168,7 @@ export default {
     });
 
     onMounted(async () => {
+      store.mutateProgressbarLoading(true);
       try {
         address.data = await store.client.value.getWalletAddress();
       } catch (e) {
@@ -174,30 +177,23 @@ export default {
       address.loading = false;
 
       await getBalance();
-      transactions.data = await getWallet();
-      transactions.loading = false;
+      transactions.value = await getWallet();
       interval.value = setInterval(async () => {
         await getBalance();
-        transactions.data = await getWallet();
+        transactions.value = await getWallet();
       }, 5000);
+      store.mutateProgressbarLoading(false);
     });
 
     const columns = ref([
-      {
-        name: 'direction',
-        label: 'Direction',
-        sortable: false,
-        active: true,
-        slot: true,
-      },
-      {
-        name: 'type',
-        label: 'Type',
-        field: 'type',
-        sortable: false,
-        active: true,
-        shrinkable: false,
-      },
+      // {
+      //   name: 'type',
+      //   label: 'Type',
+      //   field: 'type',
+      //   sortable: false,
+      //   active: true,
+      //   shrinkable: false,
+      // },
       {
         name: 'senderAddress',
         label: 'Sender',
@@ -241,6 +237,13 @@ export default {
         value: val =>
           _transformMonetaryUnit(val, store.state.config.networkSymbol),
         active: true,
+      },
+      {
+        name: 'direction',
+        label: 'Direction',
+        sortable: false,
+        active: true,
+        slot: true,
       },
     ]);
 
