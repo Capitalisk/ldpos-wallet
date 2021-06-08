@@ -80,6 +80,7 @@ jobs:
             dist_electron/ldpos-wallet*-win-x64.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CYPRESS_INSTALL_BINARY: 0
 
   build-mac:
     name: Upload Release Mac
@@ -104,6 +105,7 @@ jobs:
           npm run electron:build:mac
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CYPRESS_INSTALL_BINARY: 0
 
       - name: Get the version
         id: get_version
@@ -136,8 +138,8 @@ jobs:
         run: |
           npm ci
           npm run build
-          npm i -D cordova-res
-          npm run android:generate:logo
+          npm i -g cordova-res
+          cordova-res android --skip-config --copy
           npx cap copy android
           npx cap sync
           cd android
@@ -147,6 +149,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_CONFIG_PREFIX: "~/.npm-global"
+          CYPRESS_INSTALL_BINARY: 0
 
       - name: Get the version
         id: get_version
