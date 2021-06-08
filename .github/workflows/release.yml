@@ -138,8 +138,8 @@ jobs:
         run: |
           npm ci
           npm run build
-          npm i -g cordova-res
-          cordova-res android --skip-config --copy
+          npm i -D cordova-res
+          npm run android:generate:logo
           npx cap copy android
           npx cap sync
           cd android
