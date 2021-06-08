@@ -62,10 +62,10 @@
       </span>
     </template>
     <template v-slot:senderAddress="slotProps">
-      <Copy :value="slotProps.row.senderAddress" />
+      <Copy :value="slotProps.row.senderAddress" :shrink="slotProps.shrink" />
     </template>
     <template v-slot:recipientAddress="slotProps">
-      <Copy :value="slotProps.row.recipientAddress" />
+      <Copy :value="slotProps.row.recipientAddress" :shrink="slotProps.shrink" />
     </template>
   </DataTable>
 </template>
