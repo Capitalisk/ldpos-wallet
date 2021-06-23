@@ -43,7 +43,7 @@ export default {
   setup(props) {
     const error = ref(props.error);
     const dirty = ref(props.error ? true : false);
-    const input = ref(null)
+    const input = ref(null);
 
     return {
       error,
@@ -80,14 +80,13 @@ export default {
 
 <style scoped>
 .input {
-  border: 0;
+  border: none;
   padding: 0.75rem;
   border-radius: var(--border-radius);
   text-decoration: none;
   flex: 1;
   background-color: var(--primary);
   color: var(--dark);
-  box-sizing: border-box;
 }
 
 .input.danger {
@@ -111,11 +110,16 @@ export default {
 
 .input:focus {
   outline: none;
-  border: 1px solid var(--dark);
+  border: none;
+  box-sizing: border-box;
+  box-shadow: inset 0 0 0 1px var(--dark);
 }
 
 .input-error {
-  border: 1px solid var(--danger);
+  outline: none;
+  border: none;
+  box-sizing: border-box;
+  box-shadow: inset 0 0 0 1px var(--danger);
 }
 
 .input-prefix {
