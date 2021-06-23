@@ -28,7 +28,7 @@
           v-if="!generatedWalletAddress.data"
           class="flex justify-center flex-wrap"
         >
-          <div class="flex flex-wrap flex-gap justify-center pb-2">
+          <div class="flex flex-wrap justify-center">
             <div class="flex-12 pa-2 text-right" id="show">
               <span @click="toggleHidden" class="cursor-pointer">
                 <span v-if="hidden">
@@ -40,7 +40,7 @@
             <div
               v-for="(input, i) in inputs"
               :key="i"
-              class="flex align-center"
+              class="flex align-center pb-2"
             >
               <Input
                 :prefix="i + 1"
