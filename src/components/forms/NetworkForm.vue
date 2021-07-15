@@ -65,7 +65,7 @@
   </div>
   <div>
     <div class="mb-1">
-      WSS <tooltip content="The majority of cases this will need to be unchecked. If you don't know, leave it unchecked." />
+      WSS <Tooltip content="The majority of cases this will need to be unchecked. If you don't know, leave it unchecked." />
     </div>
     <div class="mb-2">
       <Switch v-model="config.secure" />
