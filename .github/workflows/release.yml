@@ -12,7 +12,7 @@ jobs:
 
     steps:
       - name: Get current date
-        id: date
+        id: get_date
         run: echo "::set-output name=DATE::$(date +'%Y-%m-%d')"
 
       - name: Get the version
@@ -25,6 +25,9 @@ jobs:
         with:
           myToken: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Get the changelog
+        run: echo "${{ steps.changelog.outputs.changelog }}"
+
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -32,7 +35,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ github.ref }}
-          release_name: ${{ steps.get_version.outputs.VERSION }} - ${{ steps.get_version.outputs.DATE }}
+          release_name: ${{ steps.get_version.outputs.VERSION }} - ${{ steps.get_date.outputs.DATE }}
           body: ${{ steps.changelog.outputs.changelog }}
           draft: false
           prerelease: false
