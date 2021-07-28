@@ -11,6 +11,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
       - name: Get current date
         id: get_date
         run: echo "::set-output name=DATE::$(date +'%Y-%m-%d')"
