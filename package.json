@@ -1,7 +1,7 @@
 {
   "name": "ldpos-wallet",
   "description": "A LDPoS Wallet application",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "private": true,
   "author": {
     "email": "martinuske@gmail.com",
