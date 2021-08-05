@@ -4,7 +4,7 @@
     :columns="columns"
     clickable
     fn="getAccountsByBalance"
-    prefix="wallet"
+    prefix="accounts"
   >
     <template v-slot:address="slotProps">
       <Copy :value="slotProps.row.address" :shrink="slotProps.shrink" />
