@@ -93,7 +93,7 @@ export default {
 
       state.authenticated = true;
 
-      this.initiateOrRenewTimeout();
+      // this.initiateOrRenewTimeout();
     } catch (e) {
       console.error(e);
       state.login.error = e.message;
@@ -183,7 +183,7 @@ export default {
     state.authenticationTimeout = setTimeout(async () => {
       console.log('logging out 30min passed...');
       await this.deauthenticate(true);
-    }, 30 * 1000 * 60);
+    }, 1 * 1000 * 60);
   },
   notify({ message, error = false }, seconds = null) {
     for (let i = 0; i < state.notifications.length; i++) {
