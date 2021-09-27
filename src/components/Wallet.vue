@@ -15,7 +15,7 @@
       v-if="authenticated"
       class="flex-12"
     >
-      <div class="flex flex-wrap">
+      <div class="flex flex-wrap-mobile">
         <div class="flex-6 flex-sm-12 mr-auto">
           <strong>Balance:</strong>
           {{ transformMonetaryUnit(balance.data, networkSymbol) }}

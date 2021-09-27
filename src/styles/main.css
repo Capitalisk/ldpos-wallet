@@ -571,6 +571,9 @@ th {
   .flex-3 {
     flex-basis: 100%;
   }
+  .flex-wrap-mobile {
+    flex-wrap: wrap;
+  }
 }
 
 @keyframes progress-indeterminate {
