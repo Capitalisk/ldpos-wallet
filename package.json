@@ -29,18 +29,18 @@
   },
   "main": "background.js",
   "dependencies": {
-    "@capacitor/android": "^3.0.0",
-    "@capacitor/cli": "^3.0.0",
-    "@capacitor/core": "^3.0.0",
+    "@capacitor/android": "^3.2.3",
+    "@capacitor/cli": "^3.2.3",
+    "@capacitor/core": "^3.2.3",
     "ldpos-client": "^10.0.1",
-    "vue": "^3.0.7",
-    "vue-router": "^4.0.0-0"
+    "vue": "^3.2.19",
+    "vue-router": "^4.0.11"
   },
   "devDependencies": {
-    "@vue/cli-plugin-e2e-cypress": "~4.5.13",
-    "@vue/cli-plugin-router": "~4.5.13",
-    "@vue/cli-service": "~4.5.13",
-    "@vue/compiler-sfc": "^3.0.0",
+    "@vue/cli-plugin-e2e-cypress": "^4.5.13",
+    "@vue/cli-plugin-router": "^4.5.13",
+    "@vue/cli-service": "^4.5.13",
+    "@vue/compiler-sfc": "^3.2.19",
     "electron": "^11.4.8",
     "electron-devtools-installer": "^3.1.0",
     "vue-cli-plugin-electron-builder": "~2.1.1"
