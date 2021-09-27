@@ -93,7 +93,15 @@
 </template>
 
 <script>
-import { computed, inject, onMounted, reactive, ref, watch } from 'vue';
+import {
+  computed,
+  inject,
+  onMounted,
+  onUnmounted,
+  reactive,
+  ref,
+  watch,
+} from 'vue';
 
 import { DETAIL_MODAL } from './modals/constants';
 
@@ -116,6 +124,8 @@ export default {
   },
   setup(props, { emit, slots }) {
     const store = inject('store');
+
+    let poller;
 
     const rows = ref([]);
     const countLoadMore = ref(1);
@@ -151,12 +161,25 @@ export default {
       }
     };
 
+    const pollerFn = async () => (rows.value = await getData());
+    const clearPoll = () => clearInterval(poller);
+    const poll = () => {
+      pollerFn();
+      poller = setInterval(pollerFn, 10 * 1000);
+    };
+
     onMounted(async () => {
       store.mutateProgressbarLoading(true);
 
       if (props.fn) {
         try {
-          rows.value = await getData();
+          await pollerFn();
+
+          poller = setInterval(pollerFn, 10 * 1000);
+
+          window.addEventListener('blur', clearPoll);
+
+          window.addEventListener('focus', poll);
         } catch (e) {
           console.error(e);
         }
@@ -174,6 +197,12 @@ export default {
           loadMore();
         }
       };
+    });
+
+    onUnmounted(() => {
+      clearInterval(poller);
+      window.removeEventListener('blur', clearPoll);
+      window.removeEventListener('focus', poll);
     });
 
     watch(
