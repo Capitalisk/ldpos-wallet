@@ -31,7 +31,7 @@ import { ref, computed, toRefs, watch } from 'vue';
 export default {
   name: 'Input',
   props: {
-    modelValue: { type: String, default: '' },
+    modelValue: { type: [String, Number], default: '' },
     placeholder: { type: String, default: '' },
     id: { type: String, default: null },
     suffix: { type: String, default: null },

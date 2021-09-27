@@ -26,6 +26,7 @@
         :ref="el => (transfer.amount.ref = el)"
         :rules="[
           val => !!val || (val && val.length <= 0) || 'Required',
+          val => (val && val.split('.').length <= 2) || 'Not a valid amount',
           val =>
             (val && Number.isInteger(parseInt(decimalToInteger(val)))) ||
             'Not a valid amount',
@@ -37,12 +38,20 @@
     </div>
     <div>
       Fee:
+      {{ minFee }}
       <Input
         v-model="transfer.fee.data"
         :error="transfer.fee.error"
         :suffix="unit"
-        disabled
         :ref="el => (transfer.fee.ref = el)"
+        :rules="[
+          val => !!val || (val && val.length <= 0) || 'Required',
+          val => (val && val.split('.').length <= 2) || 'Not a valid amount',
+          val =>
+            (val && Number.isInteger(parseInt(decimalToInteger(val)))) ||
+            'Not a valid amount',
+          val => val > minFee || `Value should not be less than ${minFee}`,
+        ]"
       />
     </div>
     <div>
@@ -83,7 +92,8 @@ export default {
 
     const loading = ref(false);
     const error = ref(false);
-    const maxBalance = ref(null);
+    const balance = ref(null);
+    const minFee = ref(null);
     const transfer = reactive({
       address: {
         ref: null,
@@ -106,21 +116,23 @@ export default {
     onMounted(async () => {
       const { minTransactionFees } = await store.client.value.getMinFees();
       transfer.fee.data = _integerToDecimal(minTransactionFees.transfer);
+      minFee.value = _integerToDecimal(minTransactionFees.transfer);
 
       const address = await store.client.value.getWalletAddress();
 
-      const { balance } = await store.client.value.getAccount(address);
-
-      maxBalance.value = _integerToDecimal(
-        balance - minTransactionFees.transfer,
-      );
+      balance.value = (await store.client.value.getAccount(address)).balance;
     });
+
+    const maxBalance = computed(
+      () => _integerToDecimal(balance.value) - transfer.fee.data,
+    );
 
     return {
       transfer,
       loading,
       error,
       maxBalance,
+      minFee,
       unit: computed(() => store.state.config.networkSymbol.toUpperCase()),
       populate: () => (transfer.amount.data = maxBalance.value),
       send: async () => {
