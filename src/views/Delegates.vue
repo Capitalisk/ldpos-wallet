@@ -135,7 +135,7 @@ export default {
         );
       }
 
-      delegateCount.value = await store.client.value.getMaxBlockHeight();
+      delegateCount.value = (await store.client.value.getForgingDelegates()).length;
     });
 
     const voteForDelegate = async (wallet, unvote) => {
