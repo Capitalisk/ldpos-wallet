@@ -49,7 +49,7 @@
     </template>
     <template v-slot:forging="slotProps">
       <Dot
-        :active="slotProps.row.updateHeight > maxBlockHeight - delegateCount"
+        :active="recentForgers && recentForgers.has(slotProps.row.address)"
       />
     </template>
   </DataTable>
@@ -81,6 +81,7 @@ export default {
     const authenticated = computed(() => store.state.authenticated);
     const votes = ref([]);
     const delegateCount = ref(null);
+    const recentForgers = ref(null);
 
     const columns = ref([
       {
@@ -136,6 +137,14 @@ export default {
       }
 
       delegateCount.value = (await store.client.value.getForgingDelegates()).length;
+
+      let latestBlocks = await store.client.value.getBlocksBetweenHeights(
+        Math.max(0, maxBlockHeight.value - delegateCount.value),
+        maxBlockHeight.value,
+        delegateCount.value
+      );
+
+      recentForgers.value = new Set(latestBlocks.map(block => block.forgerAddress));
     });
 
     const voteForDelegate = async (wallet, unvote) => {
@@ -215,6 +224,7 @@ export default {
         }
       },
       delegateCount,
+      recentForgers,
     };
   },
   components: { Navbar, Button, DataTable, Input, Section, Copy, Dot },
