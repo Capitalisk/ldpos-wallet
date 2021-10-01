@@ -56,7 +56,7 @@ export default {
         name: 'timestamp',
         label: 'Date',
         field: 'timestamp',
-        sortable: true,
+        sortable: false,
         value: val => _parseDate(val),
         active: true,
         sorted: 'desc',

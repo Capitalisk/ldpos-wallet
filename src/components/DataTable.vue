@@ -162,11 +162,6 @@ export default {
     };
 
     const pollerFn = async () => (rows.value = await getData());
-    const clearPoll = () => clearInterval(poller);
-    const poll = () => {
-      pollerFn();
-      poller = setInterval(pollerFn, 10 * 1000);
-    };
 
     onMounted(async () => {
       store.mutateProgressbarLoading(true);
@@ -174,12 +169,6 @@ export default {
       if (props.fn) {
         try {
           await pollerFn();
-
-          poller = setInterval(pollerFn, 10 * 1000);
-
-          window.addEventListener('blur', clearPoll);
-
-          window.addEventListener('focus', poll);
         } catch (e) {
           console.error(e);
         }
@@ -197,12 +186,6 @@ export default {
           loadMore();
         }
       };
-    });
-
-    onUnmounted(() => {
-      clearInterval(poller);
-      window.removeEventListener('blur', clearPoll);
-      window.removeEventListener('focus', poll);
     });
 
     watch(
