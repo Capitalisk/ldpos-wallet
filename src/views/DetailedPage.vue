@@ -40,6 +40,7 @@ export default {
     const data = ref({});
 
     onMounted(async () => {
+      // dataTable is passed by the router
       if (!dataTable) {
         const key = Object.keys(route.params)[0];
 
@@ -58,14 +59,15 @@ export default {
         data.value = await (sw[key] || sw.default)();
       } else {
         const sw = {
-          'Account transaction details': () => ({
+          // This is relative to the route name
+          'account transaction details': () => ({
             arg: route.params.account,
             fn: 'getAccountTransactions',
           }),
           default: () => {},
         };
 
-        data.value = await (sw[route.name] || sw.default)();
+        data.value = (sw[route.name] || sw.default)();
       }
     });
 

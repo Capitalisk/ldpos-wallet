@@ -136,15 +136,19 @@ export default {
         );
       }
 
-      delegateCount.value = (await store.client.value.getForgingDelegates()).length;
+      delegateCount.value = (
+        await store.client.value.getForgingDelegates()
+      ).length;
 
       let latestBlocks = await store.client.value.getBlocksBetweenHeights(
         Math.max(0, maxBlockHeight.value - delegateCount.value),
         maxBlockHeight.value,
-        delegateCount.value
+        delegateCount.value,
       );
 
-      recentForgers.value = new Set(latestBlocks.map(block => block.forgerAddress));
+      recentForgers.value = new Set(
+        latestBlocks.map(block => block.forgerAddress),
+      );
     });
 
     const voteForDelegate = async (wallet, unvote) => {
