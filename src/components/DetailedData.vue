@@ -31,7 +31,7 @@
               </template>
             </template>
             <div class="flex" v-else>
-              -&nbsp; <Copy :value="transformValue(key, a)" />
+              -&nbsp; <Copy wrap :value="transformValue(key, a)" />
             </div>
           </div>
         </div>
