@@ -50,7 +50,7 @@
           val =>
             (val && Number.isInteger(parseInt(decimalToInteger(val)))) ||
             'Not a valid amount',
-          val => val > minFee || `Value should not be less than ${minFee}`,
+          val => val >= minFee || `Value should not be less than ${minFee}`,
         ]"
       />
     </div>
