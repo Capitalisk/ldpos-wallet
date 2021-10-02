@@ -1,7 +1,9 @@
 <template>
   <div class="nowrap">
     <template v-if="value">
-      <span ref="copyRef">{{ shrink ? shrinkValue(value) : value }}</span>
+      <span ref="copyRef" :class="{ wrap, ellipsis }">{{
+        shrink ? shrinkValue(value) : value
+      }}</span>
       <i
         class="far fa-copy cursor-pointer pl-1"
         @click.prevent.stop
@@ -20,6 +22,8 @@ export default {
   props: {
     value: { type: [String, Number], default: '' },
     shrink: { type: Boolean, default: false },
+    wrap: { type: Boolean, default: false },
+    ellipsis: { type: Boolean, default: false },
   },
   setup(props) {
     const store = inject('store');
