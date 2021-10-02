@@ -54,7 +54,6 @@ export default {
   props: {
     data: { type: Object, default: {} },
     prependFn: { type: Function, default: null },
-    appendFn: { type: Function, default: null },
   },
   components: { Copy },
   setup(props) {

@@ -29,6 +29,7 @@
     fn="getDelegatesByVoteWeight"
     clickable
     prefix="delegates"
+    :prependFn="getVotes"
   >
     <template v-slot:vote="slotProps">
       <Button
@@ -136,15 +137,19 @@ export default {
         );
       }
 
-      delegateCount.value = (await store.client.value.getForgingDelegates()).length;
+      delegateCount.value = (
+        await store.client.value.getForgingDelegates()
+      ).length;
 
       let latestBlocks = await store.client.value.getBlocksBetweenHeights(
         Math.max(0, maxBlockHeight.value - delegateCount.value),
         maxBlockHeight.value,
-        delegateCount.value
+        delegateCount.value,
       );
 
-      recentForgers.value = new Set(latestBlocks.map(block => block.forgerAddress));
+      recentForgers.value = new Set(
+        latestBlocks.map(block => block.forgerAddress),
+      );
     });
 
     const voteForDelegate = async (wallet, unvote) => {
@@ -176,7 +181,6 @@ export default {
               : 'Vote for delegate via ldpos-wallet',
           });
         } else {
-          debugger;
           voteTxn = await store.client.value.prepareTransaction({
             type: 'vote',
             delegateAddress: vote.value,
@@ -225,6 +229,11 @@ export default {
       },
       delegateCount,
       recentForgers,
+      getVotes: async account => {
+        const votes = await store.client.value.getAccountVotes(account.address);
+
+        return { key: 'votes', value: votes };
+      },
     };
   },
   components: { Navbar, Button, DataTable, Input, Section, Copy, Dot },
