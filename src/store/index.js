@@ -138,6 +138,7 @@ export default {
     title = null,
     back = false,
     hasPrefix = false,
+    prependFn = null,
   } = {}) {
     // We changed the URL on opening the modal we need to change it back when we close it.
     if (state.modal.routerGoBack) {
@@ -154,12 +155,13 @@ export default {
       state.modal.stack = [];
     } else {
       if (back) state.modal.stack = state.modal.stack.slice(0, -1);
-      else state.modal.stack.push({ type, data, title });
+      else state.modal.stack.push({ type, data, title, prependFn });
 
       const i = state.modal.stack.length - 1;
       state.modal.type = state.modal.stack[i].type;
       state.modal.title = state.modal.stack[i].title;
       state.modal.data = state.modal.stack[i].data;
+      state.modal.prependFn = state.modal.stack[i].prependFn;
       state.modal.active = true;
     }
 

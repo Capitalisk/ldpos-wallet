@@ -1,5 +1,5 @@
 <template>
-  <DetailedData :data="data" />
+  <DetailedData :data="data" :prepend-fn="prependFn" />
 </template>
 
 <script>
@@ -14,6 +14,7 @@ export default {
 
     return {
       data: computed(() => store.state.modal.data),
+      prependFn: store.state.modal.prependFn,
     };
   },
   components: { DetailedData },
