@@ -130,17 +130,17 @@ export default {
 @media screen and (max-width: 768px) {
   .wrapper {
     width: 100vw;
-    height: 100vh;
-    max-height: 100vh;
+    height: 100%;
+    max-height: 100%;
   }
 
   .section {
     border-radius: 0 !important;
-    padding: var(--unit-2) var(--unit-2) var(--unit-2) var(--unit-2);
+    padding: var(--unit-2) 0;
   }
 
   .force-modal-scroll {
-    max-height: 100vh;
+    max-height: 95vh;
   }
 
   .close-btn {

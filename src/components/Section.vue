@@ -1,6 +1,8 @@
 <template>
   <div class="section pa-2">
-    <h2 v-if="title" :class="{ 'ml-4': backButton }">{{ title }}</h2>
+    <div>
+      <h2 v-if="title" :class="{ 'ml-4': backButton }">{{ title }}</h2>
+    </div>
 
     <Loading v-if="loading" />
     <p v-else-if="!loading && error" class="text-danger">
