@@ -6,7 +6,7 @@
           <strong>{{ transformTitle(key) }}</strong>
         </div>
         <div>
-          <Copy :value="transformValue(key, value)" />
+          <Copy wrap :value="transformValue(key, value)" />
         </div>
       </div>
       <div v-else class="my-2">
@@ -24,6 +24,9 @@
                   <div class="flex-9">
                     <Copy :value="v" />
                   </div>
+                </div>
+                <div class="flex-9">
+                  <Copy wrap :value="v" />
                 </div>
               </template>
             </template>
