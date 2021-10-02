@@ -121,6 +121,7 @@ export default {
     offset: { type: Number, default: 0 },
     arg: { type: String, default: null },
     prefix: { type: String, default: null },
+    prependFn: { type: Function, default: null },
   },
   setup(props, { emit, slots }) {
     const store = inject('store');
@@ -270,7 +271,9 @@ export default {
         store.toggleOrBrowseModal({
           type: DETAIL_MODAL,
           data,
-          hasPrefix: props.prefix ? true : false,
+          hasPrefix: !!props.prefix,
+          appendFn: props.appendFn,
+          prependFn: props.prependFn,
         });
       },
       hasHeaderSlot: !!slots.header,
