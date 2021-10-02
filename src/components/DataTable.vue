@@ -272,7 +272,6 @@ export default {
           type: DETAIL_MODAL,
           data,
           hasPrefix: !!props.prefix,
-          appendFn: props.appendFn,
           prependFn: props.prependFn,
         });
       },
