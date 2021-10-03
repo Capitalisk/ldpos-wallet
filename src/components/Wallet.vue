@@ -286,6 +286,7 @@ export default {
             )} will be deducted from your account.`,
             showCancelButton: true,
           });
+
           if (response) {
             const newNextForgingKeyIndex = 0;
             if (!passphrase.value)

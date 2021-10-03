@@ -10,4 +10,17 @@ describe('Modal tests', () => {
 
     cy.get('.close-btn').click();
   });
+
+  it('should open a stacked modal', () => {
+    cy.visit('/');
+    cy.get('a.first')
+      .contains('CLSK')
+      .click();
+
+    cy.get('a.button')
+      .contains('Add blockchain')
+      .click();
+
+    cy.get('.back-btn')
+  });
 });
