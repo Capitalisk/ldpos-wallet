@@ -9,7 +9,7 @@ export const _integerToDecimal = amount => {
 
   return isInt
     ? amount !== '' && isFloat
-      ? calculatedAmount.toFixed(2).toString()
+      ? (Math.ceil(calculatedAmount * 100) / 100).toFixed(2).toString()
       : calculatedAmount.toString()
     : '';
 };
