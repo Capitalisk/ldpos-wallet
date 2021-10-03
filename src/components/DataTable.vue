@@ -90,6 +90,28 @@
       <slot name="header" class="pa-2" />
     </div>
   </div>
+  <div v-if="fn" class="flex justify-center pagination pa-1">
+    <!-- TODO: Add page one -->
+    <Button
+      icon="chevron-left"
+      @click="previousPage"
+      class="pa-1 mr-1 outline"
+      :class="{ disabled: page === 1 }"
+    />
+    <!-- TODO: Allow custom page input -->
+    <Button
+      :value="page"
+      @click="() => {}"
+      class="pa-1 mr-1 outline disabled"
+    />
+    <Button
+      icon="chevron-right"
+      @click="nextPage"
+      class="pa-1 outline"
+      :class="{ disabled: rows.length < limit }"
+    />
+    <!-- TODO: Add page two -->
+  </div>
 </template>
 
 <script>
@@ -116,7 +138,7 @@ export default {
     title: { type: String },
     clickable: { type: Boolean, default: false },
     fn: { type: [String, Function], default: null },
-    limit: { type: Number, default: 25 },
+    limit: { type: Number, default: 10 },
     order: { type: String, default: 'desc' },
     offset: { type: Number, default: 0 },
     arg: { type: String, default: null },
@@ -128,12 +150,13 @@ export default {
     let poller;
 
     const rows = ref([]);
-    const countLoadMore = ref(1);
     const table = ref(null);
     const limit = ref(props.limit);
     const order = ref(props.order);
     const offset = ref(props.offset);
     const columns = ref(props.columns);
+    const page = ref(1);
+    const intervalActive = ref(false);
     const popupActive = ref(false);
 
     const getData = async () => {
@@ -161,31 +184,47 @@ export default {
       }
     };
 
-    const pollerFn = async () => (rows.value = await getData());
+    const pollerFn = async () => {
+      store.mutateProgressbarLoading(true);
+      rows.value = await getData();
+      store.mutateProgressbarLoading(false);
+    };
+
+    const setPoll = async () => {
+      if (!props.fn) return;
+      if (page.value !== 1 && intervalActive.value) return;
+      await pollerFn();
+      intervalActive.value = true;
+      poller = setInterval(pollerFn, 10000);
+    };
+
+    const clearPoll = () => {
+      if (!props.fn) return;
+      if (page.value !== 1) return;
+      intervalActive.value = false;
+      clearInterval(poller);
+    };
 
     onMounted(async () => {
       store.mutateProgressbarLoading(true);
 
       if (props.fn) {
-        try {
-          await pollerFn();
-        } catch (e) {
-          console.error(e);
-        }
+        await pollerFn();
+        setPoll();
+        intervalActive.value = true;
       } else {
         rows.value = props.rows;
       }
 
       store.mutateProgressbarLoading(false);
 
-      window.onscroll = () => {
-        if (
-          window.innerHeight + document.documentElement.scrollTop >=
-          document.documentElement.offsetHeight
-        ) {
-          loadMore();
-        }
-      };
+      window.addEventListener('blur', clearPoll);
+      window.addEventListener('focus', setPoll);
+    });
+
+    onUnmounted(() => {
+      window.removeEventListener('blur', clearPoll);
+      window.removeEventListener('focus', setPoll);
     });
 
     watch(
@@ -193,23 +232,31 @@ export default {
       n => !props.fn && (rows.value = n),
     );
 
-    const loadMore = async () => {
+    const nextPage = async () => {
       // If less rows then limit don't load more
-      if (rows.value.length < limit.value * countLoadMore.value) return;
-
-      countLoadMore.value++;
+      if (rows.value.length < limit.value) return;
 
       if (props.fn) {
         if (store.state.progressbarLoading) return;
-        store.mutateProgressbarLoading(true);
-
-        offset.value = offset.value + 25;
-        const d = await getData();
-
-        rows.value = [...rows.value, ...d];
+        offset.value = offset.value + props.limit;
+        await pollerFn();
       }
 
-      store.mutateProgressbarLoading(false);
+      page.value++;
+      clearPoll();
+    };
+
+    const previousPage = async () => {
+      if (page.value === 1) return;
+      setPoll();
+      if (props.fn) {
+        if (store.state.progressbarLoading) return;
+        store.mutateProgressbarLoading(true);
+        offset.value = offset.value - props.limit;
+        await pollerFn();
+      }
+
+      page.value--;
     };
 
     const sort = async c => {
@@ -259,6 +306,10 @@ export default {
       columns,
       getShortValue,
       sort,
+      nextPage,
+      previousPage,
+      page,
+      limit,
       togglePopup: () => (popupActive.value = !popupActive.value),
       detail: data => {
         if (props.prefix) {
