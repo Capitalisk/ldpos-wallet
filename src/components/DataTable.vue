@@ -200,7 +200,6 @@ export default {
 
     const clearPoll = () => {
       if (!props.fn) return;
-      if (page.value !== 1) return;
       intervalActive.value = false;
       clearInterval(poller);
     };
@@ -223,6 +222,7 @@ export default {
     });
 
     onUnmounted(() => {
+      clearPoll()
       window.removeEventListener('blur', clearPoll);
       window.removeEventListener('focus', setPoll);
     });
