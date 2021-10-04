@@ -15,7 +15,7 @@
         </div>
         <div>
           <div v-for="(a, i) in value" :key="i">
-            <template v-for="(v, k) in a" :key="k">
+            <template v-if="Array.isArray(a)" v-for="(v, k) in a" :key="k">
               <div class="flex">
                 <div class="flex-2">
                   <strong class="subtitle">{{ transformTitle(k) }}:</strong>
@@ -25,6 +25,9 @@
                 </div>
               </div>
             </template>
+            <div v-else>
+              <Copy :value="transformValue(key, a)" />
+            </div>
           </div>
         </div>
       </div>
