@@ -1,6 +1,6 @@
 {
   "name": "ldpos-wallet",
-  "version": "2.2.5",
+  "version": "2.2.6",
   "private": true,
   "description": "A LDPoS Wallet application",
   "author": {
