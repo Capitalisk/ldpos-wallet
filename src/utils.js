@@ -28,9 +28,15 @@ export const _parseDate = d => {
     timeStyle: 'short',
   };
 
-  if (!isToday) options.dateStyle = 'short';
+  const formattedDate = new Intl.DateTimeFormat('nl-BE', options).format(d);
 
-  return new Intl.DateTimeFormat('nl-BE', options).format(d);
+  if (isToday) {
+    return `Today at ${formattedDate}`;
+  } else {
+    options.dateStyle = 'short';
+  }
+
+  return formattedDate;
 };
 
 export const _transformMonetaryUnit = (amount, symbol = 'CLSK') =>
