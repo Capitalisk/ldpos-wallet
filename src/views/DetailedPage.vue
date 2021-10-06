@@ -8,6 +8,8 @@
       :columns="columns"
       :fn="data.fn"
       :arg="data.arg"
+      :title="data.arg"
+      :able-to-copy-title="ableToCopyTitle"
     />
     <DetailedData v-else v-bind="$attrs" :data="data" />
   </Section>
@@ -28,10 +30,9 @@ export default {
   name: 'DetailedPage',
   components: { Section, DetailedData, Navbar, DataTable },
   props: {
-    dataTable: {
-      type: Boolean,
-      default: false,
-    },
+    dataTable: { type: Boolean, default: false },
+    ableToCopyTitle: { type: Boolean, default: false },
+    title: { type: String, default: null },
   },
   setup({ dataTable }) {
     const store = inject('store');

@@ -12,6 +12,7 @@ export default [
       import(/* webpackChunkName: "accountidtransactions" */ '../views/DetailedPage'),
     props: {
       dataTable: true,
+      ableToCopyTitle: true,
     },
   },
   {
