@@ -51,6 +51,7 @@
                 placeholder="__________"
                 @keydown="e => backspace(e, i)"
                 @keyup.enter="signin"
+                @focus="() => !pasting && (input.value = '')"
                 :rules="[
                   val => !!val || (val && val.length <= 0) || 'Required',
                 ]"
@@ -130,6 +131,7 @@ export default {
     const inputRefs = ref([]);
     const activeIndex = ref(0);
     const passphrase = ref('');
+    const pasting = ref(false);
 
     for (let i = 0; i < inputs.value.length; i++) {
       inputs.value[i] = { value: '' };
@@ -166,6 +168,8 @@ export default {
           );
 
           if (element && element.split(' ').length === 12) {
+            pasting.value = true;
+
             inputs.value = element.split(' ').map(el => ({ value: el }));
 
             try {
@@ -173,10 +177,13 @@ export default {
             } catch (e) {}
 
             lastInput.focus();
+
+            pasting.value = false;
           } else if (element && element.includes(' ')) {
             const nextInput = document.getElementById(`passphrase-${i + 1}`);
             if (nextInput) {
               nextInput.focus();
+              setTimeout(() => (nextInput.value = ''), 50);
             }
             inputs.value[i].value = inputs.value[i].value.replace(/\s/g, '');
           }
@@ -255,6 +262,7 @@ export default {
       inputRefs,
       toggleHidden: () => (hidden.value = !hidden.value),
       backspace,
+      pasting,
       loading: computed(() => store.state.login.loading),
       error: computed(() => store.state.login.error),
       token: computed(() => store.state.config.networkSymbol.toUpperCase()),
