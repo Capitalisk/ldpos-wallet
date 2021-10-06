@@ -28,6 +28,7 @@
     fn="getDelegatesByVoteWeight"
     clickable
     prefix="delegates"
+    :prependFn="getVotes"
   >
     <template v-slot:vote="slotProps">
       <Button
@@ -179,7 +180,6 @@ export default {
               : 'Vote for delegate via ldpos-wallet',
           });
         } else {
-          debugger;
           voteTxn = await store.client.value.prepareTransaction({
             type: 'vote',
             delegateAddress: vote.value,
@@ -225,6 +225,11 @@ export default {
       },
       delegateCount,
       recentForgers,
+      getVotes: async account => {
+        const votes = await store.client.value.getAccountVotes(account.address);
+
+        return { key: 'votes', value: votes };
+      },
     };
   },
   components: { Navbar, Button, DataTable, Input, Section, Copy, Dot },

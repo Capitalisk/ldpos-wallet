@@ -5,6 +5,7 @@
     clickable
     fn="getAccountsByBalance"
     prefix="accounts"
+    :prependFn="getVotes"
   >
     <template v-slot:address="slotProps">
       <Copy :value="slotProps.row.address" :shrink="slotProps.shrink" />
@@ -79,6 +80,11 @@ export default {
       columns,
       viewAccountTransactions: address =>
         router.push(`/accounts/${address}/transactions`),
+      getVotes: async account => {
+        const votes = await store.client.value.getAccountVotes(account.address);
+
+        return { key: 'votes', value: votes };
+      },
     };
   },
   components: { DataTable, Navbar, Copy, Button },
