@@ -1,28 +1,14 @@
 export const _decimalToInteger = amount =>
-  amount !== '' && (parseFloat(amount) * 100000000).toString();
+  amount !== '' && Math.floor(parseFloat(amount) * 100000000).toString();
 
 export const _integerToDecimal = amount => {
+  if (!Number.isInteger(Number(amount))) {
+    return '';
+  }
   const parsedAmount = parseInt(amount);
   const calculatedAmount = parsedAmount / 100000000;
-  const isInt = Number.isInteger(parsedAmount);
-  const isFloat = calculatedAmount % 1 !== 0;
 
-  /**
-   * This processedAmount is when 0.001 occurs it would've rounded it to 0.00.
-   * But we actually want it to display 0.01, thus the user can identify there has been an amount identified.
-   */
-  const processedAmount =
-    calculatedAmount >= 0.0 && calculatedAmount <= 0.01
-      ? (Math.ceil((calculatedAmount + Number.EPSILON) * 100) / 100)
-          .toFixed(2)
-          .toString()
-      : calculatedAmount.toFixed(2).toString();
-
-  return isInt
-    ? amount !== '' && isFloat
-      ? processedAmount
-      : calculatedAmount.toString()
-    : '';
+  return calculatedAmount.toString();
 };
 
 export const _parseDate = d => {
@@ -48,6 +34,7 @@ export const _transformMonetaryUnit = (amount, symbol = 'CLSK') =>
   amount
     ? `${new Intl.NumberFormat('en-US', {
         minimumFractionDigits: 2,
+        maximumFractionDigits: 8
       }).format(_integerToDecimal(amount))} ${symbol.toUpperCase()}`
     : null;
 
