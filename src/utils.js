@@ -34,7 +34,7 @@ export const _transformMonetaryUnit = (amount, symbol = 'CLSK') =>
   amount
     ? `${new Intl.NumberFormat('en-US', {
         minimumFractionDigits: 2,
-        maximumFractionDigits: 8
+        maximumFractionDigits: 8,
       }).format(_integerToDecimal(amount))} ${symbol.toUpperCase()}`
     : null;
 
