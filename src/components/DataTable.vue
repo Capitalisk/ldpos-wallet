@@ -1,9 +1,10 @@
 <template>
   <div class="table flex column">
-    <div v-if="hasHeaderSlot" class="header flex justify-end pa-2">
+    <div v-if="hasHeaderSlot || title" class="header flex justify-end pa-2">
       <div class="mr-auto">
         <slot name="header" />
-        <h2 v-if="title">{{ title }}</h2>
+        <p v-if="title && ableToCopyTitle"><Copy :value="title" /></p>
+        <p v-else-if="title">{{ title }}</p>
       </div>
       <div class="relative">
         <Button v-if="false" value="Filter" @click="togglePopup" />
@@ -107,13 +108,16 @@ import { DETAIL_MODAL } from './modals/constants';
 
 import Button from './Button';
 import Popup from './Popup';
+import Copy from './Copy.vue';
 
 export default {
   name: 'DataTable',
   props: {
     rows: { type: Array, default: null },
     columns: { type: Array, default: () => [] },
-    title: { type: String },
+    prefixTitle: { type: String, default: null },
+    title: { type: String, default: null },
+    ableToCopyTitle: { type: Boolean, default: false },
     clickable: { type: Boolean, default: false },
     fn: { type: [String, Function], default: null },
     limit: { type: Number, default: 25 },
@@ -279,7 +283,7 @@ export default {
       innerWidth: window.innerWidth,
     };
   },
-  components: { Button, Popup },
+  components: { Button, Popup, Copy },
 };
 </script>
 

@@ -10,22 +10,33 @@
     <template v-slot:address="slotProps">
       <Copy :value="slotProps.row.address" :shrink="slotProps.shrink" />
     </template>
+    <template v-slot:view="slotProps">
+      <div class="flex">
+        <Button
+          value="View transactions"
+          @click.stop.prevent="viewAccountTransactions(slotProps.row.address)"
+        />
+      </div>
+    </template>
   </DataTable>
 </template>
 
 <script>
-import { computed, inject, ref } from 'vue';
+import { computed, inject, onMounted, ref } from 'vue';
+import { useRouter } from 'vue-router';
 import { _transformMonetaryUnit } from '../utils';
 import { DETAIL_MODAL } from '../components/modals/constants';
 
 import Navbar from '../components/Navbar';
 import DataTable from '../components/DataTable';
 import Copy from '../components/Copy';
+import Button from '../components/Button.vue';
 
 export default {
   name: 'Accounts',
   setup() {
     const store = inject('store');
+    const router = useRouter();
 
     const columns = ref([
       // { name: 'type', label: 'type', field: 'type', sortable: false },
@@ -55,10 +66,20 @@ export default {
         sorted: 'desc',
         shrinkable: false,
       },
+      {
+        name: 'view',
+        label: 'Inspect account',
+        field: 'view',
+        sortable: false,
+        active: true,
+        slot: true,
+      },
     ]);
 
     return {
       columns,
+      viewAccountTransactions: address =>
+        router.push(`/accounts/${address}/transactions`),
       getVotes: async account => {
         const votes = await store.client.value.getAccountVotes(account.address);
 
@@ -66,7 +87,7 @@ export default {
       },
     };
   },
-  components: { DataTable, Navbar, Copy },
+  components: { DataTable, Navbar, Copy, Button },
 };
 </script>
 

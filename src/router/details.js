@@ -7,11 +7,12 @@ export default [
   },
   {
     path: '/accounts/:account/transactions',
-    name: 'wallet transaction details',
+    name: 'account transaction details',
     component: () =>
       import(/* webpackChunkName: "accountidtransactions" */ '../views/DetailedPage'),
     props: {
       dataTable: true,
+      ableToCopyTitle: true,
     },
   },
   {

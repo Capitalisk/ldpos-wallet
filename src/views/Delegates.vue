@@ -25,7 +25,6 @@
   </div>
   <DataTable
     :columns="columns"
-    :title="title"
     fn="getDelegatesByVoteWeight"
     clickable
     prefix="delegates"
@@ -208,9 +207,6 @@ export default {
     };
 
     return {
-      title: computed(() =>
-        store.state.authenticated ? 'Voting for delegates' : 'Delegates',
-      ),
       columns,
       authenticated,
       vote,
