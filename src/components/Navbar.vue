@@ -7,11 +7,18 @@
           :placeholder="`Search ${searchParam}`"
           ref="searchRef"
           v-model="searchValue"
-          @blur="searchActive = false"
           @keyup.enter="search"
+          @keyup.esc="() => (searchActive = false)"
         >
           <template v-slot:suffix>
-            <i class="fas fa-search cursor-pointer" @click="search" />
+            <i
+              class="fas fa-search cursor-pointer"
+              @click.stop.prevent="search"
+            />
+            <i
+              class="fas fa-times cursor-pointer ml-2"
+              @click.stop.prevent="() => (searchActive = false)"
+            />
           </template>
         </Input>
       </div>
