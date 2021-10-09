@@ -25,13 +25,13 @@ export const _parseDate = d => {
     timeStyle: 'short',
   };
 
-  const formattedDate = new Intl.DateTimeFormat('nl-BE', options).format(d);
-
   if (isToday) {
     return `Today at ${formattedDate}`;
   } else {
     options.dateStyle = 'short';
   }
+
+  const formattedDate = new Intl.DateTimeFormat('nl-BE', options).format(d);
 
   return formattedDate;
 };
