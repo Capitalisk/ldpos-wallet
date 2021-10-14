@@ -68,6 +68,8 @@ import Copy from '../components/Copy';
 import { _transformMonetaryUnit } from '../utils';
 import Dot from '../components/Dot';
 
+const DELEGATE_ACTIVITY_ROUNDS = 3;
+
 export default {
   name: 'Home',
   setup() {
@@ -140,10 +142,12 @@ export default {
         await store.client.value.getForgingDelegates()
       ).length;
 
+      let slotCount = delegateCount.value * DELEGATE_ACTIVITY_ROUNDS;
+
       let latestBlocks = await store.client.value.getBlocksBetweenHeights(
-        Math.max(0, maxBlockHeight.value - delegateCount.value),
+        Math.max(0, maxBlockHeight.value - slotCount),
         maxBlockHeight.value,
-        delegateCount.value,
+        slotCount,
       );
 
       recentForgers.value = new Set(
