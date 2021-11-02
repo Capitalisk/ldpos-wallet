@@ -84,6 +84,9 @@ export default {
     const votes = ref([]);
     const delegateCount = ref(null);
     const recentForgers = ref(null);
+    const slotCount = computed(
+      () => delegateCount.value * DELEGATE_ACTIVITY_ROUNDS,
+    );
 
     const columns = ref([
       {
@@ -142,12 +145,10 @@ export default {
         await store.client.value.getForgingDelegates()
       ).length;
 
-      let slotCount = delegateCount.value * DELEGATE_ACTIVITY_ROUNDS;
-
-      let latestBlocks = await store.client.value.getBlocksBetweenHeights(
-        Math.max(0, maxBlockHeight.value - slotCount),
+      const latestBlocks = await store.client.value.getBlocksBetweenHeights(
+        Math.max(0, maxBlockHeight.value - slotCount.value),
         maxBlockHeight.value,
-        slotCount,
+        slotCount.value,
       );
 
       recentForgers.value = new Set(
