@@ -1,17 +1,14 @@
 export const _decimalToInteger = amount =>
-  amount !== '' && (parseFloat(amount) * 100000000).toString();
+  amount !== '' && Math.floor(parseFloat(amount) * 100000000).toString();
 
 export const _integerToDecimal = amount => {
+  if (!Number.isInteger(Number(amount))) {
+    return '';
+  }
   const parsedAmount = parseInt(amount);
   const calculatedAmount = parsedAmount / 100000000;
-  const isInt = Number.isInteger(parsedAmount);
-  const isFloat = calculatedAmount % 1 !== 0;
 
-  return isInt
-    ? amount !== '' && isFloat
-      ? calculatedAmount.toFixed(2).toString()
-      : calculatedAmount.toString()
-    : '';
+  return calculatedAmount.toString();
 };
 
 export const _parseDate = d => {
@@ -30,13 +27,17 @@ export const _parseDate = d => {
 
   if (!isToday) options.dateStyle = 'short';
 
-  return new Intl.DateTimeFormat('nl-BE', options).format(d);
+  const formattedDate = new Intl.DateTimeFormat('nl-BE', options).format(d);
+
+  if (isToday) return `Today at ${formattedDate}`;
+  return formattedDate;
 };
 
 export const _transformMonetaryUnit = (amount, symbol = 'CLSK') =>
   amount
     ? `${new Intl.NumberFormat('en-US', {
         minimumFractionDigits: 2,
+        maximumFractionDigits: 8,
       }).format(_integerToDecimal(amount))} ${symbol.toUpperCase()}`
     : null;
 

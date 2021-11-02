@@ -25,10 +25,10 @@
   </div>
   <DataTable
     :columns="columns"
-    :title="title"
     fn="getDelegatesByVoteWeight"
     clickable
     prefix="delegates"
+    :prependFn="getVotes"
   >
     <template v-slot:vote="slotProps">
       <Button
@@ -67,6 +67,8 @@ import Copy from '../components/Copy';
 
 import { _transformMonetaryUnit } from '../utils';
 import Dot from '../components/Dot';
+
+const DELEGATE_ACTIVITY_ROUNDS = 3;
 
 export default {
   name: 'Home',
@@ -140,10 +142,12 @@ export default {
         await store.client.value.getForgingDelegates()
       ).length;
 
+      let slotCount = delegateCount.value * DELEGATE_ACTIVITY_ROUNDS;
+
       let latestBlocks = await store.client.value.getBlocksBetweenHeights(
-        Math.max(0, maxBlockHeight.value - delegateCount.value),
+        Math.max(0, maxBlockHeight.value - slotCount),
         maxBlockHeight.value,
-        delegateCount.value,
+        slotCount,
       );
 
       recentForgers.value = new Set(
@@ -180,7 +184,6 @@ export default {
               : 'Vote for delegate via ldpos-wallet',
           });
         } else {
-          debugger;
           voteTxn = await store.client.value.prepareTransaction({
             type: 'vote',
             delegateAddress: vote.value,
@@ -208,9 +211,6 @@ export default {
     };
 
     return {
-      title: computed(() =>
-        store.state.authenticated ? 'Voting for delegates' : 'Delegates',
-      ),
       columns,
       authenticated,
       vote,
@@ -229,6 +229,11 @@ export default {
       },
       delegateCount,
       recentForgers,
+      getVotes: async account => {
+        const votes = await store.client.value.getAccountVotes(account.address);
+
+        return { key: 'votes', value: votes };
+      },
     };
   },
   components: { Navbar, Button, DataTable, Input, Section, Copy, Dot },

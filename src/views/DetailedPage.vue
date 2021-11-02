@@ -8,6 +8,8 @@
       :columns="columns"
       :fn="data.fn"
       :arg="data.arg"
+      :title="data.arg"
+      :able-to-copy-title="ableToCopyTitle"
     />
     <DetailedData v-else v-bind="$attrs" :data="data" />
   </Section>
@@ -28,10 +30,9 @@ export default {
   name: 'DetailedPage',
   components: { Section, DetailedData, Navbar, DataTable },
   props: {
-    dataTable: {
-      type: Boolean,
-      default: false,
-    },
+    dataTable: { type: Boolean, default: false },
+    ableToCopyTitle: { type: Boolean, default: false },
+    title: { type: String, default: null },
   },
   setup({ dataTable }) {
     const store = inject('store');
@@ -40,6 +41,7 @@ export default {
     const data = ref({});
 
     onMounted(async () => {
+      // dataTable is passed by the router
       if (!dataTable) {
         const key = Object.keys(route.params)[0];
 
@@ -58,14 +60,15 @@ export default {
         data.value = await (sw[key] || sw.default)();
       } else {
         const sw = {
-          'Account transaction details': () => ({
+          // This is relative to the route name
+          'account transaction details': () => ({
             arg: route.params.account,
             fn: 'getAccountTransactions',
           }),
           default: () => {},
         };
 
-        data.value = await (sw[route.name] || sw.default)();
+        data.value = (sw[route.name] || sw.default)();
       }
     });
 
