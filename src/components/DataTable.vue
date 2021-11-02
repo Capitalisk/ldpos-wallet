@@ -31,7 +31,7 @@
                   v-if="c.sortable"
                   id="sorting"
                   class="cursor-pointer"
-                  @click="c.sortable && sort(c)"
+                  @click="sort(c)"
                 >
                   <i class="fas fa-sort-up" v-if="c.sorted === 'asc'"></i>
                   <i
@@ -70,7 +70,9 @@
                 <template v-else>
                   {{
                     getShortValue(
-                      c.value ? c.value(r[c.field], r, rows) : r[c.field],
+                      c.value
+                        ? c.value(r[c.field], r, rows, offset)
+                        : r[c.field],
                       c.shrinkable,
                     ) ||
                       r.default ||
@@ -190,26 +192,26 @@ export default {
       store.mutateProgressbarLoading(false);
     };
 
-    const setPoll = async () => {
-      if (!props.fn) return;
-      if (page.value !== 1 && intervalActive.value) return;
-      await pollerFn();
-      intervalActive.value = true;
-      poller = setInterval(pollerFn, 10000);
-    };
+    // const setPoll = async () => {
+    //   if (!props.fn) return;
+    //   if (page.value !== 1 && intervalActive.value) return;
+    //   await pollerFn();
+    //   intervalActive.value = true;
+    //   poller = setInterval(pollerFn, 10000);
+    // };
 
-    const clearPoll = () => {
-      if (!props.fn) return;
-      intervalActive.value = false;
-      clearInterval(poller);
-    };
+    // const clearPoll = () => {
+    //   if (!props.fn) return;
+    //   intervalActive.value = false;
+    //   clearInterval(poller);
+    // };
 
     onMounted(async () => {
       store.mutateProgressbarLoading(true);
 
       if (props.fn) {
         await pollerFn();
-        setPoll();
+        // setPoll();
         intervalActive.value = true;
       } else {
         rows.value = props.rows;
@@ -217,15 +219,15 @@ export default {
 
       store.mutateProgressbarLoading(false);
 
-      window.addEventListener('blur', clearPoll);
-      window.addEventListener('focus', setPoll);
+      // window.addEventListener('blur', clearPoll);
+      // window.addEventListener('focus', setPoll);
     });
 
-    onUnmounted(() => {
-      clearPoll()
-      window.removeEventListener('blur', clearPoll);
-      window.removeEventListener('focus', setPoll);
-    });
+    // onUnmounted(() => {
+    //   clearPoll();
+    //   window.removeEventListener('blur', clearPoll);
+    //   window.removeEventListener('focus', setPoll);
+    // });
 
     watch(
       () => props.rows,
@@ -243,12 +245,13 @@ export default {
       }
 
       page.value++;
-      clearPoll();
+      // clearPoll();
     };
 
     const previousPage = async () => {
       if (page.value === 1) return;
-      setPoll();
+      // setPoll();
+
       if (props.fn) {
         if (store.state.progressbarLoading) return;
         store.mutateProgressbarLoading(true);
@@ -298,6 +301,20 @@ export default {
       return val.toString();
     };
 
+    const detail = data => {
+      if (props.prefix) {
+        let newUrl = `${window.location.origin}${
+          process.env.VUE_APP_BASE_URL
+        }/#/${props.prefix}/${data.id || data.address}`;
+        history.pushState({}, null, newUrl);
+      }
+      store.toggleOrBrowseModal({
+        type: DETAIL_MODAL,
+        data,
+        hasPrefix: props.prefix ? true : false,
+      });
+    };
+
     return {
       loading: computed(() => store.state.progressbarLoading),
       popupActive,
@@ -310,20 +327,10 @@ export default {
       previousPage,
       page,
       limit,
+      offset,
       togglePopup: () => (popupActive.value = !popupActive.value),
-      detail: data => {
-        if (props.prefix) {
-          let newUrl = `${window.location.origin}${
-            process.env.VUE_APP_BASE_URL
-          }/#/${props.prefix}/${data.id || data.address}`;
-          history.pushState({}, null, newUrl);
-        }
-        store.toggleOrBrowseModal({
-          type: DETAIL_MODAL,
-          data,
-          hasPrefix: props.prefix ? true : false,
-        });
-      },
+      detail,
+
       hasHeaderSlot: !!slots.header,
       innerWidth: window.innerWidth,
     };

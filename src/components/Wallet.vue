@@ -44,16 +44,16 @@
     title="Wallet transactions"
     :columns="columns"
     clickable
-    :rows="transactions"
+    :fn="fn"
   >
     <template v-slot:direction="slotProps">
       <i
         v-if="slotProps.row.direction === 'inbound'"
-        class="fas fa-chevron-up text-success"
+        class="fas fa-chevron-down text-success"
       />
       <i
         v-else-if="slotProps.row.direction === 'outbound'"
-        class="fas fa-chevron-down text-danger"
+        class="fas fa-chevron-up text-danger"
       />
       <span v-else>
         <i class="far fa-circle mr-1 text-warning" />
@@ -97,34 +97,38 @@ export default {
 
     const address = reactive({ loading: true, data: null, error: null });
     const balance = reactive({ loading: true, data: null, error: null });
-    const transactions = ref(null);
 
-    const getWallet = async () => {
+    const getWallet = async (
+      offset = 0,
+      limit = 3,
+      order = 'asc',
+      fromTimestamp = null,
+      arg = store.client.value.getWalletAddress(),
+    ) => {
       if (!store.state.authenticated) {
         router.push({ name: 'wallet' });
         return;
       }
       try {
         const inboundTransactions = await store.client.value.getInboundTransactions(
-          store.client.value.getWalletAddress(),
-          null,
-          0,
-          50,
-          'asc',
+          arg,
+          fromTimestamp,
+          offset,
+          limit,
+          order,
         );
         const outboundTransactions = await store.client.value.getOutboundTransactions(
-          store.client.value.getWalletAddress(),
-          null,
-          0,
-          50,
-          'asc',
+          arg,
+          fromTimestamp,
+          offset,
+          limit,
+          order,
         );
 
         const pendingTransactions = await store.client.value.getOutboundPendingTransactions(
-          store.client.value.getWalletAddress(),
-          null,
-          50,
-          'asc',
+          arg,
+          offset,
+          limit,
         );
 
         const transactions = [
@@ -177,10 +181,8 @@ export default {
       address.loading = false;
 
       await getBalance();
-      transactions.value = await getWallet();
       interval.value = setInterval(async () => {
         await getBalance();
-        transactions.value = await getWallet();
       }, 5000);
       store.mutateProgressbarLoading(false);
     });
@@ -250,13 +252,51 @@ export default {
     const confirmationRef = ref(null);
     const passphrase = ref(null);
 
+    const confirmationModal = async () => {
+      try {
+        const { minTransactionFees } = await store.client.value.getMinFees();
+
+        const response = await confirmationRef.value.show({
+          message: `Are you sure you want to register as a delegate? A fee of ${_transformMonetaryUnit(
+            minTransactionFees.registerForgingDetails,
+          )} will be deducted from your account.`,
+          showCancelButton: true,
+        });
+
+        if (response) {
+          const newNextForgingKeyIndex = 0;
+          if (!passphrase.value)
+            throw new Error('Passphrase should be present');
+
+          const registerTxn = await store.client.value.prepareRegisterForgingDetails(
+            {
+              newNextForgingKeyIndex,
+              forgingPassphrase: passphrase.value,
+              message: 'Register as a delegate via ldpos-wallet',
+              fee: minTransactionFees.registerForgingDetails,
+            },
+          );
+
+          await store.client.value.postTransaction(registerTxn);
+
+          store.notify({ message: 'Succesfully registered as a delegate' }, 5);
+        }
+      } catch (e) {
+        store.notify({
+          message: e.message,
+          error: true,
+        });
+      }
+
+      passphrase.value = null;
+    };
+
     return {
       columns,
       fn: getWallet,
       authenticated: computed(() => store.state.authenticated),
       address: computed(() => address),
       balance: computed(() => balance),
-      transactions,
       openTransferModal: () =>
         balance.data > 0
           ? store.toggleOrBrowseModal({ type: TRANSFER_MODAL })
@@ -276,47 +316,7 @@ export default {
       transformMonetaryUnit: _transformMonetaryUnit,
       networkSymbol: store.state.config.networkSymbol,
       confirmationRef,
-      confirmationModal: async () => {
-        try {
-          const { minTransactionFees } = await store.client.value.getMinFees();
-
-          const response = await confirmationRef.value.show({
-            message: `Are you sure you want to register as a delegate? A fee of ${_transformMonetaryUnit(
-              minTransactionFees.registerForgingDetails,
-            )} will be deducted from your account.`,
-            showCancelButton: true,
-          });
-
-          if (response) {
-            const newNextForgingKeyIndex = 0;
-            if (!passphrase.value)
-              throw new Error('Passphrase should be present');
-
-            const registerTxn = await store.client.value.prepareRegisterForgingDetails(
-              {
-                newNextForgingKeyIndex,
-                forgingPassphrase: passphrase.value,
-                message: 'Register as a delegate via ldpos-wallet',
-                fee: minTransactionFees.registerForgingDetails,
-              },
-            );
-
-            await store.client.value.postTransaction(registerTxn);
-
-            store.notify(
-              { message: 'Succesfully registered as a delegate' },
-              5,
-            );
-          }
-        } catch (e) {
-          store.notify({
-            message: e.message,
-            error: true,
-          });
-        }
-
-        passphrase.value = null;
-      },
+      confirmationModal,
       passphrase,
       shrink: window.innerWidth < 768,
     };
