@@ -110,6 +110,7 @@ import {
   watch,
   watchEffect,
   onMounted,
+  nextTick,
 } from 'vue';
 
 import { _transformMonetaryUnit } from '../utils.js';
@@ -183,7 +184,7 @@ export default {
             const nextInput = document.getElementById(`passphrase-${i + 1}`);
             if (nextInput) {
               nextInput.focus();
-              setTimeout(() => (nextInput.value = ''), 50);
+              nextTick(() => (nextInput.value = ''));
             }
             inputs.value[i].value = inputs.value[i].value.replace(/\s/g, '');
           }
