@@ -61,12 +61,18 @@ export default {
 
     const slotActive = ref(false);
     const slotTitle = ref(null);
+    const stack = computed(() => store.state.modal.stack);
 
     const toggleOrBrowseModal = store.toggleOrBrowseModal;
 
     const escEvent = e => {
-      e.key === 'Escape' && toggleOrBrowseModal();
-      window.addEventListener('keydown', escEvent);
+      if (e.key === 'Escape') {
+        if (stack.value.length > 1) {
+          return toggleOrBrowseModal({ back: true });
+        }
+        toggleOrBrowseModal();
+        window.addEventListener('keydown', escEvent);
+      }
     };
 
     onMounted(() => window.addEventListener('keydown', escEvent));
@@ -77,7 +83,7 @@ export default {
       type: computed(() => store.state.modal.type),
       title: computed(() => store.state.modal.title),
       data: computed(() => store.state.modal.data),
-      stack: computed(() => store.state.modal.stack),
+      stack,
       toggleOrBrowseModal,
       ...modalConstants,
       capitalize: _capitalize,
