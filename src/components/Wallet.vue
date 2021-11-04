@@ -40,12 +40,7 @@
       </div>
     </Section>
   </div>
-  <DataTable
-    title="Wallet transactions"
-    :columns="columns"
-    clickable
-    :fn="fn"
-  >
+  <DataTable title="Wallet transactions" :columns="columns" clickable :fn="fn">
     <template v-slot:direction="slotProps">
       <i
         v-if="slotProps.row.direction === 'inbound'"
@@ -101,7 +96,7 @@ export default {
     const getWallet = async (
       offset = 0,
       limit = 3,
-      order = 'asc',
+      order = 'desc',
       fromTimestamp = null,
       arg = store.client.value.getWalletAddress(),
     ) => {
@@ -110,25 +105,29 @@ export default {
         return;
       }
       try {
-        const inboundTransactions = await store.client.value.getInboundTransactions(
-          arg,
-          fromTimestamp,
-          offset,
-          limit,
-          order,
-        );
-        const outboundTransactions = await store.client.value.getOutboundTransactions(
-          arg,
-          fromTimestamp,
-          offset,
-          limit,
-          order,
-        );
-
         const pendingTransactions = await store.client.value.getOutboundPendingTransactions(
           arg,
           offset,
           limit,
+        );
+
+        // Make sure we have enough records if no pending transactions are present
+        if (!pendingTransactions.length) order = 5;
+
+        let inboundTransactions, outboundTransactions;
+        inboundTransactions = await store.client.value.getInboundTransactions(
+          arg,
+          fromTimestamp,
+          offset,
+          limit,
+          order,
+        );
+        outboundTransactions = await store.client.value.getOutboundTransactions(
+          arg,
+          fromTimestamp,
+          offset,
+          limit,
+          order,
         );
 
         const transactions = [
@@ -137,9 +136,11 @@ export default {
           ...outboundTransactions.map(t => ({ ...t, direction: 'outbound' })),
         ].sort((a, b) => (a.timestamp > b.timestamp ? -1 : 1));
 
+        debugger;
+
         return Promise.resolve(transactions);
       } catch (e) {
-        transactions.error = e.message;
+        console.error(e);
       }
     };
 

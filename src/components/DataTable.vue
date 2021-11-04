@@ -126,6 +126,7 @@ import {
   reactive,
   ref,
   watch,
+  watchEffect,
 } from 'vue';
 
 import { DETAIL_MODAL } from './modals/constants';
@@ -211,6 +212,11 @@ export default {
     //   clearInterval(poller);
     // };
 
+    const keyEvents = e => {
+      if (e.key === 'ArrowRight') nextPage();
+      if (e.key === 'ArrowLeft') previousPage();
+    };
+
     onMounted(async () => {
       store.mutateProgressbarLoading(true);
 
@@ -226,13 +232,15 @@ export default {
 
       // window.addEventListener('blur', clearPoll);
       // window.addEventListener('focus', setPoll);
+      window.addEventListener('keydown', keyEvents);
     });
 
-    // onUnmounted(() => {
-    //   clearPoll();
-    //   window.removeEventListener('blur', clearPoll);
-    //   window.removeEventListener('focus', setPoll);
-    // });
+    onUnmounted(() => {
+      window.removeEventListener('keydown', keyEvents);
+      //   clearPoll();
+      //   window.removeEventListener('blur', clearPoll);
+      //   window.removeEventListener('focus', setPoll);
+    });
 
     watch(
       () => props.rows,
@@ -313,12 +321,21 @@ export default {
         }/#/${props.prefix}/${data.id || data.address}`;
         history.pushState({}, null, newUrl);
       }
+
+      window.removeEventListener('keydown', keyEvents);
+
       store.toggleOrBrowseModal({
         type: DETAIL_MODAL,
         data,
         hasPrefix: props.prefix ? true : false,
       });
     };
+
+    watchEffect(
+      () =>
+        !store.state.modal.active &&
+        window.addEventListener('keydown', keyEvents),
+    );
 
     return {
       loading: computed(() => store.state.progressbarLoading),

@@ -40,7 +40,7 @@
 </template>
 
 <script>
-import { computed, inject, ref } from 'vue';
+import { computed, inject, onMounted, onUnmounted, ref } from 'vue';
 
 import modals from './modals';
 import * as modalConstants from './modals/constants';
@@ -62,13 +62,23 @@ export default {
     const slotActive = ref(false);
     const slotTitle = ref(null);
 
+    const toggleOrBrowseModal = store.toggleOrBrowseModal;
+
+    const escEvent = e => {
+      e.key === 'Escape' && toggleOrBrowseModal();
+      window.addEventListener('keydown', escEvent);
+    };
+
+    onMounted(() => window.addEventListener('keydown', escEvent));
+    onUnmounted(() => window.addEventListener('keydown', escEvent));
+
     return {
       active: computed(() => store.state.modal.active),
       type: computed(() => store.state.modal.type),
       title: computed(() => store.state.modal.title),
       data: computed(() => store.state.modal.data),
       stack: computed(() => store.state.modal.stack),
-      toggleOrBrowseModal: store.toggleOrBrowseModal,
+      toggleOrBrowseModal,
       ...modalConstants,
       capitalize: _capitalize,
       slotActive,
