@@ -20,7 +20,7 @@
       </div>
     </div>
     <div class="flex flex-wrap column overflow-y-hidden" ref="table" id="table">
-      <table v-if="rows && rows.length">
+      <table v-if="rows && rows.length" id="data-table">
         <thead>
           <template v-for="(c, i) in columns" :key="i">
             <th v-if="c.active" class="pa-2">
