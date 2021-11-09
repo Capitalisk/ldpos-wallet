@@ -30,7 +30,6 @@ describe('Blocks page tests', () => {
     cy.get('#current-page').contains('1');
 
     cy.get('#next-page').click();
-    cy.get('progress');
     cy.get('#current-page').contains('2');
   });
 
@@ -39,7 +38,6 @@ describe('Blocks page tests', () => {
     cy.get('#current-page').contains('2');
 
     cy.get('#previous-page').click();
-    cy.get('progress');
     cy.get('#current-page').contains('1');
   });
 
