@@ -57,6 +57,7 @@ export default {
   left: 0;
   top: 0;
   right: 0;
+  z-index: 500;
 }
 
 @media screen and (max-width: 768px) {
