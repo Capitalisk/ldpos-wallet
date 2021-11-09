@@ -184,7 +184,14 @@ export default {
           order.value,
         );
       } else if (typeof props.fn === 'function') {
-        return await props.fn();
+        return await props.fn(
+          props.arg,
+          null,
+          offset.value,
+          limit.value,
+          order.value,
+          page.value,
+        );
       } else {
         throw new Error(
           `fn should be a function or string, not a ${typeof props.fn}`,

@@ -40,7 +40,13 @@
       </div>
     </Section>
   </div>
-  <DataTable title="Wallet transactions" :columns="columns" clickable :fn="fn">
+  <DataTable
+    title="Wallet transactions"
+    :columns="columns"
+    clickable
+    :fn="fn"
+    :arg="walletAddress"
+  >
     <template v-slot:direction="slotProps">
       <i
         v-if="slotProps.row.direction === 'inbound'"
@@ -94,11 +100,12 @@ export default {
     const balance = reactive({ loading: true, data: null, error: null });
 
     const getWallet = async (
-      offset = 0,
-      limit = 3,
-      order = 'desc',
-      fromTimestamp = null,
       arg = store.client.value.getWalletAddress(),
+      fromTimestamp = null,
+      offset = 0,
+      limit = 10,
+      order = 'desc',
+      page = 1,
     ) => {
       if (!store.state.authenticated) {
         router.push({ name: 'wallet' });
@@ -111,32 +118,28 @@ export default {
           limit,
         );
 
-        // Make sure we have enough records if no pending transactions are present
-        if (!pendingTransactions.length) order = 5;
-
-        let inboundTransactions, outboundTransactions;
-        inboundTransactions = await store.client.value.getInboundTransactions(
-          arg,
-          fromTimestamp,
-          offset,
-          limit,
-          order,
-        );
-        outboundTransactions = await store.client.value.getOutboundTransactions(
-          arg,
-          fromTimestamp,
-          offset,
-          limit,
-          order,
-        );
+        let l;
+        if (page === 1)
+          l = pendingTransactions.length
+            ? limit - pendingTransactions.length
+            : limit;
+        else l = limit
 
         const transactions = [
           ...pendingTransactions.map(t => ({ ...t, direction: 'pending' })),
-          ...inboundTransactions.map(t => ({ ...t, direction: 'inbound' })),
-          ...outboundTransactions.map(t => ({ ...t, direction: 'outbound' })),
+          ...(
+            await store.client.value.getAccountTransactions(
+              arg,
+              fromTimestamp,
+              offset,
+              l,
+              order,
+            )
+          ).map(t => ({
+            ...t,
+            direction: t.recipientAddress === arg ? 'inbound' : 'outbound',
+          })),
         ].sort((a, b) => (a.timestamp > b.timestamp ? -1 : 1));
-
-        debugger;
 
         return Promise.resolve(transactions);
       } catch (e) {
@@ -197,15 +200,6 @@ export default {
       //   active: true,
       //   shrinkable: false,
       // },
-      {
-        name: 'senderAddress',
-        label: 'Sender',
-        field: 'senderAddress',
-        sortable: false,
-        value: val => val,
-        active: true,
-        slot: true,
-      },
       {
         name: 'recipientAddress',
         label: 'Recipient',
@@ -298,6 +292,7 @@ export default {
       authenticated: computed(() => store.state.authenticated),
       address: computed(() => address),
       balance: computed(() => balance),
+      walletAddress: computed(() => store.client.value.getWalletAddress()),
       openTransferModal: () =>
         balance.data > 0
           ? store.toggleOrBrowseModal({ type: TRANSFER_MODAL })
