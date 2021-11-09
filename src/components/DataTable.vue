@@ -63,9 +63,7 @@
                     :row="r"
                     :column="c"
                     :rows="rows"
-                    :shrink="
-                      innerWidth < 1400 || table.scrollWidth > table.offsetWidth
-                    "
+                    :shrink="shrink"
                   />
                 </template>
                 <template v-else>
@@ -204,7 +202,15 @@ export default {
 
     const pollerFn = async () => {
       store.mutateProgressbarLoading(true);
-      rows.value = await getData();
+      const data = await getData();
+
+      // We need to determine whether the next page has values, and occordingly populate them
+      // If not we just want to maintain the previous page. We don't disable the next button however. Data might follow...
+      if (data.length) rows.value = data;
+      else {
+        page.value--;
+        offset.value = offset.value - props.limit;
+      }
       store.mutateProgressbarLoading(false);
     };
 
@@ -260,6 +266,7 @@ export default {
     const nextPage = async () => {
       // If less rows then limit don't load more
       if (rows.value.length < limit.value) return;
+      page.value++;
 
       if (props.fn) {
         if (store.state.progressbarLoading) return;
@@ -267,13 +274,13 @@ export default {
         await pollerFn();
       }
 
-      page.value++;
       // clearPoll();
     };
 
     const previousPage = async () => {
       if (page.value === 1) return;
       // setPoll();
+      page.value--;
 
       if (props.fn) {
         if (store.state.progressbarLoading) return;
@@ -281,8 +288,6 @@ export default {
         offset.value = offset.value - props.limit;
         await pollerFn();
       }
-
-      page.value--;
     };
 
     const sort = async c => {
@@ -362,9 +367,11 @@ export default {
       offset,
       togglePopup: () => (popupActive.value = !popupActive.value),
       detail,
+      shrink: computed(
+        () => window.innerWidth < 1400 || table.scrollWidth > table.offsetWidth,
+      ),
 
       hasHeaderSlot: !!slots.header,
-      innerWidth: window.innerWidth,
     };
   },
   components: { Button, Popup, Copy },

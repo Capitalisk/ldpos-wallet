@@ -123,7 +123,7 @@ export default {
           l = pendingTransactions.length
             ? limit - pendingTransactions.length
             : limit;
-        else l = limit
+        else l = limit;
 
         const transactions = [
           ...pendingTransactions.map(t => ({ ...t, direction: 'pending' })),
