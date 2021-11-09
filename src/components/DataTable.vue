@@ -96,6 +96,7 @@
   <div v-if="fn" class="flex justify-center pagination pa-1">
     <!-- TODO: Add page one -->
     <Button
+      id="previous-page"
       icon="chevron-left"
       @click="previousPage"
       class="pa-1 mr-1 outline"
@@ -103,11 +104,13 @@
     />
     <!-- TODO: Allow custom page input -->
     <Button
+      id="current-page"
       :value="page"
       @click="() => {}"
       class="pa-1 mr-1 outline disabled"
     />
     <Button
+      id="next-page"
       icon="chevron-right"
       @click="nextPage"
       class="pa-1 outline"
