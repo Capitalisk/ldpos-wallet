@@ -83,9 +83,9 @@
           </tr>
         </tbody>
       </table>
-      <span v-else-if="!loading && rows && !rows.length" class="ma-3"
-        >No records found...</span
-      >
+      <span v-else-if="!loading && rows && !rows.length" class="ma-3">
+        No records found...
+      </span>
     </div>
     <div class="footer">
       <slot name="header" class="pa-2" />
