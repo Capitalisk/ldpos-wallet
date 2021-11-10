@@ -112,7 +112,6 @@
       icon="chevron-right"
       @click="nextPage"
       class="pa-1 outline"
-      :class="{ disabled: rows.length < limit }"
     />
     <!-- TODO: Add page two -->
   </div>
@@ -202,15 +201,7 @@ export default {
 
     const pollerFn = async () => {
       store.mutateProgressbarLoading(true);
-      const data = await getData();
-
-      // We need to determine whether the next page has values, and occordingly populate them
-      // If not we just want to maintain the previous page. We don't disable the next button however. Data might follow...
-      if (data.length) rows.value = data;
-      else {
-        page.value--;
-        offset.value = offset.value - props.limit;
-      }
+      rows.value = await getData();
       store.mutateProgressbarLoading(false);
     };
 
@@ -264,8 +255,6 @@ export default {
     );
 
     const nextPage = async () => {
-      // If less rows then limit don't load more
-      if (rows.value.length < limit.value) return;
       page.value++;
 
       if (props.fn) {
