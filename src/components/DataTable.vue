@@ -84,7 +84,7 @@
         </tbody>
       </table>
       <span v-else-if="!loading && rows && !rows.length" class="ma-3"
-        >No data available...</span
+        >No records found...</span
       >
     </div>
     <div class="footer">
