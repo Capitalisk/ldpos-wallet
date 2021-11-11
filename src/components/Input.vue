@@ -17,6 +17,7 @@
       @ended="validate"
       @focus="reset"
       ref="input"
+      data-gramm="false"
     />
     <span class="suffix">{{ suffix }}<slot name="suffix"/></span>
   </div>
