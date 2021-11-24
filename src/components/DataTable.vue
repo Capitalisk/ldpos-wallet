@@ -20,7 +20,7 @@
       </div>
     </div>
     <div class="flex flex-wrap column overflow-y-hidden" ref="table" id="table">
-      <table v-if="rows && rows.length">
+      <table v-if="rows && rows.length" id="data-table">
         <thead>
           <template v-for="(c, i) in columns" :key="i">
             <th v-if="c.active" class="pa-2">
@@ -32,7 +32,7 @@
                   v-if="c.sortable"
                   id="sorting"
                   class="cursor-pointer"
-                  @click="c.sortable && sort(c)"
+                  @click="sort(c)"
                 >
                   <i class="fas fa-sort-up" v-if="c.sorted === 'asc'"></i>
                   <i
@@ -63,15 +63,15 @@
                     :row="r"
                     :column="c"
                     :rows="rows"
-                    :shrink="
-                      innerWidth < 1400 || table.scrollWidth > table.offsetWidth
-                    "
+                    :shrink="shrink"
                   />
                 </template>
                 <template v-else>
                   {{
                     getShortValue(
-                      c.value ? c.value(r[c.field], r, rows) : r[c.field],
+                      c.value
+                        ? c.value(r[c.field], r, rows, offset)
+                        : r[c.field],
                       c.shrinkable,
                     ) ||
                       r.default ||
@@ -83,13 +83,37 @@
           </tr>
         </tbody>
       </table>
-      <span v-else-if="!loading && rows && !rows.length" class="ma-3"
-        >No data available...</span
-      >
+      <span v-else-if="!loading && rows && !rows.length" class="ma-3">
+        No records found...
+      </span>
     </div>
     <div class="footer">
       <slot name="header" class="pa-2" />
     </div>
+  </div>
+  <div v-if="fn" class="flex justify-center pagination pa-1">
+    <!-- TODO: Add page one -->
+    <Button
+      id="previous-page"
+      icon="chevron-left"
+      @click="previousPage"
+      class="pa-1 mr-1 outline"
+      :class="{ disabled: page === 1 }"
+    />
+    <!-- TODO: Allow custom page input -->
+    <Button
+      id="current-page"
+      :value="page"
+      @click="() => {}"
+      class="pa-1 mr-1 outline disabled"
+    />
+    <Button
+      id="next-page"
+      icon="chevron-right"
+      @click="nextPage"
+      class="pa-1 outline"
+    />
+    <!-- TODO: Add page two -->
   </div>
 </template>
 
@@ -102,6 +126,7 @@ import {
   reactive,
   ref,
   watch,
+  watchEffect,
 } from 'vue';
 
 import { DETAIL_MODAL } from './modals/constants';
@@ -120,7 +145,7 @@ export default {
     ableToCopyTitle: { type: Boolean, default: false },
     clickable: { type: Boolean, default: false },
     fn: { type: [String, Function], default: null },
-    limit: { type: Number, default: 25 },
+    limit: { type: Number, default: 10 },
     order: { type: String, default: 'desc' },
     offset: { type: Number, default: 0 },
     arg: { type: String, default: null },
@@ -133,12 +158,13 @@ export default {
     let poller;
 
     const rows = ref([]);
-    const countLoadMore = ref(1);
     const table = ref(null);
     const limit = ref(props.limit);
     const order = ref(props.order);
     const offset = ref(props.offset);
     const columns = ref(props.columns);
+    const page = ref(1);
+    const intervalActive = ref(false);
     const popupActive = ref(false);
 
     const getData = async () => {
@@ -158,7 +184,14 @@ export default {
           order.value,
         );
       } else if (typeof props.fn === 'function') {
-        return await props.fn();
+        return await props.fn(
+          props.arg,
+          null,
+          offset.value,
+          limit.value,
+          order.value,
+          page.value,
+        );
       } else {
         throw new Error(
           `fn should be a function or string, not a ${typeof props.fn}`,
@@ -166,31 +199,54 @@ export default {
       }
     };
 
-    const pollerFn = async () => (rows.value = await getData());
+    const pollerFn = async () => {
+      store.mutateProgressbarLoading(true);
+      rows.value = await getData();
+      store.mutateProgressbarLoading(false);
+    };
+
+    // const setPoll = async () => {
+    //   if (!props.fn) return;
+    //   if (page.value !== 1 && intervalActive.value) return;
+    //   await pollerFn();
+    //   intervalActive.value = true;
+    //   poller = setInterval(pollerFn, 10000);
+    // };
+
+    // const clearPoll = () => {
+    //   if (!props.fn) return;
+    //   intervalActive.value = false;
+    //   clearInterval(poller);
+    // };
+
+    const keyEvents = e => {
+      if (e.key === 'ArrowRight') nextPage();
+      if (e.key === 'ArrowLeft') previousPage();
+    };
 
     onMounted(async () => {
       store.mutateProgressbarLoading(true);
 
       if (props.fn) {
-        try {
-          await pollerFn();
-        } catch (e) {
-          console.error(e);
-        }
+        await pollerFn();
+        // setPoll();
+        intervalActive.value = true;
       } else {
         rows.value = props.rows;
       }
 
       store.mutateProgressbarLoading(false);
 
-      window.onscroll = () => {
-        if (
-          window.innerHeight + document.documentElement.scrollTop >=
-          document.documentElement.offsetHeight
-        ) {
-          loadMore();
-        }
-      };
+      // window.addEventListener('blur', clearPoll);
+      // window.addEventListener('focus', setPoll);
+      window.addEventListener('keydown', keyEvents);
+    });
+
+    onUnmounted(() => {
+      window.removeEventListener('keydown', keyEvents);
+      //   clearPoll();
+      //   window.removeEventListener('blur', clearPoll);
+      //   window.removeEventListener('focus', setPoll);
     });
 
     watch(
@@ -198,23 +254,29 @@ export default {
       n => !props.fn && (rows.value = n),
     );
 
-    const loadMore = async () => {
-      // If less rows then limit don't load more
-      if (rows.value.length < limit.value * countLoadMore.value) return;
+    const nextPage = async () => {
+      page.value++;
 
-      countLoadMore.value++;
+      if (props.fn) {
+        if (store.state.progressbarLoading) return;
+        offset.value = offset.value + props.limit;
+        await pollerFn();
+      }
+
+      // clearPoll();
+    };
+
+    const previousPage = async () => {
+      if (page.value === 1) return;
+      // setPoll();
+      page.value--;
 
       if (props.fn) {
         if (store.state.progressbarLoading) return;
         store.mutateProgressbarLoading(true);
-
-        offset.value = offset.value + 25;
-        const d = await getData();
-
-        rows.value = [...rows.value, ...d];
+        offset.value = offset.value - props.limit;
+        await pollerFn();
       }
-
-      store.mutateProgressbarLoading(false);
     };
 
     const sort = async c => {
@@ -256,6 +318,29 @@ export default {
       return val.toString();
     };
 
+    const detail = data => {
+      if (props.prefix) {
+        let newUrl = `${window.location.origin}${
+          process.env.VUE_APP_BASE_URL
+        }/#/${props.prefix}/${data.id || data.address}`;
+        history.pushState({}, null, newUrl);
+      }
+
+      window.removeEventListener('keydown', keyEvents);
+
+      store.toggleOrBrowseModal({
+        type: DETAIL_MODAL,
+        data,
+        hasPrefix: props.prefix ? true : false,
+      });
+    };
+
+    watchEffect(
+      () =>
+        !store.state.modal.active &&
+        window.addEventListener('keydown', keyEvents),
+    );
+
     return {
       loading: computed(() => store.state.progressbarLoading),
       popupActive,
@@ -264,23 +349,18 @@ export default {
       columns,
       getShortValue,
       sort,
+      nextPage,
+      previousPage,
+      page,
+      limit,
+      offset,
       togglePopup: () => (popupActive.value = !popupActive.value),
-      detail: data => {
-        if (props.prefix) {
-          let newUrl = `${window.location.origin}${
-            process.env.VUE_APP_BASE_URL
-          }/#/${props.prefix}/${data.id || data.address}`;
-          history.pushState({}, null, newUrl);
-        }
-        store.toggleOrBrowseModal({
-          type: DETAIL_MODAL,
-          data,
-          hasPrefix: !!props.prefix,
-          prependFn: props.prependFn,
-        });
-      },
+      detail,
+      shrink: computed(
+        () => window.innerWidth < 1400 || table.scrollWidth > table.offsetWidth,
+      ),
+
       hasHeaderSlot: !!slots.header,
-      innerWidth: window.innerWidth,
     };
   },
   components: { Button, Popup, Copy },

@@ -20,7 +20,7 @@
 export default {
   name: 'Button',
   props: {
-    value: { type: String },
+    value: { type: [String, Number] },
     routerLink: { type: Boolean, default: false },
     href: { type: [String, Object], default: '' },
     loading: { type: Boolean, default: false },
@@ -65,6 +65,13 @@ a.button.outline.warning {
 a.button.outline.danger {
   border: 1px solid var(--danger);
   background-color: var(--danger-bg);
+}
+
+a.button.outline.disabled {
+  border: 1px solid var(--disabled);
+  background-color: var(--primary-lighter-bg);
+  color: var(--dark);
+  cursor: not-allowed;
 }
 
 a.button.warning {

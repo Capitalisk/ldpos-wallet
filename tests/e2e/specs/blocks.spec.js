@@ -24,10 +24,27 @@ describe('Blocks page tests', () => {
     cy.get('#sorting').click();
   });
 
-  it('should load when scrolling to bottom', () => {
+  it('should load progress going to the next page', () => {
     cy.wait(500);
     cy.scrollTo('bottom');
-    cy.get('progress');
+    cy.get('#current-page').contains('1');
+
+    cy.get('#next-page').click();
+    cy.get('#current-page').contains('2');
+  });
+
+  it('go back to the previous page', () => {
+    cy.wait(500);
+    cy.get('#current-page').contains('2');
+
+    cy.get('#previous-page').click();
+    cy.get('#current-page').contains('1');
+  });
+
+  it('should have 10 rows', () => {
+    cy.get('#data-table')
+      .find('tr')
+      .should('have.length', 10);
   });
 
   it('shows details modal', () => {
