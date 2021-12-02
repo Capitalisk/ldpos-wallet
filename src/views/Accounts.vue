@@ -8,15 +8,11 @@
     :prependFn="getVotes"
   >
     <template v-slot:address="slotProps">
-      <Copy :value="slotProps.row.address" :shrink="slotProps.shrink" />
-    </template>
-    <template v-slot:view="slotProps">
-      <div class="flex">
-        <Button
-          value="View transactions"
-          @click.stop.prevent="viewAccountTransactions(slotProps.row.address)"
-        />
-      </div>
+      <Copy
+        :value="slotProps.row.address"
+        :shrink="slotProps.shrink"
+        :link="`/accounts/${slotProps.row.address}`"
+      />
     </template>
   </DataTable>
 </template>
@@ -65,14 +61,6 @@ export default {
         active: true,
         sorted: 'desc',
         shrinkable: false,
-      },
-      {
-        name: 'view',
-        label: 'Inspect account',
-        field: 'view',
-        sortable: false,
-        active: true,
-        slot: true,
       },
     ]);
 

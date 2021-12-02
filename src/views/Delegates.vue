@@ -45,7 +45,11 @@
       />
     </template>
     <template v-slot:address="slotProps">
-      <Copy :value="slotProps.row.address" :shrink="slotProps.shrink" />
+      <Copy
+        :value="slotProps.row.address"
+        :shrink="slotProps.shrink"
+        :link="`/accounts/${slotProps.row.address}`"
+      />
     </template>
     <template v-slot:forging="slotProps">
       <Dot
@@ -243,6 +247,6 @@ export default {
 
 <style scoped>
 .delegate-address {
-  color: var(--primary-lightest);
+  color: var(--primary-lighter);
 }
 </style>

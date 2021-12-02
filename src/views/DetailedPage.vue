@@ -1,5 +1,5 @@
 <template>
-  <Navbar />
+  <Navbar back />
   <Section>
     <DataTable
       v-if="dataTable && data.fn"
@@ -11,12 +11,14 @@
       :title="data.arg"
       :able-to-copy-title="ableToCopyTitle"
     />
-    <DetailedData v-else v-bind="$attrs" :data="data" />
+    <template v-else>
+      <DetailedData v-if="!loading" v-bind="$attrs" :data="data" />
+    </template>
   </Section>
 </template>
 
 <script>
-import { inject, onMounted, ref, watch } from 'vue';
+import { inject, ref, watch, watchEffect, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import { _transformMonetaryUnit, _parseDate } from '../utils';
@@ -40,9 +42,21 @@ export default {
     const router = useRouter();
     const data = ref({});
 
-    onMounted(async () => {
+    const getData = async () => {
+      store.mutateProgressbarLoading(true);
       // dataTable is passed by the router
-      if (!dataTable) {
+      if (dataTable) {
+        const sw = {
+          // This is relative to the route name
+          'account transaction details': () => ({
+            arg: route.params.account,
+            fn: 'getAccountTransactions',
+          }),
+          default: () => {},
+        };
+
+        data.value = (sw[route.name] || sw.default)();
+      } else {
         const key = Object.keys(route.params)[0];
 
         const sw = {
@@ -58,19 +72,11 @@ export default {
         };
 
         data.value = await (sw[key] || sw.default)();
-      } else {
-        const sw = {
-          // This is relative to the route name
-          'account transaction details': () => ({
-            arg: route.params.account,
-            fn: 'getAccountTransactions',
-          }),
-          default: () => {},
-        };
-
-        data.value = (sw[route.name] || sw.default)();
       }
-    });
+      store.mutateProgressbarLoading(false);
+    };
+
+    watchEffect(async () => route.path && (await getData()));
 
     const columns = ref([
       {
@@ -126,6 +132,7 @@ export default {
     return {
       data,
       columns,
+      loading: computed(() => store.state.progressbarLoading),
     };
   },
 };

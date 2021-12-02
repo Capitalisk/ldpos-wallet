@@ -18,7 +18,7 @@
   --warning-bg: #f8ca0020;
 
   --primary: #ffffff;
-  --primary-lightest: #0366d6;
+  --primary-lightest: #3890f5;
   --primary-lighter: #0366d6;
   --primary-darker: #f3f5f9;
   --primary-darkest: #e8e8e8;
@@ -45,7 +45,7 @@
   --white: var(--primary-darkest);
 
   --primary: rgb(22, 27, 34);
-  --primary-lightest: #0c8ae4;
+  --primary-lightest: #80bbe6;
   --primary-lighter: #0c8ae4;
   --primary-darker: #222435;
   --primary-darkest: #0d1117;
@@ -108,6 +108,15 @@ hr {
 
 input::placeholder {
   opacity: 0.4;
+}
+
+a {
+  color: var(--primary-lighter);
+  text-decoration: unset;
+}
+
+a:hover {
+  text-decoration: underline;
 }
 
 #app {

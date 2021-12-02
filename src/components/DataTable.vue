@@ -134,6 +134,7 @@ import { DETAIL_MODAL } from './modals/constants';
 import Button from './Button';
 import Popup from './Popup';
 import Copy from './Copy.vue';
+import { useRouter } from 'vue-router';
 
 export default {
   name: 'DataTable',
@@ -154,6 +155,7 @@ export default {
   },
   setup(props, { emit, slots }) {
     const store = inject('store');
+    const router = useRouter();
 
     let poller;
 
@@ -319,20 +321,10 @@ export default {
     };
 
     const detail = data => {
-      if (props.prefix) {
-        let newUrl = `${window.location.origin}${
-          process.env.VUE_APP_BASE_URL
-        }/#/${props.prefix}/${data.id || data.address}`;
-        history.pushState({}, null, newUrl);
-      }
+      if (props.prefix)
+        router.push(`/${props.prefix}/${data.id || data.address}`);
 
       window.removeEventListener('keydown', keyEvents);
-
-      store.toggleOrBrowseModal({
-        type: DETAIL_MODAL,
-        data,
-        hasPrefix: props.prefix ? true : false,
-      });
     };
 
     watchEffect(

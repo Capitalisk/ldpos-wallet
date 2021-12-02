@@ -140,13 +140,13 @@ a.disabled:hover {
 }
 
 .sidebar a:hover {
-  background-color: var(--primary-lightest);
+  background-color: var(--primary-lighter);
   color: var(--permanent-white);
 }
 
 .router-link-active.navbar-link {
   background-color: var(--primary-darker);
-  color: var(--primary-lightest);
+  color: var(--primary-lighter);
 }
 
 a.router-link-active.navbar-link::before {
@@ -156,7 +156,7 @@ a.router-link-active.navbar-link::before {
   left: 0px;
   top: 0px;
   bottom: 0px;
-  background: var(--primary-lightest);
+  background: var(--primary-lighter);
 }
 
 a.router-link-active.last::before {

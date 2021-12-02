@@ -1,9 +1,14 @@
 <template>
   <div class="nowrap">
     <template v-if="value">
-      <span ref="copyRef" :class="{ wrap, ellipsis }">{{
-        shrink ? shrinkValue(value) : value
-      }}</span>
+      <router-link @click.stop.prevent v-if="link" :to="link">
+        <span ref="copyRef" :class="{ wrap, ellipsis }">
+          {{ shrink ? shrinkValue(value) : value }}
+        </span>
+      </router-link>
+      <span v-else ref="copyRef" :class="{ wrap, ellipsis }">
+        {{ shrink ? shrinkValue(value) : value }}
+      </span>
       <i
         class="far fa-copy cursor-pointer pl-1"
         @click.prevent.stop
@@ -20,10 +25,11 @@ import { inject, ref, computed } from 'vue';
 export default {
   name: 'Copy',
   props: {
-    value: { type: [String, Number], default: '' },
+    value: { type: [String, Number, null], default: '', required: true },
     shrink: { type: Boolean, default: false },
     wrap: { type: Boolean, default: false },
     ellipsis: { type: Boolean, default: false },
+    link: { type: String, default: null, required: false },
   },
   setup(props) {
     const store = inject('store');

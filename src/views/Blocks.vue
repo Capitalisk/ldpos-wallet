@@ -7,7 +7,11 @@
     prefix="blocks"
   >
     <template v-slot:forgerAddress="slotProps">
-      <Copy :value="slotProps.row.forgerAddress" :shrink="slotProps.shrink" />
+      <Copy
+        :value="slotProps.row.forgerAddress"
+        :shrink="slotProps.shrink"
+        :link="`/accounts/${slotProps.row.address}`"
+      />
     </template>
   </DataTable>
 </template>

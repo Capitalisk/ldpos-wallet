@@ -5,7 +5,15 @@
         <div class="title">
           <strong>{{ transformTitle(key) }}</strong>
         </div>
-        <div>
+        <!-- TODO: Don't make links related to route.params, it will just be the same route -->
+        <div v-if="links[key]">
+          <Copy
+            wrap
+            :value="transformValue(key, value)"
+            :link="`/${links[key]}/${value}`"
+          />
+        </div>
+        <div v-else>
           <Copy wrap :value="transformValue(key, value)" />
         </div>
       </div>
@@ -39,7 +47,7 @@
 </template>
 
 <script>
-import { inject, onMounted, onUnmounted, reactive } from 'vue';
+import { computed, inject, onMounted, onUnmounted, reactive, toRef } from 'vue';
 import {
   _parseDate,
   _transformMonetaryUnit,
@@ -48,6 +56,7 @@ import {
 } from '../utils';
 
 import Copy from './Copy';
+import { useRoute } from 'vue-router';
 
 export default {
   name: 'DetailedData',
@@ -58,17 +67,18 @@ export default {
   components: { Copy },
   setup(props) {
     const store = inject('store');
+    const route = useRoute();
 
     const titleTransformations = {
       timestamp: 'Date',
     };
 
-    const detailedData = reactive({ ...props.data });
+    const detailedData = toRef(props, 'data');
 
     onMounted(async () => {
       if (props.prependFn) {
-        const { key, value } = await props.prependFn(detailedData);
-        detailedData[key] = value;
+        const { key, value } = await props.prependFn(detailedData.value);
+        detailedData.value[key] = value;
       }
     });
 
@@ -92,6 +102,12 @@ export default {
       detailedData,
       transformTitle,
       transformValue,
+      links: {
+        address: 'accounts',
+        recipientAddress: 'accounts',
+        senderAddress: 'accounts',
+        id: 'transactions',
+      },
     };
   },
 };
