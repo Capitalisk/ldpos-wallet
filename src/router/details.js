@@ -4,6 +4,9 @@ export default [
     name: 'AccountId',
     component: () =>
       import(/* webpackChunkName: "accountid" */ '../views/DetailedPage'),
+    props: {
+      title: 'Account Details',
+    },
   },
   {
     path: '/accounts/:accounts/transactions',
@@ -15,7 +18,7 @@ export default [
     props: {
       dataTable: true,
       ableToCopyTitle: true,
-      title: 'Account Details',
+      title: 'Account Transaction Details',
     },
   },
   {
