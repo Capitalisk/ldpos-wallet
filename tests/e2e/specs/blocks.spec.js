@@ -24,6 +24,14 @@ describe('Blocks page tests', () => {
     cy.get('#sorting').click();
   });
 
+  it('shows details page', () => {
+    cy.get('td')
+      .first()
+      .click();
+
+    cy.get('i.fa.fa-arrow-left').click();
+  });
+
   it('should load progress going to the next page', () => {
     cy.wait(500);
     cy.scrollTo('bottom');
@@ -45,16 +53,5 @@ describe('Blocks page tests', () => {
     cy.get('#data-table')
       .find('tr')
       .should('have.length', 10);
-  });
-
-  it('shows details modal', () => {
-    cy.get('td')
-      .contains('clsk')
-      .first()
-      .click();
-
-    cy.get('div.modal-background');
-
-    cy.get('div.close-btn.cursor-pointer').click();
   });
 });
