@@ -70,7 +70,7 @@
                   {{
                     getShortValue(
                       c.value
-                        ? c.value(r[c.field], r, rows, offset)
+                        ? c.value(r[c.field], r, rows, (page - 1) * limit)
                         : r[c.field],
                       c.shrinkable,
                     ) ||
@@ -135,7 +135,7 @@ import { DETAIL_MODAL } from './modals/constants';
 import Button from './Button';
 import Popup from './Popup';
 import Copy from './Copy.vue';
-import { useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 
 export default {
   name: 'DataTable',
@@ -149,24 +149,25 @@ export default {
     fn: { type: [String, Function], default: null },
     limit: { type: Number, default: 10 },
     order: { type: String, default: 'desc' },
-    offset: { type: Number, default: 0 },
     arg: { type: String, default: null },
     prefix: { type: String, default: null },
     prependFn: { type: Function, default: null },
   },
   setup(props, { emit, slots }) {
     const store = inject('store');
+    const route = useRoute();
     const router = useRouter();
 
     let poller;
+
+    if (!route.query.p) router.push({ query: { ...route.query, p: 1 } });
 
     const rows = ref([]);
     const table = ref(null);
     const limit = ref(props.limit);
     const order = ref(props.order);
-    const offset = ref(props.offset);
     const columns = ref(props.columns);
-    const page = ref(1);
+    const page = computed(() => parseInt(route.query.p));
     const intervalActive = ref(false);
     const popupActive = ref(false);
 
@@ -176,13 +177,13 @@ export default {
           return await store.client.value[props.fn](
             props.arg,
             null,
-            offset.value,
+            (page.value - 1) * limit.value,
             limit.value,
             order.value,
           );
         }
         return await store.client.value[props.fn](
-          offset.value,
+          (page.value - 1) * limit.value,
           limit.value,
           order.value,
         );
@@ -190,7 +191,7 @@ export default {
         return await props.fn(
           props.arg,
           null,
-          offset.value,
+          (page.value - 1) * limit.value,
           limit.value,
           order.value,
           page.value,
@@ -260,13 +261,9 @@ export default {
     const nextPage = async () => {
       if (store.state.progressbarLoading) return;
 
-      page.value++;
-
-      if (props.fn) {
-        if (store.state.progressbarLoading) return;
-        offset.value = offset.value + props.limit;
-        await pollerFn();
-      }
+      router.push({
+        query: { ...route.query, p: page.value + 1 },
+      });
 
       // clearPoll();
     };
@@ -276,15 +273,12 @@ export default {
       if (page.value === 1) return;
 
       // setPoll();
-      page.value--;
-
-      if (props.fn) {
-        if (store.state.progressbarLoading) return;
-        store.mutateProgressbarLoading(true);
-        offset.value = offset.value - props.limit;
-        await pollerFn();
-      }
+      router.push({
+        query: { ...route.query, p: page.value - 1 },
+      });
     };
+
+    watchEffect(() => page.value && pollerFn());
 
     const sort = async c => {
       if (store.state.progressbarLoading) return;
@@ -332,12 +326,6 @@ export default {
       window.removeEventListener('keydown', keyEvents);
     };
 
-    watchEffect(
-      () =>
-        !store.state.modal.active &&
-        window.addEventListener('keydown', keyEvents),
-    );
-
     return {
       loading: computed(() => store.state.progressbarLoading),
       popupActive,
@@ -350,7 +338,6 @@ export default {
       previousPage,
       page,
       limit,
-      offset,
       togglePopup: () => (popupActive.value = !popupActive.value),
       detail,
       shrink: computed(
