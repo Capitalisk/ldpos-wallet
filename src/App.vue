@@ -2,7 +2,7 @@
   <Progressbar :loading="loading" class="progress-bar-top" />
   <Modal />
   <Sidebar />
-  <div class="main-content">
+  <div class="main-content relative">
     <Loading v-if="!connected" />
     <router-view v-else />
   </div>
