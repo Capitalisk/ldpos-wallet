@@ -5,7 +5,7 @@
         <div class="title">
           <strong>{{ transformTitle(key) }}</strong>
         </div>
-        <div v-if="links[key] && !supressLinks">
+        <div v-if="links[key]">
           <Copy
             v-if="$route.params[links[key]] !== value"
             wrap
@@ -64,7 +64,7 @@ export default {
   props: {
     data: { type: Object, default: {} },
     prependFn: { type: Function, default: null },
-    supressLinks: { type: Boolean, default: false },
+    id: { type: String, default: 'transactions' },
   },
   components: { Copy },
   setup(props) {
@@ -100,6 +100,8 @@ export default {
     const transformValue = (key, value) =>
       valueTransformations[key] ? valueTransformations[key](value) : value;
 
+    console.log(route);
+
     return {
       detailedData,
       transformTitle,
@@ -108,7 +110,8 @@ export default {
         address: 'accounts',
         recipientAddress: 'accounts',
         senderAddress: 'accounts',
-        id: 'transactions',
+        forgerAddress: 'accounts',
+        id: props.id,
       },
     };
   },

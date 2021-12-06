@@ -1,5 +1,5 @@
 <template>
-  <Navbar />
+  <Navbar :title="title" />
   <DataTable
     :columns="columns"
     clickable
@@ -30,6 +30,9 @@ import Button from '../components/Button.vue';
 
 export default {
   name: 'Accounts',
+  props: {
+    title: { type: String, required: true },
+  },
   setup() {
     const store = inject('store');
     const router = useRouter();

@@ -1,5 +1,5 @@
 <template>
-  <Navbar back />
+  <Navbar back :title="title" />
   <Section>
     <DataTable
       v-if="dataTable && data.fn"
@@ -12,12 +12,7 @@
       :able-to-copy-title="ableToCopyTitle"
     />
     <template v-else>
-      <DetailedData
-        v-if="!loading"
-        v-bind="$attrs"
-        :data="data"
-        :supress-links="supressLinks"
-      />
+      <DetailedData v-if="!loading" v-bind="$attrs" :data="data" :id="id" />
     </template>
   </Section>
 </template>
@@ -39,8 +34,8 @@ export default {
   props: {
     dataTable: { type: Boolean, default: false },
     ableToCopyTitle: { type: Boolean, default: false },
-    title: { type: String, default: null },
-    supressLinks: { type: Boolean, default: false },
+    title: { type: String, required: true },
+    id: { type: String, default: null },
   },
   setup({ dataTable }) {
     const store = inject('store');

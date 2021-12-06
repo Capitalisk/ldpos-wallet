@@ -20,16 +20,16 @@ describe('Blocks page tests', () => {
       .trigger('mouseover');
   });
 
-  it('should sort', () => {
-    cy.get('#sorting').click();
-  });
-
   it('shows details page', () => {
     cy.get('td')
       .first()
       .click();
 
     cy.get('i.fa.fa-arrow-left').click();
+  });
+
+  it('should sort', () => {
+    cy.get('#sorting').click();
   });
 
   it('should load progress going to the next page', () => {

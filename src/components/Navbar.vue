@@ -5,7 +5,7 @@
       class="fa fa-arrow-left mr-2 cursor-pointer"
       @click="goBack"
     />
-    <h1 class="mr-auto">{{ $route.name }}</h1>
+    <h1 class="mr-auto">{{ title }}</h1>
     <template v-if="routes.includes(searchParam)">
       <div v-show="searchActive" style="width: 70%;">
         <Input
@@ -82,6 +82,7 @@ export default {
   name: 'Navbar',
   props: {
     back: { type: Boolean, default: false },
+    title: { type: String, required: true },
   },
   setup() {
     const store = inject('store');

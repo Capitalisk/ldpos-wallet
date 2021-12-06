@@ -1,5 +1,5 @@
 <template>
-  <Navbar />
+  <Navbar :title="title" />
   <div class="flex flex-wrap flex-gap">
     <Section class="flex-12">
       Network
@@ -71,6 +71,9 @@ import config from '../config';
 export default {
   name: 'Settings',
   components: { Navbar, Section, Select, Button, NetworkForm },
+  props: {
+    title: { type: String, required: true },
+  },
   setup() {
     const store = inject('store');
 

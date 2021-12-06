@@ -1,5 +1,5 @@
 <template>
-  <Navbar />
+  <Navbar :title="title" />
   <div class="flex flex-gap mb-2">
     <Section title="Quick vote" v-if="authenticated" class="flex-3">
       <Input
@@ -76,6 +76,9 @@ const DELEGATE_ACTIVITY_ROUNDS = 3;
 
 export default {
   name: 'Home',
+  props: {
+    title: { type: String, required: true },
+  },
   setup() {
     const store = inject('store');
 

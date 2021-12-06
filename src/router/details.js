@@ -1,13 +1,13 @@
 export default [
   {
     path: '/accounts/:accounts',
-    name: 'account details',
+    name: 'AccountId',
     component: () =>
       import(/* webpackChunkName: "accountid" */ '../views/DetailedPage'),
   },
   {
     path: '/accounts/:accounts/transactions',
-    name: 'account transaction details',
+    name: 'AccountIdTransactions',
     component: () =>
       import(
         /* webpackChunkName: "accountidtransactions" */ '../views/DetailedPage'
@@ -15,27 +15,35 @@ export default [
     props: {
       dataTable: true,
       ableToCopyTitle: true,
+      title: 'Account Details',
     },
   },
   {
     path: '/transactions/:transactions',
-    name: 'transaction details',
+    name: 'TransactionId',
     component: () =>
       import(/* webpackChunkName: "transactionid" */ '../views/DetailedPage'),
+    props: {
+      title: 'Transaction Details',
+    },
   },
   {
     path: '/delegates/:delegates',
-    name: 'delegate details',
+    name: 'DelegateId',
     component: () =>
       import(/* webpackChunkName: "delegateid" */ '../views/DetailedPage'),
+    props: {
+      title: 'Delegate Details',
+    },
   },
   {
     path: '/blocks/:blocks',
-    name: 'block details',
+    name: 'BlockId',
     component: () =>
       import(/* webpackChunkName: "blockid" */ '../views/DetailedPage'),
     props: {
-      supressLinks: true,
+      title: 'Block Details',
+      id: 'blocks',
     },
   },
   {

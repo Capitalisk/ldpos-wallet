@@ -76,7 +76,6 @@
 <script>
 import { computed, inject, onMounted, ref, reactive, onUnmounted } from 'vue';
 
-import Navbar from './Navbar';
 import DataTable from './DataTable';
 import Copy from './Copy';
 import Section from './Section';
@@ -318,7 +317,6 @@ export default {
     };
   },
   components: {
-    Navbar,
     DataTable,
     Copy,
     Section,

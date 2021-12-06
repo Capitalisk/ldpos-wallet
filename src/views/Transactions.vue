@@ -1,5 +1,5 @@
 <template>
-  <Navbar />
+  <Navbar :title="title" />
   <DataTable
     :columns="columns"
     clickable
@@ -36,6 +36,9 @@ import { _transformMonetaryUnit, _parseDate } from '../utils';
 
 export default {
   name: 'Transactions',
+  props: {
+    title: { type: String, required: true },
+  },
   setup() {
     const store = inject('store');
 

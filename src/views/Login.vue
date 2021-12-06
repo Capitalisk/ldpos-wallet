@@ -1,5 +1,5 @@
 <template>
-  <Navbar />
+  <Navbar :title="title" />
   <Wallet v-if="authenticated" />
   <div v-else class="flex flex-wrap flex-gap">
     <Section v-if="!address.data" class="pa-0 fullwidth">
@@ -125,6 +125,9 @@ import { TRANSFER_MODAL } from '../components/modals/constants.js';
 
 export default {
   name: 'Home',
+  props: {
+    title: { type: String, required: true },
+  },
   setup() {
     const store = inject('store');
 
