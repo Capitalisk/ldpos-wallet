@@ -100,8 +100,6 @@ export default {
     const transformValue = (key, value) =>
       valueTransformations[key] ? valueTransformations[key](value) : value;
 
-    console.log(route);
-
     return {
       detailedData,
       transformTitle,
