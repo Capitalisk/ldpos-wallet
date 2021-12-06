@@ -30,7 +30,7 @@
     </template>
     <template v-if="!searchActive">
       <Button
-        v-if="$route.params.account"
+        v-if="$route.params.accounts"
         router-link
         value="View transactions"
         class="ml-1 mr-2"
