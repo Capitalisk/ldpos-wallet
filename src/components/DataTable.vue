@@ -98,7 +98,7 @@
       icon="chevron-left"
       @click="previousPage"
       class="pa-1 mr-1 outline"
-      :class="{ disabled: page === 1 }"
+      :class="{ disabled: page === 1 || disablePageSwitch }"
     />
     <!-- TODO: Allow custom page input -->
     <Button
@@ -112,6 +112,7 @@
       icon="chevron-right"
       @click="nextPage"
       class="pa-1 outline"
+      :class="{ disabled: disablePageSwitch }"
     />
     <!-- TODO: Add page two -->
   </div>
@@ -257,6 +258,8 @@ export default {
     );
 
     const nextPage = async () => {
+      if (store.state.progressbarLoading) return;
+
       page.value++;
 
       if (props.fn) {
@@ -269,7 +272,9 @@ export default {
     };
 
     const previousPage = async () => {
+      if (store.state.progressbarLoading) return;
       if (page.value === 1) return;
+
       // setPoll();
       page.value--;
 
@@ -353,6 +358,7 @@ export default {
       ),
 
       hasHeaderSlot: !!slots.header,
+      disablePageSwitch: computed(() => store.state.progressbarLoading),
     };
   },
   components: { Button, Popup, Copy },
