@@ -33,8 +33,8 @@
     "@capacitor/cli": "^3.2.3",
     "@capacitor/core": "^3.2.3",
     "ldpos-client": "^10.2.0",
-    "vue": "^3.2.19",
-    "vue-router": "^4.0.11"
+    "vue": "^3.2.24",
+    "vue-router": "^4.0.12"
   },
   "devDependencies": {
     "@vue/cli-plugin-e2e-cypress": "^4.5.13",

@@ -5,13 +5,14 @@
         <div class="title">
           <strong>{{ transformTitle(key) }}</strong>
         </div>
-        <!-- TODO: Don't make links related to route.params, it will just be the same route -->
-        <div v-if="links[key]">
+        <div v-if="links[key] && !supressLinks">
           <Copy
+            v-if="$route.params[links[key]] !== value"
             wrap
             :value="transformValue(key, value)"
             :link="`/${links[key]}/${value}`"
           />
+          <Copy v-else wrap :value="transformValue(key, value)" />
         </div>
         <div v-else>
           <Copy wrap :value="transformValue(key, value)" />
@@ -63,6 +64,7 @@ export default {
   props: {
     data: { type: Object, default: {} },
     prependFn: { type: Function, default: null },
+    supressLinks: { type: Boolean, default: false },
   },
   components: { Copy },
   setup(props) {

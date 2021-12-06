@@ -12,7 +12,12 @@
       :able-to-copy-title="ableToCopyTitle"
     />
     <template v-else>
-      <DetailedData v-if="!loading" v-bind="$attrs" :data="data" />
+      <DetailedData
+        v-if="!loading"
+        v-bind="$attrs"
+        :data="data"
+        :supress-links="supressLinks"
+      />
     </template>
   </Section>
 </template>
@@ -35,6 +40,7 @@ export default {
     dataTable: { type: Boolean, default: false },
     ableToCopyTitle: { type: Boolean, default: false },
     title: { type: String, default: null },
+    supressLinks: { type: Boolean, default: false },
   },
   setup({ dataTable }) {
     const store = inject('store');
@@ -60,14 +66,14 @@ export default {
         const key = Object.keys(route.params)[0];
 
         const sw = {
-          account: async () =>
-            await store.client.value.getAccount(route.params.account),
-          transaction: async () =>
-            await store.client.value.getTransaction(route.params.transaction),
-          delegate: async () =>
-            await store.client.value.getDelegate(route.params.delegate),
-          block: async () =>
-            await store.client.value.getBlock(route.params.block),
+          accounts: async () =>
+            await store.client.value.getAccount(route.params.accounts),
+          transactions: async () =>
+            await store.client.value.getTransaction(route.params.transactions),
+          delegates: async () =>
+            await store.client.value.getDelegate(route.params.delegates),
+          blocks: async () =>
+            await store.client.value.getBlock(route.params.blocks),
           default: () => {},
         };
 
