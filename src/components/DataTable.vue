@@ -90,31 +90,31 @@
     <div class="footer">
       <slot name="header" class="pa-2" />
     </div>
-  </div>
-  <div v-if="fn" class="flex justify-center pagination pa-1">
-    <!-- TODO: Add page one -->
-    <Button
-      id="previous-page"
-      icon="chevron-left"
-      @click="previousPage"
-      class="pa-1 mr-1 outline"
-      :class="{ disabled: page === 1 || disablePageSwitch }"
-    />
-    <!-- TODO: Allow custom page input -->
-    <Button
-      id="current-page"
-      :value="page"
-      @click="() => {}"
-      class="pa-1 mr-1 outline disabled"
-    />
-    <Button
-      id="next-page"
-      icon="chevron-right"
-      @click="nextPage"
-      class="pa-1 outline"
-      :class="{ disabled: disablePageSwitch }"
-    />
-    <!-- TODO: Add page two -->
+    <div v-if="fn" class="flex pagination">
+      <!-- TODO: Add page one -->
+      <Button
+        id="previous-page"
+        icon="chevron-left"
+        @click="previousPage"
+        class="pa-1 mr-1 outline"
+        :class="{ disabled: page === 1 || disablePageSwitch }"
+      />
+      <!-- TODO: Allow custom page input -->
+      <Button
+        id="current-page"
+        :value="page"
+        @click="() => {}"
+        class="pa-1 mr-1 outline disabled"
+      />
+      <Button
+        id="next-page"
+        icon="chevron-right"
+        @click="nextPage"
+        class="pa-1 outline"
+        :class="{ disabled: disablePageSwitch }"
+      />
+      <!-- TODO: Add page two -->
+    </div>
   </div>
 </template>
 
@@ -400,6 +400,13 @@ export default {
 
 #table::-webkit-scrollbar-corner {
   display: none;
+}
+
+.pagination {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(50%);
 }
 
 table {
