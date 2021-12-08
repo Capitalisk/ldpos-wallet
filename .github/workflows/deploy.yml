@@ -3,7 +3,7 @@ on:
   pull_request:
   push:
     branches:
-      - master
+      - beta
 jobs:
   build:
     runs-on: ubuntu-20.04
@@ -25,22 +25,22 @@ jobs:
       - name: Test
         run: |
           npm run test:e2e:headless
-      # - name: Build
-      #   run: |
-      #     npm run build
-      # - name: Set up Python ${{ matrix.python-version }} for AWS CLI
-      #   uses: actions/setup-python@v2
-      #   with:
-      #     python-version: ${{ matrix.python-version }}
-      # - name: Install AWS CLI
-      #   run: |
-      #     pip install awscli --quiet
-      # - name: Deploy to S3
-      #   run: |
-      #     aws s3 sync dist/ s3://${{ secrets.AWS_PRODUCTION_BUCKET_NAME }}/ --acl public-read --quiet
-      #   env:
-      #     AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      #     AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      - name: Build
+        run: |
+          npm run build
+      - name: Set up Python ${{ matrix.python-version }} for AWS CLI
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install AWS CLI
+        run: |
+          pip install awscli --quiet
+      - name: Deploy to S3
+        run: |
+          aws s3 sync dist/ s3://${{ secrets.AWS_PRODUCTION_BUCKET_NAME }}/ --acl public-read --quiet
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       # This can be added in the future
       # - name: Invalidate CloudFront
       #   run: |
