@@ -37,7 +37,7 @@ export default {
     title: { type: String, required: true },
     id: { type: String, default: null },
   },
-  setup({ dataTable }) {
+  setup(props) {
     const store = inject('store');
     const route = useRoute();
     const router = useRouter();
@@ -46,29 +46,28 @@ export default {
     const getData = async () => {
       store.mutateProgressbarLoading(true);
       // dataTable is passed by the router
-      if (dataTable) {
+      if (props.dataTable) {
         const sw = {
           // This is relative to the route name
-          'account transaction details': () => ({
-            arg: route.params.account,
+          'AccountsTransactions': () => ({
+            arg: route.params.accountId,
             fn: 'getAccountTransactions',
           }),
           default: () => {},
         };
-
         data.value = (sw[route.name] || sw.default)();
       } else {
         const key = Object.keys(route.params)[0];
 
         const sw = {
-          accounts: async () =>
-            await store.client.value.getAccount(route.params.accounts),
-          transactions: async () =>
-            await store.client.value.getTransaction(route.params.transactions),
-          delegates: async () =>
-            await store.client.value.getDelegate(route.params.delegates),
-          blocks: async () =>
-            await store.client.value.getBlock(route.params.blocks),
+          accountId: async () =>
+            await store.client.value.getAccount(route.params.accountId),
+          transactionId: async () =>
+            await store.client.value.getTransaction(route.params.transactionId),
+          delegateId: async () =>
+            await store.client.value.getDelegate(route.params.delegateId),
+          blockId: async () =>
+            await store.client.value.getBlock(route.params.blockId),
           default: () => {},
         };
 
@@ -77,7 +76,7 @@ export default {
       store.mutateProgressbarLoading(false);
     };
 
-    watchEffect(async () => route.path && (await getData()));
+    getData();
 
     const columns = ref([
       {

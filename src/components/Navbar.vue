@@ -30,11 +30,11 @@
     </template>
     <template v-if="!searchActive">
       <Button
-        v-if="$route.params.accounts"
+        v-if="$route.params.accountId"
         router-link
         value="View transactions"
         class="ml-1 mr-2"
-        :href="`/accounts/${$route.params.account}/transactions`"
+        :href="`/accounts/${$route.params.accountId}/transactions`"
       />
       <Connected />
       <span class="flex justify-center align-center mr-2">
@@ -84,7 +84,7 @@ export default {
     back: { type: Boolean, default: false },
     title: { type: String, required: true },
   },
-  setup() {
+  setup(props) {
     const store = inject('store');
     const route = useRoute();
     const router = useRouter();
@@ -130,12 +130,11 @@ export default {
           const data = await (sw[key] || sw.default)();
           if (!data) return;
 
-          if (props.prefix)
-            router.push(
-              `/${route.path === '/' ? '/transactions' : ''}/${
-                searchValue.value
-              }`,
-            );
+          router.push(
+            `${route.path === '/' ? '/transactions' : route.path}/${
+              searchValue.value
+            }`,
+          );
         } catch (e) {
           console.error(e);
           store.notify(

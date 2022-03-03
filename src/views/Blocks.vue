@@ -10,7 +10,7 @@
       <Copy
         :value="slotProps.row.forgerAddress"
         :shrink="slotProps.shrink"
-        :link="`/accounts/${slotProps.row.address}`"
+        :link="`/accounts/${slotProps.row.forgerAddress}`"
       />
     </template>
   </DataTable>

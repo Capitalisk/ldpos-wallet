@@ -135,7 +135,7 @@ import { DETAIL_MODAL } from './modals/constants';
 import Button from './Button';
 import Popup from './Popup';
 import Copy from './Copy.vue';
-import { useRouter } from 'vue-router';
+import { useRouter, useRoute } from 'vue-router';
 
 export default {
   name: 'DataTable',
@@ -157,6 +157,7 @@ export default {
   setup(props, { emit, slots }) {
     const store = inject('store');
     const router = useRouter();
+    const route = useRoute();
 
     let poller;
 
@@ -326,8 +327,7 @@ export default {
     };
 
     const detail = data => {
-      if (props.prefix)
-        router.push(`/${props.prefix}/${data.id || data.address}`);
+      router.push(`/${props.prefix ? props.prefix : 'transactions'}/${data.id || data.address}`);
 
       window.removeEventListener('keydown', keyEvents);
     };

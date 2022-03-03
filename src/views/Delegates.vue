@@ -99,7 +99,7 @@ export default {
       {
         name: 'rank',
         label: 'Rank',
-        field: 'address',
+        field: 'rank',
         sortable: false,
         value: (val, r, rows, offset) => `#${rows.indexOf(r) + 1 + offset}`,
         active: true,
