@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import { computed, inject, onMounted, ref } from 'vue';
+import { inject, ref } from 'vue';
 
 import Navbar from '../components/Navbar';
 import DataTable from '../components/DataTable';

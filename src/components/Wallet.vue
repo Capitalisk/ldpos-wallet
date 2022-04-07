@@ -61,13 +61,25 @@
         Pending...
       </span>
     </template>
+    <template v-slot:id="slotProps">
+      <Copy
+        :value="slotProps.row.id"
+        :shrink="slotProps.shrink"
+        :link="`/transactions/${slotProps.row.id}`"
+      />
+    </template>
     <template v-slot:senderAddress="slotProps">
-      <Copy :value="slotProps.row.senderAddress" :shrink="slotProps.shrink" />
+      <Copy
+        :value="slotProps.row.senderAddress"
+        :shrink="slotProps.shrink"
+        :link="`/accounts/${slotProps.row.senderAddress}`"
+      />
     </template>
     <template v-slot:recipientAddress="slotProps">
       <Copy
         :value="slotProps.row.recipientAddress"
         :shrink="slotProps.shrink"
+        :link="`/accounts/${slotProps.row.recipientAddress}`"
       />
     </template>
   </DataTable>
@@ -191,14 +203,14 @@ export default {
     });
 
     const columns = ref([
-      // {
-      //   name: 'type',
-      //   label: 'Type',
-      //   field: 'type',
-      //   sortable: false,
-      //   active: true,
-      //   shrinkable: false,
-      // },
+      {
+        name: 'id',
+        label: 'ID',
+        field: 'id',
+        sortable: false,
+        active: true,
+        slot: true,
+      },
       {
         name: 'recipientAddress',
         label: 'Recipient',

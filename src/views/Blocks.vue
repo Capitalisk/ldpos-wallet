@@ -17,13 +17,12 @@
 </template>
 
 <script>
-import { computed, inject, onMounted, ref } from 'vue';
+import { ref } from 'vue';
 
 import Navbar from '../components/Navbar';
 import DataTable from '../components/DataTable';
 import Copy from '../components/Copy';
 import { _integerToDecimal, _parseDate } from '../utils';
-import { DETAIL_MODAL } from '../components/modals/constants';
 
 export default {
   name: 'Blocks',
