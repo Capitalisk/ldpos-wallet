@@ -124,13 +124,10 @@ import {
   inject,
   onMounted,
   onUnmounted,
-  reactive,
   ref,
   watch,
   watchEffect,
 } from 'vue';
-
-import { DETAIL_MODAL } from './modals/constants';
 
 import Button from './Button';
 import Popup from './Popup';
@@ -154,10 +151,9 @@ export default {
     prefix: { type: String, default: null },
     prependFn: { type: Function, default: null },
   },
-  setup(props, { emit, slots }) {
+  setup(props, { slots }) {
     const store = inject('store');
     const router = useRouter();
-    const route = useRoute();
 
     let poller;
 
@@ -203,25 +199,27 @@ export default {
       }
     };
 
-    const pollerFn = async () => {
+    const setProgressbarAndGetData = async () => {
       store.mutateProgressbarLoading(true);
       rows.value = await getData();
       store.mutateProgressbarLoading(false);
     };
 
-    // const setPoll = async () => {
-    //   if (!props.fn) return;
-    //   if (page.value !== 1 && intervalActive.value) return;
-    //   await pollerFn();
-    //   intervalActive.value = true;
-    //   poller = setInterval(pollerFn, 10000);
-    // };
+    const setPoll = async () => {
+      if (!props.fn) return;
+      if (page.value !== 1 && intervalActive.value) return;
+      console.log('poll');
+      await setProgressbarAndGetData();
+      intervalActive.value = true;
+      poller = setInterval(async () => (rows.value = await getData()), 10000);
+    };
 
-    // const clearPoll = () => {
-    //   if (!props.fn) return;
-    //   intervalActive.value = false;
-    //   clearInterval(poller);
-    // };
+    const clearPoll = () => {
+      if (!props.fn) return;
+      console.log('cleared');
+      intervalActive.value = false;
+      clearInterval(poller);
+    };
 
     const keyEvents = e => {
       if (e.key === 'ArrowRight') nextPage();
@@ -232,8 +230,8 @@ export default {
       store.mutateProgressbarLoading(true);
 
       if (props.fn) {
-        await pollerFn();
-        // setPoll();
+        await setProgressbarAndGetData();
+        setPoll();
         intervalActive.value = true;
       } else {
         rows.value = props.rows;
@@ -241,16 +239,18 @@ export default {
 
       store.mutateProgressbarLoading(false);
 
-      // window.addEventListener('blur', clearPoll);
-      // window.addEventListener('focus', setPoll);
+      window.addEventListener('blur', clearPoll);
+      window.addEventListener('focus', setPoll);
       window.addEventListener('keydown', keyEvents);
+      window.addEventListener('DataTable:update', setProgressbarAndGetData);
     });
 
     onUnmounted(() => {
       window.removeEventListener('keydown', keyEvents);
-      //   clearPoll();
-      //   window.removeEventListener('blur', clearPoll);
-      //   window.removeEventListener('focus', setPoll);
+      window.removeEventListener('DataTable:update', setProgressbarAndGetData);
+      clearPoll();
+      window.removeEventListener('blur', clearPoll);
+      window.removeEventListener('focus', setPoll);
     });
 
     watch(
@@ -266,24 +266,24 @@ export default {
       if (props.fn) {
         if (store.state.progressbarLoading) return;
         offset.value = offset.value + props.limit;
-        await pollerFn();
+        await setProgressbarAndGetData();
       }
 
-      // clearPoll();
+      clearPoll();
     };
 
     const previousPage = async () => {
       if (store.state.progressbarLoading) return;
       if (page.value === 1) return;
 
-      // setPoll();
       page.value--;
+      if (page.value === 1) setPoll();
 
       if (props.fn) {
         if (store.state.progressbarLoading) return;
         store.mutateProgressbarLoading(true);
         offset.value = offset.value - props.limit;
-        await pollerFn();
+        await setProgressbarAndGetData();
       }
     };
 
@@ -327,7 +327,10 @@ export default {
     };
 
     const detail = data => {
-      router.push(`/${props.prefix ? props.prefix : 'transactions'}/${data.id || data.address}`);
+      router.push(
+        `/${props.prefix ? props.prefix : 'transactions'}/${data.id ||
+          data.address}`,
+      );
 
       window.removeEventListener('keydown', keyEvents);
     };
