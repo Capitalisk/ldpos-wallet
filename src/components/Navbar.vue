@@ -137,9 +137,7 @@ export default {
           if (!data) return;
 
           router.push(
-            `${route.path === '/' ? '/transactions' : route.path}/${
-              searchValue.value
-            }`,
+            `${route.path === '/' ? '/transactions' : route.path}/${data.id}`,
           );
         } catch (e) {
           console.error(e);
