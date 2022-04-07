@@ -64,7 +64,7 @@ import Connected from './Connected';
 import Switch from './Switch';
 import Input from './Input';
 import { DETAIL_MODAL } from './modals/constants';
-import { _capitalize, _pluralToSingular } from '../utils';
+import { _capitalize, _pluralToSingular, _isNumber } from '../utils';
 
 export default {
   name: 'Navbar',
@@ -103,8 +103,15 @@ export default {
             await store.client.value.getTransaction(searchValue.value),
           delegates: async () =>
             await store.client.value.getDelegate(searchValue.value),
-          blocks: async () =>
-            await store.client.value.getBlock(searchValue.value),
+          blocks: async () => {
+            if (_isNumber(searchValue.value)) {
+              return await store.client.value.getBlockAtHeight(
+                parseInt(searchValue.value),
+              );
+            } else {
+              return await store.client.value.getBlock(searchValue.value);
+            }
+          },
           default: () => false,
         };
 
