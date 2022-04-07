@@ -1,5 +1,5 @@
 <template>
-  <Navbar />
+  <Navbar :title="title" />
   <DataTable
     :columns="columns"
     clickable
@@ -8,13 +8,18 @@
     prefix="transactions"
   >
     <template v-slot:senderAddress="slotProps">
-      <Copy :value="slotProps.row.senderAddress" :shrink="slotProps.shrink" />
+      <Copy
+        :value="slotProps.row.senderAddress"
+        :shrink="slotProps.shrink"
+        :link="`/accounts/${slotProps.row.senderAddress}`"
+      />
     </template>
     <template v-slot:recipientAddress="slotProps">
       <Copy
         :value="slotProps.row.recipientAddress"
         v-if="slotProps.row.recipientAddress"
         :shrink="slotProps.shrink"
+        :link="`/accounts/${slotProps.row.recipientAddress}`"
       />
       <span v-else>-</span>
     </template>
@@ -31,6 +36,9 @@ import { _transformMonetaryUnit, _parseDate } from '../utils';
 
 export default {
   name: 'Transactions',
+  props: {
+    title: { type: String, required: true },
+  },
   setup() {
     const store = inject('store');
 

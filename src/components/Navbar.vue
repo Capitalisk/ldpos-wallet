@@ -1,6 +1,11 @@
 <template>
   <div class="navbar flex justify-end align-center text-right">
-    <h1 class="mr-auto">{{ $route.name }}</h1>
+    <i
+      v-if="back"
+      class="fa fa-arrow-left mr-2 cursor-pointer"
+      @click="goBack"
+    />
+    <h1 class="mr-auto">{{ title }}</h1>
     <template v-if="routes.includes(searchParam)">
       <div v-show="searchActive" style="width: 70%;">
         <Input
@@ -24,6 +29,13 @@
       </div>
     </template>
     <template v-if="!searchActive">
+      <Button
+        v-if="$route.params.accountId"
+        router-link
+        value="View transactions"
+        class="ml-1 mr-2"
+        :href="`/accounts/${$route.params.accountId}/transactions`"
+      />
       <Connected />
       <span class="flex justify-center align-center mr-2">
         <Switch v-model="darkMode" id="darkmode-switch" />
@@ -57,7 +69,7 @@
 
 <script>
 import { computed, inject, ref } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 
 import Button from './Button';
 import Connected from './Connected';
@@ -68,9 +80,14 @@ import { _capitalize, _pluralToSingular, _isNumber } from '../utils';
 
 export default {
   name: 'Navbar',
-  setup() {
+  props: {
+    back: { type: Boolean, default: false },
+    title: { type: String, required: true },
+  },
+  setup(props) {
     const store = inject('store');
     const route = useRoute();
+    const router = useRouter();
 
     const searchActive = ref(false);
     const searchRef = ref(null);
@@ -82,6 +99,7 @@ export default {
       searchValue,
       searchParam: route.name,
       routes: ['delegates', 'blocks', 'transactions', 'accounts'],
+      goBack: () => router.go(-1),
       activateSearch: () => {
         searchActive.value = true;
         setTimeout(() => searchRef.value.focus(), 100);
@@ -119,17 +137,11 @@ export default {
           const data = await (sw[key] || sw.default)();
           if (!data) return;
 
-          store.toggleOrBrowseModal({
-            type: DETAIL_MODAL,
-            data,
-            hasPrefix: true,
-          });
-
-          let newUrl = `${window.location.origin}${
-            process.env.VUE_APP_BASE_URL
-          }/#${route.path === '/' ? '/transactions' : ''}/${searchValue.value}`;
-
-          history.pushState({}, null, newUrl);
+          router.push(
+            `${route.path === '/' ? '/transactions' : route.path}/${
+              searchValue.value
+            }`,
+          );
         } catch (e) {
           console.error(e);
           store.notify(

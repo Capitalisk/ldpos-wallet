@@ -1,39 +1,57 @@
 export default [
   {
-    path: '/accounts/:account',
-    name: 'account details',
+    path: '/accounts/:accountId/transactions',
+    name: 'AccountsTransactions',
     component: () =>
-      import(/* webpackChunkName: "accountid" */ '../views/DetailedPage'),
-  },
-  {
-    path: '/accounts/:account/transactions',
-    name: 'account transaction details',
-    component: () =>
-      import(/* webpackChunkName: "accountidtransactions" */ '../views/DetailedPage'),
+      import(
+        /* webpackChunkName: "accountstransactions" */ '../views/DetailedPage'
+      ),
     props: {
+      title: 'Account Transaction Details',
       dataTable: true,
-      ableToCopyTitle: true,
+      id: 'accountstransactions',
+      // ableToCopyTitle: true,
     },
   },
   {
-    path: '/transactions/:transaction',
-    name: 'transaction details',
+    path: '/accounts/:accountId',
+    name: 'Accounts',
     component: () =>
-      import(
-        /* webpackChunkName: "transactionid" */ '../views/DetailedPage'
-      ),
+      import(/* webpackChunkName: "accounts" */ '../views/DetailedPage'),
+    props: {
+      title: 'Account Details',
+      id: 'accounts',
+    },
   },
   {
-    path: '/delegates/:delegate',
-    name: 'delegate details',
+    path: '/transactions/:transactionId',
+    name: 'Transactions',
     component: () =>
-      import(/* webpackChunkName: "delegateid" */ '../views/DetailedPage'),
+      import(/* webpackChunkName: "transactions" */ '../views/DetailedPage'),
+    props: {
+      title: 'Transaction Details',
+      id: 'transactions',
+    },
   },
   {
-    path: '/blocks/:block',
-    name: 'block details',
+    path: '/delegates/:delegateId',
+    name: 'Delegates',
     component: () =>
-      import(/* webpackChunkName: "blockid" */ '../views/DetailedPage'),
+      import(/* webpackChunkName: "delegates" */ '../views/DetailedPage'),
+    props: {
+      title: 'Delegate Details',
+      id: 'delegates',
+    },
+  },
+  {
+    path: '/blocks/:blockId',
+    name: 'Blocks',
+    component: () =>
+      import(/* webpackChunkName: "blocks" */ '../views/DetailedPage'),
+    props: {
+      title: 'Block Details',
+      id: 'blocks',
+    },
   },
   {
     path: '/:pathMatch(.*)',

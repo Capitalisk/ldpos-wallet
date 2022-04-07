@@ -1,5 +1,5 @@
 <template>
-  <Navbar />
+  <Navbar :title="title" />
   <DataTable
     :columns="columns"
     clickable
@@ -7,7 +7,11 @@
     prefix="blocks"
   >
     <template v-slot:forgerAddress="slotProps">
-      <Copy :value="slotProps.row.forgerAddress" :shrink="slotProps.shrink" />
+      <Copy
+        :value="slotProps.row.forgerAddress"
+        :shrink="slotProps.shrink"
+        :link="`/accounts/${slotProps.row.forgerAddress}`"
+      />
     </template>
   </DataTable>
 </template>
@@ -23,6 +27,9 @@ import { DETAIL_MODAL } from '../components/modals/constants';
 
 export default {
   name: 'Blocks',
+  props: {
+    title: { type: String, required: true },
+  },
   setup() {
     const columns = ref([
       // { name: 'type', label: 'type', field: 'type', sortable: false },

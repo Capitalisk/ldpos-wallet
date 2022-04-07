@@ -5,7 +5,7 @@
     </div>
     <Input
       v-model="passphrase"
-      :rules="[val => !!val || (val && val.length <= 0) || 'Required']"
+      :rules="[val => !!val || (val && val.length <= 0) || 'Required', val => validatePassphrase(val) || 'Must be a 12 word BIP39 mnemonic']"
     />
   </ConfirmationModal>
   <div class="flex flex-wrap flex-gap mb-2">
@@ -76,7 +76,6 @@
 <script>
 import { computed, inject, onMounted, ref, reactive, onUnmounted } from 'vue';
 
-import Navbar from './Navbar';
 import DataTable from './DataTable';
 import Copy from './Copy';
 import Section from './Section';
@@ -263,6 +262,9 @@ export default {
           if (!passphrase.value)
             throw new Error('Passphrase should be present');
 
+          if (!store.client.value.validatePassphrase(passphrase.value))
+            throw new Error('Passphrase should be a valid 12 word BIP39 mnemonic');
+
           const registerTxn = await store.client.value.prepareRegisterForgingDetails(
             {
               newNextForgingKeyIndex,
@@ -310,6 +312,7 @@ export default {
           data,
         }),
       transformMonetaryUnit: _transformMonetaryUnit,
+      validatePassphrase: val => store.client.value.validatePassphrase(val),
       networkSymbol: store.state.config.networkSymbol,
       confirmationRef,
       confirmationModal,
@@ -318,7 +321,6 @@ export default {
     };
   },
   components: {
-    Navbar,
     DataTable,
     Copy,
     Section,

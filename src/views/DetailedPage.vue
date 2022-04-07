@@ -1,5 +1,5 @@
 <template>
-  <Navbar />
+  <Navbar back :title="title" />
   <Section>
     <DataTable
       v-if="dataTable && data.fn"
@@ -11,12 +11,14 @@
       :title="data.arg"
       :able-to-copy-title="ableToCopyTitle"
     />
-    <DetailedData v-else v-bind="$attrs" :data="data" />
+    <template v-else>
+      <DetailedData v-if="!loading" v-bind="$attrs" :data="data" :id="id" />
+    </template>
   </Section>
 </template>
 
 <script>
-import { inject, onMounted, ref, watch } from 'vue';
+import { inject, ref, watch, watchEffect, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import { _transformMonetaryUnit, _parseDate } from '../utils';
@@ -32,45 +34,49 @@ export default {
   props: {
     dataTable: { type: Boolean, default: false },
     ableToCopyTitle: { type: Boolean, default: false },
-    title: { type: String, default: null },
+    title: { type: String, required: true },
+    id: { type: String, default: null },
   },
-  setup({ dataTable }) {
+  setup(props) {
     const store = inject('store');
     const route = useRoute();
     const router = useRouter();
     const data = ref({});
 
-    onMounted(async () => {
+    const getData = async () => {
+      store.mutateProgressbarLoading(true);
       // dataTable is passed by the router
-      if (!dataTable) {
-        const key = Object.keys(route.params)[0];
-
-        const sw = {
-          account: async () =>
-            await store.client.value.getAccount(route.params.account),
-          transaction: async () =>
-            await store.client.value.getTransaction(route.params.transaction),
-          delegate: async () =>
-            await store.client.value.getDelegate(route.params.delegate),
-          block: async () =>
-            await store.client.value.getBlock(route.params.block),
-          default: () => {},
-        };
-
-        data.value = await (sw[key] || sw.default)();
-      } else {
+      if (props.dataTable) {
         const sw = {
           // This is relative to the route name
-          'account transaction details': () => ({
-            arg: route.params.account,
+          'AccountsTransactions': () => ({
+            arg: route.params.accountId,
             fn: 'getAccountTransactions',
           }),
           default: () => {},
         };
-
         data.value = (sw[route.name] || sw.default)();
+      } else {
+        const key = Object.keys(route.params)[0];
+
+        const sw = {
+          accountId: async () =>
+            await store.client.value.getAccount(route.params.accountId),
+          transactionId: async () =>
+            await store.client.value.getTransaction(route.params.transactionId),
+          delegateId: async () =>
+            await store.client.value.getDelegate(route.params.delegateId),
+          blockId: async () =>
+            await store.client.value.getBlock(route.params.blockId),
+          default: () => {},
+        };
+
+        data.value = await (sw[key] || sw.default)();
       }
-    });
+      store.mutateProgressbarLoading(false);
+    };
+
+    getData();
 
     const columns = ref([
       {
@@ -126,6 +132,7 @@ export default {
     return {
       data,
       columns,
+      loading: computed(() => store.state.progressbarLoading),
     };
   },
 };

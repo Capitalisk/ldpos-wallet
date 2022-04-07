@@ -1,5 +1,5 @@
 <template>
-  <div class="table flex column">
+  <div class="table flex column relative mb-5">
     <div v-if="hasHeaderSlot || title" class="header flex justify-end pa-2">
       <div class="mr-auto">
         <slot name="header" />
@@ -91,14 +91,14 @@
       <slot name="header" class="pa-2" />
     </div>
   </div>
-  <div v-if="fn" class="flex justify-center pagination pa-1">
+  <div v-if="fn" class="flex pagination">
     <!-- TODO: Add page one -->
     <Button
       id="previous-page"
       icon="chevron-left"
       @click="previousPage"
       class="pa-1 mr-1 outline"
-      :class="{ disabled: page === 1 }"
+      :class="{ disabled: page === 1 || disablePageSwitch }"
     />
     <!-- TODO: Allow custom page input -->
     <Button
@@ -112,6 +112,7 @@
       icon="chevron-right"
       @click="nextPage"
       class="pa-1 outline"
+      :class="{ disabled: disablePageSwitch }"
     />
     <!-- TODO: Add page two -->
   </div>
@@ -134,6 +135,7 @@ import { DETAIL_MODAL } from './modals/constants';
 import Button from './Button';
 import Popup from './Popup';
 import Copy from './Copy.vue';
+import { useRouter, useRoute } from 'vue-router';
 
 export default {
   name: 'DataTable',
@@ -154,6 +156,8 @@ export default {
   },
   setup(props, { emit, slots }) {
     const store = inject('store');
+    const router = useRouter();
+    const route = useRoute();
 
     let poller;
 
@@ -255,6 +259,8 @@ export default {
     );
 
     const nextPage = async () => {
+      if (store.state.progressbarLoading) return;
+
       page.value++;
 
       if (props.fn) {
@@ -267,7 +273,9 @@ export default {
     };
 
     const previousPage = async () => {
+      if (store.state.progressbarLoading) return;
       if (page.value === 1) return;
+
       // setPoll();
       page.value--;
 
@@ -319,20 +327,9 @@ export default {
     };
 
     const detail = data => {
-      if (props.prefix) {
-        let newUrl = `${window.location.origin}${
-          process.env.VUE_APP_BASE_URL
-        }/#/${props.prefix}/${data.id || data.address}`;
-        history.pushState({}, null, newUrl);
-      }
+      router.push(`/${props.prefix ? props.prefix : 'transactions'}/${data.id || data.address}`);
 
       window.removeEventListener('keydown', keyEvents);
-
-      store.toggleOrBrowseModal({
-        type: DETAIL_MODAL,
-        data,
-        hasPrefix: props.prefix ? true : false,
-      });
     };
 
     watchEffect(
@@ -361,6 +358,7 @@ export default {
       ),
 
       hasHeaderSlot: !!slots.header,
+      disablePageSwitch: computed(() => store.state.progressbarLoading),
     };
   },
   components: { Button, Popup, Copy },
@@ -402,6 +400,13 @@ export default {
 
 #table::-webkit-scrollbar-corner {
   display: none;
+}
+
+.pagination {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 table {

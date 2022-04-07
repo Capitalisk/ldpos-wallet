@@ -1,5 +1,5 @@
 <template>
-  <Navbar />
+  <Navbar :title="title" />
   <DataTable
     :columns="columns"
     clickable
@@ -8,15 +8,11 @@
     :prependFn="getVotes"
   >
     <template v-slot:address="slotProps">
-      <Copy :value="slotProps.row.address" :shrink="slotProps.shrink" />
-    </template>
-    <template v-slot:view="slotProps">
-      <div class="flex">
-        <Button
-          value="View transactions"
-          @click.stop.prevent="viewAccountTransactions(slotProps.row.address)"
-        />
-      </div>
+      <Copy
+        :value="slotProps.row.address"
+        :shrink="slotProps.shrink"
+        :link="`/accounts/${slotProps.row.address}`"
+      />
     </template>
   </DataTable>
 </template>
@@ -34,19 +30,15 @@ import Button from '../components/Button.vue';
 
 export default {
   name: 'Accounts',
+  props: {
+    title: { type: String, required: true },
+  },
   setup() {
     const store = inject('store');
     const router = useRouter();
 
     const columns = ref([
       // { name: 'type', label: 'type', field: 'type', sortable: false },
-      {
-        name: 'rank',
-        label: 'Rank',
-        sortable: false,
-        active: true,
-        value: (val, r, rows) => `#${rows.indexOf(r) + 1}`,
-      },
       {
         name: 'address',
         label: 'Address',
@@ -65,14 +57,6 @@ export default {
         active: true,
         sorted: 'desc',
         shrinkable: false,
-      },
-      {
-        name: 'view',
-        label: 'Inspect account',
-        field: 'view',
-        sortable: false,
-        active: true,
-        slot: true,
       },
     ]);
 

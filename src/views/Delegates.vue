@@ -1,5 +1,5 @@
 <template>
-  <Navbar />
+  <Navbar :title="title" />
   <div class="flex flex-gap mb-2">
     <Section title="Quick vote" v-if="authenticated" class="flex-3">
       <Input
@@ -45,7 +45,11 @@
       />
     </template>
     <template v-slot:address="slotProps">
-      <Copy :value="slotProps.row.address" :shrink="slotProps.shrink" />
+      <Copy
+        :value="slotProps.row.address"
+        :shrink="slotProps.shrink"
+        :link="`/accounts/${slotProps.row.address}`"
+      />
     </template>
     <template v-slot:forging="slotProps">
       <Dot
@@ -72,6 +76,9 @@ const DELEGATE_ACTIVITY_ROUNDS = 3;
 
 export default {
   name: 'Home',
+  props: {
+    title: { type: String, required: true },
+  },
   setup() {
     const store = inject('store');
 
@@ -92,7 +99,7 @@ export default {
       {
         name: 'rank',
         label: 'Rank',
-        field: 'address',
+        field: 'rank',
         sortable: false,
         value: (val, r, rows, offset) => `#${rows.indexOf(r) + 1 + offset}`,
         active: true,
@@ -243,6 +250,6 @@ export default {
 
 <style scoped>
 .delegate-address {
-  color: var(--primary-lightest);
+  color: var(--primary-lighter);
 }
 </style>
