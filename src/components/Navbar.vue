@@ -75,7 +75,6 @@ import Button from './Button';
 import Connected from './Connected';
 import Switch from './Switch';
 import Input from './Input';
-import { DETAIL_MODAL } from './modals/constants';
 import { _capitalize, _pluralToSingular, _isNumber } from '../utils';
 
 export default {
