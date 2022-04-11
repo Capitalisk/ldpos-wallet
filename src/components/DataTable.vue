@@ -63,7 +63,7 @@
                     :row="r"
                     :column="c"
                     :rows="rows"
-                    :shrink="shrink"
+                    :shrink="mustShrink(c.shrinkUntilWidth)"
                   />
                 </template>
                 <template v-else>
@@ -72,7 +72,7 @@
                       c.value
                         ? c.value(r[c.field], r, rows, offset)
                         : r[c.field],
-                      c.shrinkable,
+                      c.shrinkUntilWidth,
                     ) ||
                       r.default ||
                       '-'
@@ -304,15 +304,19 @@ export default {
       store.mutateProgressbarLoading(false);
     };
 
-    const getShortValue = (val, shrinkable = true) => {
+    const mustShrink = (shrinkUntilWidth) => {
+      return window.innerWidth < shrinkUntilWidth ||
+        table.value.scrollWidth > table.value.offsetWidth;
+    };
+
+    const getShortValue = (val, shrinkUntilWidth = 0) => {
       if (val === 0) return val.toString();
       if (!val) return;
-      if (!shrinkable) return val.toString();
+      if (!shrinkUntilWidth) return val.toString();
       if (
         table.value &&
         typeof val === 'string' &&
-        (window.innerWidth < 1400 ||
-          table.value.scrollWidth > table.value.offsetWidth)
+        mustShrink(shrinkUntilWidth)
       ) {
         if (val.length > 16) {
           const arr = val.split('');
@@ -344,6 +348,7 @@ export default {
       table,
       rows,
       columns,
+      mustShrink,
       getShortValue,
       sort,
       nextPage,
@@ -353,10 +358,6 @@ export default {
       offset,
       togglePopup: () => (popupActive.value = !popupActive.value),
       detail,
-      shrink: computed(
-        () => window.innerWidth < 1400 || table.scrollWidth > table.offsetWidth,
-      ),
-
       hasHeaderSlot: !!slots.header,
       disablePageSwitch: computed(() => store.state.progressbarLoading),
     };

@@ -120,7 +120,7 @@ export default {
         sortable: false,
         value: val => _transformMonetaryUnit(val),
         active: true,
-        shrinkable: false,
+        shrinkUntilWidth: 1400,
       },
       {
         name: 'forging',

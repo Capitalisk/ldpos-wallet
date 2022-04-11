@@ -203,13 +203,22 @@ export default {
     });
 
     const columns = ref([
+
       {
         name: 'id',
-        label: 'ID',
+        label: 'Id',
         field: 'id',
         sortable: false,
         active: true,
         slot: true,
+        shrinkUntilWidth: 2100,
+      },
+      {
+        name: 'type',
+        label: 'Type',
+        field: 'type',
+        sortable: false,
+        active: true,
       },
       {
         name: 'recipientAddress',
@@ -219,6 +228,7 @@ export default {
         value: val => val,
         active: true,
         slot: true,
+        shrinkUntilWidth: 1800,
       },
       {
         name: 'timestamp',

@@ -56,7 +56,7 @@ export default {
           _transformMonetaryUnit(val, store.state.config.networkSymbol),
         active: true,
         sorted: 'desc',
-        shrinkable: false,
+        shrinkUntilWidth: 1400,
       },
     ]);
 

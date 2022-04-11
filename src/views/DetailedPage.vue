@@ -10,7 +10,31 @@
       :arg="data.arg"
       :title="data.arg"
       :able-to-copy-title="ableToCopyTitle"
-    />
+    >
+      <template v-slot:id="slotProps">
+        <Copy
+          :value="slotProps.row.id"
+          :shrink="slotProps.shrink"
+          :link="`/transactions/${slotProps.row.id}`"
+        />
+      </template>
+      <template v-slot:senderAddress="slotProps">
+        <Copy
+          :value="slotProps.row.senderAddress"
+          :shrink="slotProps.shrink"
+          :link="`/accounts/${slotProps.row.senderAddress}`"
+        />
+      </template>
+      <template v-slot:recipientAddress="slotProps">
+        <Copy
+          :value="slotProps.row.recipientAddress"
+          v-if="slotProps.row.recipientAddress"
+          :shrink="slotProps.shrink"
+          :link="`/accounts/${slotProps.row.recipientAddress}`"
+        />
+        <span v-else>-</span>
+      </template>
+    </DataTable>
     <template v-else>
       <DetailedData v-if="!loading" v-bind="$attrs" :data="data" :id="id" />
     </template>
@@ -27,13 +51,14 @@ import DetailedData from '../components/DetailedData';
 import Section from '../components/Section';
 import Navbar from '../components/Navbar';
 import DataTable from '../components/DataTable';
+import Copy from '../components/Copy';
 
 export default {
   name: 'DetailedPage',
-  components: { Section, DetailedData, Navbar, DataTable },
+  components: { Section, DetailedData, Navbar, DataTable, Copy },
   props: {
     dataTable: { type: Boolean, default: false },
-    ableToCopyTitle: { type: Boolean, default: false },
+    ableToCopyTitle: { type: Boolean, default: true },
     title: { type: String, required: true },
     id: { type: String, default: null },
   },
@@ -80,25 +105,38 @@ export default {
 
     const columns = ref([
       {
+        name: 'id',
+        label: 'Id',
+        field: 'id',
+        sortable: false,
+        active: true,
+        shrinkUntilWidth: 2200,
+        slot: true,
+      },
+      {
         name: 'type',
-        label: 'type',
+        label: 'Type',
         field: 'type',
         sortable: false,
         active: true,
       },
-      // {
-      //   name: 'senderAddress',
-      //   label: 'Sender',
-      //   field: 'senderAddress',
-      //   sortable: false,
-      //   active: true,
-      // },
+      {
+        name: 'senderAddress',
+        label: 'Sender',
+        field: 'senderAddress',
+        sortable: false,
+        active: true,
+        shrinkUntilWidth: 1900,
+        slot: true,
+      },
       {
         name: 'recipientAddress',
         label: 'Recipient',
         field: 'recipientAddress',
         sortable: false,
         active: true,
+        shrinkUntilWidth: 1900,
+        slot: true,
       },
       {
         name: 'timestamp',
