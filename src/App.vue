@@ -4,7 +4,9 @@
   <Sidebar />
   <div class="main-content relative">
     <Loading v-if="!connected" />
-    <router-view v-else :key="$route.fullPath" />
+    <!-- We need to re-render DataTable to update the info, by using :key we force the DataTable to remount itself,
+         we don't use fullPath because it includes query params, these are used for pagination -->
+    <router-view v-else :key="$route.path" />
   </div>
   <Notification />
 </template>
