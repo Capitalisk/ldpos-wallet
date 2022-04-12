@@ -72,7 +72,7 @@
                   {{
                     getShortValue(
                       c.value
-                        ? c.value(r[c.field], r, rows, (page - 1) * limit)
+                        ? c.value(r[c.field], r, rows, offset)
                         : r[c.field],
                       c.shrinkUntilWidth,
                     ) ||
