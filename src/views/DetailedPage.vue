@@ -11,6 +11,20 @@
       :title="data.arg"
       :able-to-copy-title="ableToCopyTitle"
     >
+      <template v-slot:direction="slotProps">
+        <i
+          v-if="slotProps.row.direction === 'inbound'"
+          class="fas fa-chevron-down text-success"
+        />
+        <i
+          v-else-if="slotProps.row.direction === 'outbound'"
+          class="fas fa-chevron-up text-danger"
+        />
+        <span v-else>
+          <i class="far fa-circle mr-1 text-warning" />
+          Pending...
+        </span>
+      </template>
       <template v-slot:id="slotProps">
         <Copy
           :value="slotProps.row.id"
@@ -18,21 +32,12 @@
           :link="`/transactions/${slotProps.row.id}`"
         />
       </template>
-      <template v-slot:senderAddress="slotProps">
+      <template v-slot:counterpartyAddress="slotProps">
         <Copy
-          :value="slotProps.row.senderAddress"
+          :value="slotProps.row.counterpartyAddress"
           :shrink="slotProps.shrink"
-          :link="`/accounts/${slotProps.row.senderAddress}`"
+          :link="`/accounts/${slotProps.row.counterpartyAddress}`"
         />
-      </template>
-      <template v-slot:recipientAddress="slotProps">
-        <Copy
-          :value="slotProps.row.recipientAddress"
-          v-if="slotProps.row.recipientAddress"
-          :shrink="slotProps.shrink"
-          :link="`/accounts/${slotProps.row.recipientAddress}`"
-        />
-        <span v-else>-</span>
       </template>
     </DataTable>
     <template v-else>
@@ -76,7 +81,23 @@ export default {
           // This is relative to the route name
           'AccountsTransactions': () => ({
             arg: route.params.accountId,
-            fn: 'getAccountTransactions',
+            fn: async (accountId, fromTimestamp, offset, limit, order) => {
+              const transactions = await store.client.value.getAccountTransactions(accountId, null, offset, limit, order);
+              return transactions.map((txn) => {
+                if (txn.recipientAddress === accountId) {
+                  return {
+                    ...txn,
+                    direction: 'inbound',
+                    counterpartyAddress: txn.senderAddress,
+                  };
+                }
+                return {
+                  ...txn,
+                  direction: 'outbound',
+                  counterpartyAddress: txn.recipientAddress,
+                };
+              });
+            },
           }),
           default: () => {},
         };
@@ -110,7 +131,7 @@ export default {
         field: 'id',
         sortable: false,
         active: true,
-        shrinkUntilWidth: 2200,
+        shrinkUntilWidth: 1900,
         slot: true,
       },
       {
@@ -121,21 +142,12 @@ export default {
         active: true,
       },
       {
-        name: 'senderAddress',
-        label: 'Sender',
-        field: 'senderAddress',
+        name: 'counterpartyAddress',
+        label: 'Counterparty',
+        field: 'counterpartyAddress',
         sortable: false,
         active: true,
-        shrinkUntilWidth: 1900,
-        slot: true,
-      },
-      {
-        name: 'recipientAddress',
-        label: 'Recipient',
-        field: 'recipientAddress',
-        sortable: false,
-        active: true,
-        shrinkUntilWidth: 1900,
+        shrinkUntilWidth: 1700,
         slot: true,
       },
       {
@@ -164,6 +176,13 @@ export default {
         value: val =>
           _transformMonetaryUnit(val, store.state.config.networkSymbol),
         active: true,
+      },
+      {
+        name: 'direction',
+        label: 'Direction',
+        sortable: false,
+        active: true,
+        slot: true,
       },
     ]);
 

@@ -68,18 +68,11 @@
         :link="`/transactions/${slotProps.row.id}`"
       />
     </template>
-    <template v-slot:senderAddress="slotProps">
+    <template v-slot:counterpartyAddress="slotProps">
       <Copy
-        :value="slotProps.row.senderAddress"
+        :value="slotProps.row.counterpartyAddress"
         :shrink="slotProps.shrink"
-        :link="`/accounts/${slotProps.row.senderAddress}`"
-      />
-    </template>
-    <template v-slot:recipientAddress="slotProps">
-      <Copy
-        :value="slotProps.row.recipientAddress"
-        :shrink="slotProps.shrink"
-        :link="`/accounts/${slotProps.row.recipientAddress}`"
+        :link="`/accounts/${slotProps.row.counterpartyAddress}`"
       />
     </template>
   </DataTable>
@@ -137,7 +130,11 @@ export default {
         else l = limit;
 
         const transactions = [
-          ...pendingTransactions.map(t => ({ ...t, direction: 'pending' })),
+          ...pendingTransactions.map(t => ({
+            ...t,
+            counterpartyAddress: t.recipientAddress === arg ? t.senderAddress : t.recipientAddress,
+            direction: 'pending',
+          })),
           ...(
             await store.client.value.getAccountTransactions(
               arg,
@@ -148,6 +145,7 @@ export default {
             )
           ).map(t => ({
             ...t,
+            counterpartyAddress: t.recipientAddress === arg ? t.senderAddress : t.recipientAddress,
             direction: t.recipientAddress === arg ? 'inbound' : 'outbound',
           })),
         ].sort((a, b) => (a.timestamp > b.timestamp ? -1 : 1));
@@ -221,9 +219,9 @@ export default {
         active: true,
       },
       {
-        name: 'recipientAddress',
-        label: 'Recipient',
-        field: 'recipientAddress',
+        name: 'counterpartyAddress',
+        label: 'Counterparty',
+        field: 'counterpartyAddress',
         sortable: false,
         value: val => val,
         active: true,
