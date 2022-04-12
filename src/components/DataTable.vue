@@ -157,7 +157,6 @@ export default {
   },
   setup(props, { emit, slots }) {
     const store = inject('store');
-    const route = useRoute();
     const router = useRouter();
     const route = useRoute();
 
@@ -295,7 +294,7 @@ export default {
       }
     };
 
-    watchEffect(() => page.value && pollerFn());
+    watchEffect(() => page.value && handleNewTransfer());
 
     const sort = async c => {
       store.mutateProgressbarLoading(true);
