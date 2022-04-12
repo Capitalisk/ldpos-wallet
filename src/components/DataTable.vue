@@ -165,6 +165,7 @@ export default {
     const table = ref(null);
     const limit = ref(props.limit);
     const order = ref(props.order);
+    const offset = ref(props.offset);
     const columns = ref(props.columns);
     const page = ref(route.query.p || 1);
     const popupActive = ref(false);
