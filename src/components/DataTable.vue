@@ -251,7 +251,8 @@ export default {
     };
 
     onMounted(async () => {
-      if (!route.query.p) router.push({ query: { ...route.query, p: 1 } });
+      // Use replace instead of push that way we can skip a page in the history
+      if (!route.query.p) router.replace({ query: { ...route.query, p: 1 } });
 
       if (props.fn) {
         await updateRows();
