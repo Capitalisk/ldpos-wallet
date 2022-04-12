@@ -175,13 +175,13 @@ export default {
           return await store.client.value[props.fn](
             props.arg,
             null,
-            (page.value - 1) * limit.value,
+            offset.value,
             limit.value,
             order.value,
           );
         }
         return await store.client.value[props.fn](
-          (page.value - 1) * limit.value,
+          offset.value,
           limit.value,
           order.value,
         );
@@ -189,7 +189,7 @@ export default {
         return await props.fn(
           props.arg,
           null,
-          (page.value - 1) * limit.value,
+          offset.value,
           limit.value,
           order.value,
           page.value,
@@ -283,6 +283,7 @@ export default {
       updatePoll();
 
       if (props.fn) {
+        offset.value = (page.value - 1) * limit.value;
         await updateRows();
       }
     };
@@ -294,6 +295,7 @@ export default {
       updatePoll();
 
       if (props.fn) {
+        offset.value = (page.value - 1) * limit.value;
         await updateRows();
       }
     };
