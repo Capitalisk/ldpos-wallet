@@ -125,13 +125,10 @@ import {
   inject,
   onMounted,
   onUnmounted,
-  reactive,
   ref,
   watch,
   watchEffect,
 } from 'vue';
-
-import { DETAIL_MODAL } from './modals/constants';
 
 import Button from './Button';
 import Popup from './Popup';
@@ -171,7 +168,7 @@ export default {
     const limit = ref(props.limit);
     const order = ref(props.order);
     const columns = ref(props.columns);
-    const page = ref(1);
+    const page = ref(route.query.p);
     const popupActive = ref(false);
 
     const getData = async () => {
@@ -285,7 +282,6 @@ export default {
       updatePoll();
 
       if (props.fn) {
-        offset.value = (page.value - 1) * props.limit;
         await updateRows();
       }
     };
@@ -297,12 +293,16 @@ export default {
       updatePoll();
 
       if (props.fn) {
-        offset.value = (page.value - 1) * props.limit;
         await updateRows();
       }
     };
 
-    watchEffect(() => page.value && handleNewTransfer());
+    watchEffect(() => {
+      if (page.value) {
+        handleNewRecords();
+        router.push({ query: { ...route.query, p: page.value } });
+      }
+    });
 
     const sort = async c => {
       store.mutateProgressbarLoading(true);
