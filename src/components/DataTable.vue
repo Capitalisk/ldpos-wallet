@@ -161,14 +161,12 @@ export default {
 
     let poller;
 
-    if (!route.query.p) router.push({ query: { ...route.query, p: 1 } });
-
     const rows = ref([]);
     const table = ref(null);
     const limit = ref(props.limit);
     const order = ref(props.order);
     const columns = ref(props.columns);
-    const page = ref(route.query.p);
+    const page = ref(route.query.p || 1);
     const popupActive = ref(false);
 
     const getData = async () => {
@@ -252,12 +250,15 @@ export default {
     };
 
     onMounted(async () => {
+      if (!route.query.p) router.push({ query: { ...route.query, p: 1 } });
+
       if (props.fn) {
         await updateRows();
         setPoll();
       } else {
         rows.value = props.rows;
       }
+
       window.addEventListener('blur', clearPoll);
       window.addEventListener('focus', setPoll);
       window.addEventListener('keydown', keyEvents);
@@ -297,8 +298,13 @@ export default {
       }
     };
 
+    /**
+     * Keep this as route.query.p
+     * Upon using page.value the watchEffect fires BEFORE the actual unmount,
+     * thus firing a router.push and the pagination is present on the next route...
+     */
     watchEffect(() => {
-      if (page.value) {
+      if (route.query.p) {
         handleNewRecords();
         router.push({ query: { ...route.query, p: page.value } });
       }
