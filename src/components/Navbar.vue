@@ -114,12 +114,22 @@ export default {
         const key = route.name;
 
         const sw = {
-          accounts: async () =>
-            await store.client.value.getAccount(searchValue.value),
+          accounts: async () => {
+            const account = await store.client.value.getAccount(searchValue.value);
+            return {
+              ...account,
+              id: account.address,
+            };
+          },
           transactions: async () =>
             await store.client.value.getTransaction(searchValue.value),
-          delegates: async () =>
-            await store.client.value.getDelegate(searchValue.value),
+          delegates: async () => {
+            const delegate = await store.client.value.getDelegate(searchValue.value);
+            return {
+              ...delegate,
+              id: delegate.address,
+            };
+          },
           blocks: async () => {
             if (_isNumber(searchValue.value)) {
               return await store.client.value.getBlockAtHeight(
