@@ -3,7 +3,9 @@
     <div v-if="hasHeaderSlot || title" class="header flex justify-end pa-2">
       <div class="mr-auto">
         <slot name="header" />
-        <p v-if="title && ableToCopyTitle"><Copy :value="title" :link="titleLink" /></p>
+        <p v-if="title && ableToCopyTitle">
+          <Copy :value="title" :link="titleLink" />
+        </p>
         <p v-else-if="title">{{ title }}</p>
       </div>
       <div class="relative">
@@ -218,12 +220,18 @@ export default {
       if (!props.fn) return;
       if (page.value !== 1) return;
       clearInterval(poller);
-      console.log('Start polling');
-      poller = setInterval(updateRows, store.state && store.state.config && store.state.config.pollInterval || DEFAULT_POLL_INTERVAL);
+      console.debug('Start polling');
+      poller = setInterval(
+        updateRows,
+        (store.state &&
+          store.state.config &&
+          store.state.config.pollInterval) ||
+          DEFAULT_POLL_INTERVAL,
+      );
     };
 
     const clearPoll = () => {
-      console.log('Stop polling');
+      console.debug('Stop polling');
       clearInterval(poller);
     };
 
@@ -235,7 +243,7 @@ export default {
       }
     };
 
-    const handleNewTransfer = async () => {
+    const handleNewRecords = async () => {
       if (!props.fn) return;
       if (page.value !== 1) return;
       await updateRows();
@@ -256,7 +264,7 @@ export default {
       window.addEventListener('blur', clearPoll);
       window.addEventListener('focus', setPoll);
       window.addEventListener('keydown', keyEvents);
-      window.addEventListener('DataTable:update', handleNewTransfer);
+      window.addEventListener('DataTable:update', handleNewRecords);
     });
 
     onUnmounted(() => {
@@ -264,7 +272,7 @@ export default {
       window.removeEventListener('keydown', keyEvents);
       window.removeEventListener('blur', clearPoll);
       window.removeEventListener('focus', setPoll);
-      window.removeEventListener('DataTable:update', handleNewTransfer);
+      window.removeEventListener('DataTable:update', handleNewRecords);
     });
 
     watch(
@@ -311,9 +319,11 @@ export default {
       store.mutateProgressbarLoading(false);
     };
 
-    const mustShrink = (shrinkUntilWidth) => {
-      return window.innerWidth < shrinkUntilWidth ||
-        table.value.scrollWidth > table.value.offsetWidth;
+    const mustShrink = shrinkUntilWidth => {
+      return (
+        window.innerWidth < shrinkUntilWidth ||
+        table.value.scrollWidth > table.value.offsetWidth
+      );
     };
 
     const getShortValue = (val, shrinkUntilWidth = 0) => {
@@ -338,7 +348,10 @@ export default {
     };
 
     const detail = data => {
-      router.push(`/${props.prefix ? props.prefix : 'transactions'}/${data.id || data.address}`);
+      router.push(
+        `/${props.prefix ? props.prefix : 'transactions'}/${data.id ||
+          data.address}`,
+      );
 
       window.removeEventListener('keydown', keyEvents);
     };
