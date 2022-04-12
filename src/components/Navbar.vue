@@ -30,11 +30,11 @@
     </template>
     <template v-if="!searchActive">
       <Button
-        v-if="$route.params.accounts"
+        v-if="$route.params.accountId"
         router-link
         value="View transactions"
         class="ml-1 mr-2"
-        :href="`/accounts/${$route.params.account}/transactions`"
+        :href="`/accounts/${$route.params.accountId}/transactions`"
       />
       <Connected />
       <span class="flex justify-center align-center mr-2">
@@ -75,8 +75,7 @@ import Button from './Button';
 import Connected from './Connected';
 import Switch from './Switch';
 import Input from './Input';
-import { DETAIL_MODAL } from './modals/constants';
-import { _capitalize, _pluralToSingular } from '../utils';
+import { _capitalize, _pluralToSingular, _isNumber } from '../utils';
 
 export default {
   name: 'Navbar',
@@ -84,7 +83,7 @@ export default {
     back: { type: Boolean, default: false },
     title: { type: String, required: true },
   },
-  setup() {
+  setup(props) {
     const store = inject('store');
     const route = useRoute();
     const router = useRouter();
@@ -115,14 +114,19 @@ export default {
         const key = route.name;
 
         const sw = {
-          accounts: async () =>
-            await store.client.value.getAccount(searchValue.value),
+          accounts: async () => await store.client.value.getAccount(searchValue.value),
           transactions: async () =>
             await store.client.value.getTransaction(searchValue.value),
-          delegates: async () =>
-            await store.client.value.getDelegate(searchValue.value),
-          blocks: async () =>
-            await store.client.value.getBlock(searchValue.value),
+          delegates: async () => await store.client.value.getDelegate(searchValue.value),
+          blocks: async () => {
+            if (_isNumber(searchValue.value)) {
+              return await store.client.value.getBlockAtHeight(
+                parseInt(searchValue.value),
+              );
+            } else {
+              return await store.client.value.getBlock(searchValue.value);
+            }
+          },
           default: () => false,
         };
 
@@ -130,12 +134,9 @@ export default {
           const data = await (sw[key] || sw.default)();
           if (!data) return;
 
-          if (props.prefix)
-            router.push(
-              `/${route.path === '/' ? '/transactions' : ''}/${
-                searchValue.value
-              }`,
-            );
+          router.push(
+            `${route.path === '/' ? '/transactions' : route.path}/${data.id || data.address}`,
+          );
         } catch (e) {
           console.error(e);
           store.notify(

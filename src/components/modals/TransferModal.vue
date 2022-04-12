@@ -161,6 +161,8 @@ export default {
           });
 
           await store.client.value.postTransaction(preparedTxn);
+
+          window.dispatchEvent(new Event('DataTable:update'));
         } catch (e) {
           store.notify({ message: `Error: ${e.message}`, error: true }, 5);
           error.value = true;

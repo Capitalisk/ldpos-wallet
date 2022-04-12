@@ -40,13 +40,6 @@ export default {
     const columns = ref([
       // { name: 'type', label: 'type', field: 'type', sortable: false },
       {
-        name: 'rank',
-        label: 'Rank',
-        sortable: false,
-        active: true,
-        value: (val, r, rows) => `#${rows.indexOf(r) + 1}`,
-      },
-      {
         name: 'address',
         label: 'Address',
         field: 'address',
@@ -63,7 +56,7 @@ export default {
           _transformMonetaryUnit(val, store.state.config.networkSymbol),
         active: true,
         sorted: 'desc',
-        shrinkable: false,
+        shrinkUntilWidth: 1400,
       },
     ]);
 

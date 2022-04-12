@@ -4,7 +4,7 @@
   <Sidebar />
   <div class="main-content relative">
     <Loading v-if="!connected" />
-    <router-view v-else />
+    <router-view v-else :key="$route.fullPath" />
   </div>
   <Notification />
 </template>

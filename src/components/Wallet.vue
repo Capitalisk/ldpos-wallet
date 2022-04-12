@@ -5,7 +5,7 @@
     </div>
     <Input
       v-model="passphrase"
-      :rules="[val => !!val || (val && val.length <= 0) || 'Required']"
+      :rules="[val => !!val || (val && val.length <= 0) || 'Required', val => validatePassphrase(val) || 'Must be a 12 word BIP39 mnemonic']"
     />
   </ConfirmationModal>
   <div class="flex flex-wrap flex-gap mb-2">
@@ -61,13 +61,18 @@
         Pending...
       </span>
     </template>
-    <template v-slot:senderAddress="slotProps">
-      <Copy :value="slotProps.row.senderAddress" :shrink="slotProps.shrink" />
-    </template>
-    <template v-slot:recipientAddress="slotProps">
+    <template v-slot:id="slotProps">
       <Copy
-        :value="slotProps.row.recipientAddress"
+        :value="slotProps.row.id"
         :shrink="slotProps.shrink"
+        :link="`/transactions/${slotProps.row.id}`"
+      />
+    </template>
+    <template v-slot:counterpartyAddress="slotProps">
+      <Copy
+        :value="slotProps.row.counterpartyAddress"
+        :shrink="slotProps.shrink"
+        :link="`/accounts/${slotProps.row.counterpartyAddress}`"
       />
     </template>
   </DataTable>
@@ -125,7 +130,11 @@ export default {
         else l = limit;
 
         const transactions = [
-          ...pendingTransactions.map(t => ({ ...t, direction: 'pending' })),
+          ...pendingTransactions.map(t => ({
+            ...t,
+            counterpartyAddress: t.recipientAddress === arg ? t.senderAddress : t.recipientAddress,
+            direction: 'pending',
+          })),
           ...(
             await store.client.value.getAccountTransactions(
               arg,
@@ -136,6 +145,7 @@ export default {
             )
           ).map(t => ({
             ...t,
+            counterpartyAddress: t.recipientAddress === arg ? t.senderAddress : t.recipientAddress,
             direction: t.recipientAddress === arg ? 'inbound' : 'outbound',
           })),
         ].sort((a, b) => (a.timestamp > b.timestamp ? -1 : 1));
@@ -191,22 +201,32 @@ export default {
     });
 
     const columns = ref([
-      // {
-      //   name: 'type',
-      //   label: 'Type',
-      //   field: 'type',
-      //   sortable: false,
-      //   active: true,
-      //   shrinkable: false,
-      // },
+
       {
-        name: 'recipientAddress',
-        label: 'Recipient',
-        field: 'recipientAddress',
+        name: 'id',
+        label: 'Id',
+        field: 'id',
+        sortable: false,
+        active: true,
+        slot: true,
+        shrinkUntilWidth: 2100,
+      },
+      {
+        name: 'type',
+        label: 'Type',
+        field: 'type',
+        sortable: false,
+        active: true,
+      },
+      {
+        name: 'counterpartyAddress',
+        label: 'Counterparty',
+        field: 'counterpartyAddress',
         sortable: false,
         value: val => val,
         active: true,
         slot: true,
+        shrinkUntilWidth: 1800,
       },
       {
         name: 'timestamp',
@@ -262,6 +282,9 @@ export default {
           if (!passphrase.value)
             throw new Error('Passphrase should be present');
 
+          if (!store.client.value.validatePassphrase(passphrase.value))
+            throw new Error('Passphrase should be a valid 12 word BIP39 mnemonic');
+
           const registerTxn = await store.client.value.prepareRegisterForgingDetails(
             {
               newNextForgingKeyIndex,
@@ -309,6 +332,7 @@ export default {
           data,
         }),
       transformMonetaryUnit: _transformMonetaryUnit,
+      validatePassphrase: val => store.client.value.validatePassphrase(val),
       networkSymbol: store.state.config.networkSymbol,
       confirmationRef,
       confirmationModal,

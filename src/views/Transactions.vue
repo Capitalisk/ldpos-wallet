@@ -7,6 +7,13 @@
     fn="getTransactionsByTimestamp"
     prefix="transactions"
   >
+    <template v-slot:id="slotProps">
+      <Copy
+        :value="slotProps.row.id"
+        :shrink="slotProps.shrink"
+        :link="`/transactions/${slotProps.row.id}`"
+      />
+    </template>
     <template v-slot:senderAddress="slotProps">
       <Copy
         :value="slotProps.row.senderAddress"
@@ -27,7 +34,7 @@
 </template>
 
 <script>
-import { computed, inject, onMounted, ref } from 'vue';
+import { inject, ref } from 'vue';
 
 import Navbar from '../components/Navbar';
 import DataTable from '../components/DataTable';
@@ -45,12 +52,22 @@ export default {
     const columns = ref([
       // { name: 'type', label: 'type', field: 'type', sortable: false },
       {
+        name: 'id',
+        label: 'Id',
+        field: 'id',
+        sortable: false,
+        active: true,
+        slot: true,
+        shrinkUntilWidth: 2100,
+      },
+      {
         name: 'senderAddress',
         label: 'Sender',
         field: 'senderAddress',
         sortable: false,
         active: true,
         slot: true,
+        shrinkUntilWidth: 1800,
       },
       {
         name: 'recipientAddress',
@@ -59,6 +76,7 @@ export default {
         sortable: false,
         active: true,
         slot: true,
+        shrinkUntilWidth: 1800,
       },
       {
         name: 'timestamp',

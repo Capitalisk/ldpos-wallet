@@ -3,7 +3,7 @@
     <div v-if="hasHeaderSlot || title" class="header flex justify-end pa-2">
       <div class="mr-auto">
         <slot name="header" />
-        <p v-if="title && ableToCopyTitle"><Copy :value="title" /></p>
+        <p v-if="title && ableToCopyTitle"><Copy :value="title" :link="titleLink" /></p>
         <p v-else-if="title">{{ title }}</p>
       </div>
       <div class="relative">
@@ -63,7 +63,7 @@
                     :row="r"
                     :column="c"
                     :rows="rows"
-                    :shrink="shrink"
+                    :shrink="mustShrink(c.shrinkUntilWidth)"
                   />
                 </template>
                 <template v-else>
@@ -72,7 +72,7 @@
                       c.value
                         ? c.value(r[c.field], r, rows, (page - 1) * limit)
                         : r[c.field],
-                      c.shrinkable,
+                      c.shrinkUntilWidth,
                     ) ||
                       r.default ||
                       '-'
@@ -98,7 +98,7 @@
       icon="chevron-left"
       @click="previousPage"
       class="pa-1 mr-1 outline"
-      :class="{ disabled: page === 1 || disablePageSwitch }"
+      :class="{ disabled: page === 1 }"
     />
     <!-- TODO: Allow custom page input -->
     <Button
@@ -112,7 +112,6 @@
       icon="chevron-right"
       @click="nextPage"
       class="pa-1 outline"
-      :class="{ disabled: disablePageSwitch }"
     />
     <!-- TODO: Add page two -->
   </div>
@@ -135,7 +134,9 @@ import { DETAIL_MODAL } from './modals/constants';
 import Button from './Button';
 import Popup from './Popup';
 import Copy from './Copy.vue';
-import { useRoute, useRouter } from 'vue-router';
+import { useRouter, useRoute } from 'vue-router';
+
+const DEFAULT_POLL_INTERVAL = 10000;
 
 export default {
   name: 'DataTable',
@@ -144,6 +145,7 @@ export default {
     columns: { type: Array, default: () => [] },
     prefixTitle: { type: String, default: null },
     title: { type: String, default: null },
+    titleLink: { type: String, default: null },
     ableToCopyTitle: { type: Boolean, default: false },
     clickable: { type: Boolean, default: false },
     fn: { type: [String, Function], default: null },
@@ -157,6 +159,7 @@ export default {
     const store = inject('store');
     const route = useRoute();
     const router = useRouter();
+    const route = useRoute();
 
     let poller;
 
@@ -167,8 +170,7 @@ export default {
     const limit = ref(props.limit);
     const order = ref(props.order);
     const columns = ref(props.columns);
-    const page = computed(() => parseInt(route.query.p));
-    const intervalActive = ref(false);
+    const page = ref(1);
     const popupActive = ref(false);
 
     const getData = async () => {
@@ -203,25 +205,42 @@ export default {
       }
     };
 
-    const pollerFn = async () => {
+    const updateRows = async () => {
       store.mutateProgressbarLoading(true);
-      rows.value = await getData();
+      const initialPage = page.value;
+      const rowData = await getData();
+      if (page.value === initialPage) {
+        rows.value = rowData;
+      }
       store.mutateProgressbarLoading(false);
     };
 
-    // const setPoll = async () => {
-    //   if (!props.fn) return;
-    //   if (page.value !== 1 && intervalActive.value) return;
-    //   await pollerFn();
-    //   intervalActive.value = true;
-    //   poller = setInterval(pollerFn, 10000);
-    // };
+    const setPoll = async () => {
+      if (!props.fn) return;
+      if (page.value !== 1) return;
+      clearInterval(poller);
+      console.log('Start polling');
+      poller = setInterval(updateRows, store.state && store.state.config && store.state.config.pollInterval || DEFAULT_POLL_INTERVAL);
+    };
 
-    // const clearPoll = () => {
-    //   if (!props.fn) return;
-    //   intervalActive.value = false;
-    //   clearInterval(poller);
-    // };
+    const clearPoll = () => {
+      console.log('Stop polling');
+      clearInterval(poller);
+    };
+
+    const updatePoll = () => {
+      if (page.value === 1) {
+        setPoll();
+      } else {
+        clearPoll();
+      }
+    };
+
+    const handleNewTransfer = async () => {
+      if (!props.fn) return;
+      if (page.value !== 1) return;
+      await updateRows();
+    };
 
     const keyEvents = e => {
       if (e.key === 'ArrowRight') nextPage();
@@ -229,28 +248,24 @@ export default {
     };
 
     onMounted(async () => {
-      store.mutateProgressbarLoading(true);
-
       if (props.fn) {
-        await pollerFn();
-        // setPoll();
-        intervalActive.value = true;
+        await updateRows();
+        setPoll();
       } else {
         rows.value = props.rows;
       }
-
-      store.mutateProgressbarLoading(false);
-
-      // window.addEventListener('blur', clearPoll);
-      // window.addEventListener('focus', setPoll);
+      window.addEventListener('blur', clearPoll);
+      window.addEventListener('focus', setPoll);
       window.addEventListener('keydown', keyEvents);
+      window.addEventListener('DataTable:update', handleNewTransfer);
     });
 
     onUnmounted(() => {
+      clearPoll();
       window.removeEventListener('keydown', keyEvents);
-      //   clearPoll();
-      //   window.removeEventListener('blur', clearPoll);
-      //   window.removeEventListener('focus', setPoll);
+      window.removeEventListener('blur', clearPoll);
+      window.removeEventListener('focus', setPoll);
+      window.removeEventListener('DataTable:update', handleNewTransfer);
     });
 
     watch(
@@ -259,30 +274,30 @@ export default {
     );
 
     const nextPage = async () => {
-      if (store.state.progressbarLoading) return;
+      page.value++;
+      updatePoll();
 
-      router.push({
-        query: { ...route.query, p: page.value + 1 },
-      });
-
-      // clearPoll();
+      if (props.fn) {
+        offset.value = (page.value - 1) * props.limit;
+        await updateRows();
+      }
     };
 
     const previousPage = async () => {
-      if (store.state.progressbarLoading) return;
       if (page.value === 1) return;
 
-      // setPoll();
-      router.push({
-        query: { ...route.query, p: page.value - 1 },
-      });
+      page.value--;
+      updatePoll();
+
+      if (props.fn) {
+        offset.value = (page.value - 1) * props.limit;
+        await updateRows();
+      }
     };
 
     watchEffect(() => page.value && pollerFn());
 
     const sort = async c => {
-      if (store.state.progressbarLoading) return;
-
       store.mutateProgressbarLoading(true);
 
       order.value = c.sorted === 'asc' ? 'desc' : 'asc';
@@ -297,15 +312,19 @@ export default {
       store.mutateProgressbarLoading(false);
     };
 
-    const getShortValue = (val, shrinkable = true) => {
+    const mustShrink = (shrinkUntilWidth) => {
+      return window.innerWidth < shrinkUntilWidth ||
+        table.value.scrollWidth > table.value.offsetWidth;
+    };
+
+    const getShortValue = (val, shrinkUntilWidth = 0) => {
       if (val === 0) return val.toString();
       if (!val) return;
-      if (!shrinkable) return val.toString();
+      if (!shrinkUntilWidth) return val.toString();
       if (
         table.value &&
         typeof val === 'string' &&
-        (window.innerWidth < 1400 ||
-          table.value.scrollWidth > table.value.offsetWidth)
+        mustShrink(shrinkUntilWidth)
       ) {
         if (val.length > 16) {
           const arr = val.split('');
@@ -320,8 +339,7 @@ export default {
     };
 
     const detail = data => {
-      if (props.prefix)
-        router.push(`/${props.prefix}/${data.id || data.address}`);
+      router.push(`/${props.prefix ? props.prefix : 'transactions'}/${data.id || data.address}`);
 
       window.removeEventListener('keydown', keyEvents);
     };
@@ -332,6 +350,7 @@ export default {
       table,
       rows,
       columns,
+      mustShrink,
       getShortValue,
       sort,
       nextPage,
@@ -340,12 +359,7 @@ export default {
       limit,
       togglePopup: () => (popupActive.value = !popupActive.value),
       detail,
-      shrink: computed(
-        () => window.innerWidth < 1400 || table.scrollWidth > table.offsetWidth,
-      ),
-
       hasHeaderSlot: !!slots.header,
-      disablePageSwitch: computed(() => store.state.progressbarLoading),
     };
   },
   components: { Button, Popup, Copy },

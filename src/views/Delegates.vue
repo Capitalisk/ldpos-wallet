@@ -99,7 +99,7 @@ export default {
       {
         name: 'rank',
         label: 'Rank',
-        field: 'address',
+        field: 'rank',
         sortable: false,
         value: (val, r, rows, offset) => `#${rows.indexOf(r) + 1 + offset}`,
         active: true,
@@ -120,7 +120,7 @@ export default {
         sortable: false,
         value: val => _transformMonetaryUnit(val),
         active: true,
-        shrinkable: false,
+        shrinkUntilWidth: 1400,
       },
       {
         name: 'forging',

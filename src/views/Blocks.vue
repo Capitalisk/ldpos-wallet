@@ -6,24 +6,26 @@
     fn="getBlocksByTimestamp"
     prefix="blocks"
   >
+    <template v-slot:height="slotProps">
+      <Copy :value="slotProps.row.height" />
+    </template>
     <template v-slot:forgerAddress="slotProps">
       <Copy
         :value="slotProps.row.forgerAddress"
         :shrink="slotProps.shrink"
-        :link="`/accounts/${slotProps.row.address}`"
+        :link="`/accounts/${slotProps.row.forgerAddress}`"
       />
     </template>
   </DataTable>
 </template>
 
 <script>
-import { computed, inject, onMounted, ref } from 'vue';
+import { ref } from 'vue';
 
 import Navbar from '../components/Navbar';
 import DataTable from '../components/DataTable';
 import Copy from '../components/Copy';
 import { _integerToDecimal, _parseDate } from '../utils';
-import { DETAIL_MODAL } from '../components/modals/constants';
 
 export default {
   name: 'Blocks',
@@ -39,6 +41,7 @@ export default {
         field: 'height',
         sortable: false,
         active: true,
+        slot: true,
       },
       {
         name: 'timestamp',
