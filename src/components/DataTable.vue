@@ -136,6 +136,8 @@ import Popup from './Popup';
 import Copy from './Copy.vue';
 import { useRouter, useRoute } from 'vue-router';
 
+const DEFAULT_POLL_INTERVAL = 10000;
+
 export default {
   name: 'DataTable',
   props: {
@@ -201,10 +203,7 @@ export default {
       }
     };
 
-    let isFetching = false;
-
     const updateRows = async () => {
-      isFetching = true;
       store.mutateProgressbarLoading(true);
       const initialPage = page.value;
       const rowData = await getData();
@@ -212,16 +211,14 @@ export default {
         rows.value = rowData;
       }
       store.mutateProgressbarLoading(false);
-      isFetching = false;
     };
 
     const setPoll = async () => {
       if (!props.fn) return;
       if (page.value !== 1) return;
-      if (isFetching) return;
       clearInterval(poller);
       console.log('Start polling');
-      poller = setInterval(updateRows, 10000);
+      poller = setInterval(updateRows, store.state && store.state.config && store.state.config.pollInterval || DEFAULT_POLL_INTERVAL);
     };
 
     const clearPoll = () => {

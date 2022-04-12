@@ -6,6 +6,9 @@
     fn="getBlocksByTimestamp"
     prefix="blocks"
   >
+    <template v-slot:height="slotProps">
+      <Copy :value="slotProps.row.height" />
+    </template>
     <template v-slot:forgerAddress="slotProps">
       <Copy
         :value="slotProps.row.forgerAddress"
@@ -38,6 +41,7 @@ export default {
         field: 'height',
         sortable: false,
         active: true,
+        slot: true,
       },
       {
         name: 'timestamp',
