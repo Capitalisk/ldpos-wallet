@@ -114,22 +114,10 @@ export default {
         const key = route.name;
 
         const sw = {
-          accounts: async () => {
-            const account = await store.client.value.getAccount(searchValue.value);
-            return {
-              ...account,
-              id: account.address,
-            };
-          },
+          accounts: async () => await store.client.value.getAccount(searchValue.value),
           transactions: async () =>
             await store.client.value.getTransaction(searchValue.value),
-          delegates: async () => {
-            const delegate = await store.client.value.getDelegate(searchValue.value);
-            return {
-              ...delegate,
-              id: delegate.address,
-            };
-          },
+          delegates: async () => await store.client.value.getDelegate(searchValue.value),
           blocks: async () => {
             if (_isNumber(searchValue.value)) {
               return await store.client.value.getBlockAtHeight(
@@ -147,7 +135,7 @@ export default {
           if (!data) return;
 
           router.push(
-            `${route.path === '/' ? '/transactions' : route.path}/${data.id}`,
+            `${route.path === '/' ? '/transactions' : route.path}/${data.id || data.address}`,
           );
         } catch (e) {
           console.error(e);

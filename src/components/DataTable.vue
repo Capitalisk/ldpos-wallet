@@ -98,7 +98,7 @@
       icon="chevron-left"
       @click="previousPage"
       class="pa-1 mr-1 outline"
-      :class="{ disabled: page === 1 || disablePageSwitch }"
+      :class="{ disabled: page === 1 }"
     />
     <!-- TODO: Allow custom page input -->
     <Button
@@ -112,7 +112,6 @@
       icon="chevron-right"
       @click="nextPage"
       class="pa-1 outline"
-      :class="{ disabled: disablePageSwitch }"
     />
     <!-- TODO: Add page two -->
   </div>
@@ -168,7 +167,6 @@ export default {
     const offset = ref(props.offset);
     const columns = ref(props.columns);
     const page = ref(1);
-    const intervalActive = ref(false);
     const popupActive = ref(false);
 
     const getData = async () => {
@@ -203,25 +201,47 @@ export default {
       }
     };
 
-    const pollerFn = async () => {
+    let isFetching = false;
+
+    const updateRows = async () => {
+      isFetching = true;
       store.mutateProgressbarLoading(true);
-      rows.value = await getData();
+      const initialPage = page.value;
+      const rowData = await getData();
+      if (page.value === initialPage) {
+        rows.value = rowData;
+      }
       store.mutateProgressbarLoading(false);
+      isFetching = false;
     };
 
-    // const setPoll = async () => {
-    //   if (!props.fn) return;
-    //   if (page.value !== 1 && intervalActive.value) return;
-    //   await pollerFn();
-    //   intervalActive.value = true;
-    //   poller = setInterval(pollerFn, 10000);
-    // };
+    const setPoll = async () => {
+      if (!props.fn) return;
+      if (page.value !== 1) return;
+      if (isFetching) return;
+      clearInterval(poller);
+      console.log('Start polling');
+      poller = setInterval(updateRows, 10000);
+    };
 
-    // const clearPoll = () => {
-    //   if (!props.fn) return;
-    //   intervalActive.value = false;
-    //   clearInterval(poller);
-    // };
+    const clearPoll = () => {
+      console.log('Stop polling');
+      clearInterval(poller);
+    };
+
+    const updatePoll = () => {
+      if (page.value === 1) {
+        setPoll();
+      } else {
+        clearPoll();
+      }
+    };
+
+    const handleNewTransfer = async () => {
+      if (!props.fn) return;
+      if (page.value !== 1) return;
+      await updateRows();
+    };
 
     const keyEvents = e => {
       if (e.key === 'ArrowRight') nextPage();
@@ -229,28 +249,24 @@ export default {
     };
 
     onMounted(async () => {
-      store.mutateProgressbarLoading(true);
-
       if (props.fn) {
-        await pollerFn();
-        // setPoll();
-        intervalActive.value = true;
+        await updateRows();
+        setPoll();
       } else {
         rows.value = props.rows;
       }
-
-      store.mutateProgressbarLoading(false);
-
-      // window.addEventListener('blur', clearPoll);
-      // window.addEventListener('focus', setPoll);
+      window.addEventListener('blur', clearPoll);
+      window.addEventListener('focus', setPoll);
       window.addEventListener('keydown', keyEvents);
+      window.addEventListener('DataTable:update', handleNewTransfer);
     });
 
     onUnmounted(() => {
+      clearPoll();
       window.removeEventListener('keydown', keyEvents);
-      //   clearPoll();
-      //   window.removeEventListener('blur', clearPoll);
-      //   window.removeEventListener('focus', setPoll);
+      window.removeEventListener('blur', clearPoll);
+      window.removeEventListener('focus', setPoll);
+      window.removeEventListener('DataTable:update', handleNewTransfer);
     });
 
     watch(
@@ -259,37 +275,28 @@ export default {
     );
 
     const nextPage = async () => {
-      if (store.state.progressbarLoading) return;
-
       page.value++;
+      updatePoll();
 
       if (props.fn) {
-        if (store.state.progressbarLoading) return;
-        offset.value = offset.value + props.limit;
-        await pollerFn();
+        offset.value = (page.value - 1) * props.limit;
+        await updateRows();
       }
-
-      // clearPoll();
     };
 
     const previousPage = async () => {
-      if (store.state.progressbarLoading) return;
       if (page.value === 1) return;
 
-      // setPoll();
       page.value--;
+      updatePoll();
 
       if (props.fn) {
-        if (store.state.progressbarLoading) return;
-        store.mutateProgressbarLoading(true);
-        offset.value = offset.value - props.limit;
-        await pollerFn();
+        offset.value = (page.value - 1) * props.limit;
+        await updateRows();
       }
     };
 
     const sort = async c => {
-      if (store.state.progressbarLoading) return;
-
       store.mutateProgressbarLoading(true);
 
       order.value = c.sorted === 'asc' ? 'desc' : 'asc';
@@ -359,7 +366,6 @@ export default {
       togglePopup: () => (popupActive.value = !popupActive.value),
       detail,
       hasHeaderSlot: !!slots.header,
-      disablePageSwitch: computed(() => store.state.progressbarLoading),
     };
   },
   components: { Button, Popup, Copy },
