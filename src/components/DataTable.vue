@@ -3,7 +3,7 @@
     <div v-if="hasHeaderSlot || title" class="header flex justify-end pa-2">
       <div class="mr-auto">
         <slot name="header" />
-        <p v-if="title && ableToCopyTitle"><Copy :value="title" /></p>
+        <p v-if="title && ableToCopyTitle"><Copy :value="title" :link="titleLink" /></p>
         <p v-else-if="title">{{ title }}</p>
       </div>
       <div class="relative">
@@ -145,6 +145,7 @@ export default {
     columns: { type: Array, default: () => [] },
     prefixTitle: { type: String, default: null },
     title: { type: String, default: null },
+    titleLink: { type: String, default: null },
     ableToCopyTitle: { type: Boolean, default: false },
     clickable: { type: Boolean, default: false },
     fn: { type: [String, Function], default: null },

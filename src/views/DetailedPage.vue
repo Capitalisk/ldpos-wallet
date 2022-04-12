@@ -9,6 +9,7 @@
       :fn="data.fn"
       :arg="data.arg"
       :title="data.arg"
+      :titleLink="data.titleLink"
       :able-to-copy-title="ableToCopyTitle"
     >
       <template v-slot:direction="slotProps">
@@ -80,6 +81,7 @@ export default {
         const sw = {
           // This is relative to the route name
           'AccountsTransactions': () => ({
+            titleLink: `/accounts/${route.params.accountId}`,
             arg: route.params.accountId,
             fn: async (accountId, fromTimestamp, offset, limit, order) => {
               const transactions = await store.client.value.getAccountTransactions(accountId, null, offset, limit, order);
