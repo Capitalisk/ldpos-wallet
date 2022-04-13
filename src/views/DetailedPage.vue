@@ -133,7 +133,7 @@ export default {
         field: 'id',
         sortable: false,
         active: true,
-        shrinkUntilWidth: 1900,
+        shrinkUntilWidth: 2000,
         slot: true,
       },
       {
