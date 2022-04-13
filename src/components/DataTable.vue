@@ -152,6 +152,7 @@ export default {
     fn: { type: [String, Function], default: null },
     limit: { type: Number, default: 10 },
     order: { type: String, default: 'desc' },
+    offset: { type: Number, default: 0 },
     arg: { type: String, default: null },
     prefix: { type: String, default: null },
     prependFn: { type: Function, default: null },
