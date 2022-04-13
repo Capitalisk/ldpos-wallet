@@ -40,6 +40,14 @@ export default {
     const columns = ref([
       // { name: 'type', label: 'type', field: 'type', sortable: false },
       {
+        name: 'rank',
+        label: 'Rank',
+        field: 'rank',
+        sortable: false,
+        value: (val, r, rows, offset) => `#${rows.indexOf(r) + 1 + offset}`,
+        active: true,
+      },
+      {
         name: 'address',
         label: 'Address',
         field: 'address',
