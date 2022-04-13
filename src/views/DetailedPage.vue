@@ -12,7 +12,7 @@
       :titleLink="data.titleLink"
       :able-to-copy-title="ableToCopyTitle"
     >
-      <template v-slot:direction="slotProps">
+      <template v-if="showDirection" v-slot:direction="slotProps">
         <i
           v-if="slotProps.row.direction === 'inbound'"
           class="fas fa-chevron-down text-success"
@@ -48,10 +48,10 @@
 </template>
 
 <script>
-import { inject, ref, watch, watchEffect, computed } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+import { inject, ref, computed, onMounted } from 'vue';
+import { useRoute } from 'vue-router';
 
-import { _transformMonetaryUnit, _parseDate } from '../utils';
+import { _transformMonetaryUnit, _parseDate, _isNumber } from '../utils';
 
 import DetailedData from '../components/DetailedData';
 import Section from '../components/Section';
@@ -67,11 +67,11 @@ export default {
     ableToCopyTitle: { type: Boolean, default: true },
     title: { type: String, required: true },
     id: { type: String, default: null },
+    showDirection: { type: Boolean, default: false },
   },
   setup(props) {
     const store = inject('store');
     const route = useRoute();
-    const router = useRouter();
     const data = ref({});
 
     const getData = async () => {
@@ -80,12 +80,18 @@ export default {
       if (props.dataTable) {
         const sw = {
           // This is relative to the route name
-          'AccountsTransactions': () => ({
+          AccountTransactions: () => ({
             titleLink: `/accounts/${route.params.accountId}`,
             arg: route.params.accountId,
             fn: async (accountId, fromTimestamp, offset, limit, order) => {
-              const transactions = await store.client.value.getAccountTransactions(accountId, null, offset, limit, order);
-              return transactions.map((txn) => {
+              const transactions = await store.client.value.getAccountTransactions(
+                accountId,
+                null,
+                offset,
+                limit,
+                order,
+              );
+              return transactions.map(txn => {
                 if (txn.recipientAddress === accountId) {
                   return {
                     ...txn,
@@ -96,6 +102,24 @@ export default {
                 return {
                   ...txn,
                   direction: 'outbound',
+                  counterpartyAddress: txn.recipientAddress,
+                };
+              });
+            },
+          }),
+          BlockTransactions: () => ({
+            titleLink: `/blocks/${route.params.blockId}`,
+            arg: route.params.blockId,
+            fn: async (blockId, fromTimestamp, offset, limit, order) => {
+              const transactions = await store.client.value.getTransactionsFromBlock(
+                blockId,
+                offset,
+                limit,
+              );
+
+              return transactions.map(txn => {
+                return {
+                  ...txn,
                   counterpartyAddress: txn.recipientAddress,
                 };
               });
@@ -179,14 +203,19 @@ export default {
           _transformMonetaryUnit(val, store.state.config.networkSymbol),
         active: true,
       },
-      {
-        name: 'direction',
-        label: 'Direction',
-        sortable: false,
-        active: true,
-        slot: true,
-      },
     ]);
+
+    onMounted(() => {
+      if (props.showDirection) {
+        columns.value.push({
+          name: 'direction',
+          label: 'Direction',
+          sortable: false,
+          active: true,
+          slot: true,
+        });
+      }
+    });
 
     return {
       data,

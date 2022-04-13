@@ -1,7 +1,7 @@
 export default [
   {
     path: '/accounts/:accountId/transactions',
-    name: 'AccountsTransactions',
+    name: 'AccountTransactions',
     component: () =>
       import(
         /* webpackChunkName: "accountstransactions" */ '../views/DetailedPage'
@@ -9,7 +9,22 @@ export default [
     props: {
       title: 'Account Transaction Details',
       dataTable: true,
-      id: 'accountstransactions',
+      id: 'accounttransactions',
+      // ableToCopyTitle: true,
+      showDirection: true,
+    },
+  },
+  {
+    path: '/blocks/:blockId/transactions',
+    name: 'BlockTransactions',
+    component: () =>
+      import(
+        /* webpackChunkName: "blocktransactions" */ '../views/DetailedPage'
+      ),
+    props: {
+      title: 'Block Transaction Details',
+      dataTable: true,
+      id: 'blocktransactions',
       // ableToCopyTitle: true,
     },
   },

@@ -36,6 +36,13 @@
         class="ml-1 mr-2"
         :href="`/accounts/${$route.params.accountId}/transactions`"
       />
+      <Button
+        v-if="$route.params.blockId"
+        router-link
+        value="View transactions"
+        class="ml-1 mr-2"
+        :href="`/blocks/${$route.params.blockId}/transactions`"
+      />
       <Connected />
       <span class="flex justify-center align-center mr-2">
         <Switch v-model="darkMode" id="darkmode-switch" />
@@ -114,10 +121,12 @@ export default {
         const key = route.name;
 
         const sw = {
-          accounts: async () => await store.client.value.getAccount(searchValue.value),
+          accounts: async () =>
+            await store.client.value.getAccount(searchValue.value),
           transactions: async () =>
             await store.client.value.getTransaction(searchValue.value),
-          delegates: async () => await store.client.value.getDelegate(searchValue.value),
+          delegates: async () =>
+            await store.client.value.getDelegate(searchValue.value),
           blocks: async () => {
             if (_isNumber(searchValue.value)) {
               return await store.client.value.getBlockAtHeight(
@@ -135,7 +144,8 @@ export default {
           if (!data) return;
 
           router.push(
-            `${route.path === '/' ? '/transactions' : route.path}/${data.id || data.address}`,
+            `${route.path === '/' ? '/transactions' : route.path}/${data.id ||
+              data.address}`,
           );
         } catch (e) {
           console.error(e);
