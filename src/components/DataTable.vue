@@ -129,11 +129,13 @@ import {
   watch,
   watchEffect,
 } from 'vue';
+import { useRouter, useRoute } from 'vue-router';
+
+import { _isNumber } from '../utils';
 
 import Button from './Button';
 import Popup from './Popup';
 import Copy from './Copy.vue';
-import { useRouter, useRoute } from 'vue-router';
 
 const DEFAULT_POLL_INTERVAL = 10000;
 
@@ -167,8 +169,11 @@ export default {
     const order = ref(props.order);
     const offset = ref(props.offset);
     const columns = ref(props.columns);
-    const page = ref(route.query.p || 1);
     const popupActive = ref(false);
+
+    const page = computed(() =>
+      _isNumber(route.query.p) ? parseInt(route.query.p) : 1,
+    );
 
     const getData = async () => {
       if (typeof props.fn === 'string') {
@@ -204,11 +209,8 @@ export default {
 
     const updateRows = async () => {
       store.mutateProgressbarLoading(true);
-      const initialPage = page.value;
       const rowData = await getData();
-      if (page.value === initialPage) {
-        rows.value = rowData;
-      }
+      rows.value = rowData;
       store.mutateProgressbarLoading(false);
     };
 
@@ -281,8 +283,9 @@ export default {
     );
 
     const nextPage = async () => {
-      page.value++;
       updatePoll();
+
+      router.push({ query: { ...route.query, p: page.value + 1 } });
 
       if (props.fn) {
         offset.value = (page.value - 1) * limit.value;
@@ -293,8 +296,9 @@ export default {
     const previousPage = async () => {
       if (page.value === 1) return;
 
-      page.value--;
       updatePoll();
+
+      router.push({ query: { ...route.query, p: page.value - 1 } });
 
       if (props.fn) {
         offset.value = (page.value - 1) * limit.value;
@@ -302,15 +306,9 @@ export default {
       }
     };
 
-    /**
-     * Keep this as route.query.p
-     * Upon using page.value the watchEffect fires BEFORE the actual unmount,
-     * thus firing a router.push and the pagination is present on the next route...
-     */
     watchEffect(() => {
-      if (route.query.p) {
+      if (page.value) {
         handleNewRecords();
-        router.push({ query: { ...route.query, p: page.value } });
       }
     });
 
