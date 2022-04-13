@@ -167,12 +167,15 @@ export default {
     const table = ref(null);
     const limit = ref(props.limit);
     const order = ref(props.order);
-    const offset = ref(props.offset);
     const columns = ref(props.columns);
     const popupActive = ref(false);
 
     const page = computed(() =>
       _isNumber(route.query.p) ? parseInt(route.query.p) : 1,
+    );
+
+    const offset = computed(() =>
+      (page.value - 1) * limit.value
     );
 
     const getData = async () => {
@@ -261,7 +264,7 @@ export default {
 
       if (props.fn) {
         await updateRows();
-        setPoll();
+        updatePoll();
       } else {
         rows.value = props.rows;
       }
@@ -294,16 +297,18 @@ export default {
       await router.push({ query: { ...route.query, p: page.value - 1 } });
     };
 
-    watchEffect(async () => {
-      if (page.value) {
-        updatePoll();
+    watch(
+      () => page.value,
+      async () => {
+        if (page.value) {
+          updatePoll();
 
-        if (props.fn) {
-          offset.value = (page.value - 1) * limit.value;
-          await updateRows();
+          if (props.fn) {
+            await updateRows();
+          }
         }
       }
-    });
+    );
 
     const sort = async c => {
       store.mutateProgressbarLoading(true);
@@ -370,6 +375,7 @@ export default {
       previousPage,
       page,
       limit,
+      offset,
       togglePopup: () => (popupActive.value = !popupActive.value),
       detail,
       hasHeaderSlot: !!slots.header,
