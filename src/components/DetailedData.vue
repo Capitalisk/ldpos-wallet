@@ -109,6 +109,7 @@ export default {
         recipientAddress: 'accounts',
         senderAddress: 'accounts',
         forgerAddress: 'accounts',
+        blockId: 'blocks',
         id: props.id,
       },
     };
