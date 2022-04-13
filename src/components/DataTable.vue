@@ -286,32 +286,22 @@ export default {
     );
 
     const nextPage = async () => {
-      updatePoll();
-
       await router.push({ query: { ...route.query, p: page.value + 1 } });
-
-      if (props.fn) {
-        offset.value = (page.value - 1) * limit.value;
-        await updateRows();
-      }
     };
 
     const previousPage = async () => {
       if (page.value === 1) return;
-
-      updatePoll();
-
       await router.push({ query: { ...route.query, p: page.value - 1 } });
-
-      if (props.fn) {
-        offset.value = (page.value - 1) * limit.value;
-        await updateRows();
-      }
     };
 
     watchEffect(async () => {
       if (page.value) {
-        await handleNewRecords();
+        updatePoll();
+
+        if (props.fn) {
+          offset.value = (page.value - 1) * limit.value;
+          await updateRows();
+        }
       }
     });
 
