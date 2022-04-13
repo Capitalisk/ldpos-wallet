@@ -209,8 +209,11 @@ export default {
 
     const updateRows = async () => {
       store.mutateProgressbarLoading(true);
+      const initialPage = page.value;
       const rowData = await getData();
-      rows.value = rowData;
+      if (page.value === initialPage) {
+        rows.value = rowData;
+      }
       store.mutateProgressbarLoading(false);
     };
 
@@ -285,7 +288,7 @@ export default {
     const nextPage = async () => {
       updatePoll();
 
-      router.push({ query: { ...route.query, p: page.value + 1 } });
+      await router.push({ query: { ...route.query, p: page.value + 1 } });
 
       if (props.fn) {
         offset.value = (page.value - 1) * limit.value;
@@ -298,7 +301,7 @@ export default {
 
       updatePoll();
 
-      router.push({ query: { ...route.query, p: page.value - 1 } });
+      await router.push({ query: { ...route.query, p: page.value - 1 } });
 
       if (props.fn) {
         offset.value = (page.value - 1) * limit.value;
@@ -306,9 +309,9 @@ export default {
       }
     };
 
-    watchEffect(() => {
+    watchEffect(async () => {
       if (page.value) {
-        handleNewRecords();
+        await handleNewRecords();
       }
     });
 
