@@ -371,6 +371,7 @@ export default {
       previousPage,
       page,
       limit,
+      offset,
       togglePopup: () => (popupActive.value = !popupActive.value),
       detail,
       hasHeaderSlot: !!slots.header,
