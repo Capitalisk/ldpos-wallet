@@ -40,6 +40,20 @@
           :link="`/accounts/${slotProps.row.counterpartyAddress}`"
         />
       </template>
+      <template v-slot:senderAddress="slotProps">
+        <Copy
+          :value="slotProps.row.senderAddress"
+          :shrink="slotProps.shrink"
+          :link="`/accounts/${slotProps.row.senderAddress}`"
+        />
+      </template>
+      <template v-slot:recipientAddress="slotProps">
+        <Copy
+          :value="slotProps.row.recipientAddress"
+          :shrink="slotProps.shrink"
+          :link="`/accounts/${slotProps.row.recipientAddress}`"
+        />
+      </template>
     </DataTable>
     <template v-else>
       <DetailedData v-if="!loading" v-bind="$attrs" :data="data" :id="id" />
@@ -111,18 +125,11 @@ export default {
             titleLink: `/blocks/${route.params.blockId}`,
             arg: route.params.blockId,
             fn: async (blockId, fromTimestamp, offset, limit, order) => {
-              const transactions = await store.client.value.getTransactionsFromBlock(
+              return await store.client.value.getTransactionsFromBlock(
                 blockId,
                 offset,
                 limit,
               );
-
-              return transactions.map(txn => {
-                return {
-                  ...txn,
-                  counterpartyAddress: txn.recipientAddress,
-                };
-              });
             },
           }),
           default: () => {},
@@ -168,15 +175,6 @@ export default {
         active: true,
       },
       {
-        name: 'counterpartyAddress',
-        label: 'Counterparty',
-        field: 'counterpartyAddress',
-        sortable: false,
-        active: true,
-        shrinkUntilWidth: 1700,
-        slot: true,
-      },
-      {
         name: 'timestamp',
         label: 'Date',
         field: 'timestamp',
@@ -207,6 +205,15 @@ export default {
 
     onMounted(() => {
       if (props.showDirection) {
+        columns.value.splice(2, 0, {
+          name: 'counterpartyAddress',
+          label: 'Counterparty',
+          field: 'counterpartyAddress',
+          sortable: false,
+          active: true,
+          shrinkUntilWidth: 1700,
+          slot: true,
+        });
         columns.value.push({
           name: 'direction',
           label: 'Direction',
@@ -214,6 +221,25 @@ export default {
           active: true,
           slot: true,
         });
+      } else {
+        columns.value.splice(2, 0,
+          {
+            name: 'senderAddress',
+            label: 'Sender',
+            sortable: false,
+            active: true,
+            slot: true,
+            shrinkUntilWidth: 2300,
+          },
+          {
+            name: 'recipientAddress',
+            label: 'Recipient',
+            sortable: false,
+            active: true,
+            slot: true,
+            shrinkUntilWidth: 2300,
+          }
+        );
       }
     });
 
