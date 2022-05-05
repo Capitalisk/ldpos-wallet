@@ -36,6 +36,8 @@ export default {
 
     onMounted(() => {
       window.addEventListener('Document:click', event => {
+        if (tooltipIconRef.value.contains(event.detail)) return;
+
         tooltipContainerRef.value &&
           !tooltipContainerRef.value.contains(event.detail) &&
           (tooltipActive.value = false);
