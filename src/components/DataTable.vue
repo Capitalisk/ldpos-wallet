@@ -127,7 +127,6 @@ import {
   onUnmounted,
   ref,
   watch,
-  watchEffect,
 } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 

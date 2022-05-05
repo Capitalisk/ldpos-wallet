@@ -66,6 +66,14 @@
           </div>
           <div class="flex column flex-12">
             <div @click="openCustomWallet" class="pa-1 text-center">
+              <i
+                v-if="provideWalletAddress"
+                class="text-darken fa fa-angle-up cursor-pointer pl-1"
+              />
+              <i
+                v-else
+                class="text-darken fa fa-angle-down cursor-pointer pl-1"
+              />
               <span class="text-darken cursor-pointer">
                 Provide wallet address
               </span>
