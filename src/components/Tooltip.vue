@@ -21,7 +21,7 @@
 </template>
 
 <script>
-import { onMounted, ref } from 'vue';
+import { onMounted, onUnmounted, ref } from 'vue';
 
 export default {
   name: 'Tooltip',
@@ -34,14 +34,20 @@ export default {
     const tooltipContainerRef = ref(null);
     const tooltipActive = ref(false);
 
-    onMounted(() => {
-      window.addEventListener('Document:click', event => {
-        if (tooltipIconRef.value.contains(event.detail)) return;
+    const click = event => {
+      if (tooltipIconRef.value.contains(event.detail)) return;
 
-        tooltipContainerRef.value &&
-          !tooltipContainerRef.value.contains(event.detail) &&
-          (tooltipActive.value = false);
-      });
+      tooltipContainerRef.value &&
+        !tooltipContainerRef.value.contains(event.detail) &&
+        (tooltipActive.value = false);
+    };
+
+    onMounted(() => {
+      window.addEventListener('Document:click', click);
+    });
+
+    onUnmounted(() => {
+      window.removeEventListener('Document:click', click);
     });
 
     return {
