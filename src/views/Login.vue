@@ -278,6 +278,9 @@ export default {
             store.notify({ message: `Error: ${e.message}`, error: true }, 5);
             console.error(e);
           }
+          for (let i = 0; i < inputs.value.length; i++) {
+            inputs.value[i] = { value: '' };
+          }
         }
       },
       openCustomWallet: () =>

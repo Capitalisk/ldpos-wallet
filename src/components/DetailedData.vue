@@ -91,6 +91,8 @@ export default {
       amount: val =>
         _transformMonetaryUnit(val, store.state.config.networkSymbol),
       fee: val => _transformMonetaryUnit(val, store.state.config.networkSymbol),
+      voteWeight: val => _transformMonetaryUnit(val, store.state.config.networkSymbol),
+      forgingRewards: val => _transformMonetaryUnit(val, store.state.config.networkSymbol),
       type: val => _capitalize(_splitCamelCaseWords(val).join(' ')),
     };
 
