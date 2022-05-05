@@ -31,7 +31,6 @@ export default {
   provide: { store },
   setup() {
     const clickEvent = event => {
-      console.log(event.target);
       event.stopPropagation();
       window.dispatchEvent(
         new CustomEvent('Document:click', { detail: event.target }),
