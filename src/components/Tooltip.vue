@@ -1,35 +1,49 @@
 <template>
   <i
     class="far fa-question-circle cursor-pointer"
-    @click="tooltipActive = !tooltipActive"
-    ref="tooltipRef"
+    @click.stop.prevent="tooltipActive = !tooltipActive"
+    ref="tooltipIconRef"
+    :class="iconClass"
   />
   <div
     v-if="tooltipActive"
     class="tooltip pa-1 no-select"
+    v-bind="$attrs"
     :style="{
-      top: $refs.tooltipRef.getBoundingClientRect().bottom + 5 + 'px',
-      left: $refs.tooltipRef.getBoundingClientRect().left + 5 + 'px',
+      top: $refs.tooltipIconRef.getBoundingClientRect().bottom + 5 + 'px',
+      left: $refs.tooltipIconRef.getBoundingClientRect().left + 5 + 'px',
     }"
+    ref="tooltipContainerRef"
+    @click.stop.prevent
   >
     {{ content }}
   </div>
 </template>
 
 <script>
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 
 export default {
   name: 'Tooltip',
   props: {
     content: { type: String, required: true },
+    iconClass: { type: String, Object },
   },
   setup() {
-    const tooltipRef = ref(null);
+    const tooltipIconRef = ref(null);
+    const tooltipContainerRef = ref(null);
     const tooltipActive = ref(false);
 
+    onMounted(() => {
+      window.addEventListener('Document:click', event => {
+        !tooltipContainerRef.value.contains(event.detail) &&
+          (tooltipActive.value = false);
+      });
+    });
+
     return {
-      tooltipRef,
+      tooltipIconRef,
+      tooltipContainerRef,
       tooltipActive,
     };
   },
@@ -49,6 +63,12 @@ export default {
 .tooltip.danger {
   border: 1px solid var(--danger);
   color: var(--danger);
+  font-weight: 900;
+}
+
+.tooltip.warning {
+  border: 1px solid var(--warning);
+  color: var(--warning);
   font-weight: 900;
 }
 </style>

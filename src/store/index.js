@@ -81,7 +81,7 @@ export default {
 
     this.mutateProgressbarLoading(false);
   },
-  async authenticate(passphrase) {
+  async authenticate(passphrase, options) {
     const networkSymbol = state.config.networkSymbol;
     const network = state.selectedNetwork;
 
@@ -89,7 +89,10 @@ export default {
     try {
       state.authenticated = false;
 
-      await state.clients[networkSymbol][network].connect({ passphrase });
+      await state.clients[networkSymbol][network].connect({
+        passphrase,
+        ...options,
+      });
 
       state.authenticated = true;
 

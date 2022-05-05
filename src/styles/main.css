@@ -38,6 +38,8 @@
   --unit-4: 2rem;
   --unit-5: 2.5rem;
   --unit-6: 3rem;
+
+  --darken: rgb(120, 131, 147);
 }
 
 [dark-theme='true'] {
@@ -60,6 +62,8 @@
   --switch-background: rgb(43, 56, 75);
 
   --modal-backdrop: #22243570;
+
+  --darken: rgb(78, 93, 114);
 }
 
 * {
@@ -158,6 +162,10 @@ th {
 
 .text-warning {
   color: var(--warning);
+}
+
+.text-darken {
+  color: var(--darken);
 }
 
 .capitalize {
@@ -622,4 +630,22 @@ th {
   100% {
     background-position: -200% 0;
   }
+}
+
+/*
+  Enter and leave animations can use different
+  durations and timing functions.
+*/
+.slide-fade-enter-active {
+  transition: all 0.2s ease-out;
+}
+
+.slide-fade-leave-active {
+  transition: all 0.2s cubic-bezier(1, 0.5, 0.8, 1);
+}
+
+.slide-fade-enter-from,
+.slide-fade-leave-to {
+  transform: translateY(-10px);
+  opacity: 0;
 }

@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import { onMounted, ref, watch, computed, inject } from 'vue';
+import { onMounted, computed, onUnmounted } from 'vue';
 
 import router from './router';
 import store from './store';
@@ -30,10 +30,25 @@ export default {
   components: { Loading, Modal, Sidebar, Notification, Progressbar },
   provide: { store },
   setup() {
-    onMounted(async () => await store.connect());
-    onMounted(() =>
-      document.documentElement.setAttribute('dark-theme', store.state.darkMode),
-    );
+    const clickEvent = event => {
+      console.log(event.target);
+      event.stopPropagation();
+      window.dispatchEvent(
+        new CustomEvent('Document:click', { detail: event.target }),
+      );
+    };
+
+    onMounted(async () => {
+      document.documentElement.setAttribute('dark-theme', store.state.darkMode);
+      window.requestAnimationFrame(() => {
+        document.addEventListener('mousedown', clickEvent);
+      });
+      await store.connect();
+    });
+
+    onUnmounted(() => {
+      document.removeEventListener('mousedown', clickEvent);
+    });
 
     return {
       connected: computed(() => store.state.connected),

@@ -64,6 +64,27 @@
               />
             </div>
           </div>
+          <div class="flex column flex-12">
+            <div @click="openCustomWallet" class="pa-1 text-center">
+              <span class="text-darken cursor-pointer">
+                Provide wallet address
+              </span>
+              <Tooltip
+                class="warning"
+                content="If you have changed your passphrase you will have to add you wallet address"
+                icon-class="text-darken ml-1"
+              />
+            </div>
+            <Transition name="slide-fade">
+              <div v-if="provideWalletAddress">
+                <Input
+                  placeholder="Wallet address"
+                  class="mx-1 primary-darker"
+                  v-model="walletAddress"
+                />
+              </div>
+            </Transition>
+          </div>
         </div>
         <div class="flex column">
           <div class="flex justify-center">
@@ -102,18 +123,10 @@
 </template>
 
 <script>
-import {
-  ref,
-  inject,
-  computed,
-  reactive,
-  watch,
-  watchEffect,
-  onMounted,
-  nextTick,
-} from 'vue';
+import { ref, inject, computed, reactive, watch, nextTick } from 'vue';
 
 import { _transformMonetaryUnit } from '../utils.js';
+import { TRANSFER_MODAL } from '../components/modals/constants.js';
 
 import Navbar from '../components/Navbar';
 import Section from '../components/Section';
@@ -121,7 +134,7 @@ import Copy from '../components/Copy';
 import Button from '../components/Button';
 import Input from '../components/Input';
 import Wallet from '../components/Wallet';
-import { TRANSFER_MODAL } from '../components/modals/constants.js';
+import Tooltip from '../components/Tooltip.vue';
 
 export default {
   name: 'Home',
@@ -132,10 +145,12 @@ export default {
     const store = inject('store');
 
     const inputs = ref(new Array(12));
-    const inputRefs = ref([]);
-    const activeIndex = ref(0);
     const passphrase = ref('');
     const pasting = ref(false);
+    const provideWalletAddress = ref(false);
+    const walletAddress = ref(null);
+
+    const inputRefs = ref([]);
 
     for (let i = 0; i < inputs.value.length; i++) {
       inputs.value[i] = { value: '' };
@@ -248,18 +263,27 @@ export default {
       generatedWalletAddress,
       openTransferModal,
       signin: async () => {
+        const options = {};
+
+        if (provideWalletAddress.value)
+          options.walletAddress = walletAddress.value;
+
         if (generatedWalletAddress.data)
           await store.authenticate(generatedWalletAddress.data.passphrase);
         else {
           try {
             await validateAllInputs();
-            await store.authenticate(passphrase.value);
+            await store.authenticate(passphrase.value, options);
           } catch (e) {
             store.notify({ message: `Error: ${e.message}`, error: true }, 5);
             console.error(e);
           }
         }
       },
+      openCustomWallet: () =>
+        (provideWalletAddress.value = !provideWalletAddress.value),
+      provideWalletAddress,
+      walletAddress,
       passphrase,
       hidden,
       inputs,
@@ -272,7 +296,7 @@ export default {
       token: computed(() => store.state.config.networkSymbol.toUpperCase()),
     };
   },
-  components: { Section, Copy, Button, Input, Navbar, Wallet },
+  components: { Section, Copy, Button, Input, Navbar, Wallet, Tooltip, Input },
   // mounted() {
   //   this.$forceUpdate();
   // },
