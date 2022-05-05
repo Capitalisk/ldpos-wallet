@@ -84,7 +84,7 @@
               </span>
               <Tooltip
                 class="warning"
-                content="If you have changed your passphrase you will have to add you wallet address"
+                content="If you have changed your passphrase you will have to add your wallet address"
                 icon-class="text-darken ml-1"
               />
             </div>
