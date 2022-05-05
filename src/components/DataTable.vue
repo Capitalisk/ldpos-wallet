@@ -102,12 +102,47 @@
       class="pa-1 mr-1 outline"
       :class="{ disabled: page === 1 }"
     />
+    <Button
+      id="page-one"
+      @click="() => definePage(1)"
+      class="pa-1 mr-1 cursor-pointer outline"
+      v-if="page !== 1"
+      :value="1"
+      small
+    />
+    <Button
+      @click="activatePageInput"
+      class="pa-1 mr-1 disabled cursor-pointer outline"
+      value="..."
+      disabled
+      small
+      v-if="page > 2 && !pageInput"
+    />
     <!-- TODO: Allow custom page input -->
+    <Input
+      v-if="pageInput"
+      placeholder="Page"
+      class="mr-1"
+      v-model="pageInputValue"
+      @keyup.enter="() => definePage(pageInputValue)"
+      @keyup.esc="() => (pageInput = false)"
+      ref="pageInputRef"
+    >
+      <template v-slot:suffix>
+        <i
+          class="fas fa-times cursor-pointer ml-2"
+          @click.stop.prevent="() => (pageInput = false)"
+        />
+      </template>
+    </Input>
     <Button
       id="current-page"
+      @click="activatePageInput"
+      class="pa-1 mr-1 disabled cursor-pointer outline"
       :value="page"
-      @click="() => {}"
-      class="pa-1 mr-1 outline disabled"
+      disabled
+      small
+      v-else
     />
     <Button
       id="next-page"
@@ -123,11 +158,11 @@
 import {
   computed,
   inject,
+  nextTick,
   onMounted,
   onUnmounted,
   ref,
   watch,
-  watchEffect,
 } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 
@@ -135,7 +170,8 @@ import { _isNumber } from '../utils';
 
 import Button from './Button';
 import Popup from './Popup';
-import Copy from './Copy.vue';
+import Copy from './Copy';
+import Input from './Input';
 
 const DEFAULT_POLL_INTERVAL = 10000;
 
@@ -169,14 +205,16 @@ export default {
     const order = ref(props.order);
     const columns = ref(props.columns);
     const popupActive = ref(false);
+    const pageInput = ref(false);
+    const pageInputValue = ref(null);
+
+    const pageInputRef = ref(null);
 
     const page = computed(() =>
       _isNumber(route.query.p) ? parseInt(route.query.p) : 1,
     );
 
-    const offset = computed(() =>
-      (page.value - 1) * limit.value
-    );
+    const offset = computed(() => (page.value - 1) * limit.value);
 
     const getData = async () => {
       if (typeof props.fn === 'string') {
@@ -297,6 +335,12 @@ export default {
       await router.push({ query: { ...route.query, p: page.value - 1 } });
     };
 
+    const definePage = async p => {
+      await router.push({ query: { ...route.query, p } });
+      pageInput.value = false;
+      pageInputValue.value = null;
+    };
+
     watch(
       () => page.value,
       async () => {
@@ -307,7 +351,7 @@ export default {
             await updateRows();
           }
         }
-      }
+      },
     );
 
     const sort = async c => {
@@ -379,9 +423,18 @@ export default {
       togglePopup: () => (popupActive.value = !popupActive.value),
       detail,
       hasHeaderSlot: !!slots.header,
+      definePage,
+      pageInput,
+      activatePageInput: () => {
+        pageInput.value = true;
+        nextTick(() => pageInputRef.value.focus());
+      },
+      pageInputValue,
+      // REFS
+      pageInputRef,
     };
   },
-  components: { Button, Popup, Copy },
+  components: { Button, Popup, Copy, Button, Input },
 };
 </script>
 

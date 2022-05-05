@@ -1,7 +1,7 @@
 <template>
   <a
     class="button cursor-pointer text-center"
-    :class="value ? 'default' : ''"
+    :class="{ default: value && !small }"
     v-if="!routerLink"
   >
     <i
@@ -10,7 +10,12 @@
     />
     <i class="fa fa-circle-notch fa-spin mr-1" v-if="loading" />{{ value }}
   </a>
-  <router-link class="button" :class="value ? 'default' : ''" v-else :to="href">
+  <router-link
+    v-else
+    class="button"
+    :class="{ default: value && !small }"
+    :to="href"
+  >
     <i v-if="!loading && icon" :class="`fa fa-${icon} mr-2`" />
     {{ value }}
   </router-link>
@@ -25,6 +30,7 @@ export default {
     href: { type: [String, Object], default: '' },
     loading: { type: Boolean, default: false },
     icon: { type: String, default: null },
+    small: { type: Boolean, default: false },
   },
 };
 </script>
