@@ -65,16 +65,21 @@
             </div>
           </div>
           <div class="flex column flex-12">
-            <div @click="openCustomWallet" class="pa-1 text-center">
+            <div class="pa-1 text-center">
               <i
                 v-if="provideWalletAddress"
-                class="text-darken fa fa-angle-up cursor-pointer mr-1"
+                class="text-darken fa fa-angle-up cursor-pointer pr-1"
+                @click="openCustomWallet"
               />
               <i
                 v-else
-                class="text-darken fa fa-angle-down cursor-pointer mr-1"
+                class="text-darken fa fa-angle-down cursor-pointer pr-1"
+                @click="openCustomWallet"
               />
-              <span class="text-darken cursor-pointer">
+              <span
+                class="text-darken cursor-pointer"
+                @click="openCustomWallet"
+              >
                 Provide wallet address
               </span>
               <Tooltip

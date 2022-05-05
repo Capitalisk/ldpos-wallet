@@ -408,6 +408,14 @@ th {
   padding-left: var(--unit-2);
 }
 
+.pr-1 {
+  padding-right: var(--unit-1);
+}
+
+.pr-2 {
+  padding-right: var(--unit-2);
+}
+
 .pa-0 {
   padding: 0 !important;
 }
