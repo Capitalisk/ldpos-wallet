@@ -265,6 +265,8 @@ export default {
         generatedWalletAddress.loading = false;
         generatedWalletAddress.data = null;
         generatedWalletAddress.error = null;
+        walletAddress.value = null;
+        provideWalletAddress.value = false;
       },
     );
 
@@ -279,7 +281,7 @@ export default {
         const options = {};
 
         if (provideWalletAddress.value)
-          options.walletAddress = walletAddress.value;
+          options.walletAddress = walletAddress.value.trim();
 
         if (generatedWalletAddress.data)
           await store.authenticate(generatedWalletAddress.data.passphrase);
@@ -313,9 +315,6 @@ export default {
     };
   },
   components: { Section, Copy, Button, Input, Navbar, Wallet, Tooltip, Input },
-  // mounted() {
-  //   this.$forceUpdate();
-  // },
 };
 </script>
 
