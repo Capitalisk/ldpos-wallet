@@ -36,7 +36,8 @@ export default {
 
     onMounted(() => {
       window.addEventListener('Document:click', event => {
-        !tooltipContainerRef.value.contains(event.detail) &&
+        tooltipContainerRef.value &&
+          !tooltipContainerRef.value.contains(event.detail) &&
           (tooltipActive.value = false);
       });
     });
