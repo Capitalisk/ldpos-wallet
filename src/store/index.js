@@ -104,6 +104,7 @@ export default {
     } catch (e) {
       state.authenticated = false;
       state.login.loading = false;
+      state.login.error = e.message;
       throw e;
     }
     state.login.loading = false;

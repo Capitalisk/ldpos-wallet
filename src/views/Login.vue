@@ -185,7 +185,7 @@ export default {
           if (v.error) errors.push(v.error);
         }
         if (errors.length)
-          rej(new Error('One or more of the field are invalid.'));
+          rej(new Error('One or more fields are invalid.'));
         res();
       });
     };
