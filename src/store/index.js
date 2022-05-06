@@ -96,14 +96,20 @@ export default {
         ...options,
       });
 
-      await client.syncKeyIndex('sig');
+      try {
+        await client.syncKeyIndex('sig');
+      } catch (err) {
+        if (!err.sourceError || err.sourceError.name !== 'AccountDidNotExistError') {
+          throw err;
+        }
+      }
 
       state.authenticated = true;
 
       // this.initiateOrRenewTimeout();
     } catch (e) {
-      state.authenticated = false;
       state.login.loading = false;
+      state.authenticated = false;
       state.login.error = e.message;
       throw e;
     }
