@@ -280,12 +280,17 @@ export default {
       signin: async () => {
         const options = {};
 
-        if (provideWalletAddress.value)
+        if (provideWalletAddress.value && walletAddress.value)
           options.walletAddress = walletAddress.value.trim();
 
-        if (generatedWalletAddress.data)
-          await store.authenticate(generatedWalletAddress.data.passphrase);
-        else {
+        if (generatedWalletAddress.data) {
+          try {
+            await store.authenticate(generatedWalletAddress.data.passphrase);
+          } catch (e) {
+            store.notify({ message: `Error: ${e.message}`, error: true }, 5);
+            console.error(e);
+          }
+        } else {
           try {
             await validateAllInputs();
             await store.authenticate(passphrase.value, options);

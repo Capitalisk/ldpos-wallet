@@ -89,18 +89,22 @@ export default {
     try {
       state.authenticated = false;
 
-      await state.clients[networkSymbol][network].connect({
+      const client = state.clients[networkSymbol][network];
+
+      await client.connect({
         passphrase,
         ...options,
       });
+
+      await client.syncKeyIndex('sig');
 
       state.authenticated = true;
 
       // this.initiateOrRenewTimeout();
     } catch (e) {
-      console.error(e);
-      state.login.error = e.message;
       state.authenticated = false;
+      state.login.loading = false;
+      throw e;
     }
     state.login.loading = false;
     if (state.authenticated) router.push({ name: 'wallet' });
