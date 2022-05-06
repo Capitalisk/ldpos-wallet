@@ -21,9 +21,9 @@
 </template>
 
 <script>
-import { onMounted, onUnmounted, ref } from 'vue';
+import { onMounted, onUnmounted, ref, defineComponent } from 'vue';
 
-export default {
+export default defineComponent({
   name: 'Tooltip',
   props: {
     content: { type: String, required: true },
@@ -56,7 +56,8 @@ export default {
       tooltipActive,
     };
   },
-};
+  inheritAttrs: false,
+});
 </script>
 
 <style scoped>
