@@ -3,7 +3,7 @@
   <Section>
     <DataTable
       order="desc"
-      prefix="delegates"
+      :prefix="urlPrefix"
       clickable
       :columns="columns"
       :fn="data.fn"
@@ -11,7 +11,7 @@
       :title="data.arg"
       :titleLink="data.titleLink"
       :able-to-copy-title="ableToCopyTitle"
-      :paginate="false"
+      :paginate="paginate"
     >
       <template v-slot:address="slotProps">
         <Copy
@@ -34,7 +34,7 @@ import DataTable from '../components/DataTable';
 import Copy from '../components/Copy';
 
 export default {
-  name: 'DetailedVotesPage',
+  name: 'VotingListPage',
   components: { Section, DetailedData, Navbar, DataTable, Copy },
   props: {
     dataTable: { type: Boolean, default: false },
@@ -58,6 +58,14 @@ export default {
             return votes.map(address => ({ address }));
           },
         }),
+        DelegateVoters: () => ({
+          titleLink: `/accounts/${route.params.delegateId}`,
+          arg: route.params.delegateId,
+          fn: async (delegateId, fromTimestamp, offset, limit, order) => {
+            const voters = await store.client.value.getDelegateVoters(delegateId, offset, limit, order);
+            return voters.map(address => ({ address }));
+          },
+        }),
         default: () => {},
       };
       data.value = (sw[route.name] || sw.default)();
@@ -67,10 +75,12 @@ export default {
 
     getData();
 
+    let isVoterList = !!route.params.delegateId;
+
     const columns = ref([
       {
         name: 'address',
-        label: 'Delegate address',
+        label: isVoterList ? 'Voter address' : 'Delegate address',
         field: 'address',
         sortable: false,
         active: true,
@@ -79,6 +89,8 @@ export default {
     ]);
 
     return {
+      paginate: isVoterList,
+      urlPrefix: isVoterList ? 'accounts' : 'delegates',
       data,
       columns,
       loading: computed(() => store.state.progressbarLoading),

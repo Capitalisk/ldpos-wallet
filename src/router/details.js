@@ -7,7 +7,7 @@ export default [
         /* webpackChunkName: "accountstransactions" */ '../views/DetailedPage'
       ),
     props: {
-      title: 'Account Transaction Details',
+      title: 'Account Transaction List',
       dataTable: true,
       id: 'accounttransactions',
       // ableToCopyTitle: true,
@@ -19,14 +19,13 @@ export default [
     name: 'AccountVotes',
     component: () =>
       import(
-        /* webpackChunkName: "accountstransactions" */ '../views/DetailedVotesPage'
+        /* webpackChunkName: "accountstransactions" */ '../views/VotingListPage'
       ),
     props: {
-      title: 'Account Vote Details',
+      title: 'Account Vote List',
       dataTable: true,
       id: 'accountvotes',
       // ableToCopyTitle: true,
-      showDirection: true,
     },
   },
   {
@@ -37,7 +36,7 @@ export default [
         /* webpackChunkName: "blocktransactions" */ '../views/DetailedPage'
       ),
     props: {
-      title: 'Block Transaction Details',
+      title: 'Block Transaction List',
       dataTable: true,
       id: 'blocktransactions',
       // ableToCopyTitle: true,
@@ -71,6 +70,20 @@ export default [
     props: {
       title: 'Delegate Details',
       id: 'delegates',
+    },
+  },
+  {
+    path: '/delegates/:delegateId/voters',
+    name: 'DelegateVoters',
+    component: () =>
+      import(
+        /* webpackChunkName: "accountstransactions" */ '../views/VotingListPage'
+      ),
+    props: {
+      title: 'Delegate Voter List',
+      dataTable: true,
+      id: 'delegatevoters',
+      // ableToCopyTitle: true,
     },
   },
   {

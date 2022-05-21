@@ -37,6 +37,13 @@
         :href="`/accounts/${$route.params.accountId}/votes`"
       />
       <Button
+        v-if="$route.params.delegateId"
+        router-link
+        value="View voters"
+        class="ml-1 mr-2"
+        :href="`/delegates/${$route.params.delegateId}/voters`"
+      />
+      <Button
         v-if="$route.params.accountId"
         router-link
         value="View transactions"
