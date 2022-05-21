@@ -93,7 +93,7 @@
       <slot name="header" class="pa-2" />
     </div>
   </div>
-  <div v-if="fn" class="flex pagination">
+  <div v-if="fn && paginate" class="flex pagination">
     <!-- TODO: Add page one -->
     <Button
       id="previous-page"
@@ -154,6 +154,7 @@ export default {
     arg: { type: String, default: null },
     prefix: { type: String, default: null },
     prependFn: { type: Function, default: null },
+    paginate: { type: Boolean, default: true },
   },
   setup(props, { emit, slots }) {
     const store = inject('store');
@@ -259,7 +260,7 @@ export default {
 
     onMounted(async () => {
       // Use replace instead of push that way we can skip a page in the history
-      if (!route.query.p) router.replace({ query: { ...route.query, p: 1 } });
+      if (props.paginate && !route.query.p) router.replace({ query: { ...route.query, p: 1 } });
 
       if (props.fn) {
         await updateRows();

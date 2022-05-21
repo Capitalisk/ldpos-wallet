@@ -32,6 +32,13 @@
       <Button
         v-if="$route.params.accountId"
         router-link
+        value="View votes"
+        class="ml-1 mr-2"
+        :href="`/accounts/${$route.params.accountId}/votes`"
+      />
+      <Button
+        v-if="$route.params.accountId"
+        router-link
         value="View transactions"
         class="ml-1 mr-2"
         :href="`/accounts/${$route.params.accountId}/transactions`"

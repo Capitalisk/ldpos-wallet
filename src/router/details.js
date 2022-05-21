@@ -15,6 +15,21 @@ export default [
     },
   },
   {
+    path: '/accounts/:accountId/votes',
+    name: 'AccountVotes',
+    component: () =>
+      import(
+        /* webpackChunkName: "accountstransactions" */ '../views/DetailedVotesPage'
+      ),
+    props: {
+      title: 'Account Vote Details',
+      dataTable: true,
+      id: 'accountvotes',
+      // ableToCopyTitle: true,
+      showDirection: true,
+    },
+  },
+  {
     path: '/blocks/:blockId/transactions',
     name: 'BlockTransactions',
     component: () =>
