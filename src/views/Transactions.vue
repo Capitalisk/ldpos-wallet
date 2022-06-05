@@ -98,6 +98,7 @@ export default {
         value: val =>
           _transformMonetaryUnit(val, store.state.config.networkSymbol),
         active: true,
+        shrinkUntilWidth: 992,
       },
       {
         name: 'fee',
