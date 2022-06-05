@@ -193,6 +193,7 @@ export default {
         value: val =>
           _transformMonetaryUnit(val, store.state.config.networkSymbol),
         active: true,
+        shrinkUntilWidth: 768,
       },
       {
         name: 'fee',
@@ -234,6 +235,7 @@ export default {
             active: true,
             slot: true,
             shrinkUntilWidth: 2300,
+            hideOnMobile: true,
           },
           {
             name: 'recipientAddress',
@@ -242,6 +244,7 @@ export default {
             active: true,
             slot: true,
             shrinkUntilWidth: 2300,
+            hideOnMobile: true,
           }
         );
       }

@@ -48,12 +48,12 @@ export default {
         store.notify({ message: `Copied: ${props.value}` }, 5);
       },
       shrinkValue: val => {
-        if (val.length > 16) {
+        if (val.length > 14) {
           const arr = val.split('');
           return [
-            ...arr.slice(0, 9),
+            ...arr.slice(0, 6),
             '...',
-            ...arr.slice(arr.length - 5, arr.length),
+            ...arr.slice(arr.length - 4, arr.length),
           ].join('');
         }
         return val.toString();
