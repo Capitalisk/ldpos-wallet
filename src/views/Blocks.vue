@@ -66,6 +66,7 @@ export default {
         sortable: false,
         active: true,
         slot: true,
+        hideOnMobile: true,
       },
     ]);
 

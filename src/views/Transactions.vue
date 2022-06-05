@@ -68,6 +68,7 @@ export default {
         active: true,
         slot: true,
         shrinkUntilWidth: 1800,
+        hideOnMobile: true,
       },
       {
         name: 'recipientAddress',
@@ -77,6 +78,7 @@ export default {
         active: true,
         slot: true,
         shrinkUntilWidth: 1800,
+        hideOnMobile: true,
       },
       {
         name: 'timestamp',
@@ -86,6 +88,7 @@ export default {
         value: val => _parseDate(val),
         active: true,
         sorted: 'desc',
+        hideOnMobile: true,
       },
       {
         name: 'amount',
@@ -104,6 +107,7 @@ export default {
         value: val =>
           _transformMonetaryUnit(val, store.state.config.networkSymbol),
         active: true,
+        hideOnMobile: true,
       },
     ]);
 

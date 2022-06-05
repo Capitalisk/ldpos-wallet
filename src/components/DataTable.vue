@@ -25,7 +25,7 @@
       <table v-if="rows && rows.length" id="data-table">
         <thead>
           <template v-for="(c, i) in columns" :key="i">
-            <th v-if="c.active" class="pa-2">
+            <th v-if="c.active" :class="`pa-2${c.hideOnMobile ? ' mobile-hidden' : ''}`">
               <div class="flex justify-end">
                 <div class="mr-auto">
                   {{ c.label }}
@@ -52,9 +52,9 @@
             <template v-for="(c, i) in columns" :key="i">
               <td
                 :class="
-                  `px-2 py-3 mr-2  ${c.class || ''} ${
-                    clickable ? 'cursor-pointer' : ''
-                  }`
+                  `px-2 py-3 mr-2${c.class ? ' ' + c.class : ''}${
+                    clickable ? ' cursor-pointer' : ''
+                  }${c.hideOnMobile ? ' mobile-hidden' : ''}`
                 "
                 @click="clickable ? detail(r) : ''"
                 v-if="c.active"

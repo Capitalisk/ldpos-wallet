@@ -29,61 +29,63 @@
       </div>
     </template>
     <template v-if="!searchActive">
-      <Button
-        v-if="$route.params.accountId"
-        router-link
-        value="View votes"
-        class="ml-1 mr-2"
-        :href="`/accounts/${$route.params.accountId}/votes`"
-      />
-      <Button
-        v-if="$route.params.delegateId"
-        router-link
-        value="View voters"
-        class="ml-1 mr-2"
-        :href="`/delegates/${$route.params.delegateId}/voters`"
-      />
-      <Button
-        v-if="$route.params.accountId"
-        router-link
-        value="View transactions"
-        class="ml-1 mr-2"
-        :href="`/accounts/${$route.params.accountId}/transactions`"
-      />
-      <Button
-        v-if="$route.params.blockId"
-        router-link
-        value="View transactions"
-        class="ml-1 mr-2"
-        :href="`/blocks/${$route.params.blockId}/transactions`"
-      />
-      <Connected />
-      <span class="flex justify-center align-center mr-2">
-        <Switch v-model="darkMode" id="darkmode-switch" />
-      </span>
-      <Button
-        v-if="authenticated"
-        value="Sign out"
-        @click="signout"
-        class="ml-1 mr-2"
-      />
-      <Button
-        value="Sign in"
-        router-link
-        :href="isElectron ? '/' : '/login'"
-        v-else-if="
-          (($router.currentRoute.value.path !== '/' && isElectron) ||
-            (!isElectron && $router.currentRoute.value.path !== '/login')) &&
-            !authenticated
-        "
-        class="ml-1 mr-2"
-      />
-      <Button
-        v-if="!searchActive && routes.includes(searchParam)"
-        icon="search"
-        @click="activateSearch"
-        class="pa-1 outline"
-      />
+      <div class="navbar-menu">
+        <Button
+          v-if="$route.params.accountId"
+          router-link
+          value="View votes"
+          class="ml-1 mr-2"
+          :href="`/accounts/${$route.params.accountId}/votes`"
+        />
+        <Button
+          v-if="$route.params.delegateId"
+          router-link
+          value="View voters"
+          class="ml-1 mr-2"
+          :href="`/delegates/${$route.params.delegateId}/voters`"
+        />
+        <Button
+          v-if="$route.params.accountId"
+          router-link
+          value="View transactions"
+          class="ml-1 mr-2"
+          :href="`/accounts/${$route.params.accountId}/transactions`"
+        />
+        <Button
+          v-if="$route.params.blockId"
+          router-link
+          value="View transactions"
+          class="ml-1 mr-2"
+          :href="`/blocks/${$route.params.blockId}/transactions`"
+        />
+        <Connected />
+        <span class="flex justify-center align-center mr-2">
+          <Switch v-model="darkMode" id="darkmode-switch" />
+        </span>
+        <Button
+          v-if="authenticated"
+          value="Sign out"
+          @click="signout"
+          class="ml-1 mr-2"
+        />
+        <Button
+          value="Sign in"
+          router-link
+          :href="isElectron ? '/' : '/login'"
+          v-else-if="
+            (($router.currentRoute.value.path !== '/' && isElectron) ||
+              (!isElectron && $router.currentRoute.value.path !== '/login')) &&
+              !authenticated
+          "
+          class="ml-1 mr-2"
+        />
+        <Button
+          v-if="!searchActive && routes.includes(searchParam)"
+          icon="search"
+          @click="activateSearch"
+          class="pa-1 outline"
+        />
+      </div>
     </template>
   </div>
 </template>

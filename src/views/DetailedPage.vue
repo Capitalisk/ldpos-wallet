@@ -173,6 +173,7 @@ export default {
         field: 'type',
         sortable: false,
         active: true,
+        hideOnMobile: true,
       },
       {
         name: 'timestamp',
@@ -182,6 +183,7 @@ export default {
         value: val => _parseDate(val),
         active: true,
         sorted: 'desc',
+        hideOnMobile: true,
       },
       {
         name: 'amount',
@@ -200,6 +202,7 @@ export default {
         value: val =>
           _transformMonetaryUnit(val, store.state.config.networkSymbol),
         active: true,
+        hideOnMobile: true,
       },
     ]);
 
@@ -213,6 +216,7 @@ export default {
           active: true,
           shrinkUntilWidth: 1700,
           slot: true,
+          hideOnMobile: true,
         });
         columns.value.push({
           name: 'direction',

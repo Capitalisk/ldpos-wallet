@@ -1,5 +1,5 @@
 <template>
-  <span class="connection">
+  <span class="connection mobile-hidden">
     {{ connected ? `Connected: ${network}` : 'Disconnected' }}
   </span>
   <Dot :active="connected" />

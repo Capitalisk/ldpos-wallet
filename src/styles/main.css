@@ -640,8 +640,27 @@ th {
   opacity: 0;
 }
 
-.section-title {
-  padding-right: 30px;
+.navbar {
+  flex-wrap: wrap;
+}
+
+.navbar-menu {
+  display: flex;
+  align-items: center;
+}
+
+.wrap-break-all {
+  word-break: break-all;
+}
+
+@media screen and (max-width: 992px) {
+  .mobile-hidden {
+    display: none;
+  }
+  .navbar > * {
+    margin-top: 2px;
+    margin-bottom: 2px;
+  }
 }
 
 @media screen and (max-width: 768px) {

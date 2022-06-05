@@ -210,6 +210,7 @@ export default {
         active: true,
         slot: true,
         shrinkUntilWidth: 2100,
+        hideOnMobile: true,
       },
       {
         name: 'type',
@@ -217,6 +218,7 @@ export default {
         field: 'type',
         sortable: false,
         active: true,
+        hideOnMobile: true,
       },
       {
         name: 'counterpartyAddress',
@@ -227,6 +229,7 @@ export default {
         active: true,
         slot: true,
         shrinkUntilWidth: 1800,
+        hideOnMobile: true,
       },
       {
         name: 'timestamp',
@@ -235,6 +238,7 @@ export default {
         sortable: false,
         value: val => _parseDate(val),
         active: true,
+        hideOnMobile: true,
       },
       {
         name: 'amount',
@@ -253,6 +257,7 @@ export default {
         value: val =>
           _transformMonetaryUnit(val, store.state.config.networkSymbol),
         active: true,
+        hideOnMobile: true,
       },
       {
         name: 'direction',
@@ -337,7 +342,7 @@ export default {
       confirmationRef,
       confirmationModal,
       passphrase,
-      shrink: window.innerWidth < 768,
+      shrink: window.innerWidth < 992,
     };
   },
   components: {

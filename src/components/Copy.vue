@@ -1,5 +1,5 @@
 <template>
-  <div class="nowrap">
+  <div class="wrap-break-all">
     <template v-if="value">
       <router-link @click.stop.prevent v-if="link" :to="link">
         <span ref="copyRef" :class="{ wrap, ellipsis }">

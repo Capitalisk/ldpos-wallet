@@ -103,6 +103,7 @@ export default {
         sortable: false,
         value: (val, r, rows, offset) => `#${rows.indexOf(r) + 1 + offset}`,
         active: true,
+        hideOnMobile: true,
       },
       {
         name: 'address',
@@ -112,6 +113,7 @@ export default {
         value: val => val,
         active: true,
         slot: true,
+        shrinkUntilWidth: 992,
       },
       {
         name: 'voteWeight',
@@ -120,6 +122,7 @@ export default {
         sortable: false,
         value: val => _transformMonetaryUnit(val),
         active: true,
+        hideOnMobile: true,
         shrinkUntilWidth: 1400,
       },
       {
@@ -128,6 +131,7 @@ export default {
         field: 'forging',
         active: true,
         slot: true,
+        hideOnMobile: true,
       },
       {
         name: 'vote',
