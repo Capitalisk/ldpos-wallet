@@ -23,7 +23,7 @@
         "
         class="modal"
         :back-button="stack.length > 1"
-        :style="{ height: '100%' }"
+        :style="{ height: '100%', padding: '20px', boxSizing: 'border-box' }"
       >
         <div class="force-modal-scroll">
           <template v-if="!useSlot">

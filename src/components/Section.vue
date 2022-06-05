@@ -1,6 +1,6 @@
 <template>
   <div class="section pa-2">
-    <div>
+    <div class="section-title">
       <h2 v-if="title" :class="{ 'ml-4': backButton }">{{ title }}</h2>
     </div>
 

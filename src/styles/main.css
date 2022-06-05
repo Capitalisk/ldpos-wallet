@@ -622,24 +622,6 @@ th {
   text-overflow: ellipsis;
 }
 
-@media screen and (max-width: 768px) {
-  .flex-3 {
-    flex-basis: 100%;
-  }
-  .flex-wrap-mobile {
-    flex-wrap: wrap;
-  }
-}
-
-@keyframes progress-indeterminate {
-  0% {
-    background-position: 200% 0;
-  }
-  100% {
-    background-position: -200% 0;
-  }
-}
-
 /*
   Enter and leave animations can use different
   durations and timing functions.
@@ -656,4 +638,29 @@ th {
 .slide-fade-leave-to {
   transform: translateY(-10px);
   opacity: 0;
+}
+
+.section-title {
+  padding-right: 30px;
+}
+
+@media screen and (max-width: 768px) {
+  .flex-3 {
+    flex-basis: 100%;
+  }
+  .flex-wrap-mobile {
+    flex-wrap: wrap;
+  }
+  .section-title h2 {
+    font-size: 20px;
+  }
+}
+
+@keyframes progress-indeterminate {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
 }
