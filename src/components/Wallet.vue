@@ -261,7 +261,7 @@ export default {
       },
       {
         name: 'direction',
-        label: 'Direction',
+        label: '',
         sortable: false,
         active: true,
         slot: true,

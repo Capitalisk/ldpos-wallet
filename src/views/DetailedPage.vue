@@ -221,7 +221,7 @@ export default {
         });
         columns.value.push({
           name: 'direction',
-          label: 'Direction',
+          label: '',
           sortable: false,
           active: true,
           slot: true,
