@@ -114,6 +114,10 @@ input::placeholder {
   opacity: 0.4;
 }
 
+select {
+  outline: 0;
+}
+
 a {
   color: var(--primary-lighter);
   text-decoration: unset;
