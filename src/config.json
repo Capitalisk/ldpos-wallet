@@ -15,13 +15,5 @@
       "chainModuleName": "capitalisk_chain",
       "pollInterval": 10000
     }
-  },
-  "foo": {
-    "testnet": {
-      "hostname": "34.227.22.98",
-      "port": "7001",
-      "networkSymbol": "foo",
-      "chainModuleName": "foo_chain"
-    }
   }
 }

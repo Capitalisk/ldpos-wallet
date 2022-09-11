@@ -12,8 +12,8 @@
         @keyup.enter="connect"
       />
     </div>
-    <div class="mb-1" v-if="isDevelopment && network">Type</div>
-    <div class="mb-2" v-if="isDevelopment && network">
+    <div class="mb-1" v-if="network">Type</div>
+    <div class="mb-2" v-if="network">
       <Select
         v-model="type"
         :options="Object.keys(networks[network] || [])"
@@ -62,36 +62,22 @@ export default {
 
     const hasErrors = ref(false);
 
-    const filterNetworks = networks => {
-      if (isDevelopment) {
-        return networks;
-      } else {
-        const keys = Object.keys(networks);
-        const newNetworks = [];
-        for (let i = 0; i < keys.length; i++) {
-          const network = keys[i];
-          if (!networks[network].mainnet) delete networks[network];
-        }
-        return networks;
-      }
-    };
-
     const getConfig = async () => {
       network.value = store.state.config.networkSymbol;
       if (isElectron) {
         const { ipcRenderer } = await import('electron');
         const config = JSON.parse(await ipcRenderer.invoke('get-config'));
-        networks.value = filterNetworks(config);
+        networks.value = config;
         return;
       }
 
       const localStorageConfig = JSON.parse(localStorage.getItem('config'));
       if (!localStorageConfig) {
         const config = await import('../../config.json');
-        networks.value = filterNetworks(config.default);
+        networks.value = config.default;
         return;
       }
-      networks.value = filterNetworks(localStorageConfig);
+      networks.value = localStorageConfig;
     };
 
     onMounted(async () => {
