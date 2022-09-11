@@ -13,6 +13,7 @@
       "port": "7001",
       "networkSymbol": "clsk",
       "chainModuleName": "capitalisk_chain",
+      "secure": false,
       "pollInterval": 10000
     }
   }
