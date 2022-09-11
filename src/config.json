@@ -9,11 +9,11 @@
       "pollInterval": 10000
     },
     "testnet": {
-      "hostname": "34.227.22.98",
-      "port": "7001",
+      "hostname": "test.capitalisk.com",
+      "port": "443",
       "networkSymbol": "clsk",
       "chainModuleName": "capitalisk_chain",
-      "secure": false,
+      "secure": true,
       "pollInterval": 10000
     }
   }

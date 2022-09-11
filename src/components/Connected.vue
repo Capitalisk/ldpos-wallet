@@ -18,9 +18,9 @@ export default {
     return {
       connected: computed(() => store.state.connected),
       network: computed(() =>
-        store.state.config && store.state.config.port === '7001'
-          ? 'Testnet'
-          : 'Mainnet',
+        store.state.selectedNetwork ?
+        `${store.state.selectedNetwork.charAt(0).toUpperCase()}${store.state.selectedNetwork.slice(1)}` :
+        'Mainnet',
       ),
     };
   },
