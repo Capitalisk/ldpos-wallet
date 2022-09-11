@@ -2,7 +2,12 @@
   <div class="flex column fullwidth">
     <template v-for="(value, key) in detailedData" :key="key">
       <div v-if="!Array.isArray(value)" class="flex column my-2 px-1">
-        <div class="title">
+        <div
+          class="title"
+          :class="{
+            'text-danger': value.name,
+          }"
+        >
           <strong>{{ transformTitle(key) }}</strong>
         </div>
         <div v-if="links[key]">
@@ -13,6 +18,10 @@
             :link="`/${links[key]}/${value}`"
           />
           <Copy v-else wrap :value="transformValue(key, value)" />
+        </div>
+        <!-- ERROR -->
+        <div v-else-if="value.name" class="text-danger">
+          <Copy wrap :value="transformValue(key, value.message)" />
         </div>
         <div v-else>
           <Copy wrap :value="transformValue(key, value)" />
@@ -91,8 +100,10 @@ export default {
       amount: val =>
         _transformMonetaryUnit(val, store.state.config.networkSymbol),
       fee: val => _transformMonetaryUnit(val, store.state.config.networkSymbol),
-      voteWeight: val => _transformMonetaryUnit(val, store.state.config.networkSymbol),
-      forgingRewards: val => _transformMonetaryUnit(val, store.state.config.networkSymbol),
+      voteWeight: val =>
+        _transformMonetaryUnit(val, store.state.config.networkSymbol),
+      forgingRewards: val =>
+        _transformMonetaryUnit(val, store.state.config.networkSymbol),
       type: val => _capitalize(_splitCamelCaseWords(val).join(' ')),
     };
 
