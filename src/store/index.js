@@ -71,7 +71,7 @@ export default {
     try {
       await state.clients[networkSymbol][network].connect();
     } catch (e) {
-      console.log(e);
+      console.error(e);
       state.connected = false;
       this.mutateProgressbarLoading(false);
       throw new Error('Failed to connect to the network.');

@@ -5,7 +5,7 @@
         <div
           class="title"
           :class="{
-            'text-danger': value.name,
+            'text-danger': value && value.name,
           }"
         >
           <strong>{{ transformTitle(key) }}</strong>
@@ -20,7 +20,7 @@
           <Copy v-else wrap :value="transformValue(key, value)" />
         </div>
         <!-- ERROR -->
-        <div v-else-if="value.name" class="text-danger">
+        <div v-else-if="value && value.name" class="text-danger">
           <Copy wrap :value="transformValue(key, value.message)" />
         </div>
         <div v-else>
