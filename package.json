@@ -9,6 +9,7 @@
   },
   "scripts": {
     "serve": "vue-cli-service serve",
+    "serve:android": "npx cap run android",
     "build": "vue-cli-service build",
     "test:e2e": "vue-cli-service test:e2e",
     "android:generate:logo": "cordova-res android --skip-config --copy",
