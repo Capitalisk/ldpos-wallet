@@ -90,15 +90,15 @@
       </table>
       <span v-else-if="!loading && rows && !rows.length" class="ma-3">
         <div class="flex justify-center">
-          <lottie-player
-            src="https://assets3.lottiefiles.com/packages/lf20_IUyiNyKLsv.json"
+          <LottiePlayer
+            :animation-data="notFound"
             background="transparent"
             speed="1"
             style="width: 500px; height: 500px;"
             loop
             controls
             autoplay
-          ></lottie-player>
+          />
         </div>
       </span>
     </div>
@@ -141,6 +141,9 @@ import { _isNumber } from '../utils';
 import Button from './Button';
 import Popup from './Popup';
 import Copy from './Copy.vue';
+import LottiePlayer from './LottiePlayer';
+
+import notFound from '../animations/not-found2.json';
 
 const DEFAULT_POLL_INTERVAL = 10000;
 
@@ -384,9 +387,10 @@ export default {
       togglePopup: () => (popupActive.value = !popupActive.value),
       detail,
       hasHeaderSlot: !!slots.header,
+      notFound,
     };
   },
-  components: { Button, Popup, Copy },
+  components: { Button, Popup, Copy, LottiePlayer },
 };
 </script>
 

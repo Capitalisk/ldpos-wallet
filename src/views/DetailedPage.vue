@@ -1,6 +1,23 @@
 <template>
   <Navbar back :title="title" />
-  <Section>
+  <Section v-if="hasError">
+    <div class="column">
+      <div class="flex justify-center">
+        <h1>We could not find the record you were looking for</h1>
+      </div>
+      <div class="flex justify-center">
+        <LottiePlayer
+          :animation-data="notFound"
+          background="transparent"
+          speed="1"
+          style="width: 500px; height: 500px;"
+          loop
+          autoplay
+        />
+      </div>
+    </div>
+  </Section>
+  <Section v-else>
     <DataTable
       v-if="dataTable && data.fn"
       order="desc"
@@ -72,10 +89,21 @@ import Section from '../components/Section';
 import Navbar from '../components/Navbar';
 import DataTable from '../components/DataTable';
 import Copy from '../components/Copy';
+import LottiePlayer from '../components/LottiePlayer';
+
+import notFound from '../animations/not-found.json';
 
 export default {
   name: 'DetailedPage',
-  components: { Section, DetailedData, Navbar, DataTable, Copy },
+  components: {
+    Section,
+    DetailedData,
+    Navbar,
+    DataTable,
+    Copy,
+    Section,
+    LottiePlayer,
+  },
   props: {
     dataTable: { type: Boolean, default: false },
     ableToCopyTitle: { type: Boolean, default: true },
@@ -87,6 +115,7 @@ export default {
     const store = inject('store');
     const route = useRoute();
     const data = ref({});
+    const hasError = ref(false);
 
     const getData = async () => {
       store.mutateProgressbarLoading(true);
@@ -150,7 +179,21 @@ export default {
           default: () => {},
         };
 
-        data.value = await (sw[key] || sw.default)();
+        try {
+          data.value = await (sw[key] || sw.default)();
+        } catch (e) {
+          console.error(e);
+
+          store.notify(
+            {
+              message: 'Error: entry not found',
+              error: true,
+            },
+            5,
+          );
+
+          hasError.value = true;
+        }
       }
       store.mutateProgressbarLoading(false);
     };
@@ -227,7 +270,9 @@ export default {
           slot: true,
         });
       } else {
-        columns.value.splice(2, 0,
+        columns.value.splice(
+          2,
+          0,
           {
             name: 'senderAddress',
             label: 'Sender',
@@ -245,7 +290,7 @@ export default {
             slot: true,
             shrinkUntilWidth: 2300,
             hideOnMobile: true,
-          }
+          },
         );
       }
     });
@@ -253,6 +298,8 @@ export default {
     return {
       data,
       columns,
+      hasError,
+      notFound,
       loading: computed(() => store.state.progressbarLoading),
     };
   },

@@ -4,9 +4,15 @@
   <Sidebar />
   <div class="main-content relative">
     <Loading v-if="!connected" />
-    <!-- We need to re-render DataTable to update the info, by using :key we force the DataTable to remount itself,
+    <router-view v-else v-slot="{ Component, route }">
+      <transition name="fade">
+        <!-- We need to re-render DataTable to update the info, by using :key we force the DataTable to remount itself,
          we don't use fullPath because it includes query params, these are used for pagination -->
-    <router-view v-else :key="$route.path" />
+        <div :key="route.path">
+          <component :is="Component" />
+        </div>
+      </transition>
+    </router-view>
   </div>
   <Notification />
 </template>
@@ -14,7 +20,6 @@
 <script>
 import { onMounted, computed, onUnmounted } from 'vue';
 
-import router from './router';
 import store from './store';
 
 import Loading from './components/Loading';
@@ -74,6 +79,15 @@ export default {
   top: 0;
   right: 0;
   z-index: 500;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.1s;
+}
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
 }
 
 @media screen and (max-width: 768px) {

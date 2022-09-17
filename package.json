@@ -34,6 +34,7 @@
     "@capacitor/cli": "^3.2.3",
     "@capacitor/core": "^3.2.3",
     "ldpos-client": "^11.3.1",
+    "lottie-web": "^5.9.6",
     "vue": "^3.2.24",
     "vue-router": "^4.0.12"
   },
