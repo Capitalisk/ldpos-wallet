@@ -155,6 +155,7 @@ jobs:
         run: |
           npm i
           npm run build
+          npx cordova-res android --skip-config --copy
           npx cap copy android
           npx cap sync
           cd android
