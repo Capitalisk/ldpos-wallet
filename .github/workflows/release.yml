@@ -152,10 +152,10 @@ jobs:
           node-version: ${{ matrix.node-version }}
 
       - name: Install and build for Android
+        # npx cordova-res android --skip-config --copy --icon-background-source '#161a33'
         run: |
           npm i
           npm run build
-          npx cordova-res android --skip-config --copy
           npx cap copy android
           npx cap sync
           cd android
