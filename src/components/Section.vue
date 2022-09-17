@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import { computed, inject, onMounted, ref } from 'vue';
+import { computed, inject } from 'vue';
 
 import Loading from './Loading';
 

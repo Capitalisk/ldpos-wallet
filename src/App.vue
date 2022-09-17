@@ -81,7 +81,7 @@ export default {
     margin-left: 0;
     margin-top: 56px;
     width: 100%;
-    padding: var(--unit-2) 0;
+    padding: 0 0 var(--unit-2);
   }
 }
 </style>

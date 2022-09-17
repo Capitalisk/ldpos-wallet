@@ -25,7 +25,10 @@
       <table v-if="rows && rows.length" id="data-table">
         <thead>
           <template v-for="(c, i) in columns" :key="i">
-            <th v-if="c.active" :class="`pa-2${c.hideOnMobile ? ' mobile-hidden' : ''}`">
+            <th
+              v-if="c.active"
+              :class="`pa-2${c.hideOnMobile ? ' mobile-hidden' : ''}`"
+            >
               <div class="flex justify-end">
                 <div class="mr-auto">
                   {{ c.label }}
@@ -86,7 +89,17 @@
         </tbody>
       </table>
       <span v-else-if="!loading && rows && !rows.length" class="ma-3">
-        No records found...
+        <div class="flex justify-center">
+          <lottie-player
+            src="https://assets3.lottiefiles.com/packages/lf20_IUyiNyKLsv.json"
+            background="transparent"
+            speed="1"
+            style="width: 500px; height: 500px;"
+            loop
+            controls
+            autoplay
+          ></lottie-player>
+        </div>
       </span>
     </div>
     <div class="footer">
@@ -120,14 +133,7 @@
 </template>
 
 <script>
-import {
-  computed,
-  inject,
-  onMounted,
-  onUnmounted,
-  ref,
-  watch,
-} from 'vue';
+import { computed, inject, onMounted, onUnmounted, ref, watch } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 
 import { _isNumber } from '../utils';
@@ -174,9 +180,7 @@ export default {
       _isNumber(route.query.p) ? parseInt(route.query.p) : 1,
     );
 
-    const offset = computed(() =>
-      (page.value - 1) * limit.value
-    );
+    const offset = computed(() => (page.value - 1) * limit.value);
 
     const getData = async () => {
       if (typeof props.fn === 'string') {
@@ -260,7 +264,8 @@ export default {
 
     onMounted(async () => {
       // Use replace instead of push that way we can skip a page in the history
-      if (props.paginate && !route.query.p) router.replace({ query: { ...route.query, p: 1 } });
+      if (props.paginate && !route.query.p)
+        router.replace({ query: { ...route.query, p: 1 } });
 
       if (props.fn) {
         await updateRows();
@@ -307,7 +312,7 @@ export default {
             await updateRows();
           }
         }
-      }
+      },
     );
 
     const sort = async c => {

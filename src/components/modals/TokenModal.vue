@@ -40,9 +40,8 @@
 </template>
 
 <script>
-import { ref, reactive, computed, inject, onUpdated, onMounted } from 'vue';
+import { ref, inject, onMounted } from 'vue';
 
-import { CONFIG_FILE_PATH, CONFIG_PATH } from '../../constants';
 import { ADD_TOKEN_MODAL } from './constants';
 
 import Input from '../Input';

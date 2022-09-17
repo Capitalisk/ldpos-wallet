@@ -20,7 +20,7 @@
 </template>
 
 <script>
-import { inject, ref, computed } from 'vue';
+import { inject, ref } from 'vue';
 
 export default {
   name: 'Copy',

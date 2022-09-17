@@ -10,8 +10,6 @@
 </template>
 
 <script>
-import { getCurrentInstance } from 'vue';
-
 export default {
   name: 'Switch',
   props: {

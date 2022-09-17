@@ -77,6 +77,12 @@ body {
   background-color: var(--white);
 }
 
+@media screen and (max-width: 768px) {
+  body {
+    background-color: var(--primary);
+  }
+}
+
 h1,
 h2,
 h4,

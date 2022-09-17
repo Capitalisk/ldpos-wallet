@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import { ref, computed, toRefs, watch } from 'vue';
+import { ref } from 'vue';
 
 export default {
   name: 'Input',

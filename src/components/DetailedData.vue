@@ -57,7 +57,7 @@
 </template>
 
 <script>
-import { computed, inject, onMounted, onUnmounted, reactive, toRef } from 'vue';
+import { inject, onMounted, toRef } from 'vue';
 import {
   _parseDate,
   _transformMonetaryUnit,
@@ -66,7 +66,6 @@ import {
 } from '../utils';
 
 import Copy from './Copy';
-import { useRoute } from 'vue-router';
 
 export default {
   name: 'DetailedData',
@@ -78,7 +77,6 @@ export default {
   components: { Copy },
   setup(props) {
     const store = inject('store');
-    const route = useRoute();
 
     const titleTransformations = {
       timestamp: 'Date',

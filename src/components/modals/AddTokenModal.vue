@@ -18,7 +18,6 @@ export default {
     const store = inject('store');
 
     const isElectron = process.env.IS_ELECTRON;
-    const name = ref(null);
 
     const networkFormRef = ref(null);
 
