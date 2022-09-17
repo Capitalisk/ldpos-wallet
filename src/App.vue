@@ -5,7 +5,7 @@
   <div class="main-content relative">
     <Loading v-if="!connected" />
     <router-view v-else v-slot="{ Component, route }">
-      <transition name="fade">
+      <transition name="fade" mode="out-in">
         <!-- We need to re-render DataTable to update the info, by using :key we force the DataTable to remount itself,
          we don't use fullPath because it includes query params, these are used for pagination -->
         <div :key="route.path">
@@ -79,6 +79,13 @@ export default {
   top: 0;
   right: 0;
   z-index: 500;
+}
+
+.animation-absolute {
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
 }
 
 .fade-enter-active,
