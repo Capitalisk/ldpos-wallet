@@ -99,7 +99,10 @@ export default {
       try {
         await client.syncKeyIndex('sig');
       } catch (err) {
-        if (!err.sourceError || err.sourceError.name !== 'AccountDidNotExistError') {
+        if (
+          !err.sourceError ||
+          err.sourceError.name !== 'AccountDidNotExistError'
+        ) {
           throw err;
         }
       }

@@ -39,7 +39,10 @@
       </div>
     </a>
     <hr />
-    <router-link class="navbar-link" :to="{ name: useAsWallet ? 'wallet' : 'transactions' }">
+    <router-link
+      class="navbar-link"
+      :to="{ name: useAsWallet ? 'wallet' : 'transactions' }"
+    >
       <i class="fa fa-wallet mr-1" v-if="useAsWallet" />
       <i class="fa fa-exchange-alt mr-1" v-else />
       {{ useAsWallet ? 'WALLET' : 'TRANSACTIONS' }}
@@ -49,7 +52,10 @@
       {{ authenticated ? 'VOTING' : 'DELEGATES' }}
     </router-link>
     <hr v-if="useAsWallet" />
-    <router-link class="navbar-link" :to="{ name: useAsWallet ? 'transactions' : 'wallet' }">
+    <router-link
+      class="navbar-link"
+      :to="{ name: useAsWallet ? 'transactions' : 'wallet' }"
+    >
       <i class="fa fa-exchange-alt mr-1" v-if="useAsWallet" />
       <i class="fa fa-wallet mr-1" v-else />
       {{ useAsWallet ? 'TRANSACTIONS' : 'WALLET' }}
@@ -70,35 +76,24 @@
   </div>
 </template>
 
-<script>
-import { computed, inject, ref } from 'vue';
+<script setup>
+import { computed, inject } from 'vue';
 
 import Button from './Button';
 
-import { TOKEN_MODAL, ADD_TOKEN_MODAL } from './modals/constants';
+import { TOKEN_MODAL } from './modals/constants';
 
-export default {
-  name: 'Sidebar',
-  setup() {
-    const store = inject('store');
+const store = inject('store');
 
-    return {
-      authenticated: computed(() => store.state.authenticated),
-      burgerActive: computed(() => store.state.nav),
-      networkSymbol: computed(() =>
-        store.state.config.networkSymbol.toUpperCase(),
-      ),
-      TOKEN_MODAL,
-      ADD_TOKEN_MODAL,
-      toggleOrBrowseModal: m => store.toggleOrBrowseModal(m),
-      toggleBurger: () => store.toggleNav(),
-      deauthenticate: () => store.deauthenticate(),
-      useAsWallet: process.env.VUE_APP_USE_AS_WALLET === 'true',
-      isDevelopment: process.env.NODE_ENV === 'development',
-    };
-  },
-  components: { Button },
-};
+const authenticated = computed(() => store.state.authenticated);
+const burgerActive = computed(() => store.state.nav);
+const networkSymbol = computed(() =>
+  store.state.config.networkSymbol.toUpperCase(),
+);
+const toggleOrBrowseModal = m => store.toggleOrBrowseModal(m);
+const toggleBurger = () => store.toggleNav();
+const deauthenticate = () => store.deauthenticate();
+const useAsWallet = process.env.VUE_APP_USE_AS_WALLET === 'true';
 </script>
 
 <style scoped>

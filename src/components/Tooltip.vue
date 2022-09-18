@@ -5,58 +5,54 @@
     ref="tooltipIconRef"
     :class="iconClass"
   />
-  <div
-    v-if="tooltipActive"
-    class="tooltip pa-1 no-select"
-    v-bind="$attrs"
-    :style="{
-      top: $refs.tooltipIconRef.getBoundingClientRect().bottom + 5 + 'px',
-      left: $refs.tooltipIconRef.getBoundingClientRect().left + 5 + 'px',
-    }"
-    ref="tooltipContainerRef"
-    @click.stop.prevent
-  >
-    {{ content }}
-  </div>
+  <transition name="fade">
+    <div
+      v-if="tooltipActive"
+      class="tooltip pa-1 no-select"
+      v-bind="$attrs"
+      :style="{
+        top: $refs.tooltipIconRef.getBoundingClientRect().bottom + 5 + 'px',
+        left: $refs.tooltipIconRef.getBoundingClientRect().left + 5 + 'px',
+      }"
+      ref="tooltipContainerRef"
+      @click.stop.prevent
+    >
+      {{ content }}
+    </div>
+  </transition>
 </template>
 
 <script>
+export default {
+  inheritAttrs: false,
+};
+</script>
+
+<script setup>
 import { onMounted, onUnmounted, ref, defineComponent } from 'vue';
 
-export default defineComponent({
-  name: 'Tooltip',
-  props: {
-    content: { type: String, required: true },
-    iconClass: { type: String, Object },
-  },
-  setup() {
-    const tooltipIconRef = ref(null);
-    const tooltipContainerRef = ref(null);
-    const tooltipActive = ref(false);
+defineProps({
+  content: { type: String, required: true },
+  iconClass: { type: String, Object },
+});
+const tooltipIconRef = ref(null);
+const tooltipContainerRef = ref(null);
+const tooltipActive = ref(false);
 
-    const click = event => {
-      if (tooltipIconRef.value.contains(event.detail)) return;
+const click = event => {
+  if (tooltipIconRef.value.contains(event.detail)) return;
 
-      tooltipContainerRef.value &&
-        !tooltipContainerRef.value.contains(event.detail) &&
-        (tooltipActive.value = false);
-    };
+  tooltipContainerRef.value &&
+    !tooltipContainerRef.value.contains(event.detail) &&
+    (tooltipActive.value = false);
+};
 
-    onMounted(() => {
-      window.addEventListener('Document:click', click);
-    });
+onMounted(() => {
+  window.addEventListener('Document:click', click);
+});
 
-    onUnmounted(() => {
-      window.removeEventListener('Document:click', click);
-    });
-
-    return {
-      tooltipIconRef,
-      tooltipContainerRef,
-      tooltipActive,
-    };
-  },
-  inheritAttrs: false,
+onUnmounted(() => {
+  window.removeEventListener('Document:click', click);
 });
 </script>
 

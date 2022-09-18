@@ -65,7 +65,10 @@
   </div>
   <div>
     <div class="mb-1">
-      WSS <Tooltip content="The majority of cases this will need to be unchecked. If you don't know, leave it unchecked." />
+      WSS
+      <Tooltip
+        content="The majority of cases this will need to be unchecked. If you don't know, leave it unchecked."
+      />
     </div>
     <div class="mb-2">
       <Switch v-model="config.secure" />
@@ -73,7 +76,7 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import { reactive, ref } from 'vue';
 
 import Input from '../Input';
@@ -81,46 +84,35 @@ import Select from '../Select';
 import Switch from '../Switch';
 import Tooltip from '../Tooltip';
 
-export default {
-  name: 'NetworkForm',
-  components: { Input, Select, Switch, Tooltip },
-  props: {
-    config: {
-      type: Object,
-      default: () => ({}),
-    },
-    edit: {
-      type: Boolean,
-      default: false,
-    },
+defineProps({
+  config: {
+    type: Object,
+    default: () => ({}),
   },
-  setup() {
-    const validationRefs = reactive({
-      networkSymbol: null,
-      hostname: null,
-      port: null,
-      chainModuleName: null,
-    });
-
-    const type = ref('mainnet');
-
-    const validate = async () => {
-      let hasErrors = false;
-      const values = Object.values(validationRefs);
-      for (let i = 0; i < values.length; i++) {
-        const v = values[i];
-        await v.validate();
-        if (v.error) hasErrors = true;
-      }
-      return Promise.resolve(hasErrors);
-    };
-
-    return {
-      type,
-      validationRefs,
-      validate,
-      isDevelopment: process.env.NODE_ENV === 'development',
-    };
+  edit: {
+    type: Boolean,
+    default: false,
   },
+});
+const validationRefs = reactive({
+  networkSymbol: null,
+  hostname: null,
+  port: null,
+  chainModuleName: null,
+});
+
+const type = ref('mainnet');
+
+const validate = async () => {
+  let hasErrors = false;
+  const values = Object.values(validationRefs);
+  for (let i = 0; i < values.length; i++) {
+    const v = values[i];
+    await v.validate();
+    if (v.error) hasErrors = true;
+  }
+  return Promise.resolve(hasErrors);
 };
+
+const isDevelopment = process.env.NODE_ENV === 'development';
 </script>

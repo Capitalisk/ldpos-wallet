@@ -26,57 +26,50 @@
   </span>
 </template>
 
-<script>
+<script setup>
 import { ref } from 'vue';
 
-export default {
-  name: 'Input',
-  props: {
-    modelValue: { type: [String, Number], default: '' },
-    placeholder: { type: String, default: '' },
-    id: { type: String, default: null },
-    suffix: { type: String, default: null },
-    prefix: { type: [String, Number], default: null },
-    error: { type: String, default: null },
-    rules: { type: Array, default: null },
-    hideValidation: { type: Boolean, default: false },
-  },
-  setup(props) {
-    const error = ref(props.error);
-    const dirty = ref(props.error ? true : false);
-    const input = ref(null);
+const props = defineProps({
+  modelValue: { type: [String, Number], default: '' },
+  placeholder: { type: String, default: '' },
+  id: { type: String, default: null },
+  suffix: { type: String, default: null },
+  prefix: { type: [String, Number], default: null },
+  error: { type: String, default: null },
+  rules: { type: Array, default: null },
+  hideValidation: { type: Boolean, default: false },
+});
 
-    return {
-      error,
-      dirty,
-      input,
-      focus: () => input.value.focus(),
-      reset: () => (error.value = null),
-      validate: async () => {
-        if (!props.rules || !props.rules.length) return;
+const error = ref(props.error);
+const dirty = ref(props.error ? true : false);
+const input = ref(null);
 
-        dirty.value = true;
+const focus = () => input.value.focus();
+const reset = () => (error.value = null);
+const validate = async () => {
+  if (!props.rules || !props.rules.length) return;
 
-        for (let i = 0; i < props.rules.length; i++) {
-          const rule = props.rules[i];
-          const e = await rule(props.modelValue);
+  dirty.value = true;
 
-          if (typeof e !== 'string') {
-            error.value = null;
-            continue;
-          }
+  for (let i = 0; i < props.rules.length; i++) {
+    const rule = props.rules[i];
+    const e = await rule(props.modelValue);
 
-          const hasError = e.length > 0;
+    if (typeof e !== 'string') {
+      error.value = null;
+      continue;
+    }
 
-          if (hasError) {
-            error.value = e;
-            break;
-          }
-        }
-      },
-    };
-  },
+    const hasError = e.length > 0;
+
+    if (hasError) {
+      error.value = e;
+      break;
+    }
+  }
 };
+
+defineExpose({ focus, reset, validate });
 </script>
 
 <style scoped>

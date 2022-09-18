@@ -78,7 +78,7 @@
   </Section>
 </template>
 
-<script>
+<script setup>
 import { inject, ref, computed, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 
@@ -93,215 +93,194 @@ import LottiePlayer from '../components/LottiePlayer';
 
 import notFound from '../animations/not-found.json';
 
-export default {
-  name: 'DetailedPage',
-  components: {
-    Section,
-    DetailedData,
-    Navbar,
-    DataTable,
-    Copy,
-    Section,
-    LottiePlayer,
-  },
-  props: {
-    dataTable: { type: Boolean, default: false },
-    ableToCopyTitle: { type: Boolean, default: true },
-    title: { type: String, required: true },
-    id: { type: String, default: null },
-    showDirection: { type: Boolean, default: false },
-  },
-  setup(props) {
-    const store = inject('store');
-    const route = useRoute();
-    const data = ref({});
-    const hasError = ref(false);
+const props = defineProps({
+  dataTable: { type: Boolean, default: false },
+  ableToCopyTitle: { type: Boolean, default: true },
+  title: { type: String, required: true },
+  id: { type: String, default: null },
+  showDirection: { type: Boolean, default: false },
+});
 
-    const getData = async () => {
-      store.mutateProgressbarLoading(true);
-      // dataTable is passed by the router
-      if (props.dataTable) {
-        const sw = {
-          // This is relative to the route name
-          AccountTransactions: () => ({
-            titleLink: `/accounts/${route.params.accountId}`,
-            arg: route.params.accountId,
-            fn: async (accountId, fromTimestamp, offset, limit, order) => {
-              const transactions = await store.client.value.getAccountTransactions(
-                accountId,
-                null,
-                offset,
-                limit,
-                order,
-              );
-              return transactions.map(txn => {
-                if (txn.recipientAddress === accountId) {
-                  return {
-                    ...txn,
-                    direction: 'inbound',
-                    counterpartyAddress: txn.senderAddress,
-                  };
-                }
-                return {
-                  ...txn,
-                  direction: 'outbound',
-                  counterpartyAddress: txn.recipientAddress,
-                };
-              });
-            },
-          }),
-          BlockTransactions: () => ({
-            titleLink: `/blocks/${route.params.blockId}`,
-            arg: route.params.blockId,
-            fn: async (blockId, fromTimestamp, offset, limit, order) => {
-              return await store.client.value.getTransactionsFromBlock(
-                blockId,
-                offset,
-                limit,
-              );
-            },
-          }),
-          default: () => {},
-        };
-        data.value = (sw[route.name] || sw.default)();
-      } else {
-        const key = Object.keys(route.params)[0];
+const store = inject('store');
+const route = useRoute();
+const data = ref({});
+const hasError = ref(false);
 
-        const sw = {
-          accountId: async () =>
-            await store.client.value.getAccount(route.params.accountId),
-          transactionId: async () =>
-            await store.client.value.getTransaction(route.params.transactionId),
-          delegateId: async () =>
-            await store.client.value.getDelegate(route.params.delegateId),
-          blockId: async () =>
-            await store.client.value.getBlock(route.params.blockId),
-          default: () => {},
-        };
-
-        try {
-          data.value = await (sw[key] || sw.default)();
-        } catch (e) {
-          console.error(e);
-
-          store.notify(
-            {
-              message: 'Error: entry not found',
-              error: true,
-            },
-            5,
+const getData = async () => {
+  store.mutateProgressbarLoading(true);
+  // dataTable is passed by the router
+  if (props.dataTable) {
+    const sw = {
+      // This is relative to the route name
+      AccountTransactions: () => ({
+        titleLink: `/accounts/${route.params.accountId}`,
+        arg: route.params.accountId,
+        fn: async (accountId, fromTimestamp, offset, limit, order) => {
+          const transactions = await store.client.value.getAccountTransactions(
+            accountId,
+            null,
+            offset,
+            limit,
+            order,
           );
+          return transactions.map(txn => {
+            if (txn.recipientAddress === accountId) {
+              return {
+                ...txn,
+                direction: 'inbound',
+                counterpartyAddress: txn.senderAddress,
+              };
+            }
+            return {
+              ...txn,
+              direction: 'outbound',
+              counterpartyAddress: txn.recipientAddress,
+            };
+          });
+        },
+      }),
+      BlockTransactions: () => ({
+        titleLink: `/blocks/${route.params.blockId}`,
+        arg: route.params.blockId,
+        fn: async (blockId, fromTimestamp, offset, limit, order) => {
+          return await store.client.value.getTransactionsFromBlock(
+            blockId,
+            offset,
+            limit,
+          );
+        },
+      }),
+      default: () => {},
+    };
+    data.value = (sw[route.name] || sw.default)();
+  } else {
+    const key = Object.keys(route.params)[0];
 
-          hasError.value = true;
-        }
-      }
-      store.mutateProgressbarLoading(false);
+    const sw = {
+      accountId: async () =>
+        await store.client.value.getAccount(route.params.accountId),
+      transactionId: async () =>
+        await store.client.value.getTransaction(route.params.transactionId),
+      delegateId: async () =>
+        await store.client.value.getDelegate(route.params.delegateId),
+      blockId: async () =>
+        await store.client.value.getBlock(route.params.blockId),
+      default: () => {},
     };
 
-    getData();
+    try {
+      data.value = await (sw[key] || sw.default)();
+    } catch (e) {
+      console.error(e);
 
-    const columns = ref([
-      {
-        name: 'id',
-        label: 'Id',
-        field: 'id',
-        sortable: false,
-        active: true,
-        shrinkUntilWidth: 2000,
-        slot: true,
-      },
-      {
-        name: 'type',
-        label: 'Type',
-        field: 'type',
-        sortable: false,
-        active: true,
-        hideOnMobile: true,
-      },
-      {
-        name: 'timestamp',
-        label: 'Date',
-        field: 'timestamp',
-        sortable: false,
-        value: val => _parseDate(val),
-        active: true,
-        sorted: 'desc',
-        hideOnMobile: true,
-      },
-      {
-        name: 'amount',
-        label: 'Amount',
-        field: 'amount',
-        sortable: false,
-        value: val =>
-          _transformMonetaryUnit(val, store.state.config.networkSymbol),
-        active: true,
-        shrinkUntilWidth: 768,
-      },
-      {
-        name: 'fee',
-        label: 'Fee',
-        field: 'fee',
-        sortable: false,
-        value: val =>
-          _transformMonetaryUnit(val, store.state.config.networkSymbol),
-        active: true,
-        hideOnMobile: true,
-      },
-    ]);
+      store.notify(
+        {
+          message: 'Error: entry not found',
+          error: true,
+        },
+        5,
+      );
 
-    onMounted(() => {
-      if (props.showDirection) {
-        columns.value.splice(2, 0, {
-          name: 'counterpartyAddress',
-          label: 'Counterparty',
-          field: 'counterpartyAddress',
-          sortable: false,
-          active: true,
-          shrinkUntilWidth: 1700,
-          slot: true,
-          hideOnMobile: true,
-        });
-        columns.value.push({
-          name: 'direction',
-          label: '',
-          sortable: false,
-          active: true,
-          slot: true,
-        });
-      } else {
-        columns.value.splice(
-          2,
-          0,
-          {
-            name: 'senderAddress',
-            label: 'Sender',
-            sortable: false,
-            active: true,
-            slot: true,
-            shrinkUntilWidth: 2300,
-            hideOnMobile: true,
-          },
-          {
-            name: 'recipientAddress',
-            label: 'Recipient',
-            sortable: false,
-            active: true,
-            slot: true,
-            shrinkUntilWidth: 2300,
-            hideOnMobile: true,
-          },
-        );
-      }
-    });
-
-    return {
-      data,
-      columns,
-      hasError,
-      notFound,
-      loading: computed(() => store.state.progressbarLoading),
-    };
-  },
+      hasError.value = true;
+    }
+  }
+  store.mutateProgressbarLoading(false);
 };
+
+getData();
+
+const columns = ref([
+  {
+    name: 'id',
+    label: 'Id',
+    field: 'id',
+    sortable: false,
+    active: true,
+    shrinkUntilWidth: 2000,
+    slot: true,
+  },
+  {
+    name: 'type',
+    label: 'Type',
+    field: 'type',
+    sortable: false,
+    active: true,
+    hideOnMobile: true,
+  },
+  {
+    name: 'timestamp',
+    label: 'Date',
+    field: 'timestamp',
+    sortable: false,
+    value: val => _parseDate(val),
+    active: true,
+    sorted: 'desc',
+    hideOnMobile: true,
+  },
+  {
+    name: 'amount',
+    label: 'Amount',
+    field: 'amount',
+    sortable: false,
+    value: val => _transformMonetaryUnit(val, store.state.config.networkSymbol),
+    active: true,
+    shrinkUntilWidth: 768,
+  },
+  {
+    name: 'fee',
+    label: 'Fee',
+    field: 'fee',
+    sortable: false,
+    value: val => _transformMonetaryUnit(val, store.state.config.networkSymbol),
+    active: true,
+    hideOnMobile: true,
+  },
+]);
+
+onMounted(() => {
+  if (props.showDirection) {
+    columns.value.splice(2, 0, {
+      name: 'counterpartyAddress',
+      label: 'Counterparty',
+      field: 'counterpartyAddress',
+      sortable: false,
+      active: true,
+      shrinkUntilWidth: 1700,
+      slot: true,
+      hideOnMobile: true,
+    });
+    columns.value.push({
+      name: 'direction',
+      label: '',
+      sortable: false,
+      active: true,
+      slot: true,
+    });
+  } else {
+    columns.value.splice(
+      2,
+      0,
+      {
+        name: 'senderAddress',
+        label: 'Sender',
+        sortable: false,
+        active: true,
+        slot: true,
+        shrinkUntilWidth: 2300,
+        hideOnMobile: true,
+      },
+      {
+        name: 'recipientAddress',
+        label: 'Recipient',
+        sortable: false,
+        active: true,
+        slot: true,
+        shrinkUntilWidth: 2300,
+        hideOnMobile: true,
+      },
+    );
+  }
+});
+
+const loading = computed(() => store.state.progressbarLoading);
 </script>

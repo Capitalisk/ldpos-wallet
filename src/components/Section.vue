@@ -14,29 +14,16 @@
   </div>
 </template>
 
-<script>
-import { computed, inject } from 'vue';
-
+<script setup>
 import Loading from './Loading';
 
-export default {
-  name: 'Section',
-  props: {
-    title: { type: String, default: null },
-    loading: { type: Boolean },
-    error: { type: String, default: null },
-    border: { type: String, default: null },
-    backButton: { type: Boolean, default: false },
-  },
-  components: { Loading },
-  setup() {
-    const store = inject('store');
-
-    return {
-      authenticated: computed(() => store.state.authenticated),
-    };
-  },
-};
+defineProps({
+  title: { type: String, default: null },
+  loading: { type: Boolean },
+  error: { type: String, default: null },
+  border: { type: String, default: null },
+  backButton: { type: Boolean, default: false },
+});
 </script>
 
 <style scoped>

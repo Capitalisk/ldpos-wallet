@@ -13,48 +13,42 @@
   </Modal>
 </template>
 
-<script>
+<script setup>
 import { ref } from 'vue';
 import Modal from '../Modal';
 import Button from '../Button';
 
-export default {
-  name: 'ConfirmationModal',
-  components: { Modal, Button },
-  setup() {
-    let resolvePromise, rejectPromise;
+let resolvePromise, rejectPromise;
 
-    const message = ref(null);
-    const showCancelButton = ref(false);
-    const modalRef = ref(null);
+const message = ref(null);
+const showCancelButton = ref(false);
+const modalRef = ref(null);
 
-    return {
-      message,
-      modalRef,
-      show: (opts = {}) => {
-        if (!opts.message)
-          throw new Error('Message is required for ConfirmationModal');
-        if (typeof opts.showCancelButton !== 'boolean')
-          throw new Error('showCancelButton should be a boolean');
+const show = (opts = {}) => {
+  if (!opts.message)
+    throw new Error('Message is required for ConfirmationModal');
+  if (typeof opts.showCancelButton !== 'boolean')
+    throw new Error('showCancelButton should be a boolean');
 
-        modalRef.value.activateModal({ title: 'Register delegate' });
-        message.value = opts.message;
-        showCancelButton.value = opts.showCancelButton;
+  modalRef.value.activateModal({ title: 'Register delegate' });
+  message.value = opts.message;
+  showCancelButton.value = opts.showCancelButton;
 
-        return new Promise((res, rej) => {
-          resolvePromise = res;
-          rejectPromise = rej;
-        });
-      },
-      pursue: () => {
-        modalRef.value.deactivateModal();
-        resolvePromise(true);
-      },
-      cancel: () => {
-        modalRef.value.deactivateModal();
-        resolvePromise(false);
-      },
-    };
-  },
+  return new Promise((res, rej) => {
+    resolvePromise = res;
+    rejectPromise = rej;
+  });
 };
+
+const pursue = () => {
+  modalRef.value.deactivateModal();
+  resolvePromise(true);
+};
+
+const cancel = () => {
+  modalRef.value.deactivateModal();
+  resolvePromise(false);
+};
+
+defineExpose({ show })
 </script>

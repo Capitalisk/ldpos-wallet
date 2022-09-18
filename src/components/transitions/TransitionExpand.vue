@@ -9,9 +9,7 @@
   </transition>
 </template>
 
-<script setup lang="ts">
-import { nextTick } from 'vue';
-
+<script setup>
 const emit = defineEmits(['hide', 'enter']);
 
 const props = defineProps({

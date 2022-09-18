@@ -2,21 +2,13 @@
   <DetailedData :data="data" :prepend-fn="prependFn" />
 </template>
 
-<script>
+<script setup>
 import { computed, inject } from 'vue';
 
 import DetailedData from '../DetailedData';
 
-export default {
-  name: 'DetailModal',
-  setup() {
-    const store = inject('store');
+const store = inject('store');
 
-    return {
-      data: computed(() => store.state.modal.data),
-      prependFn: store.state.modal.prependFn,
-    };
-  },
-  components: { DetailedData },
-};
+const data = computed(() => store.state.modal.data);
+const prependFn = store.state.modal.prependFn;
 </script>

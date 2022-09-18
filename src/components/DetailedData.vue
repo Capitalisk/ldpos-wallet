@@ -56,7 +56,7 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import { inject, onMounted, toRef } from 'vue';
 import {
   _parseDate,
@@ -67,64 +67,52 @@ import {
 
 import Copy from './Copy';
 
-export default {
-  name: 'DetailedData',
-  props: {
-    data: { type: Object, default: {} },
-    prependFn: { type: Function, default: null },
-    id: { type: String, default: 'transactions' },
-  },
-  components: { Copy },
-  setup(props) {
-    const store = inject('store');
+const props = defineProps({
+  data: { type: Object, default: {} },
+  prependFn: { type: Function, default: null },
+  id: { type: String, default: 'transactions' },
+});
 
-    const titleTransformations = {
-      timestamp: 'Date',
-    };
+const store = inject('store');
 
-    const detailedData = toRef(props, 'data');
+const titleTransformations = {
+  timestamp: 'Date',
+};
 
-    onMounted(async () => {
-      if (props.prependFn) {
-        const { key, value } = await props.prependFn(detailedData.value);
-        detailedData.value[key] = value;
-      }
-    });
+const detailedData = toRef(props, 'data');
 
-    const valueTransformations = {
-      timestamp: val => _parseDate(val),
-      balance: val =>
-        _transformMonetaryUnit(val, store.state.config.networkSymbol),
-      amount: val =>
-        _transformMonetaryUnit(val, store.state.config.networkSymbol),
-      fee: val => _transformMonetaryUnit(val, store.state.config.networkSymbol),
-      voteWeight: val =>
-        _transformMonetaryUnit(val, store.state.config.networkSymbol),
-      forgingRewards: val =>
-        _transformMonetaryUnit(val, store.state.config.networkSymbol),
-      type: val => _capitalize(_splitCamelCaseWords(val).join(' ')),
-    };
+onMounted(async () => {
+  if (props.prependFn) {
+    const { key, value } = await props.prependFn(detailedData.value);
+    detailedData.value[key] = value;
+  }
+});
 
-    const transformTitle = key =>
-      titleTransformations[key] || _splitCamelCaseWords(key).join(' ');
+const valueTransformations = {
+  timestamp: val => _parseDate(val),
+  balance: val => _transformMonetaryUnit(val, store.state.config.networkSymbol),
+  amount: val => _transformMonetaryUnit(val, store.state.config.networkSymbol),
+  fee: val => _transformMonetaryUnit(val, store.state.config.networkSymbol),
+  voteWeight: val =>
+    _transformMonetaryUnit(val, store.state.config.networkSymbol),
+  forgingRewards: val =>
+    _transformMonetaryUnit(val, store.state.config.networkSymbol),
+  type: val => _capitalize(_splitCamelCaseWords(val).join(' ')),
+};
 
-    const transformValue = (key, value) =>
-      valueTransformations[key] ? valueTransformations[key](value) : value;
+const transformTitle = key =>
+  titleTransformations[key] || _splitCamelCaseWords(key).join(' ');
 
-    return {
-      detailedData,
-      transformTitle,
-      transformValue,
-      links: {
-        address: 'accounts',
-        recipientAddress: 'accounts',
-        senderAddress: 'accounts',
-        forgerAddress: 'accounts',
-        blockId: 'blocks',
-        id: props.id,
-      },
-    };
-  },
+const transformValue = (key, value) =>
+  valueTransformations[key] ? valueTransformations[key](value) : value;
+
+const links = {
+  address: 'accounts',
+  recipientAddress: 'accounts',
+  senderAddress: 'accounts',
+  forgerAddress: 'accounts',
+  blockId: 'blocks',
+  id: props.id,
 };
 </script>
 

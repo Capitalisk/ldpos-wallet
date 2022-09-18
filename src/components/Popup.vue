@@ -6,17 +6,12 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import Section from './Section';
 
-export default {
-  name: 'Popup',
-  props: {
-    active: { type: Boolean, default: false },
-  },
-  setup() {},
-  components: { Section },
-};
+defineProps({
+  active: { type: Boolean, default: false },
+});
 </script>
 
 <style scoped>

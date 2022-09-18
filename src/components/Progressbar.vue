@@ -9,14 +9,11 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: 'Progressbar',
-  props: {
-    loading: { type: Boolean, default: false },
-    classes: { type: String, default: '' },
-  },
-};
+<script setup>
+defineProps({
+  loading: { type: Boolean, default: false },
+  classes: { type: String, default: '' },
+});
 </script>
 
 <style scoped>
@@ -35,13 +32,12 @@ progress.progress-indeterminate {
   overflow: hidden;
   padding: 0;
   background: var(--primary-darker)
-    linear-gradient(to right, var(--primary) 30%, var(--primary-lighter) 30%) top
-    left / 150% 150% no-repeat;
+    linear-gradient(to right, var(--primary) 30%, var(--primary-lighter) 30%)
+    top left / 150% 150% no-repeat;
 }
 
 progress:indeterminate {
-  animation: progress-indeterminate 0.75s linear
-    infinite;
+  animation: progress-indeterminate 0.75s linear infinite;
 }
 
 .table {

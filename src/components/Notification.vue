@@ -2,7 +2,7 @@
   <template v-if="notifications">
     <div
       v-for="(notification, i) in notifications"
-      :key="i"
+      :key="notification"
       class="notification pa-4 ma-2"
       :class="notification.error ? 'danger' : ''"
       :ref="
@@ -11,40 +11,33 @@
         }
       "
     >
-      <div class="close-btn cursor-pointer" @click="denotify(i)">&#10005;</div>
+      <div class="close-btn cursor-pointer" @click="denotify(i)">
+        &#10005;
+      </div>
       <div class="wrap mr-2">{{ notification.message }}</div>
     </div>
   </template>
 </template>
 
-<script>
+<script setup>
 import { inject, onBeforeUpdate, onUpdated, ref } from 'vue';
 
-export default {
-  name: 'Notification',
-  setup() {
-    const store = inject('store');
-    const divs = ref([]);
+const store = inject('store');
+const divs = ref([]);
 
-    onBeforeUpdate(() => (divs.value = []));
+onBeforeUpdate(() => (divs.value = []));
 
-    onUpdated(() => {
-      for (let i = 0; i < divs.value.length; i++) {
-        const notification = divs.value[i];
-        const bottom = (notification.offsetHeight + 10) * i;
-        notification.style.bottom = `${bottom}px`;
-      }
-    });
+onUpdated(() => {
+  for (let i = 0; i < divs.value.length; i++) {
+    const notification = divs.value[i];
+    const bottom = (notification.offsetHeight + 10) * i;
+    notification.style.bottom = `${bottom}px`;
+  }
+});
 
-    const notifications = store.state.notifications;
+const notifications = store.state.notifications;
 
-    return {
-      notifications,
-      divs,
-      denotify: i => store.denotify(i),
-    };
-  },
-};
+const denotify = i => store.denotify(i);
 </script>
 
 <style scoped>

@@ -1,77 +1,78 @@
-<script>
+<script setup>
+import { computed, onMounted, ref } from 'vue';
 import lottie from 'lottie-web';
 
-export default {
-  props: {
-    name: {
-      type: String,
-      default: () => 'lottie-' + Math.random(),
-    },
-    width: {
-      type: [String, Number],
-      default: () => '200px',
-    },
-    height: {
-      type: [String, Number],
-      default: () => '200px',
-    },
-    background: {
-      type: String,
-      default: 'transparent',
-    },
-    loop: {
-      type: [Boolean, Number],
-      default: () => false,
-    },
-    autoplay: {
-      type: Boolean,
-      default: () => true,
-    },
-    renderer: {
-      type: String,
-      default: () => 'svg',
-    },
-    path: {
-      type: String,
-      default: () => null,
-    },
-    animationData: {
-      type: Object,
-      default: () => null,
-    },
+const emit = defineEmits(['animControl']);
+
+const props = defineProps({
+  name: {
+    type: String,
+    default: () => 'lottie-' + Math.random(),
   },
-  data: vm => ({
-    style: {
-      width: vm.getSize(vm.width),
-      height: vm.getSize(vm.height),
-      background: vm.background,
-    },
-  }),
-  mounted() {
-    this.loadAnimation();
+  width: {
+    type: [String, Number],
+    default: () => '200px',
   },
-  methods: {
-    getSize(size) {
-      return typeof size == Number ? `${size}px` : size;
-    },
-    loadAnimation() {
-      let anim = lottie.loadAnimation({
-        container: this.$refs.animContainer,
-        name: this.name,
-        renderer: this.renderer,
-        loop: this.loop,
-        autoplay: this.autoplay,
-        width: this.getSize(this.width),
-        height: this.getSize(this.height),
-        path: this.path,
-        animationData: this.animationData,
-      });
-      this.$emit('animControl', anim);
-    },
+  height: {
+    type: [String, Number],
+    default: () => '200px',
   },
+  background: {
+    type: String,
+    default: 'transparent',
+  },
+  loop: {
+    type: [Boolean, Number],
+    default: () => false,
+  },
+  autoplay: {
+    type: Boolean,
+    default: () => true,
+  },
+  renderer: {
+    type: String,
+    default: () => 'svg',
+  },
+  path: {
+    type: String,
+    default: () => null,
+  },
+  animationData: {
+    type: Object,
+    default: () => null,
+  },
+});
+
+const animationContainerRef = ref();
+
+const loadAnimation = () => {
+  let anim = lottie.loadAnimation({
+    container: animationContainerRef.value,
+    name: props.name,
+    renderer: props.renderer,
+    loop: props.loop,
+    autoplay: props.autoplay,
+    width: getSize(props.width),
+    height: getSize(props.height),
+    path: props.path,
+    animationData: props.animationData,
+  });
+
+  emit('animControl', anim);
 };
+
+const getSize = size => {
+  return typeof size == Number ? `${size}px` : size;
+};
+
+const style = computed(() => ({
+  width: getSize(props.width),
+  height: getSize(props.height),
+}));
+
+onMounted(loadAnimation);
 </script>
 
 <template>
-  <div :style="style" ref="animContainer"></div>
+  <div :style="style" ref="animationContainerRef"></div>
 </template>

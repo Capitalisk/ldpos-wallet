@@ -5,16 +5,13 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: 'Loading',
-  props: {
-    size: {
-      type: Number,
-      default: 25,
-    },
+<script setup>
+defineProps({
+  size: {
+    type: Number,
+    default: 25,
   },
-};
+});
 </script>
 
 <style scoped>

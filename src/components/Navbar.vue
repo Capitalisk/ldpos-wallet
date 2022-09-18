@@ -43,7 +43,7 @@
         v-if="authenticated"
         value="Sign out"
         @click="signout"
-        class="ml-1 mr-2"
+        class="ml-1"
       />
       <Button
         value="Sign in"
@@ -54,13 +54,13 @@
             (!isElectron && $router.currentRoute.value.path !== '/login')) &&
             !authenticated
         "
-        class="ml-1 mr-2"
+        class="ml-1"
       />
       <Button
         v-if="!searchActive && routes.includes(searchParam)"
         icon="search"
         @click="activateSearch"
-        class="pa-1 outline"
+        class="pa-1 outline ml-2"
       />
     </div>
     <TransitionExpand
@@ -178,7 +178,7 @@ const search = async () => {
 
 <style scoped>
 .navbar {
-  padding: var(--unit-2) var(--unit-2);
+  padding: var(--unit-2) 0;
   min-height: 41px;
 }
 

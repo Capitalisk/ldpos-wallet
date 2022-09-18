@@ -9,14 +9,11 @@
   </label>
 </template>
 
-<script>
-export default {
-  name: 'Switch',
-  props: {
-    modelValue: { type: Boolean, default: false },
-    id: { type: String, default: '' },
-  },
-};
+<script setup>
+defineProps({
+  modelValue: { type: Boolean, default: false },
+  id: { type: String, default: '' },
+});
 </script>
 
 <style scoped>

@@ -73,7 +73,7 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import { reactive, inject, onMounted, computed, ref } from 'vue';
 
 import {
@@ -85,104 +85,88 @@ import {
 import Input from '../Input';
 import Button from '../Button';
 
-export default {
-  name: 'TransferModal',
-  setup() {
-    const store = inject('store');
+const store = inject('store');
 
-    const loading = ref(false);
-    const error = ref(false);
-    const balance = ref(null);
-    const minFee = ref(null);
-    const transfer = reactive({
-      address: {
-        ref: null,
-        data: null,
-      },
-      amount: {
-        ref: null,
-        data: null,
-      },
-      fee: {
-        ref: null,
-        data: null,
-      },
-      message: {
-        ref: null,
-        data: '',
-      },
-    });
-
-    onMounted(async () => {
-      const { minTransactionFees } = await store.client.value.getMinFees();
-      transfer.fee.data = _integerToDecimal(minTransactionFees.transfer);
-      minFee.value = _integerToDecimal(minTransactionFees.transfer);
-
-      const address = await store.client.value.getWalletAddress();
-
-      balance.value = (await store.client.value.getAccount(address)).balance;
-    });
-
-    const maxBalance = computed(
-      () => _integerToDecimal(balance.value) - transfer.fee.data,
-    );
-
-    return {
-      transfer,
-      loading,
-      error,
-      maxBalance,
-      minFee,
-      unit: computed(() => store.state.config.networkSymbol.toUpperCase()),
-      populate: () => (transfer.amount.data = maxBalance.value),
-      send: async () => {
-        loading.value = true;
-        error.value = false;
-
-        await transfer.address.ref.validate();
-        await transfer.amount.ref.validate();
-        await transfer.fee.ref.validate();
-        await transfer.message.ref.validate();
-
-        try {
-          for (let i = 0; i < Object.keys(transfer).length; i++) {
-            const key = Object.keys(transfer)[i];
-            if (transfer[key].ref.error)
-              throw new Error(transfer[key].ref.error);
-          }
-
-          const preparedTxn = await store.client.value.prepareTransaction({
-            type: 'transfer',
-            recipientAddress: transfer.address.data,
-            amount: _decimalToInteger(transfer.amount.data),
-            fee: _decimalToInteger(transfer.fee.data),
-            timestamp: Date.now(),
-            message: transfer.message.data,
-          });
-
-          await store.client.value.postTransaction(preparedTxn);
-
-          window.dispatchEvent(new Event('DataTable:update'));
-        } catch (e) {
-          store.notify({ message: `Error: ${e.message}`, error: true }, 5);
-          error.value = true;
-          loading.value = false;
-          return;
-        }
-        store.notify(
-          { message: `Transaction sent to ${transfer.address.data}` },
-          5,
-        );
-        loading.value = false;
-
-        store.toggleOrBrowseModal();
-      },
-      decimalToInteger: _decimalToInteger,
-      transformMonetaryUnit: _transformMonetaryUnit,
-    };
+const loading = ref(false);
+const error = ref(false);
+const balance = ref(null);
+const minFee = ref(null);
+const transfer = reactive({
+  address: {
+    ref: null,
+    data: null,
   },
-  components: { Input, Button },
+  amount: {
+    ref: null,
+    data: null,
+  },
+  fee: {
+    ref: null,
+    data: null,
+  },
+  message: {
+    ref: null,
+    data: '',
+  },
+});
+
+onMounted(async () => {
+  const { minTransactionFees } = await store.client.value.getMinFees();
+  transfer.fee.data = _integerToDecimal(minTransactionFees.transfer);
+  minFee.value = _integerToDecimal(minTransactionFees.transfer);
+
+  const address = await store.client.value.getWalletAddress();
+
+  balance.value = (await store.client.value.getAccount(address)).balance;
+});
+
+const maxBalance = computed(
+  () => _integerToDecimal(balance.value) - transfer.fee.data,
+);
+
+const unit = computed(() => store.state.config.networkSymbol.toUpperCase());
+const populate = () => (transfer.amount.data = maxBalance.value);
+const send = async () => {
+  loading.value = true;
+  error.value = false;
+
+  await transfer.address.ref.validate();
+  await transfer.amount.ref.validate();
+  await transfer.fee.ref.validate();
+  await transfer.message.ref.validate();
+
+  try {
+    for (let i = 0; i < Object.keys(transfer).length; i++) {
+      const key = Object.keys(transfer)[i];
+      if (transfer[key].ref.error) throw new Error(transfer[key].ref.error);
+    }
+
+    const preparedTxn = await store.client.value.prepareTransaction({
+      type: 'transfer',
+      recipientAddress: transfer.address.data,
+      amount: _decimalToInteger(transfer.amount.data),
+      fee: _decimalToInteger(transfer.fee.data),
+      timestamp: Date.now(),
+      message: transfer.message.data,
+    });
+
+    await store.client.value.postTransaction(preparedTxn);
+
+    window.dispatchEvent(new Event('DataTable:update'));
+  } catch (e) {
+    store.notify({ message: `Error: ${e.message}`, error: true }, 5);
+    error.value = true;
+    loading.value = false;
+    return;
+  }
+  store.notify({ message: `Transaction sent to ${transfer.address.data}` }, 5);
+  loading.value = false;
+
+  store.toggleOrBrowseModal();
 };
+
+const decimalToInteger = _decimalToInteger;
+const transformMonetaryUnit = _transformMonetaryUnit;
 </script>
 
 <style scoped>

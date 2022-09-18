@@ -135,7 +135,7 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import { ref, inject, computed, reactive, watch, nextTick } from 'vue';
 
 import { _transformMonetaryUnit } from '../utils.js';
@@ -149,178 +149,157 @@ import Input from '../components/Input';
 import Wallet from '../components/Wallet';
 import Tooltip from '../components/Tooltip.vue';
 
-export default {
-  name: 'Home',
-  props: {
-    title: { type: String, required: true },
+defineProps({
+  title: { type: String, required: true },
+});
+
+const store = inject('store');
+
+const inputs = ref(new Array(12));
+const passphrase = ref('');
+const pasting = ref(false);
+const provideWalletAddress = ref(false);
+const walletAddress = ref(null);
+
+const inputRefs = ref([]);
+
+for (let i = 0; i < inputs.value.length; i++) {
+  inputs.value[i] = { value: '' };
+}
+
+const backspace = (e, i) =>
+  e.target.value === '' &&
+  e.keyCode === 8 &&
+  i !== 0 &&
+  document.getElementById(`passphrase-${i - 1}`).focus();
+
+const validateAllInputs = async () => {
+  await new Promise(res => setTimeout(() => res(), 100));
+  return await new Promise(async (res, rej) => {
+    let errors = [];
+    for (let i = 0; i < inputRefs.value.length; i++) {
+      const v = inputRefs.value[i];
+      await v.validate();
+      if (v.error) errors.push(v.error);
+    }
+    if (errors.length) rej(new Error('One or more fields are invalid.'));
+    res();
+  });
+};
+
+watch(
+  () => inputs.value,
+  async n => {
+    for (let i = 0; i < n.length; i++) {
+      const element = n[i].value;
+      const lastInput = document.getElementById(`passphrase-${n.length - 1}`);
+
+      if (element && element.split(' ').length === 12) {
+        pasting.value = true;
+
+        inputs.value = element.split(' ').map(el => ({ value: el }));
+
+        try {
+          await validateAllInputs();
+        } catch (e) {}
+
+        lastInput.focus();
+
+        pasting.value = false;
+      } else if (element && element.includes(' ')) {
+        const nextInput = document.getElementById(`passphrase-${i + 1}`);
+        if (nextInput) {
+          nextInput.focus();
+          nextTick(() => (nextInput.value = ''));
+        }
+        inputs.value[i].value = inputs.value[i].value.replace(/\s/g, '');
+      }
+    }
+
+    passphrase.value = n
+      .filter(el => el.value !== '')
+      .map(el => el.value)
+      .join(' ');
   },
-  setup() {
-    const store = inject('store');
+  {
+    deep: true,
+    immediate: false,
+  },
+);
 
-    const inputs = ref(new Array(12));
-    const passphrase = ref('');
-    const pasting = ref(false);
-    const provideWalletAddress = ref(false);
-    const walletAddress = ref(null);
+const hidden = ref(true);
 
-    const inputRefs = ref([]);
+const address = reactive({ loading: true, data: null, error: null });
+const generatedWalletAddress = reactive({
+  loading: false,
+  data: null,
+  error: null,
+});
 
+const openTransferModal = () => {
+  store.toggleOrBrowseModal({ type: TRANSFER_MODAL });
+};
+
+const generateWallet = async () => {
+  generatedWalletAddress.loading = true;
+  await new Promise(res => setTimeout(() => res(), 500));
+  try {
+    if (!generatedWalletAddress.data)
+      generatedWalletAddress.data = await store.client.value.generateWallet();
+    else return;
+  } catch (e) {
+    console.error(e);
+    generatedWalletAddress.error = e.message;
+  }
+  generatedWalletAddress.loading = false;
+};
+
+watch(
+  () => store.state.authenticated,
+  () => {
+    generatedWalletAddress.loading = false;
+    generatedWalletAddress.data = null;
+    generatedWalletAddress.error = null;
+    walletAddress.value = null;
+    provideWalletAddress.value = false;
+  },
+);
+
+const authenticated = computed(() => store.state.authenticated);
+const loggingIn = computed(() => store.state.login.loading);
+const signin = async () => {
+  const options = {};
+
+  if (provideWalletAddress.value && walletAddress.value)
+    options.walletAddress = walletAddress.value.trim();
+
+  if (generatedWalletAddress.data) {
+    try {
+      await store.authenticate(generatedWalletAddress.data.passphrase);
+    } catch (e) {
+      store.notify({ message: `Error: ${e.message}`, error: true }, 5);
+      console.error(e);
+    }
+  } else {
+    try {
+      await validateAllInputs();
+      await store.authenticate(passphrase.value, options);
+    } catch (e) {
+      store.notify({ message: `Error: ${e.message}`, error: true }, 5);
+      console.error(e);
+    }
     for (let i = 0; i < inputs.value.length; i++) {
       inputs.value[i] = { value: '' };
     }
-
-    const backspace = (e, i) =>
-      e.target.value === '' &&
-      e.keyCode === 8 &&
-      i !== 0 &&
-      document.getElementById(`passphrase-${i - 1}`).focus();
-
-    const validateAllInputs = async () => {
-      await new Promise(res => setTimeout(() => res(), 100));
-      return await new Promise(async (res, rej) => {
-        let errors = [];
-        for (let i = 0; i < inputRefs.value.length; i++) {
-          const v = inputRefs.value[i];
-          await v.validate();
-          if (v.error) errors.push(v.error);
-        }
-        if (errors.length)
-          rej(new Error('One or more fields are invalid.'));
-        res();
-      });
-    };
-
-    watch(
-      () => inputs.value,
-      async n => {
-        for (let i = 0; i < n.length; i++) {
-          const element = n[i].value;
-          const lastInput = document.getElementById(
-            `passphrase-${n.length - 1}`,
-          );
-
-          if (element && element.split(' ').length === 12) {
-            pasting.value = true;
-
-            inputs.value = element.split(' ').map(el => ({ value: el }));
-
-            try {
-              await validateAllInputs();
-            } catch (e) {}
-
-            lastInput.focus();
-
-            pasting.value = false;
-          } else if (element && element.includes(' ')) {
-            const nextInput = document.getElementById(`passphrase-${i + 1}`);
-            if (nextInput) {
-              nextInput.focus();
-              nextTick(() => (nextInput.value = ''));
-            }
-            inputs.value[i].value = inputs.value[i].value.replace(/\s/g, '');
-          }
-        }
-
-        passphrase.value = n
-          .filter(el => el.value !== '')
-          .map(el => el.value)
-          .join(' ');
-      },
-      {
-        deep: true,
-        immediate: false,
-      },
-    );
-
-    const hidden = ref(true);
-
-    const address = reactive({ loading: true, data: null, error: null });
-    const generatedWalletAddress = reactive({
-      loading: false,
-      data: null,
-      error: null,
-    });
-
-    const openTransferModal = () => {
-      store.toggleOrBrowseModal({ type: TRANSFER_MODAL });
-    };
-
-    const generateWallet = async () => {
-      generatedWalletAddress.loading = true;
-      await new Promise(res => setTimeout(() => res(), 500));
-      try {
-        if (!generatedWalletAddress.data)
-          generatedWalletAddress.data = await store.client.value.generateWallet();
-        else return;
-      } catch (e) {
-        console.error(e);
-        generatedWalletAddress.error = e.message;
-      }
-      generatedWalletAddress.loading = false;
-    };
-
-    watch(
-      () => store.state.authenticated,
-      () => {
-        generatedWalletAddress.loading = false;
-        generatedWalletAddress.data = null;
-        generatedWalletAddress.error = null;
-        walletAddress.value = null;
-        provideWalletAddress.value = false;
-      },
-    );
-
-    return {
-      address: computed(() => address),
-      authenticated: computed(() => store.state.authenticated),
-      loggingIn: computed(() => store.state.login.loading),
-      generateWallet,
-      generatedWalletAddress,
-      openTransferModal,
-      signin: async () => {
-        const options = {};
-
-        if (provideWalletAddress.value && walletAddress.value)
-          options.walletAddress = walletAddress.value.trim();
-
-        if (generatedWalletAddress.data) {
-          try {
-            await store.authenticate(generatedWalletAddress.data.passphrase);
-          } catch (e) {
-            store.notify({ message: `Error: ${e.message}`, error: true }, 5);
-            console.error(e);
-          }
-        } else {
-          try {
-            await validateAllInputs();
-            await store.authenticate(passphrase.value, options);
-          } catch (e) {
-            store.notify({ message: `Error: ${e.message}`, error: true }, 5);
-            console.error(e);
-          }
-          for (let i = 0; i < inputs.value.length; i++) {
-            inputs.value[i] = { value: '' };
-          }
-        }
-      },
-      openCustomWallet: () =>
-        (provideWalletAddress.value = !provideWalletAddress.value),
-      provideWalletAddress,
-      walletAddress,
-      passphrase,
-      hidden,
-      inputs,
-      inputRefs,
-      toggleHidden: () => (hidden.value = !hidden.value),
-      backspace,
-      pasting,
-      loading: computed(() => store.state.login.loading),
-      error: computed(() => store.state.login.error),
-      token: computed(() => store.state.config.networkSymbol.toUpperCase()),
-    };
-  },
-  components: { Section, Copy, Button, Input, Navbar, Wallet, Tooltip, Input },
+  }
 };
+
+const openCustomWallet = () =>
+  (provideWalletAddress.value = !provideWalletAddress.value);
+const toggleHidden = () => (hidden.value = !hidden.value);
+const loading = computed(() => store.state.login.loading);
+const error = computed(() => store.state.login.error);
+const token = computed(() => store.state.config.networkSymbol.toUpperCase());
 </script>
 
 <style scoped>

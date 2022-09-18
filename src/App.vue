@@ -17,8 +17,8 @@
   <Notification />
 </template>
 
-<script>
-import { onMounted, computed, onUnmounted } from 'vue';
+<script setup>
+import { onMounted, computed, onUnmounted, provide } from 'vue';
 
 import store from './store';
 
@@ -30,37 +30,29 @@ import Progressbar from './components/Progressbar';
 
 import { TOKEN_MODAL } from './components/modals/constants';
 
-export default {
-  name: 'App',
-  components: { Loading, Modal, Sidebar, Notification, Progressbar },
-  provide: { store },
-  setup() {
-    const clickEvent = event => {
-      event.stopPropagation();
-      window.dispatchEvent(
-        new CustomEvent('Document:click', { detail: event.target }),
-      );
-    };
+provide('store', store);
 
-    onMounted(async () => {
-      document.documentElement.setAttribute('dark-theme', store.state.darkMode);
-      window.requestAnimationFrame(() => {
-        document.addEventListener('mousedown', clickEvent);
-      });
-      await store.connect();
-    });
-
-    onUnmounted(() => {
-      document.removeEventListener('mousedown', clickEvent);
-    });
-
-    return {
-      connected: computed(() => store.state.connected),
-      TOKEN_MODAL,
-      loading: computed(() => store.state.progressbarLoading),
-    };
-  },
+const clickEvent = event => {
+  event.stopPropagation();
+  window.dispatchEvent(
+    new CustomEvent('Document:click', { detail: event.target }),
+  );
 };
+
+onMounted(async () => {
+  document.documentElement.setAttribute('dark-theme', store.state.darkMode);
+  window.requestAnimationFrame(() => {
+    document.addEventListener('mousedown', clickEvent);
+  });
+  await store.connect();
+});
+
+onUnmounted(() => {
+  document.removeEventListener('mousedown', clickEvent);
+});
+
+const connected = computed(() => store.state.connected);
+const loading = computed(() => store.state.progressbarLoading);
 </script>
 
 <style>
@@ -86,15 +78,6 @@ export default {
   left: 0;
   right: 0;
   bottom: 0;
-}
-
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.1s;
-}
-.fade-enter,
-.fade-leave-to {
-  opacity: 0;
 }
 
 @media screen and (max-width: 768px) {

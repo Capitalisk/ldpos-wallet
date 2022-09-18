@@ -39,7 +39,7 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import { ref, inject, onMounted } from 'vue';
 
 import { ADD_TOKEN_MODAL } from './constants';
@@ -48,73 +48,60 @@ import Input from '../Input';
 import Button from '../Button';
 import Select from '../Select';
 
-export default {
-  name: 'TOKEN_MODAL',
-  setup() {
-    const store = inject('store');
+const store = inject('store');
 
-    const isDevelopment = process.env.NODE_ENV === 'development';
-    const isElectron = process.env.IS_ELECTRON;
+const isDevelopment = process.env.NODE_ENV === 'development';
+const isElectron = process.env.IS_ELECTRON;
 
-    const networks = ref({});
-    const network = ref(null);
+const networks = ref({});
+const network = ref(null);
 
-    const hasErrors = ref(false);
+const hasErrors = ref(false);
 
-    const getConfig = async () => {
-      network.value = store.state.config.networkSymbol;
-      if (isElectron) {
-        const { ipcRenderer } = await import('electron');
-        const config = JSON.parse(await ipcRenderer.invoke('get-config'));
-        networks.value = config;
-        return;
-      }
+const getConfig = async () => {
+  network.value = store.state.config.networkSymbol;
+  if (isElectron) {
+    const { ipcRenderer } = await import('electron');
+    const config = JSON.parse(await ipcRenderer.invoke('get-config'));
+    networks.value = config;
+    return;
+  }
 
-      const localStorageConfig = JSON.parse(localStorage.getItem('config'));
-      if (!localStorageConfig) {
-        const config = await import('../../config.json');
-        networks.value = config.default;
-        return;
-      }
-      networks.value = localStorageConfig;
-    };
-
-    onMounted(async () => {
-      await getConfig();
-    });
-
-    const type = ref(isDevelopment ? 'testnet' : 'mainnet');
-
-    return {
-      isElectron,
-      type,
-      network,
-      networks,
-      hasErrors,
-      connect: async () => {
-        try {
-          const config = networks.value[network.value][type.value];
-          await store.connect({ [type.value]: config }, type.value);
-          store.toggleOrBrowseModal();
-        } catch (e) {
-          store.notify({ message: `Error: ${e.message}`, error: true }, 5);
-          console.error(e);
-        }
-      },
-      validateType: val => {
-        if (!network.value) return;
-        return (
-          (network.value &&
-            networks.value[network.value] &&
-            networks.value[network.value][val]) ||
-          'This net is not defined in the network'
-        );
-      },
-      isDevelopment,
-      ADD_TOKEN_MODAL,
-      toggleOrBrowseModal: store.toggleOrBrowseModal,
-    };
-  },
-  components: { Input, Button, Select },
+  const localStorageConfig = JSON.parse(localStorage.getItem('config'));
+  if (!localStorageConfig) {
+    const config = await import('../../config.json');
+    networks.value = config.default;
+    return;
+  }
+  networks.value = localStorageConfig;
 };
+
+onMounted(async () => {
+  await getConfig();
+});
+
+const type = ref(isDevelopment ? 'testnet' : 'mainnet');
+
+const connect = async () => {
+  try {
+    const config = networks.value[network.value][type.value];
+    await store.connect({ [type.value]: config }, type.value);
+    store.toggleOrBrowseModal();
+  } catch (e) {
+    store.notify({ message: `Error: ${e.message}`, error: true }, 5);
+    console.error(e);
+  }
+};
+
+const validateType = val => {
+  if (!network.value) return;
+  return (
+    (network.value &&
+      networks.value[network.value] &&
+      networks.value[network.value][val]) ||
+    'This net is not defined in the network'
+  );
+};
+
+const toggleOrBrowseModal = store.toggleOrBrowseModal;
 </script>
