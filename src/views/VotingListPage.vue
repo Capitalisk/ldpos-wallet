@@ -49,9 +49,9 @@ const getData = async () => {
     AccountVotes: () => ({
       titleLink: `/accounts/${route.params.accountId}`,
       arg: route.params.accountId,
-      fn: async accountId => {
+      fn: async (accountId) => {
         const votes = await store.client.value.getAccountVotes(accountId);
-        return votes.map(address => ({ address }));
+        return votes.map((address) => ({ address }));
       },
     }),
     DelegateVoters: () => ({
@@ -64,7 +64,7 @@ const getData = async () => {
           limit,
           order,
         );
-        return voters.map(address => ({ address }));
+        return voters.map((address) => ({ address }));
       },
     }),
     default: () => {},
@@ -91,5 +91,4 @@ const columns = ref([
 
 const paginate = isVoterList;
 const urlPrefix = isVoterList ? 'accounts' : 'delegates';
-const loading = computed(() => store.state.progressbarLoading);
 </script>
