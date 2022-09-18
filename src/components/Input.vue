@@ -105,7 +105,7 @@ defineExpose({ focus, reset, validate, error });
   outline: none;
   border: none;
   box-sizing: border-box;
-  box-shadow: inset 0 0 0 1px var(--dark);
+  box-shadow: inset 0 0 0 1px var(--dark-border);
 }
 
 .input-error {

@@ -371,9 +371,10 @@ const previousPage = async () => {
 };
 
 const definePage = async (p) => {
-  await pageInputRef.value.validate();
-  console.log(pageInputRef.value.error);
-  if (pageInputRef.value.error) return;
+  if (pageInputRef.value) {
+    await pageInputRef.value.validate();
+    if (pageInputRef.value.error) return;
+  }
 
   await router.push({ query: { ...route.query, p } });
   pageInput.value = false;

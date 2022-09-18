@@ -15,6 +15,7 @@
 
   --danger-bg: #f2544b30;
   --warning-bg: #f8ca0020;
+  --dark-border: #40454990;
 
   --primary: #ffffff;
   --primary-lightest: #3890f5;
@@ -63,6 +64,8 @@
   --modal-backdrop: #22243570;
 
   --darken: rgb(78, 93, 114);
+
+  --dark-border: #ffffff90;
 }
 
 * {
