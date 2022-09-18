@@ -1,13 +1,11 @@
 <template>
   <ConfirmationModal ref="confirmationRef">
-    <div class="mb-1">
-      Forging passphrase
-    </div>
+    <div class="mb-1">Forging passphrase</div>
     <Input
       v-model="passphrase"
       :rules="[
-        val => !!val || (val && val.length <= 0) || 'Required',
-        val => validatePassphrase(val) || 'Must be a 12 word BIP39 mnemonic',
+        (val) => !!val || (val && val.length <= 0) || 'Required',
+        (val) => validatePassphrase(val) || 'Must be a 12 word BIP39 mnemonic',
       ]"
     />
   </ConfirmationModal>
@@ -25,8 +23,15 @@
           <Button
             :value="`Send ${networkSymbol}`"
             class="mt-4"
-            style="width: 110px"
+            style="width: 150px"
             @click="openTransferModal"
+          />
+          <Button
+            :value="`Request ${networkSymbol}`"
+            class="mt-4 outline"
+            style="width: 150px"
+            router-link
+            href="/transaction/create"
           />
         </div>
         <div class="flex-6 flex-sm-12 wallet-address">
@@ -116,11 +121,12 @@ const getWallet = async (
     return;
   }
   try {
-    const pendingTransactions = await store.client.value.getOutboundPendingTransactions(
-      arg,
-      offset,
-      limit,
-    );
+    const pendingTransactions =
+      await store.client.value.getOutboundPendingTransactions(
+        arg,
+        offset,
+        limit,
+      );
 
     let l;
     if (page === 1)
@@ -130,7 +136,7 @@ const getWallet = async (
     else l = limit;
 
     const transactions = [
-      ...pendingTransactions.map(t => ({
+      ...pendingTransactions.map((t) => ({
         ...t,
         counterpartyAddress:
           t.recipientAddress === arg ? t.senderAddress : t.recipientAddress,
@@ -144,7 +150,7 @@ const getWallet = async (
           l,
           order,
         )
-      ).map(t => ({
+      ).map((t) => ({
         ...t,
         counterpartyAddress:
           t.recipientAddress === arg ? t.senderAddress : t.recipientAddress,
@@ -224,7 +230,7 @@ const columns = ref([
     label: 'Counterparty',
     field: 'counterpartyAddress',
     sortable: false,
-    value: val => val,
+    value: (val) => val,
     active: true,
     slot: true,
     shrinkUntilWidth: 1800,
@@ -235,7 +241,7 @@ const columns = ref([
     label: 'Date',
     field: 'timestamp',
     sortable: false,
-    value: val => _parseDate(val),
+    value: (val) => _parseDate(val),
     active: true,
     hideOnMobile: true,
   },
@@ -244,7 +250,8 @@ const columns = ref([
     label: 'Amount',
     field: 'amount',
     sortable: false,
-    value: val => _transformMonetaryUnit(val, store.state.config.networkSymbol),
+    value: (val) =>
+      _transformMonetaryUnit(val, store.state.config.networkSymbol),
     active: true,
   },
   {
@@ -252,7 +259,8 @@ const columns = ref([
     label: 'Fee',
     field: 'fee',
     sortable: false,
-    value: val => _transformMonetaryUnit(val, store.state.config.networkSymbol),
+    value: (val) =>
+      _transformMonetaryUnit(val, store.state.config.networkSymbol),
     active: true,
     hideOnMobile: true,
   },
@@ -286,14 +294,13 @@ const confirmationModal = async () => {
       if (!store.client.value.validatePassphrase(passphrase.value))
         throw new Error('Passphrase should be a valid 12 word BIP39 mnemonic');
 
-      const registerTxn = await store.client.value.prepareRegisterForgingDetails(
-        {
+      const registerTxn =
+        await store.client.value.prepareRegisterForgingDetails({
           newNextForgingKeyIndex,
           forgingPassphrase: passphrase.value,
           message: 'Register as a delegate via ldpos-wallet',
           fee: minTransactionFees.registerForgingDetails,
-        },
-      );
+        });
 
       await store.client.value.postTransaction(registerTxn);
 
@@ -324,13 +331,13 @@ const openTransferModal = () =>
         5,
       );
 // TODO: Remove?
-const details = data =>
+const details = (data) =>
   store.toggleOrBrowseModal({
     type: DETAIL_MODAL,
     data,
   });
 const transformMonetaryUnit = _transformMonetaryUnit;
-const validatePassphrase = val => store.client.value.validatePassphrase(val);
+const validatePassphrase = (val) => store.client.value.validatePassphrase(val);
 const networkSymbol = store.state.config.networkSymbol;
 const shrink = window.innerWidth < 992;
 </script>

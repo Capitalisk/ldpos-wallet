@@ -10,7 +10,7 @@
     />
     <i class="fa fa-circle-notch fa-spin mr-1" v-if="loading" />{{ value }}
   </a>
-  <router-link class="button" :class="value ? 'default' : ''" v-else :to="href">
+  <router-link class="button cursor-pointer text-center" :class="value ? 'default' : ''" v-else :to="href">
     <i v-if="!loading && icon" :class="`fa fa-${icon} mr-2`" />
     {{ value }}
   </router-link>
