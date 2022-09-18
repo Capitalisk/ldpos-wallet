@@ -1,8 +1,11 @@
 <template>
   <Navbar :title="title" />
-  <Section>
+  <Section v-if="authenticated">
     <DetailedData :data="queryParams" />
     <Button value="Sign transaction" @click="sign" :loading="loading" />
+  </Section>
+  <Section v-else>
+    <LoginForm />
   </Section>
 </template>
 
@@ -16,6 +19,7 @@ import Navbar from '../components/Navbar';
 import Section from '../components/Section';
 import Button from '../components/Button';
 import DetailedData from '../components/DetailedData';
+import LoginForm from '../components/forms/LoginForm.vue';
 
 defineProps({
   title: { type: String, required: true },
@@ -28,6 +32,8 @@ const queryParams = computed(() => ({
   ...route.query,
   timestamp: Date.now(),
 }));
+
+const authenticated = computed(() => store.state.authenticated)
 
 const loading = ref(false);
 

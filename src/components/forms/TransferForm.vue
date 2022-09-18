@@ -3,6 +3,7 @@
     <div>
       Address:
       <Input
+        class="primary-darker"
         :model-value="transfer.address.data"
         @update:model-value="
           (v) => updateModelValue({ key: 'address', value: v })
@@ -27,6 +28,7 @@
         </span>
       </small>
       <Input
+        class="primary-darker"
         :model-value="transfer.amount.data"
         @update:model-value="
           (v) => updateModelValue({ key: 'amount', value: v })
@@ -51,6 +53,7 @@
       Minimum fee:
       {{ minFee }}
       <Input
+        class="primary-darker"
         :model-value="transfer.fee.data"
         @update:model-value="(v) => updateModelValue({ key: 'fee', value: v })"
         :error="transfer.fee.error"
@@ -69,6 +72,7 @@
     <div>
       Message:
       <Input
+        class="primary-darker"
         :model-value="transfer.message.data"
         @update:model-value="
           (v) => updateModelValue({ key: 'message', value: v })

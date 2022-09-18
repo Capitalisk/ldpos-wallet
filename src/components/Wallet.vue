@@ -97,7 +97,7 @@ import Button from './Button';
 import { _capitalize, _parseDate, _transformMonetaryUnit } from '../utils';
 import router from '../router';
 
-import { DETAIL_MODAL, TRANSFER_MODAL } from './modals/constants';
+import { TRANSFER_MODAL } from './modals/constants';
 import ConfirmationModal from './modals/ConfirmationModal';
 import Input from './Input';
 
@@ -319,6 +319,7 @@ const confirmationModal = async () => {
 const fn = getWallet;
 const authenticated = computed(() => store.state.authenticated);
 const walletAddress = computed(() => store.client.value.getWalletAddress());
+
 const openTransferModal = () =>
   balance.data > 0
     ? store.toggleOrBrowseModal({ type: TRANSFER_MODAL })
@@ -330,12 +331,7 @@ const openTransferModal = () =>
         },
         5,
       );
-// TODO: Remove?
-const details = (data) =>
-  store.toggleOrBrowseModal({
-    type: DETAIL_MODAL,
-    data,
-  });
+
 const transformMonetaryUnit = _transformMonetaryUnit;
 const validatePassphrase = (val) => store.client.value.validatePassphrase(val);
 const networkSymbol = store.state.config.networkSymbol;

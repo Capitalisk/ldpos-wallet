@@ -33,6 +33,16 @@ const store = inject('store');
 const copyRef = ref(null);
 
 const copy = () => {
+  if (!navigator.clipboard) {
+    return store.notify(
+      {
+        message: `Browser doesn't allow us to write to your clipboard`,
+        error: true,
+      },
+      5,
+    );
+  }
+
   navigator.clipboard.writeText(props.value);
 
   store.notify({ message: `Copied: ${props.value}` }, 5);
