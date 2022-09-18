@@ -1,5 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400&display=swap');
-@import url('https://gist.githubusercontent.com/mfd/09b70eb47474836f25a21660282ce0fd/raw/2923dc0cccd912c217ef244f5c42d547deab5b60/Gilroy-Regular.ttf');
+@import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
 @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css');
 
 :root {
@@ -72,9 +72,10 @@
 }
 
 body {
-  font-family: 'Gilroy', sans-serif;
+  font-family: 'Poppins', sans-serif;
   color: var(--dark);
   background-color: var(--white);
+  font-size: 14px;
 }
 
 @media screen and (max-width: 768px) {
@@ -93,7 +94,7 @@ td {
 }
 
 h4 {
-  font-family: 'Gilroy', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-style: normal;
   font-weight: normal;
   font-size: 18px;
@@ -649,7 +650,6 @@ th {
   transform: translateY(-10px);
   opacity: 0;
 }
-
 
 .fade-enter-active,
 .fade-leave-active {

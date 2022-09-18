@@ -3,12 +3,12 @@
     <template v-for="(value, key) in detailedData" :key="key">
       <div v-if="!Array.isArray(value)" class="flex column my-2 px-1">
         <div
-          class="title"
+          class="title mb-2"
           :class="{
             'text-danger': value && value.name,
           }"
         >
-          <strong>{{ transformTitle(key) }}</strong>
+          <strong class="opaque-key">{{ transformTitle(key) }}</strong>
         </div>
         <div v-if="links[key]">
           <Copy
@@ -28,8 +28,8 @@
         </div>
       </div>
       <div v-else class="my-2">
-        <div class="title">
-          <strong>{{ transformTitle(key) }}</strong>
+        <div class="title mb-2">
+          <strong class="opaque-key">{{ transformTitle(key) }}</strong>
         </div>
         <div>
           <div v-for="(a, i) in value" :key="i">
@@ -37,7 +37,7 @@
               <template v-for="(v, k) in a" :key="k">
                 <div class="flex">
                   <div class="flex-2">
-                    <strong class="subtitle">{{ transformTitle(k) }}:</strong>
+                    <strong class="subtitle opaque-key">{{ transformTitle(k) }}:</strong>
                   </div>
                   <div class="flex-9">
                     <Copy :value="v" />
@@ -125,5 +125,9 @@ const links = {
 .subtitle {
   font-size: 12px;
   text-transform: capitalize;
+}
+
+.opaque-key {
+  opacity: 0.5;
 }
 </style>

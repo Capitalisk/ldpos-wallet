@@ -24,7 +24,7 @@
 </template>
 
 <script setup>
-import { inject, ref, computed } from 'vue';
+import { inject, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 import Section from '../components/Section';
