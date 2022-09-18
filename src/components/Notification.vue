@@ -5,7 +5,7 @@
         v-for="(notification, i) in Object.values(notifications).reverse()"
         :key="notification"
         class="notification pa-2 ma-2"
-        :class="notification.error ? 'danger' : ''"
+        :class="{ danger: notification.error }"
         :ref="
           (el) => {
             if (el) divs[i] = el;
@@ -15,6 +15,7 @@
         <Progressbar
           active
           class="notification-progress"
+          :danger="notification.error"
           :value="`${(notification.secondsLeft / notification.seconds) * 100}%`"
         />
         <div class="close-btn cursor-pointer" @click="denotify(i)">
@@ -56,6 +57,7 @@ const denotify = (i) => store.denotify(i);
 }
 
 .notification {
+  min-width: 400px;
   border-radius: var(--border-radius);
   background-color: var(--primary);
   max-width: 30vw;
@@ -64,7 +66,7 @@ const denotify = (i) => store.denotify(i);
 }
 
 .notification.danger {
-  border: 1px solid var(--danger);
+  background-color: var(--danger-bg);
   color: var(--danger);
   font-weight: 900;
 }
@@ -75,6 +77,7 @@ const denotify = (i) => store.denotify(i);
   top: var(--unit-1);
   font-size: var(--unit-2);
   color: var(--dark) !important;
+  opacity: 0.5;
 }
 
 .notification-progress {

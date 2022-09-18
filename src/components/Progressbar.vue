@@ -6,6 +6,9 @@
       :class="{
         'progress-indeterminate': !value,
         'progress-progressive': value,
+        'danger': danger,
+        'warning': warning,
+        'success': success,
       }"
     ></div>
   </div>
@@ -14,6 +17,9 @@
 <script setup>
 defineProps({
   active: { type: Boolean, default: false },
+  danger: { type: Boolean, default: false },
+  warning: { type: Boolean, default: false },
+  success: { type: Boolean, default: false },
   value: { type: String, default: null },
 });
 </script>
@@ -35,6 +41,18 @@ defineProps({
   will-change: transform;
   transition: width 1s linear;
   border-radius: var(--border-radius);
+}
+
+.progress-bar.danger {
+  background-color: var(--danger);
+}
+
+.progress-bar.warning {
+  background-color: var(--warning);
+}
+
+.progress-bar.success {
+  background-color: var(--success);
 }
 
 .progress-indeterminate {
