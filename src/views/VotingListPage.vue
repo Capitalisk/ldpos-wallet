@@ -24,16 +24,15 @@
 </template>
 
 <script setup>
-import { inject, ref, computed } from 'vue';
+import { inject, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
-import DetailedData from '../components/DetailedData';
 import Section from '../components/Section';
 import Navbar from '../components/Navbar';
 import DataTable from '../components/DataTable';
 import Copy from '../components/Copy';
 
-const props = defineProps({
+defineProps({
   dataTable: { type: Boolean, default: false },
   ableToCopyTitle: { type: Boolean, default: true },
   title: { type: String, required: true },
@@ -50,9 +49,9 @@ const getData = async () => {
     AccountVotes: () => ({
       titleLink: `/accounts/${route.params.accountId}`,
       arg: route.params.accountId,
-      fn: async accountId => {
+      fn: async (accountId) => {
         const votes = await store.client.value.getAccountVotes(accountId);
-        return votes.map(address => ({ address }));
+        return votes.map((address) => ({ address }));
       },
     }),
     DelegateVoters: () => ({
@@ -65,7 +64,7 @@ const getData = async () => {
           limit,
           order,
         );
-        return voters.map(address => ({ address }));
+        return voters.map((address) => ({ address }));
       },
     }),
     default: () => {},
@@ -92,5 +91,4 @@ const columns = ref([
 
 const paginate = isVoterList;
 const urlPrefix = isVoterList ? 'accounts' : 'delegates';
-const loading = computed(() => store.state.progressbarLoading);
 </script>

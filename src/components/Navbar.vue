@@ -35,7 +35,6 @@
         class="ml-1 mr-2"
         :href="`/blocks/${$route.params.blockId}/transactions`"
       />
-      <Connected />
       <span class="flex justify-center align-center mr-2">
         <Switch v-model="darkMode" id="darkmode-switch" />
       </span>
@@ -97,7 +96,6 @@ import { computed, inject, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import Button from './Button';
-import Connected from './Connected';
 import Switch from './Switch';
 import Input from './Input';
 import TransitionExpand from './transitions/TransitionExpand';

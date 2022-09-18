@@ -58,4 +58,28 @@ export default [
       title: process.env.IS_ELECTRON ? 'Wallet' : 'Transactions',
     },
   },
+  {
+    path: '/transaction',
+    name: 'transaction',
+    children: [
+      {
+        path: 'create',
+        component: () => import(
+          /* webpackChunkName: "createTransaction" */ '../views/CreateTransaction'
+        ),
+        props: {
+          title: 'Create transaction',
+        },
+      },
+      {
+        path: 'sign',
+        component: () => import(
+          /* webpackChunkName: "signTransaction" */ '../views/SignTransaction'
+        ),
+        props: {
+          title: 'Sign transaction',
+        },
+      },
+    ],
+  },
 ];

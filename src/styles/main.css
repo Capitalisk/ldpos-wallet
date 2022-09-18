@@ -1,5 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400&display=swap');
-@import url('https://gist.githubusercontent.com/mfd/09b70eb47474836f25a21660282ce0fd/raw/2923dc0cccd912c217ef244f5c42d547deab5b60/Gilroy-Regular.ttf');
+@import url('https://fonts.googleapis.com/css2?family=Inter&family=Montserrat&family=Roboto+Mono&display=swap');
 @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css');
 
 :root {
@@ -14,7 +13,7 @@
   --permanent-white: #fff;
   --permanent-dark: #404549;
 
-  --danger-bg: #f2544b20;
+  --danger-bg: #f2544b30;
   --warning-bg: #f8ca0020;
 
   --primary: #ffffff;
@@ -72,9 +71,10 @@
 }
 
 body {
-  font-family: 'Gilroy', sans-serif;
+  font-family: 'Inter', sans-serif;
   color: var(--dark);
   background-color: var(--white);
+  font-size: 14px;
 }
 
 @media screen and (max-width: 768px) {
@@ -89,11 +89,11 @@ h4,
 h5,
 h6,
 td {
-  font-family: 'Roboto', sans-serif;
+  font-family: 'Montserrat', sans-serif;
 }
 
 h4 {
-  font-family: 'Gilroy', sans-serif;
+  font-family: 'Inter', sans-serif;
   font-style: normal;
   font-weight: normal;
   font-size: 18px;
@@ -649,7 +649,6 @@ th {
   transform: translateY(-10px);
   opacity: 0;
 }
-
 
 .fade-enter-active,
 .fade-leave-active {

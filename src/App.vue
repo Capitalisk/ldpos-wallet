@@ -1,5 +1,5 @@
 <template>
-  <Progressbar :loading="loading" class="progress-bar-top" />
+  <Progressbar :active="loading" class="progress-bar-top" />
   <Modal />
   <Sidebar />
   <div class="main-content relative">
@@ -28,11 +28,9 @@ import Notification from './components/Notification';
 import Sidebar from './components/Sidebar';
 import Progressbar from './components/Progressbar';
 
-import { TOKEN_MODAL } from './components/modals/constants';
-
 provide('store', store);
 
-const clickEvent = event => {
+const clickEvent = (event) => {
   event.stopPropagation();
   window.dispatchEvent(
     new CustomEvent('Document:click', { detail: event.target }),

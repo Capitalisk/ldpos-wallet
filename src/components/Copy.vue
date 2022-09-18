@@ -38,7 +38,7 @@ const copy = () => {
   store.notify({ message: `Copied: ${props.value}` }, 5);
 };
 
-const shrinkValue = val => {
+const shrinkValue = (val) => {
   if (val.length > 14) {
     const arr = val.split('');
     return [

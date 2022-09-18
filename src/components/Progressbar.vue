@@ -1,47 +1,79 @@
 <template>
-  <div class="loading">
-    <progress
-      v-if="loading"
-      class="progress-indeterminate"
-      max="100"
-      :class="classes"
-    ></progress>
+  <div class="progress">
+    <div
+      v-if="active"
+      class="progress-bar"
+      :class="{
+        'progress-indeterminate': !value,
+        'progress-progressive': value,
+        'danger': danger,
+        'warning': warning,
+        'success': success,
+      }"
+    ></div>
   </div>
 </template>
 
 <script setup>
 defineProps({
-  loading: { type: Boolean, default: false },
-  classes: { type: String, default: '' },
+  active: { type: Boolean, default: false },
+  danger: { type: Boolean, default: false },
+  warning: { type: Boolean, default: false },
+  success: { type: Boolean, default: false },
+  value: { type: String, default: null },
 });
 </script>
 
 <style scoped>
-.loading {
-  min-height: 5px;
-}
-
-progress::-webkit-progress-bar {
-  background: transparent !important;
-}
-
-progress.progress-indeterminate {
+.progress {
+  background-color: transparent;
   width: 100%;
-  display: block;
-  height: 5px;
   overflow: hidden;
-  padding: 0;
-  background: var(--primary-darker)
-    linear-gradient(to right, var(--primary) 30%, var(--primary-lighter) 30%)
-    top left / 150% 150% no-repeat;
+  border-radius: var(--border-radius);
 }
 
-progress:indeterminate {
-  animation: progress-indeterminate 0.75s linear infinite;
+.progress-bar {
+  min-height: 5px;
+  background-color: var(--primary-lighter);
+  backface-visibility: hidden;
+  perspective: 1000px;
+  transform: translateZ(0);
+  will-change: transform;
+  transition: width 1s linear;
+  border-radius: var(--border-radius);
 }
 
-.table {
-  border-top-left-radius: 5px;
-  border-top-right-radius: 5px;
+.progress-bar.danger {
+  background-color: var(--danger);
+}
+
+.progress-bar.warning {
+  background-color: var(--warning);
+}
+
+.progress-bar.success {
+  background-color: var(--success);
+}
+
+.progress-indeterminate {
+  width: 100%;
+  animation: indeterminateAnimation 1s infinite linear;
+  transform-origin: 0% 50%;
+}
+
+.progress-progressive {
+  width: v-bind(value);
+}
+
+@keyframes indeterminateAnimation {
+  0% {
+    transform: translateX(0) scaleX(0);
+  }
+  40% {
+    transform: translateX(0) scaleX(0.4);
+  }
+  100% {
+    transform: translateX(100%) scaleX(0.5);
+  }
 }
 </style>

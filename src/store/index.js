@@ -32,7 +32,7 @@ const state = reactive({
     routerGoBack: false,
   },
   darkMode: true,
-  notifications: [],
+  notifications: {},
   progressbarLoading: false,
 });
 
@@ -195,7 +195,7 @@ export default {
     state.darkMode = !state.darkMode;
     document.documentElement.setAttribute('dark-theme', state.darkMode);
   },
-  toggleNav: action => (state.nav = action === false ? action : !state.nav),
+  toggleNav: (action) => (state.nav = action === false ? action : !state.nav),
   initiateOrRenewTimeout() {
     if (!state.authenticated) return;
     state.authenticationTimeout && clearTimeout(state.authenticationTimeout);
@@ -205,22 +205,33 @@ export default {
     }, 1 * 1000 * 60);
   },
   notify({ message, error = false }, seconds = null) {
-    for (let i = 0; i < state.notifications.length; i++) {
-      const n = state.notifications[i];
-      if (n.message === message) return;
-    }
+    // TODO: Handle this
+    if (state.notifications[message]) return;
+    state.notifications[message] = {
+      message,
+      error,
+      seconds,
+      secondsLeft: seconds,
+    };
 
-    if (state.notifications.length === 3) state.notifications.splice(0, 1);
-    state.notifications.push({ message, error });
+    if (seconds) {
+      setTimeout(() => state.notifications[message].secondsLeft--);
 
-    if (seconds)
+      const interval = setInterval(
+        () =>
+          state.notifications[message].secondsLeft > 0 &&
+          state.notifications[message].secondsLeft--,
+        1000,
+      );
+
       setTimeout(() => {
-        const index = state.notifications.findIndex(m => m === message);
-        this.denotify(index);
+        this.denotify(message);
+        clearInterval(interval);
       }, seconds * 1000);
+    }
   },
-  denotify: index => {
-    state.notifications.splice(index, 1);
+  denotify: (message) => {
+    delete state.notifications[message];
   },
-  mutateProgressbarLoading: val => (state.progressbarLoading = val),
+  mutateProgressbarLoading: (val) => (state.progressbarLoading = val),
 };

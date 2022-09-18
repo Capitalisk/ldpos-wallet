@@ -22,7 +22,7 @@
       <div class="bar3"></div>
     </div>
   </div>
-  <div :class="`sidebar${burgerActive ? ' sidebar-active' : ''}`">
+  <div class="sidebar ma-2" :class="{ 'sidebar-active': burgerActive }">
     <a
       to="/"
       class="first"
@@ -74,12 +74,16 @@
       BLOCKCHAINS
     </router-link>
   </div>
+  <div class="ma-2 connected">
+    <Connected />
+  </div>
 </template>
 
 <script setup>
 import { computed, inject } from 'vue';
 
 import Button from './Button';
+import Connected from './Connected';
 
 import { TOKEN_MODAL } from './modals/constants';
 
@@ -90,7 +94,7 @@ const burgerActive = computed(() => store.state.nav);
 const networkSymbol = computed(() =>
   store.state.config.networkSymbol.toUpperCase(),
 );
-const toggleOrBrowseModal = m => store.toggleOrBrowseModal(m);
+const toggleOrBrowseModal = (m) => store.toggleOrBrowseModal(m);
 const toggleBurger = () => store.toggleNav();
 const deauthenticate = () => store.deauthenticate();
 const useAsWallet = process.env.VUE_APP_USE_AS_WALLET === 'true';
@@ -101,11 +105,16 @@ const useAsWallet = process.env.VUE_APP_USE_AS_WALLET === 'true';
   display: none;
 }
 
+.connected {
+  position: fixed;
+  top: 360px;
+  width: 250px;
+}
+
 .sidebar {
   position: fixed;
   width: 250px;
   padding: 0;
-  margin: var(--unit-2);
   border-radius: var(--border-radius);
   background-color: var(--primary);
   color: var(--white);
