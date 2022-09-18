@@ -39,7 +39,7 @@ const tooltipIconRef = ref(null);
 const tooltipContainerRef = ref(null);
 const tooltipActive = ref(false);
 
-const click = event => {
+const click = (event) => {
   if (tooltipIconRef.value.contains(event.detail)) return;
 
   tooltipContainerRef.value &&
@@ -59,7 +59,6 @@ onUnmounted(() => {
 <style scoped>
 .tooltip {
   position: fixed;
-  /* border: 1px solid var(--dark); */
   border-radius: var(--border-radius);
   background-color: var(--primary-darker);
   max-width: 30vw;
@@ -68,13 +67,22 @@ onUnmounted(() => {
 
 .tooltip.danger {
   border: 1px solid var(--danger);
+  background-color: var(--danger-bg);
   color: var(--danger);
   font-weight: 900;
 }
 
 .tooltip.warning {
   border: 1px solid var(--warning);
+  background-color: var(--warning-bg);
   color: var(--warning);
+  font-weight: 900;
+}
+
+.tooltip.success {
+  border: 1px solid var(--success);
+  background-color: var(--success-bg);
+  color: var(--success);
   font-weight: 900;
 }
 </style>
