@@ -1,7 +1,7 @@
 <template>
   <a
     class="button cursor-pointer text-center"
-    :class="value ? 'default' : ''"
+    :class="{ default: value && !small }"
     v-if="!routerLink"
   >
     <i
@@ -10,7 +10,12 @@
     />
     <i class="fa fa-circle-notch fa-spin mr-1" v-if="loading" />{{ value }}
   </a>
-  <router-link class="button cursor-pointer text-center" :class="value ? 'default' : ''" v-else :to="href">
+  <router-link
+    class="button cursor-pointer text-center"
+    :class="{ default: value && !small }"
+    v-else
+    :to="href"
+  >
     <i v-if="!loading && icon" :class="`fa fa-${icon} mr-2`" />
     {{ value }}
   </router-link>
@@ -24,7 +29,8 @@ defineProps({
   loading: { type: Boolean, default: false },
   icon: { type: String, default: null },
   width: { type: String, default: 'auto' },
-  height: { type: String, default: 'auto' }
+  height: { type: String, default: 'auto' },
+  small: { type: Boolean, default: false },
 });
 </script>
 
@@ -40,7 +46,7 @@ a.button {
   font-style: normal;
   font-weight: 600;
   font-size: 14px;
-  line-height: 16px;
+  line-height: 20px;
   letter-spacing: 1.25px;
   text-transform: uppercase;
   width: v-bind(width);
