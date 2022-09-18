@@ -1,5 +1,5 @@
 <template>
-  <div class="table flex column relative mb-5">
+  <div class="table flex column relative mb-7">
     <div v-if="hasHeaderSlot || title" class="header flex justify-end pa-2">
       <div class="mr-auto">
         <slot name="header" />
@@ -142,7 +142,7 @@
       <div v-if="pageInput">
         <Input
           placeholder="Page"
-          class="mr-1"
+          class="mr-1 mobile-width"
           v-model="pageInputValue"
           @keyup.enter="() => definePage(pageInputValue)"
           @keyup.esc="() => (pageInput = false)"
@@ -512,5 +512,13 @@ tr:hover {
 
 th {
   font-size: 14px;
+}
+</style>
+
+<style>
+@media screen and (max-width: 768px) {
+  .mobile-width {
+    max-width: 100px;
+  }
 }
 </style>

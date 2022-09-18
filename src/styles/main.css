@@ -38,6 +38,7 @@
   --unit-4: 2rem;
   --unit-5: 2.5rem;
   --unit-6: 3rem;
+  --unit-7: 4rem;
 
   --darken: rgb(120, 131, 147);
 }
@@ -375,6 +376,10 @@ th {
 
 .mb-6 {
   margin-bottom: var(--unit-6);
+}
+
+.mb-7 {
+  margin-bottom: var(--unit-7);
 }
 
 .pb-1 {
