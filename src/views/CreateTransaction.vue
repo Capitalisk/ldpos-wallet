@@ -37,9 +37,7 @@ const transfer = ref({
 
 const qrCodeRef = ref();
 
-const generator = new QRCodeGenerator({
-  url: 'http://192.168.1.3:8080/#/transaction/sign',
-});
+const generator = new QRCodeGenerator();
 
 const generateUrl = async () => {
   const preparedTxn = {
