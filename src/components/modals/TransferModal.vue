@@ -61,16 +61,19 @@ const send = async () => {
     await store.client.value.postTransaction(preparedTxn);
 
     window.dispatchEvent(new Event('DataTable:update'));
+
+    store.notify(
+      { message: `Transaction sent to ${transfer.value.address}` },
+      5,
+    );
   } catch (e) {
     store.notify({ message: `Error: ${e.message}`, error: true }, 5);
     error.value = true;
-    loading.value = false;
     return;
+  } finally {
+    loading.value = false;
+    store.toggleOrBrowseModal();
   }
-  store.notify({ message: `Transaction sent to ${transfer.value.address}` }, 5);
-  loading.value = false;
-
-  store.toggleOrBrowseModal();
 };
 </script>
 

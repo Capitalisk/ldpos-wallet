@@ -47,7 +47,6 @@ const generateUrl = async () => {
     recipientAddress: transfer.value.address,
     amount: _decimalToInteger(transfer.value.amount),
     fee: _decimalToInteger(transfer.value.fee),
-    timestamp: Date.now(),
     message: transfer.value.message,
   };
 

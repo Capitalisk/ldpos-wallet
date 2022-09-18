@@ -27,13 +27,12 @@
 import { inject, ref, computed } from 'vue';
 import { useRoute } from 'vue-router';
 
-import DetailedData from '../components/DetailedData';
 import Section from '../components/Section';
 import Navbar from '../components/Navbar';
 import DataTable from '../components/DataTable';
 import Copy from '../components/Copy';
 
-const props = defineProps({
+defineProps({
   dataTable: { type: Boolean, default: false },
   ableToCopyTitle: { type: Boolean, default: true },
   title: { type: String, required: true },
