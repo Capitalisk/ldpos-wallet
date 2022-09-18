@@ -1,6 +1,6 @@
 {
   "name": "ldpos-wallet",
-  "version": "2.5.7",
+  "version": "2.9.1",
   "private": true,
   "description": "A LDPoS Wallet application",
   "author": {
@@ -9,6 +9,7 @@
   },
   "scripts": {
     "serve": "vue-cli-service serve",
+    "serve:android": "npx cap run android",
     "build": "vue-cli-service build",
     "test:e2e": "vue-cli-service test:e2e",
     "android:generate:logo": "cordova-res android --skip-config --copy",
@@ -32,15 +33,18 @@
     "@capacitor/android": "^3.2.3",
     "@capacitor/cli": "^3.2.3",
     "@capacitor/core": "^3.2.3",
-    "ldpos-client": "^10.3.0",
-    "vue": "^3.2.24",
-    "vue-router": "^4.0.12"
+    "@capitalisk/qr-code-generator": "^0.0.3",
+    "ldpos-client": "^11.3.1",
+    "lottie-web": "^5.9.6",
+    "vue": "^3.2.39",
+    "vue-router": "^4.1.5"
   },
   "devDependencies": {
     "@vue/cli-plugin-e2e-cypress": "^4.5.13",
-    "@vue/cli-plugin-router": "^4.5.13",
+    "@vue/cli-plugin-router": "^5.0.8",
     "@vue/cli-service": "^4.5.13",
-    "@vue/compiler-sfc": "^3.2.19",
+    "@vue/compiler-sfc": "^3.2.39",
+    "cordova-res": "^0.15.4",
     "cypress-wait-until": "^1.7.1",
     "electron": "^11.4.8",
     "electron-devtools-installer": "^3.1.0",

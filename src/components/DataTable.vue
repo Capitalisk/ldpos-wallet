@@ -25,7 +25,10 @@
       <table v-if="rows && rows.length" id="data-table">
         <thead>
           <template v-for="(c, i) in columns" :key="i">
-            <th v-if="c.active" class="pa-2">
+            <th
+              v-if="c.active"
+              :class="`pa-2${c.hideOnMobile ? ' mobile-hidden' : ''}`"
+            >
               <div class="flex justify-end">
                 <div class="mr-auto">
                   {{ c.label }}
@@ -52,9 +55,9 @@
             <template v-for="(c, i) in columns" :key="i">
               <td
                 :class="
-                  `px-2 py-3 mr-2  ${c.class || ''} ${
-                    clickable ? 'cursor-pointer' : ''
-                  }`
+                  `px-2 py-3 mr-2${c.class ? ' ' + c.class : ''}${
+                    clickable ? ' cursor-pointer' : ''
+                  }${c.hideOnMobile ? ' mobile-hidden' : ''}`
                 "
                 @click="clickable ? detail(r) : ''"
                 v-if="c.active"
@@ -86,14 +89,27 @@
         </tbody>
       </table>
       <span v-else-if="!loading && rows && !rows.length" class="ma-3">
-        No records found...
+        <div class="flex justify-center">
+          <h1>No results found</h1>
+        </div>
+        <div class="flex justify-center">
+          <LottiePlayer
+            :animation-data="notFound"
+            background="transparent"
+            speed="1"
+            style="width: 500px; height: 500px;"
+            loop
+            controls
+            autoplay
+          />
+        </div>
       </span>
     </div>
     <div class="footer">
       <slot name="header" class="pa-2" />
     </div>
   </div>
-  <div v-if="fn" class="flex pagination">
+  <div v-if="fn && paginate" class="flex pagination">
     <!-- TODO: Add page one -->
     <Button
       id="previous-page"
@@ -154,7 +170,7 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import {
   computed,
   inject,
@@ -162,6 +178,7 @@ import {
   onMounted,
   onUnmounted,
   ref,
+  useSlots,
   watch,
 } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
@@ -172,270 +189,231 @@ import Button from './Button';
 import Popup from './Popup';
 import Copy from './Copy';
 import Input from './Input';
+import LottiePlayer from './LottiePlayer';
+
+import notFound from '../animations/not-found2.json';
 
 const DEFAULT_POLL_INTERVAL = 10000;
 
-export default {
-  name: 'DataTable',
-  props: {
-    rows: { type: Array, default: null },
-    columns: { type: Array, default: () => [] },
-    prefixTitle: { type: String, default: null },
-    title: { type: String, default: null },
-    titleLink: { type: String, default: null },
-    ableToCopyTitle: { type: Boolean, default: false },
-    clickable: { type: Boolean, default: false },
-    fn: { type: [String, Function], default: null },
-    limit: { type: Number, default: 10 },
-    order: { type: String, default: 'desc' },
-    arg: { type: String, default: null },
-    prefix: { type: String, default: null },
-    prependFn: { type: Function, default: null },
-  },
-  setup(props, { emit, slots }) {
-    const store = inject('store');
-    const router = useRouter();
-    const route = useRoute();
+const props = defineProps({
+  rows: { type: Array, default: null },
+  columns: { type: Array, default: () => [] },
+  prefixTitle: { type: String, default: null },
+  title: { type: String, default: null },
+  titleLink: { type: String, default: null },
+  ableToCopyTitle: { type: Boolean, default: false },
+  clickable: { type: Boolean, default: false },
+  fn: { type: [String, Function], default: null },
+  limit: { type: Number, default: 10 },
+  order: { type: String, default: 'desc' },
+  arg: { type: String, default: null },
+  prefix: { type: String, default: null },
+  prependFn: { type: Function, default: null },
+  paginate: { type: Boolean, default: true },
+});
 
-    let poller;
+const store = inject('store');
+const router = useRouter();
+const route = useRoute();
+const slots = useSlots();
 
-    const rows = ref([]);
-    const table = ref(null);
-    const limit = ref(props.limit);
-    const order = ref(props.order);
-    const columns = ref(props.columns);
-    const popupActive = ref(false);
-    const pageInput = ref(false);
-    const pageInputValue = ref(null);
+let poller;
 
-    const pageInputRef = ref(null);
+const rows = ref([]);
+const table = ref(null);
+const limit = ref(props.limit);
+const order = ref(props.order);
+const columns = ref(props.columns);
+const popupActive = ref(false);
 
-    const page = computed(() =>
-      _isNumber(route.query.p) ? parseInt(route.query.p) : 1,
-    );
+const page = computed(() =>
+  _isNumber(route.query.p) ? parseInt(route.query.p) : 1,
+);
 
-    const offset = computed(() => (page.value - 1) * limit.value);
+const offset = computed(() => (page.value - 1) * limit.value);
 
-    const getData = async () => {
-      if (typeof props.fn === 'string') {
-        if (props.arg) {
-          return await store.client.value[props.fn](
-            props.arg,
-            null,
-            offset.value,
-            limit.value,
-            order.value,
-          );
-        }
-        return await store.client.value[props.fn](
-          offset.value,
-          limit.value,
-          order.value,
-        );
-      } else if (typeof props.fn === 'function') {
-        return await props.fn(
-          props.arg,
-          null,
-          offset.value,
-          limit.value,
-          order.value,
-          page.value,
-        );
-      } else {
-        throw new Error(
-          `fn should be a function or string, not a ${typeof props.fn}`,
-        );
-      }
-    };
-
-    const updateRows = async () => {
-      store.mutateProgressbarLoading(true);
-      const initialPage = page.value;
-      const rowData = await getData();
-      if (page.value === initialPage) {
-        rows.value = rowData;
-      }
-      store.mutateProgressbarLoading(false);
-    };
-
-    const setPoll = async () => {
-      if (!props.fn) return;
-      if (page.value !== 1) return;
-      clearInterval(poller);
-      console.debug('Start polling');
-      poller = setInterval(
-        updateRows,
-        (store.state &&
-          store.state.config &&
-          store.state.config.pollInterval) ||
-          DEFAULT_POLL_INTERVAL,
+const getData = async () => {
+  if (typeof props.fn === 'string') {
+    if (props.arg) {
+      return await store.client.value[props.fn](
+        props.arg,
+        null,
+        offset.value,
+        limit.value,
+        order.value,
       );
-    };
+    }
+    return await store.client.value[props.fn](
+      offset.value,
+      limit.value,
+      order.value,
+    );
+  } else if (typeof props.fn === 'function') {
+    return await props.fn(
+      props.arg,
+      null,
+      offset.value,
+      limit.value,
+      order.value,
+      page.value,
+    );
+  } else {
+    throw new Error(
+      `fn should be a function or string, not a ${typeof props.fn}`,
+    );
+  }
+};
 
-    const clearPoll = () => {
-      console.debug('Stop polling');
-      clearInterval(poller);
-    };
+const updateRows = async () => {
+  store.mutateProgressbarLoading(true);
+  const initialPage = page.value;
+  const rowData = await getData();
+  if (page.value === initialPage) {
+    rows.value = rowData;
+  }
+  store.mutateProgressbarLoading(false);
+};
 
-    const updatePoll = () => {
-      if (page.value === 1) {
-        setPoll();
-      } else {
-        clearPoll();
-      }
-    };
+const setPoll = async () => {
+  if (!props.fn) return;
+  if (page.value !== 1) return;
+  clearInterval(poller);
+  console.debug('Start polling');
+  poller = setInterval(
+    updateRows,
+    (store.state && store.state.config && store.state.config.pollInterval) ||
+      DEFAULT_POLL_INTERVAL,
+  );
+};
 
-    const handleNewRecords = async () => {
-      if (!props.fn) return;
-      if (page.value !== 1) return;
-      await updateRows();
-    };
+const clearPoll = () => {
+  console.debug('Stop polling');
+  clearInterval(poller);
+};
 
-    const keyEvents = e => {
-      if (e.key === 'ArrowRight') nextPage();
-      if (e.key === 'ArrowLeft') previousPage();
-    };
+const updatePoll = () => {
+  if (page.value === 1) {
+    setPoll();
+  } else {
+    clearPoll();
+  }
+};
 
-    onMounted(async () => {
-      // Use replace instead of push that way we can skip a page in the history
-      if (!route.query.p) router.replace({ query: { ...route.query, p: 1 } });
+const handleNewRecords = async () => {
+  if (!props.fn) return;
+  if (page.value !== 1) return;
+  await updateRows();
+};
+
+const keyEvents = e => {
+  if (e.key === 'ArrowRight') nextPage();
+  if (e.key === 'ArrowLeft') previousPage();
+};
+
+onMounted(async () => {
+  // Use replace instead of push that way we can skip a page in the history
+  if (props.paginate && !route.query.p)
+    router.replace({ query: { ...route.query, p: 1 } });
+
+  if (props.fn) {
+    await updateRows();
+    updatePoll();
+  } else {
+    rows.value = props.rows;
+  }
+
+  window.addEventListener('blur', clearPoll);
+  window.addEventListener('focus', setPoll);
+  window.addEventListener('keydown', keyEvents);
+  window.addEventListener('DataTable:update', handleNewRecords);
+});
+
+onUnmounted(() => {
+  clearPoll();
+  window.removeEventListener('keydown', keyEvents);
+  window.removeEventListener('blur', clearPoll);
+  window.removeEventListener('focus', setPoll);
+  window.removeEventListener('DataTable:update', handleNewRecords);
+});
+
+watch(
+  () => props.rows,
+  n => !props.fn && (rows.value = n),
+);
+
+const nextPage = async () => {
+  await router.push({ query: { ...route.query, p: page.value + 1 } });
+};
+
+const previousPage = async () => {
+  if (page.value === 1) return;
+  await router.push({ query: { ...route.query, p: page.value - 1 } });
+};
+
+watch(
+  () => page.value,
+  async () => {
+    if (page.value) {
+      updatePoll();
 
       if (props.fn) {
         await updateRows();
-        updatePoll();
-      } else {
-        rows.value = props.rows;
       }
-
-      window.addEventListener('blur', clearPoll);
-      window.addEventListener('focus', setPoll);
-      window.addEventListener('keydown', keyEvents);
-      window.addEventListener('DataTable:update', handleNewRecords);
-    });
-
-    onUnmounted(() => {
-      clearPoll();
-      window.removeEventListener('keydown', keyEvents);
-      window.removeEventListener('blur', clearPoll);
-      window.removeEventListener('focus', setPoll);
-      window.removeEventListener('DataTable:update', handleNewRecords);
-    });
-
-    watch(
-      () => props.rows,
-      n => !props.fn && (rows.value = n),
-    );
-
-    const nextPage = async () => {
-      await router.push({ query: { ...route.query, p: page.value + 1 } });
-    };
-
-    const previousPage = async () => {
-      if (page.value === 1) return;
-      await router.push({ query: { ...route.query, p: page.value - 1 } });
-    };
-
-    const definePage = async p => {
-      await router.push({ query: { ...route.query, p } });
-      pageInput.value = false;
-      pageInputValue.value = null;
-    };
-
-    watch(
-      () => page.value,
-      async () => {
-        if (page.value) {
-          updatePoll();
-
-          if (props.fn) {
-            await updateRows();
-          }
-        }
-      },
-    );
-
-    const sort = async c => {
-      store.mutateProgressbarLoading(true);
-
-      order.value = c.sorted === 'asc' ? 'desc' : 'asc';
-
-      // TODO: This will be for filtering
-      const index = columns.value.findIndex(e => e.field === c.field);
-      c = { ...c, sorted: order.value };
-      columns.value.splice(index, 1, c);
-
-      rows.value = await getData();
-
-      store.mutateProgressbarLoading(false);
-    };
-
-    const mustShrink = shrinkUntilWidth => {
-      return (
-        window.innerWidth < shrinkUntilWidth ||
-        table.value.scrollWidth > table.value.offsetWidth
-      );
-    };
-
-    const getShortValue = (val, shrinkUntilWidth = 0) => {
-      if (val === 0) return val.toString();
-      if (!val) return;
-      if (!shrinkUntilWidth) return val.toString();
-      if (
-        table.value &&
-        typeof val === 'string' &&
-        mustShrink(shrinkUntilWidth)
-      ) {
-        if (val.length > 16) {
-          const arr = val.split('');
-          return [
-            ...arr.slice(0, 9),
-            '...',
-            ...arr.slice(arr.length - 5, arr.length),
-          ].join('');
-        }
-      }
-      return val.toString();
-    };
-
-    const detail = data => {
-      router.push(
-        `/${props.prefix ? props.prefix : 'transactions'}/${data.id ||
-          data.address}`,
-      );
-
-      window.removeEventListener('keydown', keyEvents);
-    };
-
-    return {
-      loading: computed(() => store.state.progressbarLoading),
-      popupActive,
-      table,
-      rows,
-      columns,
-      mustShrink,
-      getShortValue,
-      sort,
-      nextPage,
-      previousPage,
-      page,
-      limit,
-      offset,
-      togglePopup: () => (popupActive.value = !popupActive.value),
-      detail,
-      hasHeaderSlot: !!slots.header,
-      definePage,
-      pageInput,
-      activatePageInput: () => {
-        pageInput.value = true;
-        nextTick(() => pageInputRef.value.focus());
-      },
-      pageInputValue,
-      // REFS
-      pageInputRef,
-    };
+    }
   },
-  components: { Button, Popup, Copy, Button, Input },
+);
+
+const sort = async c => {
+  store.mutateProgressbarLoading(true);
+
+  order.value = c.sorted === 'asc' ? 'desc' : 'asc';
+
+  // TODO: This will be for filtering
+  const index = columns.value.findIndex(e => e.field === c.field);
+  c = { ...c, sorted: order.value };
+  columns.value.splice(index, 1, c);
+
+  rows.value = await getData();
+
+  store.mutateProgressbarLoading(false);
 };
+
+const mustShrink = shrinkUntilWidth => {
+  return (
+    window.innerWidth < shrinkUntilWidth ||
+    table.value.scrollWidth > table.value.offsetWidth
+  );
+};
+
+const getShortValue = (val, shrinkUntilWidth = 0) => {
+  if (val === 0) return val.toString();
+  if (!val) return;
+  if (!shrinkUntilWidth) return val.toString();
+  if (table.value && typeof val === 'string' && mustShrink(shrinkUntilWidth)) {
+    if (val.length > 14) {
+      const arr = val.split('');
+      return [
+        ...arr.slice(0, 6),
+        '...',
+        ...arr.slice(arr.length - 4, arr.length),
+      ].join('');
+    }
+  }
+  return val.toString();
+};
+
+const detail = data => {
+  router.push(
+    `/${props.prefix ? props.prefix : 'transactions'}/${data.id ||
+      data.address}`,
+  );
+
+  window.removeEventListener('keydown', keyEvents);
+};
+
+const loading = computed(() => store.state.progressbarLoading);
+const togglePopup = () => (popupActive.value = !popupActive.value);
+const hasHeaderSlot = !!slots.header;
 </script>
 
 <style scoped>

@@ -33,7 +33,7 @@
   </DataTable>
 </template>
 
-<script>
+<script setup>
 import { inject, ref } from 'vue';
 
 import Navbar from '../components/Navbar';
@@ -41,78 +41,72 @@ import DataTable from '../components/DataTable';
 import Copy from '../components/Copy';
 import { _transformMonetaryUnit, _parseDate } from '../utils';
 
-export default {
-  name: 'Transactions',
-  props: {
-    title: { type: String, required: true },
-  },
-  setup() {
-    const store = inject('store');
+defineProps({
+  title: { type: String, required: true },
+});
 
-    const columns = ref([
-      // { name: 'type', label: 'type', field: 'type', sortable: false },
-      {
-        name: 'id',
-        label: 'Id',
-        field: 'id',
-        sortable: false,
-        active: true,
-        slot: true,
-        shrinkUntilWidth: 2100,
-      },
-      {
-        name: 'senderAddress',
-        label: 'Sender',
-        field: 'senderAddress',
-        sortable: false,
-        active: true,
-        slot: true,
-        shrinkUntilWidth: 1800,
-      },
-      {
-        name: 'recipientAddress',
-        label: 'Recipient',
-        field: 'recipientAddress',
-        sortable: false,
-        active: true,
-        slot: true,
-        shrinkUntilWidth: 1800,
-      },
-      {
-        name: 'timestamp',
-        label: 'Date',
-        field: 'timestamp',
-        sortable: false,
-        value: val => _parseDate(val),
-        active: true,
-        sorted: 'desc',
-      },
-      {
-        name: 'amount',
-        label: 'Amount',
-        field: 'amount',
-        sortable: false,
-        value: val =>
-          _transformMonetaryUnit(val, store.state.config.networkSymbol),
-        active: true,
-      },
-      {
-        name: 'fee',
-        label: 'Fee',
-        field: 'fee',
-        sortable: false,
-        value: val =>
-          _transformMonetaryUnit(val, store.state.config.networkSymbol),
-        active: true,
-      },
-    ]);
+const store = inject('store');
 
-    return {
-      columns,
-    };
+const columns = ref([
+  // { name: 'type', label: 'type', field: 'type', sortable: false },
+  {
+    name: 'id',
+    label: 'Id',
+    field: 'id',
+    sortable: false,
+    active: true,
+    slot: true,
+    shrinkUntilWidth: 2100,
   },
-  components: { DataTable, Navbar, Copy },
-};
+  {
+    name: 'senderAddress',
+    label: 'Sender',
+    field: 'senderAddress',
+    sortable: false,
+    active: true,
+    slot: true,
+    shrinkUntilWidth: 1800,
+    hideOnMobile: true,
+  },
+  {
+    name: 'recipientAddress',
+    label: 'Recipient',
+    field: 'recipientAddress',
+    sortable: false,
+    active: true,
+    slot: true,
+    shrinkUntilWidth: 1800,
+    hideOnMobile: true,
+  },
+  {
+    name: 'timestamp',
+    label: 'Date',
+    field: 'timestamp',
+    sortable: false,
+    value: val => _parseDate(val),
+    active: true,
+    sorted: 'desc',
+    hideOnMobile: true,
+  },
+  {
+    name: 'amount',
+    label: 'Amount',
+    field: 'amount',
+    sortable: false,
+    value: val => _transformMonetaryUnit(val, store.state.config.networkSymbol),
+    active: true,
+    shrinkUntilWidth: 768,
+  },
+  {
+    name: 'fee',
+    label: 'Fee',
+    field: 'fee',
+    sortable: false,
+    value: val => _transformMonetaryUnit(val, store.state.config.networkSymbol),
+    active: true,
+    hideOnMobile: true,
+  },
+]);
 </script>
 
 <style scoped></style>

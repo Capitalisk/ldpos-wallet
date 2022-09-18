@@ -1,31 +1,25 @@
 <template>
-  <span class="connection">
+  <span class="connection mobile-hidden">
     {{ connected ? `Connected: ${network}` : 'Disconnected' }}
   </span>
   <Dot :active="connected" />
 </template>
 
-<script>
+<script setup>
 import { computed, inject } from 'vue';
 
 import Dot from './Dot';
 
-export default {
-  name: 'Connected',
-  setup() {
-    const store = inject('store');
+const store = inject('store');
 
-    return {
-      connected: computed(() => store.state.connected),
-      network: computed(() =>
-        store.state.config && store.state.config.port === '7001'
-          ? 'Testnet'
-          : 'Mainnet',
-      ),
-    };
-  },
-  components: { Dot },
-};
+const connected = computed(() => store.state.connected);
+const network = computed(() =>
+  store.state.selectedNetwork
+    ? `${store.state.selectedNetwork
+        .charAt(0)
+        .toUpperCase()}${store.state.selectedNetwork.slice(1)}`
+    : 'Mainnet',
+);
 </script>
 
 <style scoped>

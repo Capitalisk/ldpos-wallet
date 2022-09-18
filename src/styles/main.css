@@ -1,5 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400&display=swap');
-@import url('https://gist.githubusercontent.com/mfd/09b70eb47474836f25a21660282ce0fd/raw/2923dc0cccd912c217ef244f5c42d547deab5b60/Gilroy-Regular.ttf');
+@import url('https://fonts.googleapis.com/css2?family=Inter&family=Montserrat&family=Roboto+Mono&display=swap');
 @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css');
 
 :root {
@@ -14,7 +13,7 @@
   --permanent-white: #fff;
   --permanent-dark: #404549;
 
-  --danger-bg: #f2544b20;
+  --danger-bg: #f2544b30;
   --warning-bg: #f8ca0020;
 
   --primary: #ffffff;
@@ -38,6 +37,8 @@
   --unit-4: 2rem;
   --unit-5: 2.5rem;
   --unit-6: 3rem;
+
+  --darken: rgb(120, 131, 147);
 }
 
 [dark-theme='true'] {
@@ -60,6 +61,8 @@
   --switch-background: rgb(43, 56, 75);
 
   --modal-backdrop: #22243570;
+
+  --darken: rgb(78, 93, 114);
 }
 
 * {
@@ -68,9 +71,16 @@
 }
 
 body {
-  font-family: 'Gilroy', sans-serif;
+  font-family: 'Inter', sans-serif;
   color: var(--dark);
   background-color: var(--white);
+  font-size: 14px;
+}
+
+@media screen and (max-width: 768px) {
+  body {
+    background-color: var(--primary);
+  }
 }
 
 h1,
@@ -79,11 +89,11 @@ h4,
 h5,
 h6,
 td {
-  font-family: 'Roboto', sans-serif;
+  font-family: 'Montserrat', sans-serif;
 }
 
 h4 {
-  font-family: 'Gilroy', sans-serif;
+  font-family: 'Inter', sans-serif;
   font-style: normal;
   font-weight: normal;
   font-size: 18px;
@@ -108,6 +118,10 @@ hr {
 
 input::placeholder {
   opacity: 0.4;
+}
+
+select {
+  outline: 0;
 }
 
 a {
@@ -158,6 +172,10 @@ th {
 
 .text-warning {
   color: var(--warning);
+}
+
+.text-darken {
+  color: var(--darken);
 }
 
 .capitalize {
@@ -400,6 +418,14 @@ th {
   padding-left: var(--unit-2);
 }
 
+.pr-1 {
+  padding-right: var(--unit-1);
+}
+
+.pr-2 {
+  padding-right: var(--unit-2);
+}
+
 .pa-0 {
   padding: 0 !important;
 }
@@ -606,6 +632,56 @@ th {
   text-overflow: ellipsis;
 }
 
+/*
+  Enter and leave animations can use different
+  durations and timing functions.
+*/
+.slide-fade-enter-active {
+  transition: all 0.2s ease-out;
+}
+
+.slide-fade-leave-active {
+  transition: all 0.2s cubic-bezier(1, 0.5, 0.8, 1);
+}
+
+.slide-fade-enter-from,
+.slide-fade-leave-to {
+  transform: translateY(-10px);
+  opacity: 0;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s;
+}
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
+}
+
+.navbar {
+  flex-wrap: wrap;
+}
+
+.navbar-menu {
+  display: flex;
+  align-items: center;
+}
+
+.wrap-break-all {
+  word-break: break-all;
+}
+
+@media screen and (max-width: 992px) {
+  .mobile-hidden {
+    display: none;
+  }
+  .navbar > * {
+    margin-top: 2px;
+    margin-bottom: 2px;
+  }
+}
+
 @media screen and (max-width: 768px) {
   .flex-3 {
     flex-basis: 100%;
@@ -613,13 +689,7 @@ th {
   .flex-wrap-mobile {
     flex-wrap: wrap;
   }
-}
-
-@keyframes progress-indeterminate {
-  0% {
-    background-position: 200% 0;
-  }
-  100% {
-    background-position: -200% 0;
+  .section-title h2 {
+    font-size: 20px;
   }
 }

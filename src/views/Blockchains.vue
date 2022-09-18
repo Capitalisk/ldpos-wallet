@@ -57,8 +57,8 @@
   </div>
 </template>
 
-<script>
-import { onMounted, reactive, ref, inject, watch } from 'vue';
+<script setup>
+import { onMounted, ref, inject, watch } from 'vue';
 
 import Navbar from '../components/Navbar';
 import Section from '../components/Section';
@@ -68,112 +68,103 @@ import NetworkForm from '../components/forms/NetworkForm';
 
 import config from '../config';
 
-export default {
-  name: 'Settings',
-  components: { Navbar, Section, Select, Button, NetworkForm },
-  props: {
-    title: { type: String, required: true },
+defineProps({
+  title: { type: String, required: true },
+});
+const store = inject('store');
+
+const isElectron = process.env.IS_ELECTRON;
+
+const networks = ref(null);
+const network = ref(null);
+const type = ref(null);
+
+watch(
+  () => network.value,
+  n => {
+    if (!n) {
+      network.value = null;
+      type.value = null;
+    }
   },
-  setup() {
-    const store = inject('store');
+);
 
-    const isElectron = process.env.IS_ELECTRON;
+onMounted(async () => {
+  if (isElectron) {
+    const { ipcRenderer } = await import('electron');
 
-    const networks = ref(null);
-    const network = ref(null);
-    const type = ref(null);
+    networks.value = JSON.parse(await ipcRenderer.invoke('get-config'));
+  } else {
+    networks.value = JSON.parse(localStorage.getItem('config'));
+  }
 
-    watch(
-      () => network.value,
-      n => {
-        if (!n) {
-          network.value = null;
-          type.value = null;
-        }
-      },
+  if (!networks.value) networks.value = config;
+});
+
+const deleteNetwork = async () => {
+  try {
+    // if (await validate()) throw new Error('Fields are invalid.');
+    delete networks.value[network.value];
+    if (isElectron) {
+      const { ipcRenderer } = await import('electron');
+
+      await ipcRenderer.invoke(
+        'save-config',
+        JSON.stringify(networks.value, null, 2),
+      );
+
+      store.notify({ message: 'Network deleted!' }, 5);
+      network.value = null;
+    } else {
+      localStorage.setItem('config', JSON.stringify(networks.value));
+      store.notify({ message: 'Network deleted!' }, 5);
+      network.value = null;
+    }
+  } catch (e) {
+    store.notify({ message: `Error: ${e.message}`, error: true }, 5);
+    console.error(e);
+  }
+};
+
+const deleteType = async () => {
+  try {
+    delete networks.value[network.value][type.value];
+    if (isElectron) {
+      const { ipcRenderer } = await import('electron');
+
+      await ipcRenderer.invoke(
+        'save-config',
+        JSON.stringify(networks.value, null, 2),
+      );
+
+      store.notify({ message: 'Network deleted!' }, 5);
+      type.value = null;
+    } else {
+      localStorage.setItem('config', JSON.stringify(networks.value));
+      store.notify({ message: 'Network deleted!' }, 5);
+      type.value = null;
+    }
+  } catch (e) {
+    store.notify({ message: `Error: ${e.message}`, error: true }, 5);
+    console.error(e);
+  }
+};
+
+const editNetwork = async () => {
+  if (isElectron) {
+    const { ipcRenderer } = await import('electron');
+
+    await ipcRenderer.invoke(
+      'save-config',
+      JSON.stringify(networks.value, null, 2),
     );
 
-    onMounted(async () => {
-      if (isElectron) {
-        const { ipcRenderer } = await import('electron');
-
-        networks.value = JSON.parse(await ipcRenderer.invoke('get-config'));
-      } else {
-        networks.value = JSON.parse(localStorage.getItem('config'));
-      }
-
-      if(!networks.value) networks.value = config
-    });
-
-    return {
-      network,
-      networks,
-      type,
-      deleteNetwork: async () => {
-        try {
-          // if (await validate()) throw new Error('Fields are invalid.');
-          delete networks.value[network.value];
-          if (isElectron) {
-            const { ipcRenderer } = await import('electron');
-
-            await ipcRenderer.invoke(
-              'save-config',
-              JSON.stringify(networks.value, null, 2),
-            );
-
-            store.notify({ message: 'Network deleted!' }, 5);
-            network.value = null;
-          } else {
-            localStorage.setItem('config', JSON.stringify(networks.value));
-            store.notify({ message: 'Network deleted!' }, 5);
-            network.value = null;
-          }
-        } catch (e) {
-          store.notify({ message: `Error: ${e.message}`, error: true }, 5);
-          console.error(e);
-        }
-      },
-      deleteType: async () => {
-        try {
-          delete networks.value[network.value][type.value];
-          if (isElectron) {
-            const { ipcRenderer } = await import('electron');
-
-            await ipcRenderer.invoke(
-              'save-config',
-              JSON.stringify(networks.value, null, 2),
-            );
-
-            store.notify({ message: 'Network deleted!' }, 5);
-            type.value = null;
-          } else {
-            localStorage.setItem('config', JSON.stringify(networks.value));
-            store.notify({ message: 'Network deleted!' }, 5);
-            type.value = null;
-          }
-        } catch (e) {
-          store.notify({ message: `Error: ${e.message}`, error: true }, 5);
-          console.error(e);
-        }
-      },
-      editNetwork: async () => {
-        if (isElectron) {
-          const { ipcRenderer } = await import('electron');
-
-          await ipcRenderer.invoke(
-            'save-config',
-            JSON.stringify(networks.value, null, 2),
-          );
-
-          store.notify({ message: 'Network edited!' }, 5);
-          type.value = null;
-        } else {
-          localStorage.setItem('config', JSON.stringify(networks.value));
-          store.notify({ message: 'Network edited!' }, 5);
-        }
-      },
-    };
-  },
+    store.notify({ message: 'Network edited!' }, 5);
+    type.value = null;
+  } else {
+    localStorage.setItem('config', JSON.stringify(networks.value));
+    store.notify({ message: 'Network edited!' }, 5);
+  }
 };
 </script>
 

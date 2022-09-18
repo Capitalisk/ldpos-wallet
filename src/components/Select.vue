@@ -33,30 +33,24 @@
   </template>
 </template>
 
-<script>
+<script setup>
 import { ref, computed } from 'vue';
 
 import Input from './Input';
 
-export default {
-  name: 'Select',
-  props: {
-    modelValue: { type: String, default: null },
-    options: { type: Array, default: () => [] },
-    select: { type: Boolean, default: false },
-    noEmptyOption: { type: Boolean, default: false },
-  },
-  setup() {
-    const input = ref(null);
+defineProps({
+  modelValue: { type: String, default: null },
+  options: { type: Array, default: () => [] },
+  select: { type: Boolean, default: false },
+  noEmptyOption: { type: Boolean, default: false },
+});
 
-    return {
-      input,
-      validate: computed(() => input.value && input.value.validate),
-      error: computed(() => input.value && input.value.error),
-    };
-  },
-  components: { Input },
-};
+const input = ref(null);
+
+const validate = computed(() => input.value && input.value.validate);
+const error = computed(() => input.value && input.value.error);
+
+defineExpose({ error, validate });
 </script>
 
 <style scoped>

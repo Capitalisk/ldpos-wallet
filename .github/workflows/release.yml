@@ -152,6 +152,11 @@ jobs:
           node-version: ${{ matrix.node-version }}
 
       - name: Install and build for Android
+        # Create icons, not working, needed to do it manually via Android Studio...
+        # npx cordova-res android --skip-config --copy --icon-background-source '#161a33'
+        # Production use
+        # ./gradlew assemble
+        # mv android/app/build/outputs/apk/release/app-release-unsigned.apk android/app/build/outputs/apk/release/ldpos-wallet.apk
         run: |
           npm i
           npm run build
@@ -172,6 +177,39 @@ jobs:
 
       - uses: softprops/action-gh-release@v1
         with:
+          # Production use
+          # files: android/app/build/outputs/apk/release/ldpos-wallet.apk
           files: android/app/build/outputs/apk/debug/ldpos-wallet.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #
+      # - uses: r0adkll/sign-android-release@v1
+      #   name: Sign app APK
+      #   # ID used to access action output
+      #   id: sign_app
+      #   with:
+      #     releaseDirectory: app/build/outputs/apk/release
+      #     signingKeyBase64: ${{ secrets.SIGNING_KEY }}
+      #     alias: ${{ secrets.ALIAS }}
+      #     keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
+      #     keyPassword: ${{ secrets.KEY_PASSWORD }}
+      #   env:
+      #     # override default build-tools version (29.0.3) -- optional
+      #     BUILD_TOOLS_VERSION: "30.0.2"
+      # # Example use of `signedReleaseFile` output -- not needed
+      # - uses: actions/upload-artifact@v2
+      #   with:
+      #     name: Signed app bundle
+      #     path: ${{steps.sign_app.outputs.signedReleaseFile}}
+      # - uses: r0adkll/upload-google-play@v1
+      #   with:
+      #     serviceAccountJsonPlainText: ${{ SERVICE_ACCOUNT_JSON }}
+      #     packageName: com.ldposwallet.app
+      #     releaseFiles: android/app/build/outputs/apk/release/app-release.aab
+      #     track: production
+      #     status: inProgress
+      #     inAppUpdatePriority: 2
+      #     userFraction: 0.33
+      #     whatsNewDirectory: distribution/whatsnew
+      #     mappingFile: app/build/outputs/mapping/release/mapping.txt
+      #     debugSymbols: app/intermediates/merged_native_libs/release/out/lib

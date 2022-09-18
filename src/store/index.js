@@ -32,7 +32,7 @@ const state = reactive({
     routerGoBack: false,
   },
   darkMode: true,
-  notifications: [],
+  notifications: {},
   progressbarLoading: false,
 });
 
@@ -71,7 +71,7 @@ export default {
     try {
       await state.clients[networkSymbol][network].connect();
     } catch (e) {
-      console.log(e);
+      console.error(e);
       state.connected = false;
       this.mutateProgressbarLoading(false);
       throw new Error('Failed to connect to the network.');
@@ -81,7 +81,7 @@ export default {
 
     this.mutateProgressbarLoading(false);
   },
-  async authenticate(passphrase) {
+  async authenticate(passphrase, options) {
     const networkSymbol = state.config.networkSymbol;
     const network = state.selectedNetwork;
 
@@ -89,15 +89,32 @@ export default {
     try {
       state.authenticated = false;
 
-      await state.clients[networkSymbol][network].connect({ passphrase });
+      const client = state.clients[networkSymbol][network];
+
+      await client.connect({
+        passphrase,
+        ...options,
+      });
+
+      try {
+        await client.syncKeyIndex('sig');
+      } catch (err) {
+        if (
+          !err.sourceError ||
+          err.sourceError.name !== 'AccountDidNotExistError'
+        ) {
+          throw err;
+        }
+      }
 
       state.authenticated = true;
 
       // this.initiateOrRenewTimeout();
     } catch (e) {
-      console.error(e);
-      state.login.error = e.message;
+      state.login.loading = false;
       state.authenticated = false;
+      state.login.error = e.message;
+      throw e;
     }
     state.login.loading = false;
     if (state.authenticated) router.push({ name: 'wallet' });
@@ -178,7 +195,7 @@ export default {
     state.darkMode = !state.darkMode;
     document.documentElement.setAttribute('dark-theme', state.darkMode);
   },
-  toggleNav: action => (state.nav = action === false ? action : !state.nav),
+  toggleNav: (action) => (state.nav = action === false ? action : !state.nav),
   initiateOrRenewTimeout() {
     if (!state.authenticated) return;
     state.authenticationTimeout && clearTimeout(state.authenticationTimeout);
@@ -188,22 +205,33 @@ export default {
     }, 1 * 1000 * 60);
   },
   notify({ message, error = false }, seconds = null) {
-    for (let i = 0; i < state.notifications.length; i++) {
-      const n = state.notifications[i];
-      if (n.message === message) return;
-    }
+    // TODO: Handle this
+    if (state.notifications[message]) return;
+    state.notifications[message] = {
+      message,
+      error,
+      seconds,
+      secondsLeft: seconds,
+    };
 
-    if (state.notifications.length === 3) state.notifications.splice(0, 1);
-    state.notifications.push({ message, error });
+    if (seconds) {
+      setTimeout(() => state.notifications[message].secondsLeft--);
 
-    if (seconds)
+      const interval = setInterval(
+        () =>
+          state.notifications[message].secondsLeft > 0 &&
+          state.notifications[message].secondsLeft--,
+        1000,
+      );
+
       setTimeout(() => {
-        const index = state.notifications.findIndex(m => m === message);
-        this.denotify(index);
+        this.denotify(message);
+        clearInterval(interval);
       }, seconds * 1000);
+    }
   },
-  denotify: index => {
-    state.notifications.splice(index, 1);
+  denotify: (message) => {
+    delete state.notifications[message];
   },
-  mutateProgressbarLoading: val => (state.progressbarLoading = val),
+  mutateProgressbarLoading: (val) => (state.progressbarLoading = val),
 };

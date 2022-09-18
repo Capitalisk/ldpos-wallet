@@ -23,14 +23,18 @@
         "
         class="modal"
         :back-button="stack.length > 1"
-        :style="{ height: '100%' }"
+        :style="{ height: '100%', padding: '20px', boxSizing: 'border-box' }"
       >
         <div class="force-modal-scroll">
           <template v-if="!useSlot">
-            <TokenModal v-if="type === TOKEN_MODAL" />
-            <DetailModal v-if="type === DETAIL_MODAL" />
-            <TransferModal v-if="type === TRANSFER_MODAL" />
-            <AddTokenModal v-if="type === ADD_TOKEN_MODAL" />
+            <TokenModal v-if="type === MODAL_CONSTANTS.TOKEN_MODAL" />
+            <DetailModal v-else-if="type === MODAL_CONSTANTS.DETAIL_MODAL" />
+            <TransferModal
+              v-else-if="type === MODAL_CONSTANTS.TRANSFER_MODAL"
+            />
+            <AddTokenModal
+              v-else-if="type === MODAL_CONSTANTS.ADD_TOKEN_MODAL"
+            />
           </template>
           <slot v-if="useSlot && slotActive" />
         </div>
@@ -39,68 +43,64 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import { computed, inject, onMounted, onUnmounted, ref } from 'vue';
 
-import modals from './modals';
-import * as modalConstants from './modals/constants';
+import * as MODAL_CONSTANTS from './modals/constants';
 import { _capitalize } from '../utils';
 
 import Section from './Section';
+import TokenModal from './modals/TokenModal.vue';
+import DetailModal from './modals/DetailModal.vue';
+import TransferModal from './modals/TransferModal.vue';
+import AddTokenModal from './modals/AddTokenModal.vue';
 
-export default {
-  name: 'Modal',
-  props: {
-    useSlot: {
-      type: Boolean,
-      default: false,
-    },
+defineProps({
+  useSlot: {
+    type: Boolean,
+    default: false,
   },
-  setup() {
-    const store = inject('store');
+});
 
-    const slotActive = ref(false);
-    const slotTitle = ref(null);
-    const stack = computed(() => store.state.modal.stack);
+const store = inject('store');
 
-    const toggleOrBrowseModal = store.toggleOrBrowseModal;
+const slotActive = ref(false);
+const slotTitle = ref(null);
+const stack = computed(() => store.state.modal.stack);
 
-    const escEvent = e => {
-      if (e.key === 'Escape') {
-        if (stack.value.length > 1) {
-          return toggleOrBrowseModal({ back: true });
-        }
-        toggleOrBrowseModal();
-        window.addEventListener('keydown', escEvent);
-      }
-    };
+const toggleOrBrowseModal = store.toggleOrBrowseModal;
 
-    onMounted(() => window.addEventListener('keydown', escEvent));
-    onUnmounted(() => window.addEventListener('keydown', escEvent));
-
-    return {
-      active: computed(() => store.state.modal.active),
-      type: computed(() => store.state.modal.type),
-      title: computed(() => store.state.modal.title),
-      data: computed(() => store.state.modal.data),
-      stack,
-      toggleOrBrowseModal,
-      ...modalConstants,
-      capitalize: _capitalize,
-      slotActive,
-      slotTitle,
-      activateModal: (opts = {}) => {
-        slotActive.value = true;
-        slotTitle.value = opts.title;
-      },
-      deactivateModal: () => {
-        slotActive.value = false;
-        slotTitle.value = null;
-      },
-    };
-  },
-  components: { Section, ...modals },
+const escEvent = e => {
+  if (e.key === 'Escape') {
+    if (stack.value.length > 1) {
+      return toggleOrBrowseModal({ back: true });
+    }
+    toggleOrBrowseModal();
+    window.addEventListener('keydown', escEvent);
+  }
 };
+
+onMounted(() => window.addEventListener('keydown', escEvent));
+onUnmounted(() => window.addEventListener('keydown', escEvent));
+
+const active = computed(() => store.state.modal.active);
+const type = computed(() => store.state.modal.type);
+const title = computed(() => store.state.modal.title);
+const data = computed(() => store.state.modal.data);
+
+const capitalize = _capitalize;
+
+const activateModal = (opts = {}) => {
+  slotActive.value = true;
+  slotTitle.value = opts.title;
+};
+
+const deactivateModal = () => {
+  slotActive.value = false;
+  slotTitle.value = null;
+};
+
+defineExpose({ activateModal, deactivateModal });
 </script>
 
 <style scoped>

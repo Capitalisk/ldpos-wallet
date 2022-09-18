@@ -1,11 +1,12 @@
 <template>
   <ConfirmationModal ref="confirmationRef">
-    <div class="mb-1">
-      Forging passphrase
-    </div>
+    <div class="mb-1">Forging passphrase</div>
     <Input
       v-model="passphrase"
-      :rules="[val => !!val || (val && val.length <= 0) || 'Required', val => validatePassphrase(val) || 'Must be a 12 word BIP39 mnemonic']"
+      :rules="[
+        (val) => !!val || (val && val.length <= 0) || 'Required',
+        (val) => validatePassphrase(val) || 'Must be a 12 word BIP39 mnemonic',
+      ]"
     />
   </ConfirmationModal>
   <div class="flex flex-wrap flex-gap mb-2">
@@ -22,8 +23,15 @@
           <Button
             :value="`Send ${networkSymbol}`"
             class="mt-4"
-            style="width: 110px"
+            style="width: 150px"
             @click="openTransferModal"
+          />
+          <Button
+            :value="`Request ${networkSymbol}`"
+            class="mt-4 outline"
+            style="width: 150px"
+            router-link
+            href="/transaction/create"
           />
         </div>
         <div class="flex-6 flex-sm-12 wallet-address">
@@ -78,7 +86,7 @@
   </DataTable>
 </template>
 
-<script>
+<script setup>
 import { computed, inject, onMounted, ref, reactive, onUnmounted } from 'vue';
 
 import DataTable from './DataTable';
@@ -93,262 +101,245 @@ import { DETAIL_MODAL, TRANSFER_MODAL } from './modals/constants';
 import ConfirmationModal from './modals/ConfirmationModal';
 import Input from './Input';
 
-export default {
-  name: 'Wallet',
-  setup() {
-    const store = inject('store');
+const store = inject('store');
 
-    const interval = ref(null);
+const interval = ref(null);
 
-    const address = reactive({ loading: true, data: null, error: null });
-    const balance = reactive({ loading: true, data: null, error: null });
+const address = reactive({ loading: true, data: null, error: null });
+const balance = reactive({ loading: true, data: null, error: null });
 
-    const getWallet = async (
-      arg = store.client.value.getWalletAddress(),
-      fromTimestamp = null,
-      offset = 0,
-      limit = 10,
-      order = 'desc',
-      page = 1,
-    ) => {
-      if (!store.state.authenticated) {
-        router.push({ name: 'wallet' });
-        return;
-      }
-      try {
-        const pendingTransactions = await store.client.value.getOutboundPendingTransactions(
+const getWallet = async (
+  arg = store.client.value.getWalletAddress(),
+  fromTimestamp = null,
+  offset = 0,
+  limit = 10,
+  order = 'desc',
+  page = 1,
+) => {
+  if (!store.state.authenticated) {
+    router.push({ name: 'wallet' });
+    return;
+  }
+  try {
+    const pendingTransactions =
+      await store.client.value.getOutboundPendingTransactions(
+        arg,
+        offset,
+        limit,
+      );
+
+    let l;
+    if (page === 1)
+      l = pendingTransactions.length
+        ? limit - pendingTransactions.length
+        : limit;
+    else l = limit;
+
+    const transactions = [
+      ...pendingTransactions.map((t) => ({
+        ...t,
+        counterpartyAddress:
+          t.recipientAddress === arg ? t.senderAddress : t.recipientAddress,
+        direction: 'pending',
+      })),
+      ...(
+        await store.client.value.getAccountTransactions(
           arg,
+          fromTimestamp,
           offset,
-          limit,
-        );
+          l,
+          order,
+        )
+      ).map((t) => ({
+        ...t,
+        counterpartyAddress:
+          t.recipientAddress === arg ? t.senderAddress : t.recipientAddress,
+        direction: t.recipientAddress === arg ? 'inbound' : 'outbound',
+      })),
+    ].sort((a, b) => (a.timestamp > b.timestamp ? -1 : 1));
 
-        let l;
-        if (page === 1)
-          l = pendingTransactions.length
-            ? limit - pendingTransactions.length
-            : limit;
-        else l = limit;
-
-        const transactions = [
-          ...pendingTransactions.map(t => ({
-            ...t,
-            counterpartyAddress: t.recipientAddress === arg ? t.senderAddress : t.recipientAddress,
-            direction: 'pending',
-          })),
-          ...(
-            await store.client.value.getAccountTransactions(
-              arg,
-              fromTimestamp,
-              offset,
-              l,
-              order,
-            )
-          ).map(t => ({
-            ...t,
-            counterpartyAddress: t.recipientAddress === arg ? t.senderAddress : t.recipientAddress,
-            direction: t.recipientAddress === arg ? 'inbound' : 'outbound',
-          })),
-        ].sort((a, b) => (a.timestamp > b.timestamp ? -1 : 1));
-
-        return Promise.resolve(transactions);
-      } catch (e) {
-        console.error(e);
-      }
-    };
-
-    const getBalance = async () => {
-      balance.loading = true;
-      try {
-        const { balance: b } = await store.client.value.getAccount(
-          address.data,
-        );
-        balance.data = b;
-      } catch (err) {
-        if (err.sourceError.name === 'AccountDidNotExistError') {
-          if (
-            store.client.value.validatePassphrase(store.client.value.passphrase)
-          ) {
-            balance.data = '0';
-            balance.loading = false;
-          }
-        } else {
-          balance.error = err.message;
-        }
-      }
-      balance.loading = false;
-    };
-
-    onUnmounted(() => {
-      clearInterval(interval);
-      address.loading = true;
-      balance.loading = true;
-    });
-
-    onMounted(async () => {
-      store.mutateProgressbarLoading(true);
-      try {
-        address.data = await store.client.value.getWalletAddress();
-      } catch (e) {
-        address.error = e;
-      }
-      address.loading = false;
-
-      await getBalance();
-      interval.value = setInterval(async () => {
-        await getBalance();
-      }, 5000);
-      store.mutateProgressbarLoading(false);
-    });
-
-    const columns = ref([
-
-      {
-        name: 'id',
-        label: 'Id',
-        field: 'id',
-        sortable: false,
-        active: true,
-        slot: true,
-        shrinkUntilWidth: 2100,
-      },
-      {
-        name: 'type',
-        label: 'Type',
-        field: 'type',
-        sortable: false,
-        active: true,
-      },
-      {
-        name: 'counterpartyAddress',
-        label: 'Counterparty',
-        field: 'counterpartyAddress',
-        sortable: false,
-        value: val => val,
-        active: true,
-        slot: true,
-        shrinkUntilWidth: 1800,
-      },
-      {
-        name: 'timestamp',
-        label: 'Date',
-        field: 'timestamp',
-        sortable: false,
-        value: val => _parseDate(val),
-        active: true,
-      },
-      {
-        name: 'amount',
-        label: 'Amount',
-        field: 'amount',
-        sortable: false,
-        value: val =>
-          _transformMonetaryUnit(val, store.state.config.networkSymbol),
-        active: true,
-      },
-      {
-        name: 'fee',
-        label: 'Fee',
-        field: 'fee',
-        sortable: false,
-        value: val =>
-          _transformMonetaryUnit(val, store.state.config.networkSymbol),
-        active: true,
-      },
-      {
-        name: 'direction',
-        label: 'Direction',
-        sortable: false,
-        active: true,
-        slot: true,
-      },
-    ]);
-
-    const confirmationRef = ref(null);
-    const passphrase = ref(null);
-
-    const confirmationModal = async () => {
-      try {
-        const { minTransactionFees } = await store.client.value.getMinFees();
-
-        const response = await confirmationRef.value.show({
-          message: `Are you sure you want to register as a delegate? A fee of ${_transformMonetaryUnit(
-            minTransactionFees.registerForgingDetails,
-          )} will be deducted from your account.`,
-          showCancelButton: true,
-        });
-
-        if (response) {
-          const newNextForgingKeyIndex = 0;
-          if (!passphrase.value)
-            throw new Error('Passphrase should be present');
-
-          if (!store.client.value.validatePassphrase(passphrase.value))
-            throw new Error('Passphrase should be a valid 12 word BIP39 mnemonic');
-
-          const registerTxn = await store.client.value.prepareRegisterForgingDetails(
-            {
-              newNextForgingKeyIndex,
-              forgingPassphrase: passphrase.value,
-              message: 'Register as a delegate via ldpos-wallet',
-              fee: minTransactionFees.registerForgingDetails,
-            },
-          );
-
-          await store.client.value.postTransaction(registerTxn);
-
-          store.notify({ message: 'Succesfully registered as a delegate' }, 5);
-        }
-      } catch (e) {
-        store.notify({
-          message: e.message,
-          error: true,
-        });
-      }
-
-      passphrase.value = null;
-    };
-
-    return {
-      columns,
-      fn: getWallet,
-      authenticated: computed(() => store.state.authenticated),
-      address: computed(() => address),
-      balance: computed(() => balance),
-      walletAddress: computed(() => store.client.value.getWalletAddress()),
-      openTransferModal: () =>
-        balance.data > 0
-          ? store.toggleOrBrowseModal({ type: TRANSFER_MODAL })
-          : store.notify(
-              {
-                message:
-                  "Cross your fingers and hope for a miraculous transaction. Until that, you don't have any balance to transfer.",
-                error: true,
-              },
-              5,
-            ),
-      details: data =>
-        store.toggleOrBrowseModal({
-          type: DETAIL_MODAL,
-          data,
-        }),
-      transformMonetaryUnit: _transformMonetaryUnit,
-      validatePassphrase: val => store.client.value.validatePassphrase(val),
-      networkSymbol: store.state.config.networkSymbol,
-      confirmationRef,
-      confirmationModal,
-      passphrase,
-      shrink: window.innerWidth < 768,
-    };
-  },
-  components: {
-    DataTable,
-    Copy,
-    Section,
-    Button,
-    ConfirmationModal,
-    Input,
-  },
+    return Promise.resolve(transactions);
+  } catch (e) {
+    console.error(e);
+  }
 };
+
+const getBalance = async () => {
+  balance.loading = true;
+  try {
+    const { balance: b } = await store.client.value.getAccount(address.data);
+    balance.data = b;
+  } catch (err) {
+    if (err.sourceError.name === 'AccountDidNotExistError') {
+      if (
+        store.client.value.validatePassphrase(store.client.value.passphrase)
+      ) {
+        balance.data = '0';
+        balance.loading = false;
+      }
+    } else {
+      balance.error = err.message;
+    }
+  }
+  balance.loading = false;
+};
+
+onUnmounted(() => {
+  clearInterval(interval);
+  address.loading = true;
+  balance.loading = true;
+});
+
+onMounted(async () => {
+  store.mutateProgressbarLoading(true);
+  try {
+    address.data = await store.client.value.getWalletAddress();
+  } catch (e) {
+    address.error = e;
+  }
+  address.loading = false;
+
+  await getBalance();
+  interval.value = setInterval(async () => {
+    await getBalance();
+  }, 5000);
+  store.mutateProgressbarLoading(false);
+});
+
+const columns = ref([
+  {
+    name: 'id',
+    label: 'Id',
+    field: 'id',
+    sortable: false,
+    active: true,
+    slot: true,
+    shrinkUntilWidth: 2100,
+    hideOnMobile: true,
+  },
+  {
+    name: 'type',
+    label: 'Type',
+    field: 'type',
+    sortable: false,
+    active: true,
+    hideOnMobile: true,
+  },
+  {
+    name: 'counterpartyAddress',
+    label: 'Counterparty',
+    field: 'counterpartyAddress',
+    sortable: false,
+    value: (val) => val,
+    active: true,
+    slot: true,
+    shrinkUntilWidth: 1800,
+    hideOnMobile: true,
+  },
+  {
+    name: 'timestamp',
+    label: 'Date',
+    field: 'timestamp',
+    sortable: false,
+    value: (val) => _parseDate(val),
+    active: true,
+    hideOnMobile: true,
+  },
+  {
+    name: 'amount',
+    label: 'Amount',
+    field: 'amount',
+    sortable: false,
+    value: (val) =>
+      _transformMonetaryUnit(val, store.state.config.networkSymbol),
+    active: true,
+  },
+  {
+    name: 'fee',
+    label: 'Fee',
+    field: 'fee',
+    sortable: false,
+    value: (val) =>
+      _transformMonetaryUnit(val, store.state.config.networkSymbol),
+    active: true,
+    hideOnMobile: true,
+  },
+  {
+    name: 'direction',
+    label: '',
+    sortable: false,
+    active: true,
+    slot: true,
+  },
+]);
+
+const confirmationRef = ref(null);
+const passphrase = ref(null);
+
+const confirmationModal = async () => {
+  try {
+    const { minTransactionFees } = await store.client.value.getMinFees();
+
+    const response = await confirmationRef.value.show({
+      message: `Are you sure you want to register as a delegate? A fee of ${_transformMonetaryUnit(
+        minTransactionFees.registerForgingDetails,
+      )} will be deducted from your account.`,
+      showCancelButton: true,
+    });
+
+    if (response) {
+      const newNextForgingKeyIndex = 0;
+      if (!passphrase.value) throw new Error('Passphrase should be present');
+
+      if (!store.client.value.validatePassphrase(passphrase.value))
+        throw new Error('Passphrase should be a valid 12 word BIP39 mnemonic');
+
+      const registerTxn =
+        await store.client.value.prepareRegisterForgingDetails({
+          newNextForgingKeyIndex,
+          forgingPassphrase: passphrase.value,
+          message: 'Register as a delegate via ldpos-wallet',
+          fee: minTransactionFees.registerForgingDetails,
+        });
+
+      await store.client.value.postTransaction(registerTxn);
+
+      store.notify({ message: 'Succesfully registered as a delegate' }, 5);
+    }
+  } catch (e) {
+    store.notify({
+      message: e.message,
+      error: true,
+    });
+  }
+
+  passphrase.value = null;
+};
+
+const fn = getWallet;
+const authenticated = computed(() => store.state.authenticated);
+const walletAddress = computed(() => store.client.value.getWalletAddress());
+const openTransferModal = () =>
+  balance.data > 0
+    ? store.toggleOrBrowseModal({ type: TRANSFER_MODAL })
+    : store.notify(
+        {
+          message:
+            "Cross your fingers and hope for a miraculous transaction. Until that, you don't have any balance to transfer.",
+          error: true,
+        },
+        5,
+      );
+// TODO: Remove?
+const details = (data) =>
+  store.toggleOrBrowseModal({
+    type: DETAIL_MODAL,
+    data,
+  });
+const transformMonetaryUnit = _transformMonetaryUnit;
+const validatePassphrase = (val) => store.client.value.validatePassphrase(val);
+const networkSymbol = store.state.config.networkSymbol;
+const shrink = window.innerWidth < 992;
 </script>
 
 <style scoped>

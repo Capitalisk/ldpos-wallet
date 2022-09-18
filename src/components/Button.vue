@@ -11,9 +11,9 @@
     <i class="fa fa-circle-notch fa-spin mr-1" v-if="loading" />{{ value }}
   </a>
   <router-link
+    class="button cursor-pointer text-center"
+    :class="{ default: value }"
     v-else
-    class="button"
-    :class="{ default: value && !small }"
     :to="href"
   >
     <i v-if="!loading && icon" :class="`fa fa-${icon} mr-2`" />
@@ -21,18 +21,16 @@
   </router-link>
 </template>
 
-<script>
-export default {
-  name: 'Button',
-  props: {
-    value: { type: [String, Number] },
-    routerLink: { type: Boolean, default: false },
-    href: { type: [String, Object], default: '' },
-    loading: { type: Boolean, default: false },
-    icon: { type: String, default: null },
-    small: { type: Boolean, default: false },
-  },
-};
+<script setup>
+defineProps({
+  value: { type: [String, Number] },
+  routerLink: { type: Boolean, default: false },
+  href: { type: [String, Object], default: '' },
+  loading: { type: Boolean, default: false },
+  icon: { type: String, default: null },
+  width: { type: String, default: 'auto' },
+  height: { type: String, default: 'auto' }
+});
 </script>
 
 <style scoped>
@@ -50,6 +48,8 @@ a.button {
   line-height: 16px;
   letter-spacing: 1.25px;
   text-transform: uppercase;
+  width: v-bind(width);
+  height: v-bind(height);
 }
 
 a.button.default {
