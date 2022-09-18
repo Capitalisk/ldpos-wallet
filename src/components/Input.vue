@@ -1,16 +1,14 @@
 <template>
   <div class="flex relative align-center">
-    <span class="prefix">{{ prefix }}<slot name="prefix"/></span>
+    <span class="prefix">{{ prefix }}<slot name="prefix" /></span>
     <input
       v-bind="$attrs"
       class="input"
-      :class="
-        `input ${error || error ? 'input-error ' : ''}${
-          prefix || $slots.prefix ? 'input-prefix ' : ''
-        }${suffix || $slots.suffix ? 'input-suffix' : ''}`
-      "
+      :class="`input ${error || error ? 'input-error ' : ''}${
+        prefix || $slots.prefix ? 'input-prefix ' : ''
+      }${suffix || $slots.suffix ? 'input-suffix' : ''}`"
       :value="modelValue"
-      @input="e => $emit('update:modelValue', e.target.value)"
+      @input="(e) => $emit('update:modelValue', e.target.value)"
       :placeholder="placeholder"
       :id="id"
       @blur="validate"
@@ -19,7 +17,7 @@
       ref="input"
       data-gramm="false"
     />
-    <span class="suffix">{{ suffix }}<slot name="suffix"/></span>
+    <span class="suffix">{{ suffix }}<slot name="suffix" /></span>
   </div>
   <span v-if="dirty && error && !hideValidation" class="text-danger ml-1">
     {{ error }}
@@ -69,7 +67,8 @@ const validate = async () => {
   }
 };
 
-defineExpose({ focus, reset, validate });
+// TODO: Fix and align error with Select
+defineExpose({ focus, reset, validate, error });
 </script>
 
 <style scoped>

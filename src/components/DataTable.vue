@@ -54,11 +54,9 @@
           <tr v-for="r in rows" :key="r.id">
             <template v-for="(c, i) in columns" :key="i">
               <td
-                :class="
-                  `px-2 py-3 mr-2${c.class ? ' ' + c.class : ''}${
-                    clickable ? ' cursor-pointer' : ''
-                  }${c.hideOnMobile ? ' mobile-hidden' : ''}`
-                "
+                :class="`px-2 py-3 mr-2${c.class ? ' ' + c.class : ''}${
+                  clickable ? ' cursor-pointer' : ''
+                }${c.hideOnMobile ? ' mobile-hidden' : ''}`"
                 @click="clickable ? detail(r) : ''"
                 v-if="c.active"
               >
@@ -79,8 +77,8 @@
                         : r[c.field],
                       c.shrinkUntilWidth,
                     ) ||
-                      r.default ||
-                      '-'
+                    r.default ||
+                    '-'
                   }}
                 </template>
               </td>
@@ -97,7 +95,7 @@
             :animation-data="notFound"
             background="transparent"
             speed="1"
-            style="width: 500px; height: 500px;"
+            style="width: 500px; height: 500px"
             loop
             controls
             autoplay
@@ -116,6 +114,8 @@
       icon="chevron-left"
       @click="previousPage"
       class="pa-1 mr-1 outline"
+      width="20px"
+      height="20px"
       :class="{ disabled: page === 1 }"
     />
     <Button
@@ -124,46 +124,61 @@
       class="pa-1 mr-1 cursor-pointer outline"
       v-if="page !== 1"
       :value="1"
+      width="20px"
+      height="20px"
       small
     />
     <Button
       @click="activatePageInput"
-      class="pa-1 mr-1 disabled cursor-pointer outline"
+      class="pa-1 mr-1 cursor-pointer outline"
       value="..."
-      disabled
+      width="20px"
+      height="20px"
       small
       v-if="page > 2 && !pageInput"
     />
     <!-- TODO: Allow custom page input -->
-    <Input
-      v-if="pageInput"
-      placeholder="Page"
-      class="mr-1"
-      v-model="pageInputValue"
-      @keyup.enter="() => definePage(pageInputValue)"
-      @keyup.esc="() => (pageInput = false)"
-      ref="pageInputRef"
-    >
-      <template v-slot:suffix>
-        <i
-          class="fas fa-times cursor-pointer ml-2"
-          @click.stop.prevent="() => (pageInput = false)"
-        />
-      </template>
-    </Input>
+    <TransitionExpand>
+      <div v-if="pageInput">
+        <Input
+          placeholder="Page"
+          class="mr-1"
+          v-model="pageInputValue"
+          @keyup.enter="() => definePage(pageInputValue)"
+          @keyup.esc="() => (pageInput = false)"
+          ref="pageInputRef"
+          :rules="[
+            (v) => !!v || 'No input',
+            (v) => Number.isInteger(parseInt(v)) || 'Only numbers',
+            (v) => parseInt(v) <= 999 || 'Too big',
+          ]"
+        >
+          <template v-slot:suffix>
+            <i
+              class="fas fa-times cursor-pointer ml-2"
+              @click.stop.prevent="() => (pageInput = false)"
+            />
+          </template>
+        </Input>
+      </div>
+    </TransitionExpand>
     <Button
+      v-if="!pageInputValue"
       id="current-page"
       @click="activatePageInput"
       class="pa-1 mr-1 disabled cursor-pointer outline"
       :value="page"
       disabled
+      width="20px"
+      height="20px"
       small
-      v-else
     />
     <Button
       id="next-page"
       icon="chevron-right"
       @click="nextPage"
+      width="20px"
+      height="20px"
       class="pa-1 outline"
     />
     <!-- TODO: Add page two -->
@@ -190,6 +205,7 @@ import Popup from './Popup';
 import Copy from './Copy';
 import Input from './Input';
 import LottiePlayer from './LottiePlayer';
+import TransitionExpand from './transitions/TransitionExpand';
 
 import notFound from '../animations/not-found2.json';
 
@@ -225,6 +241,10 @@ const limit = ref(props.limit);
 const order = ref(props.order);
 const columns = ref(props.columns);
 const popupActive = ref(false);
+const pageInput = ref(false);
+const pageInputValue = ref(null);
+
+const pageInputRef = ref(null);
 
 const page = computed(() =>
   _isNumber(route.query.p) ? parseInt(route.query.p) : 1,
@@ -305,7 +325,7 @@ const handleNewRecords = async () => {
   await updateRows();
 };
 
-const keyEvents = e => {
+const keyEvents = (e) => {
   if (e.key === 'ArrowRight') nextPage();
   if (e.key === 'ArrowLeft') previousPage();
 };
@@ -338,7 +358,7 @@ onUnmounted(() => {
 
 watch(
   () => props.rows,
-  n => !props.fn && (rows.value = n),
+  (n) => !props.fn && (rows.value = n),
 );
 
 const nextPage = async () => {
@@ -348,6 +368,21 @@ const nextPage = async () => {
 const previousPage = async () => {
   if (page.value === 1) return;
   await router.push({ query: { ...route.query, p: page.value - 1 } });
+};
+
+const definePage = async (p) => {
+  await pageInputRef.value.validate();
+  console.log(pageInputRef.value.error);
+  if (pageInputRef.value.error) return;
+
+  await router.push({ query: { ...route.query, p } });
+  pageInput.value = false;
+  pageInputValue.value = null;
+};
+
+const activatePageInput = () => {
+  pageInput.value = true;
+  nextTick(() => pageInputRef.value.focus());
 };
 
 watch(
@@ -363,13 +398,13 @@ watch(
   },
 );
 
-const sort = async c => {
+const sort = async (c) => {
   store.mutateProgressbarLoading(true);
 
   order.value = c.sorted === 'asc' ? 'desc' : 'asc';
 
   // TODO: This will be for filtering
-  const index = columns.value.findIndex(e => e.field === c.field);
+  const index = columns.value.findIndex((e) => e.field === c.field);
   c = { ...c, sorted: order.value };
   columns.value.splice(index, 1, c);
 
@@ -378,7 +413,7 @@ const sort = async c => {
   store.mutateProgressbarLoading(false);
 };
 
-const mustShrink = shrinkUntilWidth => {
+const mustShrink = (shrinkUntilWidth) => {
   return (
     window.innerWidth < shrinkUntilWidth ||
     table.value.scrollWidth > table.value.offsetWidth
@@ -402,10 +437,11 @@ const getShortValue = (val, shrinkUntilWidth = 0) => {
   return val.toString();
 };
 
-const detail = data => {
+const detail = (data) => {
   router.push(
-    `/${props.prefix ? props.prefix : 'transactions'}/${data.id ||
-      data.address}`,
+    `/${props.prefix ? props.prefix : 'transactions'}/${
+      data.id || data.address
+    }`,
   );
 
   window.removeEventListener('keydown', keyEvents);
@@ -455,7 +491,7 @@ const hasHeaderSlot = !!slots.header;
 
 .pagination {
   position: absolute;
-  bottom: 10px;
+  bottom: 25px;
   left: 50%;
   transform: translateX(-50%);
 }

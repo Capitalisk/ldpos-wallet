@@ -12,7 +12,7 @@
   </a>
   <router-link
     class="button cursor-pointer text-center"
-    :class="{ default: value }"
+    :class="{ default: value && !small }"
     v-else
     :to="href"
   >
@@ -29,7 +29,8 @@ defineProps({
   loading: { type: Boolean, default: false },
   icon: { type: String, default: null },
   width: { type: String, default: 'auto' },
-  height: { type: String, default: 'auto' }
+  height: { type: String, default: 'auto' },
+  small: { type: Boolean, default: false },
 });
 </script>
 
@@ -45,7 +46,7 @@ a.button {
   font-style: normal;
   font-weight: 600;
   font-size: 14px;
-  line-height: 16px;
+  line-height: 20px;
   letter-spacing: 1.25px;
   text-transform: uppercase;
   width: v-bind(width);
