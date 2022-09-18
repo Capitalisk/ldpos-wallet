@@ -6,8 +6,69 @@
       @click="goBack"
     />
     <h1 class="mr-auto">{{ title }}</h1>
-    <template v-if="routes.includes(searchParam)">
-      <div v-show="searchActive" style="width: 70%;">
+    <div class="navbar-menu" v-if="showDefault">
+      <Button
+        v-if="$route.params.accountId"
+        router-link
+        value="View votes"
+        class="ml-1 mr-2"
+        :href="`/accounts/${$route.params.accountId}/votes`"
+      />
+      <Button
+        v-if="$route.params.delegateId"
+        router-link
+        value="View voters"
+        class="ml-1 mr-2"
+        :href="`/delegates/${$route.params.delegateId}/voters`"
+      />
+      <Button
+        v-if="$route.params.accountId"
+        router-link
+        value="View transactions"
+        class="ml-1 mr-2"
+        :href="`/accounts/${$route.params.accountId}/transactions`"
+      />
+      <Button
+        v-if="$route.params.blockId"
+        router-link
+        value="View transactions"
+        class="ml-1 mr-2"
+        :href="`/blocks/${$route.params.blockId}/transactions`"
+      />
+      <Connected />
+      <span class="flex justify-center align-center mr-2">
+        <Switch v-model="darkMode" id="darkmode-switch" />
+      </span>
+      <Button
+        v-if="authenticated"
+        value="Sign out"
+        @click="signout"
+        class="ml-1 mr-2"
+      />
+      <Button
+        value="Sign in"
+        router-link
+        :href="isElectron ? '/' : '/login'"
+        v-else-if="
+          (($router.currentRoute.value.path !== '/' && isElectron) ||
+            (!isElectron && $router.currentRoute.value.path !== '/login')) &&
+            !authenticated
+        "
+        class="ml-1 mr-2"
+      />
+      <Button
+        v-if="!searchActive && routes.includes(searchParam)"
+        icon="search"
+        @click="activateSearch"
+        class="pa-1 outline"
+      />
+    </div>
+    <TransitionExpand
+      @hide="showDefault = true"
+      @enter="showDefault = false"
+      width="70%"
+    >
+      <div v-if="routes.includes(searchParam) && searchActive">
         <Input
           :placeholder="`Search ${searchParam}`"
           ref="searchRef"
@@ -27,70 +88,11 @@
           </template>
         </Input>
       </div>
-    </template>
-    <template v-if="!searchActive">
-      <div class="navbar-menu">
-        <Button
-          v-if="$route.params.accountId"
-          router-link
-          value="View votes"
-          class="ml-1 mr-2"
-          :href="`/accounts/${$route.params.accountId}/votes`"
-        />
-        <Button
-          v-if="$route.params.delegateId"
-          router-link
-          value="View voters"
-          class="ml-1 mr-2"
-          :href="`/delegates/${$route.params.delegateId}/voters`"
-        />
-        <Button
-          v-if="$route.params.accountId"
-          router-link
-          value="View transactions"
-          class="ml-1 mr-2"
-          :href="`/accounts/${$route.params.accountId}/transactions`"
-        />
-        <Button
-          v-if="$route.params.blockId"
-          router-link
-          value="View transactions"
-          class="ml-1 mr-2"
-          :href="`/blocks/${$route.params.blockId}/transactions`"
-        />
-        <Connected />
-        <span class="flex justify-center align-center mr-2">
-          <Switch v-model="darkMode" id="darkmode-switch" />
-        </span>
-        <Button
-          v-if="authenticated"
-          value="Sign out"
-          @click="signout"
-          class="ml-1 mr-2"
-        />
-        <Button
-          value="Sign in"
-          router-link
-          :href="isElectron ? '/' : '/login'"
-          v-else-if="
-            (($router.currentRoute.value.path !== '/' && isElectron) ||
-              (!isElectron && $router.currentRoute.value.path !== '/login')) &&
-              !authenticated
-          "
-          class="ml-1 mr-2"
-        />
-        <Button
-          v-if="!searchActive && routes.includes(searchParam)"
-          icon="search"
-          @click="activateSearch"
-          class="pa-1 outline"
-        />
-      </div>
-    </template>
+    </TransitionExpand>
   </div>
 </template>
 
-<script>
+<script setup>
 import { computed, inject, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
@@ -98,94 +100,86 @@ import Button from './Button';
 import Connected from './Connected';
 import Switch from './Switch';
 import Input from './Input';
+import TransitionExpand from './transitions/TransitionExpand';
+
 import { _capitalize, _pluralToSingular, _isNumber } from '../utils';
 
-export default {
-  name: 'Navbar',
-  props: {
-    back: { type: Boolean, default: false },
-    title: { type: String, required: true },
-  },
-  setup(props) {
-    const store = inject('store');
-    const route = useRoute();
-    const router = useRouter();
+defineProps({
+  back: { type: Boolean, default: false },
+  title: { type: String, required: true },
+});
 
-    const searchActive = ref(false);
-    const searchRef = ref(null);
-    const searchValue = ref(null);
+const store = inject('store');
+const route = useRoute();
+const router = useRouter();
 
-    return {
-      searchActive,
-      searchRef,
-      searchValue,
-      searchParam: route.name,
-      routes: ['delegates', 'blocks', 'transactions', 'accounts'],
-      goBack: () => router.go(-1),
-      activateSearch: () => {
-        searchActive.value = true;
-        setTimeout(() => searchRef.value.focus(), 100);
+const searchActive = ref(false);
+const searchRef = ref(null);
+const searchValue = ref(null);
+const showDefault = ref(true);
+
+const searchParam = route.name;
+const routes = ['delegates', 'blocks', 'transactions', 'accounts'];
+const goBack = () => router.go(-1);
+const activateSearch = () => {
+  searchActive.value = true;
+  setTimeout(() => searchRef.value.focus(), 100);
+};
+
+const authenticated = computed(() => store.state.authenticated);
+const signout = () => store.deauthenticate();
+const darkMode = computed({
+  get: () => store.state.darkMode,
+  set: () => store.toggleDarkMode(),
+});
+const isElectron = process.env.IS_ELECTRON;
+const search = async () => {
+  const key = route.name;
+
+  const sw = {
+    accounts: async () =>
+      await store.client.value.getAccount(searchValue.value),
+    transactions: async () =>
+      await store.client.value.getTransaction(searchValue.value),
+    delegates: async () =>
+      await store.client.value.getDelegate(searchValue.value),
+    blocks: async () => {
+      if (_isNumber(searchValue.value)) {
+        return await store.client.value.getBlockAtHeight(
+          parseInt(searchValue.value),
+        );
+      } else {
+        return await store.client.value.getBlock(searchValue.value);
+      }
+    },
+    default: () => false,
+  };
+
+  try {
+    const data = await (sw[key] || sw.default)();
+    if (!data) return;
+
+    router.push(
+      `${route.path === '/' ? '/transactions' : route.path}/${data.id ||
+        data.address}`,
+    );
+  } catch (e) {
+    console.error(e);
+    store.notify(
+      {
+        message: `${_capitalize(_pluralToSingular(route.name))} not found.`,
+        error: true,
       },
-      authenticated: computed(() => store.state.authenticated),
-      signout: async () => store.deauthenticate(),
-      darkMode: computed({
-        get: () => store.state.darkMode,
-        set: val => store.toggleDarkMode(),
-      }),
-      isElectron: process.env.IS_ELECTRON,
-      search: async () => {
-        const key = route.name;
-
-        const sw = {
-          accounts: async () =>
-            await store.client.value.getAccount(searchValue.value),
-          transactions: async () =>
-            await store.client.value.getTransaction(searchValue.value),
-          delegates: async () =>
-            await store.client.value.getDelegate(searchValue.value),
-          blocks: async () => {
-            if (_isNumber(searchValue.value)) {
-              return await store.client.value.getBlockAtHeight(
-                parseInt(searchValue.value),
-              );
-            } else {
-              return await store.client.value.getBlock(searchValue.value);
-            }
-          },
-          default: () => false,
-        };
-
-        try {
-          const data = await (sw[key] || sw.default)();
-          if (!data) return;
-
-          router.push(
-            `${route.path === '/' ? '/transactions' : route.path}/${data.id ||
-              data.address}`,
-          );
-        } catch (e) {
-          console.error(e);
-          store.notify(
-            {
-              message: `${_capitalize(
-                _pluralToSingular(route.name),
-              )} not found.`,
-              error: true,
-            },
-            5,
-          );
-        }
-      },
-    };
-  },
-  components: { Button, Connected, Switch, Input },
+      5,
+    );
+  }
 };
 </script>
 
 <style scoped>
 .navbar {
   padding: var(--unit-2) var(--unit-2);
-  min-height: 36px;
+  min-height: 41px;
 }
 
 h1 {
