@@ -144,7 +144,7 @@
           placeholder="Page"
           class="mr-1 mobile-width"
           v-model="pageInputValue"
-          @keyup.enter="() => definePage(pageInputValue)"
+          @keyup.enter="() => definePage(pageInputValue, true)"
           @keyup.esc="() => (pageInput = false)"
           ref="pageInputRef"
           :rules="[
@@ -370,8 +370,8 @@ const previousPage = async () => {
   await router.push({ query: { ...route.query, p: page.value - 1 } });
 };
 
-const definePage = async (p) => {
-  if (pageInputRef.value) {
+const definePage = async (p, fromInput = false) => {
+  if (pageInputRef.value && fromInput) {
     await pageInputRef.value.validate();
     if (pageInputRef.value.error) return;
   }
