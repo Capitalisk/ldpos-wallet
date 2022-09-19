@@ -58,14 +58,10 @@ const encryptMessage = async () => {
 };
 
 const decryptMessage = async () => {
-  const decoded = new Uint8Array(
-    new Uint8Array(
-      await window.crypto.subtle.decrypt(
-        { name: 'AES-CTR', counter: counter.value, length: 64 },
-        key.value,
-        encryptedData.value,
-      ),
-    ),
+  const decoded = await window.crypto.subtle.decrypt(
+    { name: 'AES-CTR', counter: counter.value, length: 64 },
+    key.value,
+    encryptedData.value,
   );
 
   console.log(JSON.parse(decoder(decoded)));
