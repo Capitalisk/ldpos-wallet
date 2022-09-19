@@ -1,21 +1,17 @@
 <template>
   <div v-if="!edit">
-    <div class="mb-1">
-      Network Symbol
-    </div>
+    <div class="mb-1">Network Symbol</div>
     <div class="mb-2">
       <Input
         v-bind="$attrs"
         v-model="config.networkSymbol"
-        :ref="el => (validationRefs.networkSymbol = el)"
-        :rules="[val => !!val || (val && val.length <= 0) || 'Required']"
+        :ref="(el) => (validationRefs.networkSymbol = el)"
+        :rules="[(val) => !!val || (val && val.length <= 0) || 'Required']"
       />
     </div>
   </div>
   <div v-if="!edit">
-    <div class="mb-1">
-      Type:
-    </div>
+    <div class="mb-1">Type:</div>
     <div class="mb-2">
       <Select
         v-bind="$attrs"
@@ -25,41 +21,35 @@
     </div>
   </div>
   <div>
-    <div class="mb-1">
-      Hostname
-    </div>
+    <div class="mb-1">Hostname</div>
     <div class="mb-2">
       <Input
         v-bind="$attrs"
         v-model="config.hostname"
-        :ref="el => (validationRefs.hostname = el)"
-        :rules="[val => !!val || (val && val.length <= 0) || 'Required']"
+        :ref="(el) => (validationRefs.hostname = el)"
+        :rules="[(val) => !!val || (val && val.length <= 0) || 'Required']"
       />
     </div>
   </div>
   <div>
-    <div class="mb-1">
-      Port
-    </div>
+    <div class="mb-1">Port</div>
     <div class="mb-2">
       <Input
         v-bind="$attrs"
         v-model="config.port"
-        :ref="el => (validationRefs.port = el)"
-        :rules="[val => !!val || (val && val.length <= 0) || 'Required']"
+        :ref="(el) => (validationRefs.port = el)"
+        :rules="[(val) => !!val || (val && val.length <= 0) || 'Required']"
       />
     </div>
   </div>
   <div>
-    <div class="mb-1">
-      Chain Module Name
-    </div>
+    <div class="mb-1">Chain Module Name</div>
     <div class="mb-2">
       <Input
         v-bind="$attrs"
         v-model="config.chainModuleName"
-        :ref="el => (validationRefs.chainModuleName = el)"
-        :rules="[val => !!val || (val && val.length <= 0) || 'Required']"
+        :ref="(el) => (validationRefs.chainModuleName = el)"
+        :rules="[(val) => !!val || (val && val.length <= 0) || 'Required']"
       />
     </div>
   </div>
@@ -113,6 +103,4 @@ const validate = async () => {
   }
   return Promise.resolve(hasErrors);
 };
-
-const isDevelopment = process.env.NODE_ENV === 'development';
 </script>

@@ -36,7 +36,7 @@
         :href="`/blocks/${$route.params.blockId}/transactions`"
       />
       <span class="flex justify-center align-center mr-2">
-        <Switch v-model="darkMode" id="darkmode-switch" />
+        <Switch v-model="darkMode" class="darkmode" id="darkmode-switch" />
       </span>
       <Button
         v-if="authenticated"
