@@ -64,22 +64,42 @@ export default [
     children: [
       {
         path: 'create',
-        component: () => import(
-          /* webpackChunkName: "createTransaction" */ '../views/CreateTransaction'
-        ),
+        component: () =>
+          import(
+            /* webpackChunkName: "createTransaction" */ '../views/CreateTransaction'
+          ),
         props: {
           title: 'Create transaction',
         },
       },
       {
         path: 'sign',
-        component: () => import(
-          /* webpackChunkName: "signTransaction" */ '../views/SignTransaction'
-        ),
+        component: () =>
+          import(
+            /* webpackChunkName: "signTransaction" */ '../views/SignTransaction'
+          ),
         props: {
           title: 'Sign transaction',
         },
       },
     ],
   },
+  process.env.NODE_ENV === 'development'
+    ? {
+        path: '/test',
+        name: 'test',
+        children: [
+          {
+            path: 'encryption',
+            component: () =>
+              import(
+                /* webpackChunkName: "encryption" */ '../components/tests/Encryption'
+              ),
+            props: {
+              title: 'Encryption tests',
+            },
+          },
+        ],
+      }
+    : {},
 ];
