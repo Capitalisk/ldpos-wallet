@@ -112,27 +112,27 @@
       id="previous-page"
       icon="chevron-left"
       @click="previousPage"
-      class="pa-1 mr-1 outline"
-      width="20px"
-      height="20px"
+      class="mr-1 outline pagination-button"
+      width="36px"
+      height="36px"
       :class="{ disabled: page === 1 }"
     />
     <Button
       id="page-one"
       @click="() => definePage(1)"
-      class="pa-1 mr-1 cursor-pointer outline"
+      class="mr-1 cursor-pointer outline pagination-button"
       v-if="page !== 1"
       :value="1"
-      width="20px"
-      height="20px"
+      width="36px"
+      height="36px"
       small
     />
     <Button
       @click="activatePageInput"
-      class="pa-1 mr-1 cursor-pointer outline"
+      class="mr-1 cursor-pointer outline pagination-button"
       value="..."
-      width="20px"
-      height="20px"
+      width="36px"
+      height="36px"
       small
       v-if="page > 2 && !pageInput"
     />
@@ -165,20 +165,20 @@
       v-if="!pageInputValue"
       id="current-page"
       @click="activatePageInput"
-      class="pa-1 mr-1 disabled cursor-pointer outline"
+      class="mr-1 disabled cursor-pointer outline pagination-button"
       :value="page"
       disabled
-      width="20px"
-      height="20px"
+      width="36px"
+      height="36px"
       small
     />
     <Button
       id="next-page"
       icon="chevron-right"
       @click="nextPage"
-      width="20px"
-      height="20px"
-      class="pa-1 outline"
+      width="36px"
+      height="36px"
+      class="outline pagination-button"
     />
     <!-- TODO: Add page two -->
   </div>
@@ -511,6 +511,12 @@ tr:hover {
 
 th {
   font-size: 14px;
+}
+
+a.pagination-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 </style>
 
