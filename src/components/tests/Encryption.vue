@@ -1,8 +1,9 @@
 <template>
   <div>
+    <textarea v-model="encryptedMessage"></textarea>
     <Button value="Encrypt" @click="encryptMessage" />
     <Button value="Decrypt" @click="decryptMessage" />
-    {{ encryptedMessage }}
+    {{ decryptedData }}
   </div>
 </template>
 
@@ -10,10 +11,11 @@
 import { ref } from 'vue';
 import Button from '../Button.vue';
 
-const encryptedMessage = ref();
+const decryptedData = ref();
 const encryptedData = ref();
 const key = ref();
 const counter = ref();
+const encryptedMessage = ref('');
 
 const encoder = (m) => {
   const e = new TextEncoder();
@@ -26,6 +28,7 @@ const decoder = (m) => {
 };
 
 const encryptMessage = async () => {
+  // This needs to be 16 characters long?
   const k = encoder('sadjoiasjdosaijd');
   console.debug(k);
 
@@ -51,7 +54,7 @@ const encryptMessage = async () => {
       length: 64,
     },
     key.value,
-    encoder(JSON.stringify({ test: true })),
+    encoder(encryptedMessage.value),
   );
 
   console.log(encryptedData.value);
@@ -64,9 +67,11 @@ const decryptMessage = async () => {
     encryptedData.value,
   );
 
-  console.log(JSON.parse(decoder(decoded)));
+  console.log(decoder(decoded));
 
-  return JSON.parse(decoder(decoded));
+  decryptedData.value = decoder(decoded);
+
+  return decoder(decoded);
 };
 </script>
 
