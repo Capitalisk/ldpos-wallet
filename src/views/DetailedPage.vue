@@ -10,7 +10,6 @@
           :animation-data="notFound"
           background="transparent"
           speed="1"
-          style="width: 500px; height: 500px;"
           loop
           autoplay
         />

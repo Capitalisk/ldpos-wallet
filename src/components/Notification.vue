@@ -65,6 +65,13 @@ const denotify = (i) => store.denotify(i);
   backdrop-filter: blur(4px);
 }
 
+@media screen and (max-width: 992px) {
+  .notification {
+    max-width: 100vw;
+    min-width: 100px;
+  }
+}
+
 .notification.danger {
   background-color: var(--danger-bg);
   color: var(--danger);

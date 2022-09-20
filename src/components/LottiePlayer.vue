@@ -61,18 +61,13 @@ const loadAnimation = () => {
   emit('animControl', anim);
 };
 
-const getSize = size => {
+const getSize = (size) => {
   return typeof size == Number ? `${size}px` : size;
 };
-
-const style = computed(() => ({
-  width: getSize(props.width),
-  height: getSize(props.height),
-}));
 
 onMounted(loadAnimation);
 </script>
 
 <template>
-  <div :style="style" ref="animationContainerRef"></div>
+  <div ref="animationContainerRef"></div>
 </template>
