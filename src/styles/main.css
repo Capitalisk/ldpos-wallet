@@ -126,6 +126,7 @@ input::placeholder {
 
 select {
   outline: 0;
+  font-size: 18px;
 }
 
 a {

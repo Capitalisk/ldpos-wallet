@@ -36,7 +36,9 @@ defineProps({
 
 <style scoped>
 a.button {
-  display: block;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   border: 0;
   border-radius: var(--border-radius);
   text-decoration: none;
