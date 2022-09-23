@@ -51,7 +51,7 @@
         v-else-if="
           (($router.currentRoute.value.path !== '/' && isElectron) ||
             (!isElectron && $router.currentRoute.value.path !== '/login')) &&
-            !authenticated
+          !authenticated
         "
         class="ml-1"
       />
@@ -92,7 +92,7 @@
 </template>
 
 <script setup>
-import { computed, inject, ref } from 'vue';
+import { computed, inject, onMounted, onUnmounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import Button from './Button';
@@ -158,8 +158,9 @@ const search = async () => {
     if (!data) return;
 
     router.push(
-      `${route.path === '/' ? '/transactions' : route.path}/${data.id ||
-        data.address}`,
+      `${route.path === '/' ? '/transactions' : route.path}/${
+        data.id || data.address
+      }`,
     );
   } catch (e) {
     console.error(e);
@@ -172,6 +173,42 @@ const search = async () => {
     );
   }
 };
+
+const searchShortcut = (event) => {
+  event.stopPropagation();
+  event.preventDefault();
+  console.log(event.ctrlKey, event.key);
+
+  if (event.key === '/' || (event.ctrlKey && event.key === 'k')) {
+    searchActive.value = true;
+  }
+};
+
+onMounted(() => {
+  document.addEventListener('keyup', searchShortcut);
+
+  document.onkeydown = function (e) {
+    e = e || window.event;
+
+    // Disable / in firefox
+    if (e.key === '/') {
+      e.stopPropagation();
+      e.preventDefault();
+    }
+
+    if (!e.ctrlKey) return;
+
+    // Disable ctrl+k in Chrome
+    if (e.key === 'k') {
+      e.stopPropagation();
+      e.preventDefault();
+    }
+  };
+});
+
+onUnmounted(() => {
+  document.removeEventListener('keyup', searchShortcut);
+});
 </script>
 
 <style scoped>

@@ -3,7 +3,7 @@
 
 :root {
   --dark: #404549;
-  --white: #e8ebf1;
+  --white: #fafafa;
   --danger: #f2544b;
   --warning: #f8ca00;
   --success: #74d17f;
@@ -20,7 +20,7 @@
   --primary: #ffffff;
   --primary-lightest: #3890f5;
   --primary-lighter: #0366d6;
-  --primary-darker: #f3f5f9;
+  --primary-darker: #eff2f5;
   --primary-darkest: #e8e8e8;
   --switch-background: #d0d0d0;
 
