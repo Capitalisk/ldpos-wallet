@@ -60,6 +60,11 @@
         icon="search"
         @click="activateSearch"
         class="pa-1 outline ml-2"
+        value="Search"
+        shortcut="Ctrl+K or /"
+        no-caps
+        code
+        small
       />
     </div>
     <TransitionExpand
@@ -73,7 +78,7 @@
           ref="searchRef"
           v-model="searchValue"
           @keyup.enter="search"
-          @keyup.esc="() => (searchActive = false)"
+          @keyup.esc="closeSearch"
         >
           <template v-slot:suffix>
             <i
@@ -82,7 +87,7 @@
             />
             <i
               class="fas fa-times cursor-pointer ml-2"
-              @click.stop.prevent="() => (searchActive = false)"
+              @click.stop.prevent="closeSearch"
             />
           </template>
         </Input>
@@ -92,7 +97,7 @@
 </template>
 
 <script setup>
-import { computed, inject, onMounted, onUnmounted, ref } from 'vue';
+import { computed, inject, nextTick, onMounted, onUnmounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import Button from './Button';
@@ -177,11 +182,19 @@ const search = async () => {
 const searchShortcut = (event) => {
   event.stopPropagation();
   event.preventDefault();
-  console.log(event.ctrlKey, event.key);
 
   if (event.key === '/' || (event.ctrlKey && event.key === 'k')) {
     searchActive.value = true;
+    nextTick(() => {
+      searchRef.value.focus();
+      document.removeEventListener('keyup', searchShortcut);
+    });
   }
+};
+
+const closeSearch = () => {
+  searchActive.value = false;
+  document.addEventListener('keyup', searchShortcut);
 };
 
 onMounted(() => {

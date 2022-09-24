@@ -25,7 +25,6 @@ import { _transformMonetaryUnit } from '../utils';
 import Navbar from '../components/Navbar';
 import DataTable from '../components/DataTable';
 import Copy from '../components/Copy';
-import Button from '../components/Button.vue';
 
 defineProps({
   title: { type: String, required: true },

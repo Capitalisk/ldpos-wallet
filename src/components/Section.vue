@@ -1,5 +1,5 @@
 <template>
-  <div class="section pa-2">
+  <div class="section box-shadow-white-mode" :class="{ 'pa-2': !noPadding }">
     <div class="section-title">
       <h2 v-if="title" :class="{ 'ml-4': backButton }">{{ title }}</h2>
     </div>
@@ -23,6 +23,7 @@ defineProps({
   error: { type: String, default: null },
   border: { type: String, default: null },
   backButton: { type: Boolean, default: false },
+  noPadding: { type: Boolean, default: false },
 });
 </script>
 

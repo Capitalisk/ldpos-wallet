@@ -30,6 +30,8 @@
   --primary-darker-bg: inherit;
   --primary-darkest-bg: inherit;
 
+  --code-border: var(--primary-darkest);
+
   --modal-backdrop: #74747470;
 
   --unit-1: 0.5rem;
@@ -61,6 +63,8 @@
   --primary-darker-bg: #22243520;
   --primary-darkest-bg: #0d111720;
 
+  --code-border: var(--primary-darker);
+
   --disabled: #a0a0a0;
   --switch-background: rgb(43, 56, 75);
 
@@ -71,8 +75,13 @@
   --dark-border: #ffffff90;
 }
 
-[dark-theme='false'] .box-shadow-white {
+[dark-theme='false'] .section.box-shadow-white-mode,
+[dark-theme='false'] #table.box-shadow-white-mode {
   box-shadow: var(--force-shadow);
+}
+
+[dark-theme='false'] .section #table.box-shadow-white-mode {
+  box-shadow: initial;
 }
 
 * {
