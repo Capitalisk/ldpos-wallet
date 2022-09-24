@@ -22,7 +22,7 @@
       <div class="bar3"></div>
     </div>
   </div>
-  <div class="sidebar ma-2" :class="{ 'sidebar-active': burgerActive }">
+  <div class="sidebar ma-2 box-shadow-white" :class="{ 'sidebar-active': burgerActive }">
     <a
       to="/"
       class="first"

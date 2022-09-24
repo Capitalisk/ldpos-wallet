@@ -41,6 +41,8 @@
   --unit-7: 4rem;
 
   --darken: rgb(120, 131, 147);
+
+  --force-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
 }
 
 [dark-theme='true'] {
@@ -67,6 +69,10 @@
   --darken: rgb(78, 93, 114);
 
   --dark-border: #ffffff90;
+}
+
+[dark-theme='false'] .box-shadow-white {
+  box-shadow: var(--force-shadow);
 }
 
 * {

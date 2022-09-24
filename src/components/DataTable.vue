@@ -21,7 +21,7 @@
         </Popup>
       </div>
     </div>
-    <div class="flex flex-wrap column overflow-y-hidden" ref="table" id="table">
+    <div class="flex flex-wrap column overflow-y-hidden box-shadow-white" ref="table" id="table">
       <table v-if="rows && rows.length" id="data-table">
         <thead>
           <template v-for="(c, i) in columns" :key="i">
