@@ -126,7 +126,10 @@ const routes = ['delegates', 'blocks', 'transactions', 'accounts'];
 const goBack = () => router.go(-1);
 const activateSearch = () => {
   searchActive.value = true;
-  setTimeout(() => searchRef.value.focus(), 100);
+  setTimeout(() => {
+    document.removeEventListener('keyup', searchShortcut);
+    searchRef.value.focus();
+  }, 100);
 };
 
 const authenticated = computed(() => store.state.authenticated);
@@ -185,10 +188,7 @@ const searchShortcut = (event) => {
 
   if (event.key === '/' || (event.ctrlKey && event.key === 'k')) {
     searchActive.value = true;
-    nextTick(() => {
-      searchRef.value.focus();
-      document.removeEventListener('keyup', searchShortcut);
-    });
+    activateSearch();
   }
 };
 
