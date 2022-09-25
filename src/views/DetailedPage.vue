@@ -106,7 +106,7 @@ const data = ref({});
 const hasError = ref(false);
 
 const getData = async () => {
-  store.mutateProgressbarLoading(true);
+  store.incrementLoadingCount();
   // dataTable is passed by the router
   if (props.dataTable) {
     const sw = {
@@ -183,7 +183,7 @@ const getData = async () => {
       hasError.value = true;
     }
   }
-  store.mutateProgressbarLoading(false);
+  store.decrementLoadingCount();
 };
 
 getData();
@@ -281,5 +281,5 @@ onMounted(() => {
   }
 });
 
-const loading = computed(() => store.state.progressbarLoading);
+const loading = computed(() => store.state.progressBarLoading);
 </script>

@@ -50,7 +50,7 @@ onUnmounted(() => {
 });
 
 const connected = computed(() => store.state.connected);
-const loading = computed(() => store.state.progressbarLoading);
+const loading = computed(() => store.state.progressBarLoading);
 </script>
 
 <style>

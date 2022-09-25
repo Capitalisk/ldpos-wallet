@@ -44,7 +44,7 @@ const route = useRoute();
 const data = ref({});
 
 const getData = async () => {
-  store.mutateProgressbarLoading(true);
+  store.incrementLoadingCount();
   const sw = {
     AccountVotes: () => ({
       titleLink: `/accounts/${route.params.accountId}`,
@@ -71,7 +71,7 @@ const getData = async () => {
   };
   data.value = (sw[route.name] || sw.default)();
 
-  store.mutateProgressbarLoading(false);
+  store.decrementLoadingCount();
 };
 
 getData();

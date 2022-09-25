@@ -191,7 +191,7 @@ onUnmounted(() => {
 });
 
 onMounted(async () => {
-  store.mutateProgressbarLoading(true);
+  store.incrementLoadingCount();
   try {
     address.data = await store.client.value.getWalletAddress();
   } catch (e) {
@@ -203,7 +203,7 @@ onMounted(async () => {
   interval.value = setInterval(async () => {
     await getBalance();
   }, 5000);
-  store.mutateProgressbarLoading(false);
+  store.decrementLoadingCount();
 });
 
 const columns = ref([

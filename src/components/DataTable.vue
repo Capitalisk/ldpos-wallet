@@ -284,13 +284,13 @@ const getData = async () => {
 };
 
 const updateRows = async () => {
-  store.mutateProgressbarLoading(true);
+  store.incrementLoadingCount();
   const initialPage = page.value;
   const rowData = await getData();
   if (page.value === initialPage) {
     rows.value = rowData;
   }
-  store.mutateProgressbarLoading(false);
+  store.decrementLoadingCount();
 };
 
 const setPoll = async () => {
@@ -399,7 +399,7 @@ watch(
 );
 
 const sort = async (c) => {
-  store.mutateProgressbarLoading(true);
+  store.incrementLoadingCount();
 
   order.value = c.sorted === 'asc' ? 'desc' : 'asc';
 
@@ -410,7 +410,7 @@ const sort = async (c) => {
 
   rows.value = await getData();
 
-  store.mutateProgressbarLoading(false);
+  store.decrementLoadingCount();
 };
 
 const mustShrink = (shrinkUntilWidth) => {
@@ -447,7 +447,7 @@ const detail = (data) => {
   window.removeEventListener('keydown', keyEvents);
 };
 
-const loading = computed(() => store.state.progressbarLoading);
+const loading = computed(() => store.state.progressBarLoading);
 const togglePopup = () => (popupActive.value = !popupActive.value);
 const hasHeaderSlot = !!slots.header;
 </script>

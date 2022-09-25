@@ -33,7 +33,8 @@ const state = reactive({
   },
   darkMode: true,
   notifications: {},
-  progressbarLoading: false,
+  progressLoadingCount: 0,
+  progressBarLoading: false,
 });
 
 export default {
@@ -45,7 +46,7 @@ export default {
     config = defaultConfig,
     network = isDevelopment ? 'testnet' : 'mainnet',
   ) {
-    this.mutateProgressbarLoading(true);
+    this.incrementLoadingCount();
     state.connected = false;
 
     await this.deauthenticate();
@@ -73,13 +74,13 @@ export default {
     } catch (e) {
       console.error(e);
       state.connected = false;
-      this.mutateProgressbarLoading(false);
+      this.decrementLoadingCount();
       throw new Error('Failed to connect to the network.');
     }
 
     state.connected = true;
 
-    this.mutateProgressbarLoading(false);
+    this.decrementLoadingCount();
   },
   async authenticate(passphrase, options) {
     const networkSymbol = state.config.networkSymbol;
@@ -119,7 +120,7 @@ export default {
     state.login.loading = false;
   },
   async deauthenticate(notify = false) {
-    this.mutateProgressbarLoading(true);
+    this.incrementLoadingCount();
     state.authenticated = false;
 
     if (notify)
@@ -146,7 +147,7 @@ export default {
 
     if (state.authenticated) router.push({ name: 'wallet' });
 
-    this.mutateProgressbarLoading(false);
+    this.decrementLoadingCount();
   },
   toggleOrBrowseModal({
     type = null,
@@ -232,5 +233,15 @@ export default {
   denotify: (message) => {
     delete state.notifications[message];
   },
-  mutateProgressbarLoading: (val) => (state.progressbarLoading = val),
+  incrementLoadingCount: () => {
+    state.progressLoadingCount++;
+    state.progressBarLoading = true;
+  },
+  decrementLoadingCount: () => {
+    state.progressLoadingCount--;
+    if (state.progressLoadingCount <= 0) {
+      state.progressLoadingCount = 0;
+      state.progressBarLoading = false;
+    }
+  },
 };
