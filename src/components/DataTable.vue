@@ -242,7 +242,7 @@ const columns = ref(props.columns);
 const popupActive = ref(false);
 const pageInput = ref(false);
 const pageInputValue = ref(null);
-
+const initialRouteName = ref(route.name);
 const pageInputRef = ref(null);
 
 const page = computed(() =>
@@ -409,7 +409,7 @@ const activatePageInput = () => {
 watch(
   () => page.value,
   async () => {
-    if (page.value) {
+    if (page.value && initialRouteName.value === route.name) {
       updatePoll();
 
       if (props.fn) {
