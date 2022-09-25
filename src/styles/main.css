@@ -75,7 +75,7 @@
   --dark-border: #ffffff90;
 }
 
-[dark-theme='false'] .section.box-shadow-white-mode,
+[dark-theme='false'] .box-shadow-white-mode,
 [dark-theme='false'] #table.box-shadow-white-mode {
   box-shadow: var(--force-shadow);
 }
