@@ -106,7 +106,6 @@ const data = ref({});
 const hasError = ref(false);
 
 const getData = async () => {
-  store.incrementLoadingCount();
   // dataTable is passed by the router
   if (props.dataTable) {
     const sw = {
@@ -153,6 +152,7 @@ const getData = async () => {
     };
     data.value = (sw[route.name] || sw.default)();
   } else {
+    store.incrementLoadingCount();
     const key = Object.keys(route.params)[0];
 
     const sw = {
@@ -182,8 +182,8 @@ const getData = async () => {
 
       hasError.value = true;
     }
+    store.decrementLoadingCount();
   }
-  store.decrementLoadingCount();
 };
 
 getData();

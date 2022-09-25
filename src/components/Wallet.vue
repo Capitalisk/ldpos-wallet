@@ -199,10 +199,14 @@ onMounted(async () => {
   }
   address.loading = false;
 
-  await getBalance();
-  interval.value = setInterval(async () => {
+  try {
     await getBalance();
-  }, 5000);
+    interval.value = setInterval(async () => {
+      await getBalance();
+    }, 5000);
+  } catch (e) {
+    console.error(e);
+  }
   store.decrementLoadingCount();
 });
 

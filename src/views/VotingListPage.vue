@@ -44,7 +44,6 @@ const route = useRoute();
 const data = ref({});
 
 const getData = async () => {
-  store.incrementLoadingCount();
   const sw = {
     AccountVotes: () => ({
       titleLink: `/accounts/${route.params.accountId}`,
@@ -70,8 +69,6 @@ const getData = async () => {
     default: () => {},
   };
   data.value = (sw[route.name] || sw.default)();
-
-  store.decrementLoadingCount();
 };
 
 getData();

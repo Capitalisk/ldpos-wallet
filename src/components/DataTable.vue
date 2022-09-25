@@ -253,29 +253,52 @@ const offset = computed(() => (page.value - 1) * limit.value);
 
 const getData = async () => {
   if (typeof props.fn === 'string') {
+    store.incrementLoadingCount();
     if (props.arg) {
-      return await store.client.value[props.fn](
+      try {
+        const result = await store.client.value[props.fn](
+          props.arg,
+          null,
+          offset.value,
+          limit.value,
+          order.value,
+        );
+        store.decrementLoadingCount();
+        return result;
+      } catch (e) {
+        store.decrementLoadingCount();
+        throw e;
+      }
+    }
+    try {
+      const result = await store.client.value[props.fn](
+        offset.value,
+        limit.value,
+        order.value,
+      );
+      store.decrementLoadingCount();
+      return result;
+    } catch (e) {
+      store.decrementLoadingCount();
+      throw e;
+    }
+  } else if (typeof props.fn === 'function') {
+    store.incrementLoadingCount();
+    try {
+      const result =  await props.fn(
         props.arg,
         null,
         offset.value,
         limit.value,
         order.value,
+        page.value,
       );
+      store.decrementLoadingCount();
+      return result;
+    } catch (e) {
+      store.decrementLoadingCount();
+      throw e;
     }
-    return await store.client.value[props.fn](
-      offset.value,
-      limit.value,
-      order.value,
-    );
-  } else if (typeof props.fn === 'function') {
-    return await props.fn(
-      props.arg,
-      null,
-      offset.value,
-      limit.value,
-      order.value,
-      page.value,
-    );
   } else {
     throw new Error(
       `fn should be a function or string, not a ${typeof props.fn}`,
@@ -284,13 +307,11 @@ const getData = async () => {
 };
 
 const updateRows = async () => {
-  store.incrementLoadingCount();
   const initialPage = page.value;
   const rowData = await getData();
   if (page.value === initialPage) {
     rows.value = rowData;
   }
-  store.decrementLoadingCount();
 };
 
 const setPoll = async () => {
@@ -399,8 +420,6 @@ watch(
 );
 
 const sort = async (c) => {
-  store.incrementLoadingCount();
-
   order.value = c.sorted === 'asc' ? 'desc' : 'asc';
 
   // TODO: This will be for filtering
@@ -409,8 +428,6 @@ const sort = async (c) => {
   columns.value.splice(index, 1, c);
 
   rows.value = await getData();
-
-  store.decrementLoadingCount();
 };
 
 const mustShrink = (shrinkUntilWidth) => {
