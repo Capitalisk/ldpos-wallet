@@ -21,7 +21,6 @@
     "postinstall": "electron-builder install-app-deps",
     "postuninstall": "electron-builder install-app-deps",
     "postversion": "git push && git push --follow-tags",
-    "preversion": "npm run test:e2e:headless",
     "serve:mainnet": "NODE_ENV=production vue-cli-service serve",
     "start:dev": "vue-cli-service serve",
     "test:e2e:docker": "docker run --rm -v $PWD:/wallet -e HOME=/wallet -e NODE_OPTIONS='--max-old-space-size=6144' --name=ldpos-wallet -w /wallet --entrypoint=\"\" cypress/included:4.9.0 bash -c \"./run-cypress.sh\"",
