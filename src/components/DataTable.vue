@@ -128,15 +128,24 @@
       small
     />
     <Button
+      v-if="page <= 2 && (!pageInputValue || !pageInput)"
+      id="current-page"
+      class="mr-1 disabled cursor-pointer outline pagination-button"
+      :value="page"
+      disabled
+      width="36px"
+      height="36px"
+      small
+    />
+    <Button
       @click="activatePageInput"
       class="mr-1 cursor-pointer outline pagination-button"
       value="..."
       width="36px"
       height="36px"
       small
-      v-if="page > 2 && !pageInput"
+      v-if="!pageInput"
     />
-    <!-- TODO: Allow custom page input -->
     <TransitionExpand>
       <div v-if="pageInput">
         <Input
@@ -162,9 +171,8 @@
       </div>
     </TransitionExpand>
     <Button
-      v-if="!pageInputValue"
+      v-if="page > 2 && (!pageInputValue || !pageInput)"
       id="current-page"
-      @click="activatePageInput"
       class="mr-1 disabled cursor-pointer outline pagination-button"
       :value="page"
       disabled
