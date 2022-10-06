@@ -144,9 +144,14 @@ onMounted(async () => {
   maxBlockHeight.value = await store.client.value.getMaxBlockHeight();
 
   if (store.state.authenticated) {
-    votes.value = await store.client.value.getAccountVotes(
-      await store.client.value.getWalletAddress(),
-    );
+    try {
+      votes.value = await store.client.value.getAccountVotes(
+        await store.client.value.getWalletAddress(),
+      );
+    } catch (e) {
+      console.error(e);
+      votes.value = [];
+    }
   }
 
   delegateCount.value = (await store.client.value.getForgingDelegates()).length;
