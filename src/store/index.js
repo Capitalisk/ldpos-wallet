@@ -7,6 +7,7 @@ import router from '../router';
 const isDevelopment = process.env.NODE_ENV === 'development';
 
 const defaultConfig = config.clsk;
+let notificationIndex = 0;
 
 const state = reactive({
   selectedNetwork: null,
@@ -200,14 +201,16 @@ export default {
     if (!state.authenticated) return;
     state.authenticationTimeout && clearTimeout(state.authenticationTimeout);
     state.authenticationTimeout = setTimeout(async () => {
-      console.log('logging out 30min passed...');
+      console.log('logging out 30 minutes passed...');
       await this.deauthenticate(true);
     }, 1 * 1000 * 60);
   },
   notify({ message, error = false }, seconds = null) {
-    // TODO: Handle this
-    if (state.notifications[message]) return;
-    state.notifications[message] = {
+    const currentIndex = notificationIndex++;
+
+    if (state.notifications[currentIndex]) return;
+    state.notifications[currentIndex] = {
+      id: currentIndex,
       message,
       error,
       seconds,
@@ -215,23 +218,27 @@ export default {
     };
 
     if (seconds) {
-      setTimeout(() => state.notifications[message].secondsLeft--);
+      setTimeout(() =>
+        state.notifications[currentIndex] &&
+        state.notifications[currentIndex].secondsLeft--
+      );
 
       const interval = setInterval(
         () =>
-          state.notifications[message].secondsLeft > 0 &&
-          state.notifications[message].secondsLeft--,
+          state.notifications[currentIndex] &&
+          state.notifications[currentIndex].secondsLeft > 0 &&
+          state.notifications[currentIndex].secondsLeft--,
         1000,
       );
 
       setTimeout(() => {
-        this.denotify(message);
+        this.denotify(currentIndex);
         clearInterval(interval);
       }, seconds * 1000);
     }
   },
-  denotify: (message) => {
-    delete state.notifications[message];
+  denotify: (notificationId) => {
+    delete state.notifications[notificationId];
   },
   incrementLoadingCount: () => {
     state.progressLoadingCount++;

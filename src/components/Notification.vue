@@ -2,7 +2,7 @@
   <div class="notifications" v-if="notifications">
     <transition-group name="list">
       <div
-        v-for="(notification, i) in Object.values(notifications).reverse()"
+        v-for="(notification) in Object.values(notifications).reverse()"
         :key="notification"
         class="notification pa-2 ma-2"
         :class="{ danger: notification.error }"
@@ -18,7 +18,7 @@
           :danger="notification.error"
           :value="`${(notification.secondsLeft / notification.seconds) * 100}%`"
         />
-        <div class="close-btn cursor-pointer" @click="denotify(i)">
+        <div class="close-btn cursor-pointer" @click="denotify(notification.id)">
           &#10005;
         </div>
         <div class="wrap mr-2">{{ notification.message }}</div>
