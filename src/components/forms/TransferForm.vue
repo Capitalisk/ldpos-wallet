@@ -151,7 +151,9 @@ const maxBalance = computed(
 
 const authenticated = computed(() => store.state.authenticated);
 
-const populate = () => (transfer.amount.data = String(maxBalance.value));
+const populate = () => {
+  updateModelValue({ key: 'amount', value: String(maxBalance.value) });
+};
 const unit = computed(() => store.state.config.networkSymbol.toUpperCase());
 
 const decimalToInteger = _decimalToInteger;
