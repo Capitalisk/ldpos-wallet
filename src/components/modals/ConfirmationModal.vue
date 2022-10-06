@@ -30,7 +30,7 @@ const show = (opts = {}) => {
   if (typeof opts.showCancelButton !== 'boolean')
     throw new Error('showCancelButton should be a boolean');
 
-  modalRef.value.activateModal({ title: 'Register delegate' });
+  modalRef.value.activateModal({ title: opts.title });
   message.value = opts.message;
   showCancelButton.value = opts.showCancelButton;
 

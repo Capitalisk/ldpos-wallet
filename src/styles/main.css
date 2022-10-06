@@ -720,3 +720,9 @@ th {
     font-size: 20px;
   }
 }
+
+@media screen and (max-width: 992px) {
+  .flex-wrap-tablet {
+    flex-wrap: wrap;
+  }
+}

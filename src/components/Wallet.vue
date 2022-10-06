@@ -1,6 +1,6 @@
 <template>
   <ConfirmationModal ref="confirmationRef">
-    <div class="mb-1">Forging passphrase</div>
+    <div class="mb-1">{{passphraseInputLabel}}</div>
     <Input
       v-model="passphrase"
       :rules="[
@@ -16,8 +16,8 @@
       v-if="authenticated"
       class="flex-12"
     >
-      <div class="flex flex-wrap-mobile">
-        <div class="flex-6 flex-sm-12 mr-auto">
+      <div class="flex flex-wrap-tablet">
+        <div class="flex-12 flex-md-6 mr-auto wallet-basic-container">
           <strong>Balance:</strong>
           {{ transformMonetaryUnit(balance.data, networkSymbol) }}
           <Button
@@ -34,16 +34,24 @@
             href="/transaction/create"
           />
         </div>
-        <div class="flex-6 flex-sm-12 wallet-address">
+        <div class="flex-12 flex-md-6 wallet-address">
           <h2>Wallet Address</h2>
           <br />
           <Copy class="mb-auto" :value="address.data" :shrink="shrink" />
-          <Button
-            value="Register as a delegate"
-            class="mt-4 outline wallet-address"
-            style="width: 250px"
-            @click="confirmationModal({ message: '' })"
-          />
+          <div class="mt-4 register-buttons-container wallet-address">
+            <Button
+              value="Register as a delegate"
+              class="outline"
+              style="width: 250px"
+              @click="registerDelegateModal({ message: '' })"
+            />
+            <Button
+              value="Register multisig key"
+              class="outline"
+              style="width: 250px"
+              @click="registerMultisigKeyModal({ message: '' })"
+            />
+          </div>
         </div>
       </div>
     </Section>
@@ -279,12 +287,15 @@ const columns = ref([
 
 const confirmationRef = ref(null);
 const passphrase = ref(null);
+const passphraseInputLabel = ref(null);
 
-const confirmationModal = async () => {
+const registerDelegateModal = async () => {
+  passphraseInputLabel.value = 'Forging passphrase';
   try {
     const { minTransactionFees } = await store.client.value.getMinFees();
 
     const response = await confirmationRef.value.show({
+      title: 'Register delegate',
       message: `Are you sure you want to register as a delegate? A fee of ${_transformMonetaryUnit(
         minTransactionFees.registerForgingDetails,
       )} will be deducted from your account.`,
@@ -308,7 +319,49 @@ const confirmationModal = async () => {
 
       await store.client.value.postTransaction(registerTxn);
 
-      store.notify({ message: 'Succesfully registered as a delegate' }, 5);
+      store.notify({ message: 'The registration transaction was posted' }, 5);
+    }
+  } catch (e) {
+    store.notify({
+      message: e.message,
+      error: true,
+    });
+  }
+
+  passphrase.value = null;
+};
+
+const registerMultisigKeyModal = async () => {
+  passphraseInputLabel.value = 'Multisig passphrase';
+  try {
+    const { minTransactionFees } = await store.client.value.getMinFees();
+
+    const response = await confirmationRef.value.show({
+      title: 'Register multisig key',
+      message: `Are you sure you want to register a multisig key? A fee of ${_transformMonetaryUnit(
+        minTransactionFees.registerMultisigDetails,
+      )} will be deducted from your account.`,
+      showCancelButton: true,
+    });
+
+    if (response) {
+      const newNextMultisigKeyIndex = 0;
+      if (!passphrase.value) throw new Error('Passphrase should be present');
+
+      if (!store.client.value.validatePassphrase(passphrase.value))
+        throw new Error('Passphrase should be a valid 12 word BIP39 mnemonic');
+
+      const registerTxn =
+        await store.client.value.prepareRegisterMultisigDetails({
+          newNextMultisigKeyIndex,
+          multisigPassphrase: passphrase.value,
+          message: 'Register multisig details via ldpos-wallet',
+          fee: minTransactionFees.registerMultisigDetails,
+        });
+
+      await store.client.value.postTransaction(registerTxn);
+
+      store.notify({ message: 'The registration transaction was posted' }, 5);
     }
   } catch (e) {
     store.notify({
@@ -355,11 +408,43 @@ ul {
   padding-top: var(--unit-2);
 }
 
-@media screen and (min-width: 768px) {
+@media screen and (min-width: 769px) {
   .wallet-address {
     padding-top: inherit;
     text-align: right;
     margin-left: auto;
   }
 }
+
+.register-buttons-container {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  align-items: flex-end;
+}
+
+@media screen and (max-width: 1199px) {
+  .register-buttons-container {
+    flex-direction: column;
+    gap: 20px;
+  }
+}
+
+@media screen and (max-width: 991px) {
+  .register-buttons-container {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .wallet-basic-container {
+    margin-bottom: 20px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .register-buttons-container {
+    align-items: flex-start;
+  }
+}
+
 </style>
