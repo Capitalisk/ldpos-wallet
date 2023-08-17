@@ -6,7 +6,8 @@ import router from '../router';
 
 const isDevelopment = process.env.NODE_ENV === 'development';
 
-const defaultConfig = config.clsk;
+const firstKey = Object.keys(config)[0] || 'clsk';
+const defaultConfig = config[firstKey];
 let notificationIndex = 0;
 
 const state = reactive({
