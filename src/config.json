@@ -9,7 +9,7 @@
       "pollInterval": 10000
     },
     "testnet": {
-      "hostname": "test.capitalisk.com",
+      "hostname": "capitalisk.com",
       "port": "443",
       "networkSymbol": "clsk",
       "chainModuleName": "capitalisk_chain",
@@ -27,7 +27,7 @@
       "pollInterval": 10000
     },
     "testnet": {
-      "hostname": "test.saasufy.com",
+      "hostname": "sas.saasufy.com",
       "port": "443",
       "networkSymbol": "sas",
       "chainModuleName": "sas_chain",

@@ -45,8 +45,8 @@
             placeholder="__________"
             @keydown="(e) => backspace(e, i)"
             @keyup.enter="signin"
-            @focus="() => !pasting && (input.value = '')"
-            :rules="[(val) => !!val || (val && val.length <= 0) || 'Required']"
+            @focus="() => (input.value = '')"
+            :rules="[(val) => pasting || !!val || (val && val.length <= 0) || 'Required']"
             :ref="
               (el) => {
                 if (el) inputRefs[i] = el;
@@ -119,7 +119,7 @@
 </template>
 
 <script setup>
-import { computed, inject, reactive, ref, watch } from 'vue';
+import { computed, inject, reactive, ref, watch, nextTick } from 'vue';
 
 import Button from '../Button';
 import Tooltip from '../Tooltip';
@@ -131,9 +131,10 @@ const store = inject('store');
 
 const inputs = ref(new Array(12));
 const passphrase = ref('');
-const pasting = ref(false);
 const provideWalletAddress = ref(false);
 const walletAddress = ref(null);
+
+const pasting = ref(false);
 
 const inputRefs = ref([]);
 
@@ -148,7 +149,7 @@ const backspace = (e, i) =>
   document.getElementById(`passphrase-${i - 1}`).focus();
 
 const validateAllInputs = async () => {
-  await new Promise((res) => setTimeout(() => res(), 100));
+  await new Promise((res) => nextTick(() => res()));
   return await new Promise(async (res, rej) => {
     let errors = [];
     for (let i = 0; i < inputRefs.value.length; i++) {
@@ -164,36 +165,40 @@ const validateAllInputs = async () => {
 watch(
   () => inputs.value,
   async (n) => {
-    for (let i = 0; i < n.length; i++) {
-      const element = n[i].value;
-      const lastInput = document.getElementById(`passphrase-${n.length - 1}`);
-
-      if (element && element.split(' ').length === 12) {
-        pasting.value = true;
-
-        inputs.value = element.split(' ').map((el) => ({ value: el }));
-
-        try {
-          await validateAllInputs();
-        } catch (e) {}
-
-        lastInput.focus();
-
-        pasting.value = false;
-      } else if (element && element.includes(' ')) {
-        const nextInput = document.getElementById(`passphrase-${i + 1}`);
-        if (nextInput) {
-          nextInput.focus();
-          nextTick(() => (nextInput.value = ''));
-        }
-        inputs.value[i].value = inputs.value[i].value.replace(/\s/g, '');
+    const hasMultiWords = n.map((el) => el.value).some((word) => word.indexOf(' ') !== -1);
+    if (!hasMultiWords) {
+      pasting.value = false;
+      if (n.filter((element) => !!element.value).length === 12) {
+        await validateAllInputs();
       }
-    }
+      return;
+    };
+    pasting.value = true;
 
-    passphrase.value = n
-      .filter((el) => el.value !== '')
-      .map((el) => el.value)
-      .join(' ');
+    const newValues = [];
+    let i = 0;
+    let newTabIndex;
+    while (i < n.length) {
+      const element = n[i].value;
+      const splitWords = element.split(' ');
+      for (let word of splitWords) {
+        newValues.push(word);
+      }
+      if (splitWords.length > 1) {
+        newTabIndex = i + splitWords.length + (splitWords[1] ? 0 : -1);
+      }
+      i += splitWords.length || 1;
+    }
+    newTabIndex = Math.min(newTabIndex, 12);
+    newValues.splice(12);
+
+    inputs.value = newValues.map((el) => ({ value: el }));
+
+    await new Promise((resolve) => nextTick(resolve));
+
+    if (newTabIndex != null && newTabIndex < 12) {
+      document.getElementById(`passphrase-${newTabIndex}`).focus();
+    }
   },
   {
     deep: true,
@@ -217,6 +222,8 @@ const hidden = ref(true);
 const loggingIn = computed(() => store.state.login.loading);
 const signin = async () => {
   const options = {};
+
+  passphrase.value = inputs.value.map((el) => el.value).join(' ');
 
   if (provideWalletAddress.value && walletAddress.value)
     options.walletAddress = walletAddress.value.trim();
