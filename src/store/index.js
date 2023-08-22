@@ -12,9 +12,7 @@ let notificationIndex = 0;
 
 const state = reactive({
   selectedNetwork: null,
-  config: isDevelopment
-    ? { ...defaultConfig.testnet, network: 'testnet' }
-    : { ...defaultConfig.mainnet, network: 'mainnet' },
+  config: { ...defaultConfig.mainnet, network: 'mainnet' },
   clients: [],
   connected: false,
   authenticated: false,
@@ -46,7 +44,7 @@ export default {
   ),
   async connect(
     config = defaultConfig,
-    network = isDevelopment ? 'testnet' : 'mainnet',
+    network = 'mainnet',
   ) {
     this.incrementLoadingCount();
     state.connected = false;

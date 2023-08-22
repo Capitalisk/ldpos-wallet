@@ -16,7 +16,7 @@
       <Select
         v-bind="$attrs"
         v-model="type"
-        :options="['mainnet', 'testnet']"
+        :options="['mainnet']"
       />
     </div>
   </div>

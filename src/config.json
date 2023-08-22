@@ -7,26 +7,10 @@
       "chainModuleName": "capitalisk_chain",
       "secure": true,
       "pollInterval": 10000
-    },
-    "testnet": {
-      "hostname": "capitalisk.com",
-      "port": "443",
-      "networkSymbol": "clsk",
-      "chainModuleName": "capitalisk_chain",
-      "secure": true,
-      "pollInterval": 10000
     }
   },
   "sas": {
     "mainnet": {
-      "hostname": "sas.saasufy.com",
-      "port": "443",
-      "networkSymbol": "sas",
-      "chainModuleName": "sas_chain",
-      "secure": true,
-      "pollInterval": 10000
-    },
-    "testnet": {
       "hostname": "sas.saasufy.com",
       "port": "443",
       "networkSymbol": "sas",

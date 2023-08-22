@@ -80,7 +80,7 @@ onMounted(async () => {
   await getConfig();
 });
 
-const type = ref(isDevelopment ? 'testnet' : 'mainnet');
+const type = ref('mainnet');
 
 const connect = async () => {
   try {
