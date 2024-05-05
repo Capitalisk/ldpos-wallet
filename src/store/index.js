@@ -49,7 +49,7 @@ export default {
     this.incrementLoadingCount();
     state.connected = false;
 
-    await this.deauthenticate();
+    await this.reconnectAllClients();
 
     const networkSymbol = config[network].networkSymbol;
     state.selectedNetwork = network;
@@ -80,7 +80,33 @@ export default {
 
     state.connected = true;
 
+    let currentRoute = router.currentRoute.value.name;
+    if (currentRoute === 'wallet') {
+      try {
+        await this.attemptReauthenticate(true);
+      } catch (e) {}
+    }
+
+    if (state.authenticated) router.push({ name: 'wallet' });
+
     this.decrementLoadingCount();
+  },
+  async attemptReauthenticate(notify) {
+    const credsString = localStorage.getItem('ldpos-credentials');
+    if (!credsString) {
+      throw new Error('Log in required');
+    }
+    if (notify) {
+      this.notify({
+        message: 'Logging in using existing credentials...'
+      }, 5);
+    }
+    const creds = JSON.parse(atob(credsString));
+    const options = {};
+    if (creds.walletAddress) {
+      options.walletAddress = creds.walletAddress;
+    }
+    await this.authenticate(creds.passphrase, options);
   },
   async authenticate(passphrase, options) {
     const networkSymbol = state.config.networkSymbol;
@@ -91,7 +117,6 @@ export default {
       state.authenticated = false;
 
       const client = state.clients[networkSymbol][network];
-
       await client.connect({
         passphrase,
         ...options,
@@ -110,7 +135,6 @@ export default {
 
       state.authenticated = true;
 
-      // this.initiateOrRenewTimeout();
     } catch (e) {
       state.login.loading = false;
       state.authenticated = false;
@@ -119,17 +143,7 @@ export default {
     }
     state.login.loading = false;
   },
-  async deauthenticate(notify = false) {
-    this.incrementLoadingCount();
-    state.authenticated = false;
-
-    if (notify)
-      this.notify({
-        message:
-          'You have been logged out automatically after being inactive for 30 minutes.',
-      });
-
-    // Disconnect and connect all clients and all nets
+  async reconnectAllClients() {
     try {
       const values = Object.values(state.clients);
       for (let i = 0; i < Object.keys(state.clients).length; i++) {
@@ -144,6 +158,14 @@ export default {
     } catch (e) {
       console.error(e);
     }
+  },
+  async deauthenticate() {
+    this.incrementLoadingCount();
+    state.authenticated = false;
+    localStorage.removeItem('ldpos-credentials');
+
+    // Disconnect and connect all clients and all nets
+    await this.reconnectAllClients();
 
     if (state.authenticated) router.push({ name: 'wallet' });
 
@@ -196,14 +218,7 @@ export default {
     document.documentElement.setAttribute('dark-theme', state.darkMode);
   },
   toggleNav: (action) => (state.nav = action === false ? action : !state.nav),
-  initiateOrRenewTimeout() {
-    if (!state.authenticated) return;
-    state.authenticationTimeout && clearTimeout(state.authenticationTimeout);
-    state.authenticationTimeout = setTimeout(async () => {
-      console.log('logging out 30 minutes passed...');
-      await this.deauthenticate(true);
-    }, 1 * 1000 * 60);
-  },
+
   notify({ message, error = false }, seconds = null) {
     const currentIndex = notificationIndex++;
 

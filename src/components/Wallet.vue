@@ -31,7 +31,7 @@
             class="mt-4 outline"
             style="width: 150px"
             router-link
-            href="/transaction/create"
+            :href="`/transaction/create/?type=request&recipientAddress=${address.data}`"
           />
         </div>
         <div class="flex-12 flex-md-6 wallet-address">
@@ -173,12 +173,13 @@ const getWallet = async (
 };
 
 const getBalance = async () => {
+  if (!address.data) return;
   balance.loading = true;
   try {
     const { balance: b } = await store.client.value.getAccount(address.data);
     balance.data = b;
   } catch (err) {
-    if (err.sourceError.name === 'AccountDidNotExistError') {
+    if (err.sourceError && err.sourceError.name === 'AccountDidNotExistError') {
       if (
         store.client.value.validatePassphrase(store.client.value.passphrase)
       ) {

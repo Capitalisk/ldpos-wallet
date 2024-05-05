@@ -2,7 +2,15 @@
   <Navbar :title="title" />
   <Section>
     <TransferForm v-model="transfer" />
-    <Button value="Generate" @click="generateUrl" />
+
+    <Button v-if="route.query.type === 'request'" value="Generate" @click="generateUrl" />
+    <Button
+      v-else
+      value="Send"
+      @click="sendTransaction"
+      :loading="loading"
+      :class="error ? 'danger' : ''"
+    />
     <div class="col-6 flex justify-center">
       <img ref="qrCodeRef" />
     </div>
@@ -11,9 +19,14 @@
 
 <script setup>
 import { computed, inject, ref, watchEffect } from 'vue';
+import { useRouter, useRoute } from 'vue-router';
 import QRCodeGenerator from '@capitalisk/qr-code-generator';
 
-import { _decimalToInteger, _transformMonetaryUnit } from '../utils';
+import {
+  _integerToDecimal,
+  _decimalToInteger,
+  _transformMonetaryUnit
+} from '../utils';
 
 import Navbar from '../components/Navbar';
 import Button from '../components/Button';
@@ -24,15 +37,22 @@ defineProps({
   title: { type: String, required: true },
 });
 
+const router = useRouter();
+const route = useRoute();
 const store = inject('store');
 
 const darkMode = computed(() => store.state.darkMode);
 
+const { query } = route;
+
+const loading = ref(false);
+const error = ref(false);
+
 const transfer = ref({
-  address: '',
-  amount: '',
-  fee: '',
-  message: '',
+  address: query.recipientAddress || '',
+  amount: query.amount ? _integerToDecimal(query.amount) : '',
+  fee: query.fee ? _integerToDecimal(query.fee) : '',
+  message: query.message || '',
 });
 
 const qrCodeRef = ref();
@@ -55,6 +75,38 @@ const generateUrl = async () => {
     },
   });
   qrCodeRef.value.src = base64;
+};
+
+const sendTransaction = async () => {
+  loading.value = true;
+  error.value = false;
+  try {
+    if (!store.state.authenticated) {
+      await store.attemptReauthenticate();
+    }
+    const preparedTxn = await store.client.value.prepareTransaction({
+      type: 'transfer',
+      recipientAddress: transfer.value.address,
+      amount: _decimalToInteger(transfer.value.amount),
+      fee: _decimalToInteger(transfer.value.fee),
+      timestamp: Date.now(),
+      message: transfer.value.message,
+    });
+
+    await store.client.value.postTransaction(preparedTxn);
+
+    store.notify(
+      { message: `Transaction sent to ${transfer.value.address}` },
+      5,
+    );
+    router.push({ name: 'wallet' });
+
+  } catch (e) {
+    store.notify({ message: `Error: ${e.message}`, error: true }, 5);
+    error.value = true;
+  } finally {
+    loading.value = false;
+  }
 };
 
 watchEffect(

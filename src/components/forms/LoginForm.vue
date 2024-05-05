@@ -247,6 +247,15 @@ const signin = async () => {
       inputs.value[i] = { value: '' };
     }
   }
+  if (store.state.authenticated) {
+    let credentials = {
+      passphrase: passphrase.value
+    };
+    if (options.walletAddress) {
+      credentials.walletAddress = options.walletAddress;
+    }
+    localStorage.setItem('ldpos-credentials', btoa(JSON.stringify(credentials)));
+  }
 };
 
 const generateWallet = async () => {
@@ -273,6 +282,14 @@ const openCustomWallet = () =>
   (provideWalletAddress.value = !provideWalletAddress.value);
 const toggleHidden = () => (hidden.value = !hidden.value);
 const token = computed(() => store.state.config.networkSymbol.toUpperCase());
+
+async function recoverAuthentication() {
+  try {
+    await store.attemptReauthenticate();
+  } catch (e) {}
+}
+
+recoverAuthentication();
 </script>
 
 <style lang="scss" scoped></style>

@@ -161,7 +161,7 @@ const transformMonetaryUnit = _transformMonetaryUnit;
 
 onMounted(async () => {
   const { minTransactionFees } = await store.client.value.getMinFees();
-  transfer.fee.data = _integerToDecimal(minTransactionFees.transfer);
+  transfer.fee.data = transfer.fee.data ? transfer.fee.data : _integerToDecimal(minTransactionFees.transfer);
   minFee.value = _integerToDecimal(minTransactionFees.transfer);
 
   if (authenticated.value) {

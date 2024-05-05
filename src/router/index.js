@@ -15,7 +15,6 @@ const router = createRouter({
 
 router.beforeEach((to, from) => {
   store.toggleNav(false);
-  // store.initiateOrRenewTimeout();
 });
 
 export default router;
