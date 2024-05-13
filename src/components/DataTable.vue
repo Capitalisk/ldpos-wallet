@@ -332,6 +332,7 @@ const setPoll = async () => {
     (store.state && store.state.config && store.state.config.pollInterval) ||
       DEFAULT_POLL_INTERVAL,
   );
+  await updateRows();
 };
 
 const clearPoll = () => {

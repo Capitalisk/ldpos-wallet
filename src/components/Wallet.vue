@@ -194,7 +194,7 @@ const getBalance = async () => {
 };
 
 onUnmounted(() => {
-  clearInterval(interval);
+  clearInterval(interval.value);
   address.loading = true;
   balance.loading = true;
 });
