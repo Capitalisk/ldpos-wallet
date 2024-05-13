@@ -1,5 +1,6 @@
 <template>
-  <Navbar :title="title" />
+  <Navbar v-if="route.query.type === 'request'" :title="title + ' (Receive)'" />
+  <Navbar v-else :title="title" />
   <Section>
     <TransferForm v-model="transfer" />
 
